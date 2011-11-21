@@ -329,7 +329,7 @@ bool GraphicsCore::setup(void)
 /*------------------------------------------------------------------------------
   Method:       bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
   Parameters:   Ogre::FrameEvent& evt   Reference to the frame event (or something?)
-  Outputs:      bool    Whether or not rendering was performed.
+  Outputs:      bool    Whether or not rendering should continue.
   Purpose:      Renders a frame (or something?)
  ------------------------------------------------------------------------------*/
 bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)

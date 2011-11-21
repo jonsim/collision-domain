@@ -11,8 +11,6 @@
 /******************** INCLUDES ********************/
 #include "stdafx.h"
 #include "GraphicsCore.h"
-#include <Terrain/OgreTerrain.h>
-#include <Terrain/OgreTerrainGroup.h> 
 
 
 
@@ -20,14 +18,7 @@
 class GraphicsApplication : public GraphicsCore
 {
 private:
-    Ogre::TerrainGlobalOptions* mTerrainGlobals;
-    Ogre::TerrainGroup* mTerrainGroup;
-    OgreBites::Label* mInfoLabel;
-    bool mTerrainsImported;
-
-    void defineTerrain(long x, long y);
-    void initBlendMaps(Ogre::Terrain* terrain);
-    void configureTerrainDefaults(Ogre::Light* light);
+    bool processUnbufferedInput(const Ogre::FrameEvent& evt);
 
 public:
     GraphicsApplication(void);
@@ -35,10 +26,6 @@ public:
 
 protected:
     virtual void createScene(void);
-	//virtual void createCamera(void);
-	//virtual void createViewports(void);
-    virtual void createFrameListener(void);
-    virtual void destroyScene(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
 };
 
