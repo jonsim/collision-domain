@@ -7,7 +7,7 @@
 /******************** DEFINITIONS ********************/
 
 /******************** INCLUDES ********************/
-
+#include "stdafx.h"
 #include "GraphicsApplication.h"
 
 
@@ -134,11 +134,6 @@ void GraphicsApplication::createScene(void)
   Outputs:      Unknown.
   Purpose:      Does something for Win32. Unknown.
  ------------------------------------------------------------------------------*/
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-#define WIN32_LEAN_AND_MEAN
-#include "windows.h"
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
