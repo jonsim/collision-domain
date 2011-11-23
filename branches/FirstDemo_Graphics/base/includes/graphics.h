@@ -1,6 +1,11 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+
+/******************** CLASS DEFINITIONS ********************/
 class graphics
 {
 
@@ -9,4 +14,4 @@ public:
     ~graphics (void);        
 };
 
-#endif  
+#endif // #ifndef GRAPHICS_H

@@ -1,6 +1,14 @@
 #ifndef DRAWABLEENTITY_H
 #define DRAWABLEENTITY_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+#include "entity.h"
+
+
+
+/******************** CLASS DEFINITIONS ********************/
 class drawableEntity : public entity
 {
  
@@ -9,4 +17,4 @@ public:
     ~drawableEntity (void);
 };
 
-#endif
+#endif // #ifndef DRAWABLEENTITY_H

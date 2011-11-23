@@ -1,6 +1,11 @@
 #ifndef SCENERYCONTEXT_H
 #define SCENERYCONTEXT_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+
+/******************** CLASS DEFINITIONS ********************/
 class sceneryContext
 {
 
@@ -9,4 +14,4 @@ public:
     ~sceneryContext (void);        
 };
 
-#endif  
+#endif // #ifndef SCENERYCONTEXT_H

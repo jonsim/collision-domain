@@ -1,6 +1,11 @@
 #ifndef PARTSCONTEXT_H
 #define PARTSCONTEXT_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+
+/******************** CLASS DEFINITIONS ********************/
 class partsContext
 {
 
@@ -9,4 +14,4 @@ public:
     ~partsContext (void);        
 };
 
-#endif  
+#endif // #ifndef PARTSCONTEXT_H

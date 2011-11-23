@@ -1,6 +1,11 @@
 #ifndef USERINPUT_H
 #define USERINPUT_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+
+/******************** CLASS DEFINITIONS ********************/
 class userInput
 {
 
@@ -9,4 +14,4 @@ public:
     ~userInput (void);        
 };
 
-#endif  
+#endif // USERINPUT_H

@@ -1,6 +1,14 @@
 #ifndef MENU_H
 #define MENU_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+#include "screen.h"
+
+
+
+/******************** CLASS DEFINITIONS ********************/
 class menu : public screen
 {
  
@@ -9,4 +17,4 @@ public:
     ~menu (void);
 };
 
-#endif
+#endif // #ifndef MENU_H

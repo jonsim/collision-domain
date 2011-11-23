@@ -1,6 +1,14 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+#include "game.h"
+
+
+
+/******************** CLASS DEFINITIONS ********************/
 class gameState : public game
 {
 
@@ -9,4 +17,4 @@ public:
     ~gameState (void);        
 };
 
-#endif  
+#endif // #ifndef GAMESTATE_H

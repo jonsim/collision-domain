@@ -1,6 +1,14 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+#include "entity.h"
+
+
+
+/******************** CLASS DEFINITIONS ********************/
 class screen : public entity
 {
  
@@ -9,4 +17,4 @@ public:
     ~screen (void);
 };
 
-#endif
+#endif // #ifndef SCREEN_H

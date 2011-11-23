@@ -1,6 +1,12 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 
+/******************** DEFINITIONS ********************/
+
+/******************** INCLUDES ********************/
+
+/******************** CLASS DEFINITIONS ********************/
+
 class physics
 {
 
@@ -9,4 +15,4 @@ public:
     ~physics (void);        
 };
 
-#endif  
+#endif // #ifndef PHYSICS_H
