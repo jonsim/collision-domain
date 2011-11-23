@@ -5,8 +5,8 @@ class game
 {
 
 public:
-    game() {};
-    ~game() {};        
-}
+    game (void);
+    ~game (void);        
+};
 
 #endif  

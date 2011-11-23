@@ -5,8 +5,8 @@ class graphics
 {
 
 public:
-    graphics() {};
-    ~graphics() {};        
-}
+    graphics (void);
+    ~graphics (void);        
+};
 
 #endif  

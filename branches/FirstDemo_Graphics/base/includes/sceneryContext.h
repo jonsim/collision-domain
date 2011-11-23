@@ -5,8 +5,8 @@ class sceneryContext
 {
 
 public:
-    sceneryContext() {};
-    ~sceneryContext() {};        
-}
+    sceneryContext (void);
+    ~sceneryContext (void);        
+};
 
 #endif  

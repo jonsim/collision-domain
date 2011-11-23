@@ -5,8 +5,8 @@ class screen : public entity
 {
  
 public:
-    screen() {};
-    ~screen() {};
-}
+    screen (void);
+    ~screen (void);
+};
 
 #endif

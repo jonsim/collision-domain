@@ -5,8 +5,8 @@ class gameScreen : public screen
 {
  
 public:
-    gameScreen() {};
-    ~gameScreen() {};
-}
+    gameScreen (void);
+    ~gameScreen (void);
+};
 
 #endif

@@ -5,8 +5,8 @@ class drawableEntity : public entity
 {
  
 public:
-    drawableEntity() {};
-    ~drawableEntity() {};
-}
+    drawableEntity (void);
+    ~drawableEntity (void);
+};
 
 #endif

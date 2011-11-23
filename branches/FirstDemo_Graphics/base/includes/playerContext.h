@@ -5,8 +5,8 @@ class playerContext
 {
 
 public:
-    playerContext() {};
-    ~playerContext() {};        
-}
+    playerContext (void);
+    ~playerContext (void);        
+};
 
 #endif  

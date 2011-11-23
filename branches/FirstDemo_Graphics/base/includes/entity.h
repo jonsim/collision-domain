@@ -5,8 +5,8 @@ class entity
 {
 
 public:
-    entity() {};
-    ~entity() {};        
-}
+    entity (void);
+    ~entity (void);        
+};
 
 #endif

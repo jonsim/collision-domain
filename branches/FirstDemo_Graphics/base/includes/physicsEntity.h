@@ -5,8 +5,8 @@ class physicsEntity : public collidableEntity
 {
  
 public:
-    physicsEntity() {};
-    ~physicsEntity() {};
-}
+    physicsEntity (void);
+    ~physicsEntity (void);
+};
 
 #endif

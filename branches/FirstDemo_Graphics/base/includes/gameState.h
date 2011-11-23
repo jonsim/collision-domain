@@ -5,8 +5,8 @@ class gameState : public game
 {
 
 public:
-    gameState() {};
-    ~gameState() {};        
-}
+    gameState (void);
+    ~gameState (void);        
+};
 
 #endif  

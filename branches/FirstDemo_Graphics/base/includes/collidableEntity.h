@@ -5,8 +5,8 @@ class collidableEntity : public drawableEntity
 {
  
 public:
-    collidableEntity() {};
-    ~collidableEntity() {};
-}
+    collidableEntity (void);
+    ~collidableEntity (void);
+};
 
 #endif

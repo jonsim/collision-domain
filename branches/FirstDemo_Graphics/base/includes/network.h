@@ -5,8 +5,8 @@ class network
 {
 
 public:
-    network() {};
-    ~network() {};        
-}
+    network (void);
+    ~network (void);        
+};
 
 #endif  

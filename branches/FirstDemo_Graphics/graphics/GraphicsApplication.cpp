@@ -7,8 +7,8 @@
 /******************** DEFINITIONS ********************/
 
 /******************** INCLUDES ********************/
-#include "stdafx.h"
-#include "GraphicsApplication.h"
+#include "includes/stdafx.h"
+#include "includes/GraphicsApplication.h"
 
 
 

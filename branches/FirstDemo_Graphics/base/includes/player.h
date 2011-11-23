@@ -5,8 +5,8 @@ class player : public physicsEntity
 {
  
 public:
-    player() {};
-    ~player() {};
-}
+    player (void);
+    ~player (void);
+};
 
 #endif

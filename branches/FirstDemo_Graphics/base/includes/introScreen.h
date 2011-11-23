@@ -5,8 +5,8 @@ class introScreen : public screen
 {
  
 public:
-    introScreen() {};
-    ~introScreen() {};
-}
+    introScreen (void);
+    ~introScreen (void);
+};
 
 #endif

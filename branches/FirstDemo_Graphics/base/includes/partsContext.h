@@ -5,8 +5,8 @@ class partsContext
 {
 
 public:
-    partsContext() {};
-    ~partsContext() {};        
-}
+    partsContext (void);
+    ~partsContext (void);        
+};
 
 #endif  

@@ -5,8 +5,8 @@ class physics
 {
 
 public:
-    physics() {};
-    ~physics() {};        
-}
+    physics (void);
+    ~physics (void);        
+};
 
 #endif  

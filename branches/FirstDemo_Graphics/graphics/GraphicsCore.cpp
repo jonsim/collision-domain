@@ -8,8 +8,8 @@
 /******************** DEFINITIONS ********************/
 
 /******************** INCLUDES ********************/
-#include "stdafx.h"
-#include "GraphicsCore.h"
+#include "includes/stdafx.h"
+#include "includes/GraphicsCore.h"
 
 
 

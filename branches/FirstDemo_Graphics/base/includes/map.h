@@ -5,8 +5,8 @@ class map
 {
 
 public:
-    map() {};
-    ~map() {};        
-}
+    map (void);
+    ~map (void);        
+};
 
 #endif  

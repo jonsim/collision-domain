@@ -5,8 +5,8 @@ class menu : public screen
 {
  
 public:
-    menu() {};
-    ~menu() {};
-}
+    menu (void);
+    ~menu (void);
+};
 
 #endif

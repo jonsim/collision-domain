@@ -5,8 +5,8 @@ class gameLogic
 {
 
 public:
-    gameLogic() {};
-    ~gameLogic() {};        
-}
+    gameLogic (void);
+    ~gameLogic (void);        
+};
 
 #endif  

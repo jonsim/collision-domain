@@ -5,8 +5,8 @@ class userInput
 {
 
 public:
-    userInput() {};
-    ~userInput() {};        
-}
+    userInput (void);
+    ~userInput (void);        
+};
 
 #endif  

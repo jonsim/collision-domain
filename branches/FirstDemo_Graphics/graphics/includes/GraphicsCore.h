@@ -18,10 +18,10 @@
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
 public:
-    GraphicsCore(void);
-    virtual ~GraphicsCore(void);
+    GraphicsCore (void);
+    virtual ~GraphicsCore (void);
 
-    virtual void go(void);
+    virtual void go (void);
 
 protected:
     virtual bool setup();
