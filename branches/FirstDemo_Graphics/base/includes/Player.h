@@ -30,15 +30,10 @@ public:
 	PlayerState capturePlayer (void);
     
 private:
-	PlayerState state;
+	PlayerState state;              ///< The player's current state.
     Ogre::SceneNode *playerNode;	///< The complete player node - this is what should be moved when the car moves.
     Ogre::SceneNode *carNode;		///< The node onto which the car object and its components attach.
     Ogre::SceneNode *camNode;		///< The node onto which a camera can be attached to observe the car.
-	
-    int   playerTopSpeed;             	///< The maximum speed of the player (units / sec).
-    int   playerAccelerationConstant; 	///< The amount that the player linearly accelerates by when moving forward (units / sec^2).
-	int   playerTurningConstant;      	///< The amount that the player turns when cornering (degrees / sec).
-    float playerFrictionConstant;   	///< The amount of energy a player loses per second to friction (percentage).
 };
 
 #endif // #ifndef PLAYER_H

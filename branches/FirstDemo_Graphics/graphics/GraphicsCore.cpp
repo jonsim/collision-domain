@@ -1,26 +1,19 @@
-/*------------------------------------------------------------------------------
-  File:     GraphicsCore.cpp
-  Purpose:  Builds the window and loads the Ogre necessary libraries. Additionally
-            it controls the keyboard input.
-            Derived from the Ogre Tutorial Framework (BaseApplication.cpp).
- ------------------------------------------------------------------------------*/
+/**
+ * @file	GraphicsApplication.h
+ * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
+ *          the Graphics Application with underlying functions to keep it tidy.
+ *          Derived from the Ogre Tutorial Framework (BaseApplication.cpp).
+ */
 
-/******************** DEFINITIONS ********************/
-
-/******************** INCLUDES ********************/
-#include "includes/stdafx.h"
-#include "includes/GraphicsCore.h"
+/*-------------------- INCLUDES --------------------*/
+#include "stdafx.h"
+#include "GraphicsCore.h"
 
 
 
-/******************** METHOD DEFINITIONS ********************/
+/*-------------------- METHOD DEFINITIONS --------------------*/
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsCore::GraphicsCore(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Constructor. Initialises all resources.
- ------------------------------------------------------------------------------*/
+/// @brief  Constructor, initialising all resources.
 GraphicsCore::GraphicsCore(void)
     : mRoot(0),
     mCamera(0),
@@ -40,12 +33,7 @@ GraphicsCore::GraphicsCore(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsCore::~GraphicsCore(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Deconstructor.
- ------------------------------------------------------------------------------*/
+/// @brief  Deconstructor.
 GraphicsCore::~GraphicsCore(void)
 {
     if (mTrayMgr) delete mTrayMgr;
@@ -58,15 +46,11 @@ GraphicsCore::~GraphicsCore(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::configure(void)
-  Parameters:   N/A
-  Outputs:      bool    Whether or not the configuration was a success.
-  Purpose:      Shows the configuration dialog and waits for the user to select 
-                their preferences to initialise the system with.
-                You can skip this and use root.restoreConfig() to load configuration
-                settings if you were sure there are valid ones saved in ogre.cfg
- ------------------------------------------------------------------------------*/
+/// @brief  Shows the configuration dialog and waits for the user to select their preferences
+///         to initialise the system with.
+///         You can skip this and use root.restoreConfig() to load configuration settings if 
+///         you were sure there are valid ones saved in ogre.cfg
+/// @return Whether or not the configuration was a success.
 bool GraphicsCore::configure(void)
 {
     // Show the configuration dialog and initialise the system
@@ -85,12 +69,7 @@ bool GraphicsCore::configure(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::chooseSceneManager(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Selects the SceneManager.
- ------------------------------------------------------------------------------*/
+/// @brief  Selects the SceneManager.
 void GraphicsCore::chooseSceneManager(void)
 {
     // Get the SceneManager, in this case a generic one
@@ -98,12 +77,7 @@ void GraphicsCore::chooseSceneManager(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::createCamera(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Creates and positions the camera.
- ------------------------------------------------------------------------------*/
+/// @brief  Creates and positions the camera.
 void GraphicsCore::createCamera(void)
 {
     // Create the camera
@@ -119,12 +93,7 @@ void GraphicsCore::createCamera(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::createFrameListener(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Creates a frame listener for the main window.
- ------------------------------------------------------------------------------*/
+/// @brief  Creates a frame listener for the main window.
 void GraphicsCore::createFrameListener(void)
 {
     Ogre::LogManager::getSingletonPtr()->logMessage("*** Initializing OIS ***");
@@ -178,23 +147,13 @@ void GraphicsCore::createFrameListener(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::destroyScene(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Removes everything from the scene.
- ------------------------------------------------------------------------------*/
+/// @brief  Removes everything from the scene.
 void GraphicsCore::destroyScene(void)
 {
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::createViewports(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Adds a single viewport that spans the entire window.
- ------------------------------------------------------------------------------*/
+/// @brief  Adds a single viewport that spans the entire window.
 void GraphicsCore::createViewports(void)
 {
     // Create one viewport, entire window
@@ -207,12 +166,7 @@ void GraphicsCore::createViewports(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::setupResources(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Loads and configures all resources from an external file
- ------------------------------------------------------------------------------*/
+/// @brief  Loads and configures all resources from an external file.
 void GraphicsCore::setupResources(void)
 {
     // Load resource paths from config file
@@ -239,36 +193,21 @@ void GraphicsCore::setupResources(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::createResourceListener(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Unknown.
- ------------------------------------------------------------------------------*/
+/// @brief Creates a resource listener (whatever one of those is).
 void GraphicsCore::createResourceListener(void)
 {
 
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::loadResources(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Loads resources from a file.
- ------------------------------------------------------------------------------*/
+/// @brief  Loads resources from the resources.cfg file into a ResourceGroup.
 void GraphicsCore::loadResources(void)
 {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::go(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Starts the graphics.
- ------------------------------------------------------------------------------*/
+/// @brief  Starts the graphics.
 void GraphicsCore::go(void)
 {
 #ifdef _DEBUG
@@ -289,13 +228,8 @@ void GraphicsCore::go(void)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::setup(void)
-  Parameters:   N/A
-  Outputs:      bool    Whether or not the setup was successful (if a configuration
-                        was provided).
-  Purpose:      Attempts to load the resources and add them to the scene.
- ------------------------------------------------------------------------------*/
+/// @brief  Attempts to load the resources and add them to the scene.
+/// @return Whether or not the setup was successful (if a configuration was provided).
 bool GraphicsCore::setup(void)
 {
     mRoot = new Ogre::Root(mPluginsCfg);
@@ -326,12 +260,9 @@ bool GraphicsCore::setup(void)
 };
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
-  Parameters:   Ogre::FrameEvent& evt   Reference to the frame event (or something?)
-  Outputs:      bool    Whether or not rendering should continue.
-  Purpose:      Renders a frame (or something?)
- ------------------------------------------------------------------------------*/
+/// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.
+/// @param  evt  The FrameEvent associated with this frame's rendering.
+/// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     if(mWindow->isClosed())
@@ -365,12 +296,9 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::keyPressed( const OIS::KeyEvent &arg )
-  Parameters:   OIS::KeyEvent &arg   The key that has been pressed.
-  Outputs:      bool    Unknown. Unable to return false...
-  Purpose:      Unknown.
- ------------------------------------------------------------------------------*/
+/// @brief  Called whenever a keyboard key is pressed.
+/// @param  arg  The KeyEvent associated with this call.
+/// @return Whether the event has been serviced.
 bool GraphicsCore::keyPressed( const OIS::KeyEvent &arg )
 {
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
@@ -466,12 +394,9 @@ bool GraphicsCore::keyPressed( const OIS::KeyEvent &arg )
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::keyPressed( const OIS::KeyEvent &arg )
-  Parameters:   OIS::KeyEvent &arg   The key that has been released.
-  Outputs:      bool    Unknown. Unable to return false...
-  Purpose:      Unknown.
- ------------------------------------------------------------------------------*/
+/// @brief  Called whenever a keyboard key is released.
+/// @param  arg  The KeyEvent associated with this call.
+/// @return Whether the event has been serviced.
 bool GraphicsCore::keyReleased( const OIS::KeyEvent &arg )
 {
     mCameraMan->injectKeyUp(arg);
@@ -479,12 +404,9 @@ bool GraphicsCore::keyReleased( const OIS::KeyEvent &arg )
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::mouseMoved( const OIS::MouseEvent &arg )
-  Parameters:   OIS::MouseEvent &arg   The mouse event.
-  Outputs:      bool    Unknown. Unable to return false...
-  Purpose:      Unknown.
- ------------------------------------------------------------------------------*/
+/// @brief  Called whenever the mouse is moved.
+/// @param  arg  The MouseEvent associated with this call.
+/// @return Whether the event has been serviced.
 bool GraphicsCore::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
@@ -493,13 +415,10 @@ bool GraphicsCore::mouseMoved( const OIS::MouseEvent &arg )
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-  Parameters:   OIS::MouseEvent &arg    The mouse event.
-                OIS::MouseButtonID id   The mouse button pressed.
-  Outputs:      bool    Unknown. Unable to return false...
-  Purpose:      Unknown.
- ------------------------------------------------------------------------------*/
+/// @brief  Called whenever a mouse button is pressed.
+/// @param  arg  The MouseEvent associated with this call.
+/// @param  id   The mouse button that was pressed.
+/// @return Whether the event has been serviced.
 bool GraphicsCore::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
@@ -508,13 +427,10 @@ bool GraphicsCore::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID 
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       bool GraphicsCore::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
-  Parameters:   OIS::MouseEvent &arg    The mouse event.
-                OIS::MouseButtonID id   The mouse button released.
-  Outputs:      bool    Unknown. Unable to return false...
-  Purpose:      Unknown.
- ------------------------------------------------------------------------------*/
+/// @brief  Called whenever a mouse button is released.
+/// @param  arg  The MouseEvent associated with this call.
+/// @param  id   The mouse button that was released.
+/// @return Whether the event has been serviced.
 bool GraphicsCore::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
@@ -523,12 +439,8 @@ bool GraphicsCore::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::windowResized(Ogre::RenderWindow* rw)
-  Parameters:   Ogre::RenderWindow* rw  The window to resize.
-  Outputs:      N/A
-  Purpose:      Adjust mouse clipping area
- ------------------------------------------------------------------------------*/
+/// @brief  Adjust mouse clipping area.
+/// @param  rw  The window to resize.
 void GraphicsCore::windowResized(Ogre::RenderWindow* rw)
 {
     unsigned int width, height, depth;
@@ -541,12 +453,8 @@ void GraphicsCore::windowResized(Ogre::RenderWindow* rw)
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       void GraphicsCore::windowClosed(Ogre::RenderWindow* rw)
-  Parameters:   Ogre::RenderWindow* rw  The window to close.
-  Outputs:      N/A
-  Purpose:      Unattach OIS before window shutdown (very important under Linux)
- ------------------------------------------------------------------------------*/
+/// @brief  Closes a window, unattaching OIS before window shutdown (very important under Linux).
+/// @param  rw  The window to close.
 void GraphicsCore::windowClosed(Ogre::RenderWindow* rw)
 {
     //Only close for window that created OIS (the main window in these demos)

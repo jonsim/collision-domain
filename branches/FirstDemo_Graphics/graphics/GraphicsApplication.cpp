@@ -1,49 +1,30 @@
-/*------------------------------------------------------------------------------
-  File:     GraphicsApplication.cpp
-  Purpose:  Adds objects to the graphics interface.
-            Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
- ------------------------------------------------------------------------------*/
+/**
+ * @file	GraphicsApplication.cpp
+ * @brief 	Adds objects to the graphics interface.
+ *          Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
+ */
 
-/******************** DEFINITIONS ********************/
-
-/******************** INCLUDES ********************/
-#include "includes/stdafx.h"
-#include "includes/GraphicsApplication.h"
-#include "../networking/includes/fakeServer.h"
-#include "../base/includes/playerSnapshot.h"
+/*-------------------- INCLUDES --------------------*/
+#include "stdafx.h"
+#include "GraphicsApplication.h"
 
 
 
-/******************** METHOD DEFINITIONS ********************/
+/*-------------------- METHOD DEFINITIONS --------------------*/
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsApplication::GraphicsApplication(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Constructor.
- ------------------------------------------------------------------------------*/
+/// @brief  Constructor.
 GraphicsApplication::GraphicsApplication (void)
 {
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsApplication::~GraphicsApplication(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Deconstructor.
- ------------------------------------------------------------------------------*/
+/// @brief  Destructor.
 GraphicsApplication::~GraphicsApplication (void)
 {
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsApplication::createScene(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Loads and adds all entities to the scene.
- ------------------------------------------------------------------------------*/
+/// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
     setupLighting();
@@ -72,18 +53,19 @@ void GraphicsApplication::createScene (void)
 }
 
 
+/// @brief  Adds and configures lights to the scene.
 void GraphicsApplication::setupLighting (void)
 {
     // Set the ambient light.
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25, 0.25, 0.25));
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
     
     // Add a directional light
-    Ogre::Vector3 directionalLightDir(0.55, -0.3, 0.75);
+    Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
     directionalLightDir.normalise();
     Ogre::Light* directionalLight = mSceneMgr->createLight("directionalLight");
     directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
     directionalLight->setDiffuseColour( Ogre::ColourValue::White);
-    directionalLight->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+    directionalLight->setSpecularColour(Ogre::ColourValue(0.4f, 0.4f, 0.4f));
     directionalLight->setDirection(directionalLightDir);
     
     // Create the skybox
@@ -94,6 +76,7 @@ void GraphicsApplication::setupLighting (void)
 }
 
 
+/// @brief  Builds the initial arena.
 void GraphicsApplication::setupArena (void)
 {
     // Create the ground plane and wall meshes
@@ -147,130 +130,92 @@ void GraphicsApplication::setupArena (void)
 }
 
 
+/// @brief  Configures the networking, retreiving the required data from the server.
 void GraphicsApplication::setupNetworking (void)
 {
-    clientID = server.allocateClientID();
+    //clientID = server.allocateClientID();
+    clientID = 0;
 }
 
 
+/// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
 	GraphicsCore::createFrameListener();
 }
 
 
+/// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.
+/// @param  evt  The FrameEvent associated with this frame's rendering.
+/// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
     if (mWindow->isClosed())
         return false;
+
+    // Capture user input
     mKeyboard->capture();
     mMouse->capture();
+
+    // Calculte 2D overlay statistics
     mTrayMgr->frameRenderingQueued(evt);
-
-    playerKeyState forwardState = (playerKeyState) 0;
-    playerKeyState turnState    = (playerKeyState) 0;
-
-    // Process keyboard input and derive playerKeyStates from this.
+    
+    // Process keyboard input and produce an InputState object from this.
     if (mKeyboard->isKeyDown(OIS::KC_ESCAPE))
         return false;
-    if (mKeyboard->isKeyDown(OIS::KC_W))
-        forwardState = (playerKeyState) ((int) forwardState + 1);
-    if (mKeyboard->isKeyDown(OIS::KC_S))
-        forwardState = (playerKeyState) ((int) forwardState - 1);
-    if (mKeyboard->isKeyDown(OIS::KC_A))
-        turnState    = (playerKeyState) ((int) turnState + 1);
-    if (mKeyboard->isKeyDown(OIS::KC_D))
-        turnState    = (playerKeyState) ((int) turnState - 1);
+    InputState inputState(mKeyboard->isKeyDown(OIS::KC_W),
+                          mKeyboard->isKeyDown(OIS::KC_S),
+                          mKeyboard->isKeyDown(OIS::KC_A),
+                          mKeyboard->isKeyDown(OIS::KC_D));
 
-    clientPlayerList[0].calculateState(playerSnapshot(forwardState, turnState), evt.timeSinceLastFrame);
+    // Capture a PlayerState.
+    PlayerState currentPlayerState = clientPlayerList[clientID].capturePlayer();
 
-    return true;
-}
+    // Create a Frame object.
+    Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
 
+    // Calculate the new PlayerState based on the input.
+    PlayerState newPlayerState = frame.calculateNewState();
 
-/*bool GraphicsApplication::keyPressed (const OIS::KeyEvent& evt)
-{
-    switch (evt.key)
-    {
-        case OIS::KC_ESCAPE: 
-            mShutDown = true;
-            break;
-        /*case OIS::KC_UP:
-        case OIS::KC_W:
-            carAcceleration = -carAccelerationConstant;
-            break;
-        case OIS::KC_DOWN:
-        case OIS::KC_S:
-            carAcceleration = carAccelerationConstant;
-            break;
-        case OIS::KC_LEFT:
-        case OIS::KC_A:
-            carRotation = carTurningConstant;
-            break;
-        case OIS::KC_RIGHT:
-        case OIS::KC_D:
-            carRotation = -carTurningConstant;
-            break;*
-        default:
-            break;
-    }
+    // Update the player.
+    clientPlayerList[clientID].updatePlayer(newPlayerState);
+
+    // Perform Client Side Prediction.
 
     return true;
 }
 
 
-bool GraphicsApplication::keyReleased (const OIS::KeyEvent& evt)
-{
-    switch (evt.key)
-    {
-        /*case OIS::KC_UP:
-        case OIS::KC_W:
-            carAcceleration = 0;
-            break;
-        case OIS::KC_DOWN:
-        case OIS::KC_S:
-            carAcceleration = 0;
-            break;
-        case OIS::KC_LEFT:
-        case OIS::KC_A:
-            carRotation = 0;
-            break;
-        case OIS::KC_RIGHT:
-        case OIS::KC_D:
-            carRotation = 0;
-            break;*
-        default:
-            break;
-    }
-
-    return true;
-}*/
-
-
+/// @brief  Called whenever the mouse is moved.
+/// @param  evt  The MouseEvent associated with this call.
+/// @return Whether the event has been serviced.
 bool GraphicsApplication::mouseMoved (const OIS::MouseEvent& evt)
 {
     return true;
 }
 
 
+/// @brief  Called whenever a mouse button is pressed.
+/// @param  evt  The MouseEvent associated with this call.
+/// @param  id   The mouse button that was pressed.
+/// @return Whether the event has been serviced.
 bool GraphicsApplication::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     return true;
 }
 
 
+/// @brief  Called whenever a mouse button is released.
+/// @param  evt  The MouseEvent associated with this call.
+/// @param  id   The mouse button that was released.
+/// @return Whether the event has been serviced.
 bool GraphicsApplication::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     return true;
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-  Parameters:   Unknown.
-  Outputs:      Unknown.
-  Purpose:      Does something for Win32. Unknown.
- ------------------------------------------------------------------------------*/
+// The following code is not understood. Does something for Win32: unknown. Best just leave it alone.
 #ifdef __cplusplus
 extern "C" {
 #endif

@@ -12,17 +12,14 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
-player::player (void)
+Player::Player (void)
 {
-    playerTurningConstant = 0.6;
-    playerAccelerationConstant = 800;
-    playerTopSpeed = 1000;
-    playerFrictionConstant = 0.4;
+    // PlayerState state configures constants and zeros values upon creation.
 }
 
 
 /// @brief   Deconstructor.
-player::~player (void)
+Player::~Player (void)
 {
 }
 
@@ -31,7 +28,7 @@ player::~player (void)
 /// @param  sm  The SceneManager to which the 3D player object is attached.
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
-void player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
+void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
 {
 	Ogre::Entity* carEntity;
 
@@ -54,7 +51,7 @@ void player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
 
 /// @brief  Attaches a camera to the player.
 /// @param  cam   The camera object to attach to the player.
-void player::attachCamera (Ogre::Camera* cam)
+void Player::attachCamera (Ogre::Camera* cam)
 {
     camNode->attachObject(cam);
 }
@@ -62,31 +59,19 @@ void player::attachCamera (Ogre::Camera* cam)
 
 /// @brief  Updates the Player's PlayerState to the one provided.
 /// @param  newState    The new state to update to.
-void player::updatePlayer (PlayerState newState)
+void Player::updatePlayer (PlayerState newState)
 {
 	state = newState;
+
+    //playerNode->setPosition(newState.getLocation());
+    playerNode->translate(playerNode->getOrientation() * newState.getLocation(), Ogre::Node::TS_WORLD); // getLocation returns the distance to move, not the location due to a slight hack to get the maths working quickly
+    playerNode->yaw(Ogre::Degree(newState.getRotation()), Ogre::Node::TS_WORLD);
 }
 
 
 /// @brief  Returns the Player's current state.
 /// @return The Player's current state.
-PlayerState player::capturePlayer (void)
+PlayerState Player::capturePlayer (void)
 {
 	return state;
 }
-
-
-/*void player::calculateState (playerSnapshot snapshot, Ogre::Real timeSinceLastFrame)
-{
-    playerSpeed += ((int) snapshot.revealForward()) * playerAccelerationConstant * timeSinceLastFrame;
-    playerSpeed -= playerSpeed * playerFrictionConstant * timeSinceLastFrame;
-    if (playerSpeed > playerTopSpeed)
-        playerSpeed = playerTopSpeed;
-    
-    playerRotation = ((int) snapshot.revealTurn()) * playerTurningConstant;
-
-    std::cerr << "Speed = " << playerSpeed << std::endl;
-
-    playerNode->translate(Ogre::Vector3(0, 0, playerSpeed * timeSinceLastFrame), Ogre::Node::TS_LOCAL);
-    playerNode->yaw(Ogre::Degree(playerRotation), Ogre::Node::TS_WORLD);
-}*/

@@ -13,7 +13,15 @@
 /// @brief  Constructor, setting all values (location, speed, acceleration and rotation) to 0.
 PlayerState::PlayerState (void)
 {
-    playerLocation = OGAR;
+    playerTurningConstant = 200;
+    playerAccelerationConstant = 400;
+    playerTopSpeed = 600;
+    playerFrictionConstant = 0.4f;
+
+    playerLocation = Ogre::Vector3::ZERO;
+    playerSpeed = 0;
+    playerAcceleration = 0;
+    playerRotation = 0;
 }
 
 
@@ -22,8 +30,13 @@ PlayerState::PlayerState (void)
 /// @param  speed       The player's speed (units / sec).
 /// @param  acceleration    The player's acceleration (units / sec^2).
 /// @param  rotation    The player's rotation from the z axis (degrees).
-PlayerState::PlayerState (Ogre::Vector location, float speed, float acceleration, int rotation)
+PlayerState::PlayerState (Ogre::Vector3 location, float speed, float acceleration, int rotation)
 {
+    playerTurningConstant = 200;
+    playerAccelerationConstant = 400;
+    playerTopSpeed = 600;
+    playerFrictionConstant = 0.4f;
+
     playerLocation = location;
     playerSpeed = speed;
     playerAcceleration = acceleration;
@@ -37,11 +50,43 @@ PlayerState::~PlayerState (void)
 }
 
 
+/// @brief  Returns the maximum speed of the player (units / sec).
+/// @return The player's maximum speed.
+int PlayerState::getTopSpeed (void)
+{
+    return playerTopSpeed;
+}
+
+
+/// @brief  Returns the amount that the player linearly accelerates by when moving forward (units / sec^2).
+/// @return The player's acceleration amount.
+int PlayerState::getAccelerationConstant (void)
+{
+    return playerAccelerationConstant;
+}
+
+
+/// @brief  Returns the amount that the player turns when cornering (degrees / sec).
+/// @return The player's turning constant.
+int PlayerState::getTurningConstant (void)
+{
+    return playerTurningConstant;
+}
+
+
+/// @brief  Returns the amount of energy a player loses per second to friction (percentage).
+/// @return The player's friction constant.
+float PlayerState::getFrictionConstant (void)
+{
+    return playerFrictionConstant;
+}
+
+
 /// @brief  Returns the player's x,y,z location.
 /// @return The player's location.
-Ogre::Vector PlayerState::getLocation (void)
+Ogre::Vector3 PlayerState::getLocation (void)
 {
-    return playerLocation
+    return playerLocation;
 }
 
 

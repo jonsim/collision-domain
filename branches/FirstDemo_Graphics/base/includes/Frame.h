@@ -7,15 +7,18 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "PlayerState.h"
 #include "InputState.h"
+#include "PlayerState.h"
 
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 class Frame
 {
+#define PI 3.14159265
+
 public:
+    Frame (void);
 	Frame (PlayerState player, InputState input, Ogre::Real tslf);
     ~Frame (void);
 	PlayerState calculateNewState (void);

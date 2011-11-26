@@ -6,6 +6,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "Frame.h"
+#include <math.h>
 
 
 
@@ -33,6 +34,29 @@ Frame::~Frame (void)
 /// @return The new PlayerState which should be rendered in the next frame.
 PlayerState Frame::calculateNewState (void)
 {
+    /*
+    float newAcceleration = inputState.getFrwdBack() * playerState.getAccelerationConstant() * timeSinceLastFrame;
+    float newSpeed        = playerState.getSpeed() + newAcceleration;
+    if (newSpeed > playerState.getTopSpeed())
+        newSpeed = playerState.getTopSpeed();*/
+    //int newRotation     = playerState.getRotation() + (inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame);
+    //float newRotationRad = ((float) newRotation) * (PI / 180);
+    int newRotation     = inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame;
+    //float newRotationRad = ((float) newRotation) * (PI / 180);
+    
+    float newAcceleration = 0;
+    float newSpeed = playerState.getTopSpeed() * inputState.getFrwdBack() * timeSinceLastFrame;
+
+    //Ogre::Vector3 loc = playerState.getLocation();
+    //float newX = loc.x + (newSpeed * sin(newRotationRad));
+    //float newZ = loc.z + (newSpeed * cos(newRotationRad));
+    //float newY = loc.y;
+    //Ogre::Vector3 newLocation(newX, newY, newZ);
+
+    Ogre::Vector3 distance(0, 0, -newSpeed);
+
+    PlayerState result(distance, newSpeed, newAcceleration, newRotation);
+    return result;
 }
 
 
@@ -41,20 +65,6 @@ PlayerState Frame::calculateNewState (void)
 /// @return The new PlayerState which should be rendered in the next frame.
 PlayerState Frame::recalculateState (PlayerState updatedState)
 {
+    playerState = updatedState;
+    return calculateNewState();
 }
-
-
-/*void player::calculateState (playerSnapshot snapshot, Ogre::Real timeSinceLastFrame)
-{
-    playerSpeed += ((int) snapshot.revealForward()) * playerAccelerationConstant * timeSinceLastFrame;
-    playerSpeed -= playerSpeed * playerFrictionConstant * timeSinceLastFrame;
-    if (playerSpeed > playerTopSpeed)
-        playerSpeed = playerTopSpeed;
-    
-    playerRotation = ((int) snapshot.revealTurn()) * playerTurningConstant;
-
-    std::cerr << "Speed = " << playerSpeed << std::endl;
-
-    playerNode->translate(Ogre::Vector3(0, 0, playerSpeed * timeSinceLastFrame), Ogre::Node::TS_LOCAL);
-    playerNode->yaw(Ogre::Degree(playerRotation), Ogre::Node::TS_WORLD);
-}*/
