@@ -1,27 +1,24 @@
-/*------------------------------------------------------------------------------
-  File:     GraphicsCore.h
-  Purpose:  Builds the window and loads the Ogre necessary libraries. Additionally
-            it controls the keyboard input.
-            Derived from the Ogre Tutorial Framework (BaseApplication.h).
- ------------------------------------------------------------------------------*/
+/**
+ * @file	GraphicsApplication.h
+ * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
+ *          the Graphics Application with underlying functions to keep it tidy.
+ *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
+ */
 #ifndef GRAPHICSCORE_H
 #define GRAPHICSCORE_H
 
-/******************** DEFINITIONS ********************/
-
-/******************** INCLUDES ********************/
+/*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 
 
 
-/******************** CLASS DEFINITIONS ********************/
+/*-------------------- CLASS DEFINITIONS --------------------*/
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
 public:
-    GraphicsCore(void);
-    virtual ~GraphicsCore(void);
-
-    virtual void go(void);
+    GraphicsCore (void);
+    virtual ~GraphicsCore (void);
+    virtual void go (void);
 
 protected:
     virtual bool setup();
@@ -29,7 +26,7 @@ protected:
     virtual void chooseSceneManager(void);
     virtual void createCamera(void);
     virtual void createFrameListener(void);
-    virtual void createScene(void) = 0; // Override me!
+    virtual void createScene(void) = 0;     // This needs to be overridden to display anything
     virtual void destroyScene(void);
     virtual void createViewports(void);
     virtual void setupResources(void);
@@ -48,9 +45,9 @@ protected:
     virtual bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
 
     // Ogre::WindowEventListener
-    //Adjust mouse clipping area
+    // Adjust mouse clipping area
     virtual void windowResized(Ogre::RenderWindow* rw);
-    //Unattach OIS before window shutdown (very important under Linux)
+    // Unattach OIS before window shutdown (very important under Linux)
     virtual void windowClosed(Ogre::RenderWindow* rw);
 
     Ogre::Root *mRoot;
