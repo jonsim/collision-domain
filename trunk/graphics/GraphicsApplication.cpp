@@ -1,60 +1,71 @@
-/*------------------------------------------------------------------------------
-  File:     GraphicsApplication.cpp
-  Purpose:  Adds objects to the graphics interface.
-            Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
- ------------------------------------------------------------------------------*/
+/**
+ * @file	GraphicsApplication.cpp
+ * @brief 	Adds objects to the graphics interface.
+ *          Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
+ */
 
-/******************** DEFINITIONS ********************/
-
-/******************** INCLUDES ********************/
+/*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GraphicsApplication.h"
 
 
 
-/******************** METHOD DEFINITIONS ********************/
+/*-------------------- METHOD DEFINITIONS --------------------*/
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsApplication::GraphicsApplication(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Constructor.
- ------------------------------------------------------------------------------*/
+/// @brief  Constructor.
 GraphicsApplication::GraphicsApplication (void)
 {
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsApplication::~GraphicsApplication(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Deconstructor.
- ------------------------------------------------------------------------------*/
+/// @brief  Destructor.
 GraphicsApplication::~GraphicsApplication (void)
 {
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       GraphicsApplication::createScene(void)
-  Parameters:   N/A
-  Outputs:      N/A
-  Purpose:      Loads and adds all entities to the scene.
- ------------------------------------------------------------------------------*/
+/// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
-    // SETUP THE SCENE LIGHTING
+    setupLighting();
+    setupArena();
+    setupNetworking();
+
+    // Load the ninjas
+    Ogre::Entity* ninjaEntity = mSceneMgr->createEntity("Ninja", "ninja.mesh");
+    ninjaEntity->setCastShadows(true);
+    Ogre::SceneNode* ninjaNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
+    ninjaNode->attachObject(ninjaEntity);
+	ninjaNode->translate(0, 0, 0);
+    Ogre::Entity* ninjaEntity2 = mSceneMgr->createEntity("Ninja2", "ninja.mesh");
+    ninjaEntity2->setCastShadows(true);
+    Ogre::SceneNode* ninjaNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
+    ninjaNode2->attachObject(ninjaEntity2);
+    ninjaNode2->pitch(Ogre::Degree(90));
+    ninjaNode2->roll(Ogre::Degree(180));
+	ninjaNode2->translate(0, 100, 0);
+    
+    // Add all players
+    clientPlayerList[0].createPlayer(mSceneMgr, MEDIUM, SKIN0);
+
+    // Attach a camera to the first player
+    clientPlayerList[0].attachCamera(mCamera);
+}
+
+
+/// @brief  Adds and configures lights to the scene.
+void GraphicsApplication::setupLighting (void)
+{
     // Set the ambient light.
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25, 0.25, 0.25));
+    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
     
     // Add a directional light
-    Ogre::Vector3 directionalLightDir(0.55, -0.3, 0.75);
+    Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
     directionalLightDir.normalise();
-    Ogre::Light* directionalLight = mSceneMgr->createLight("directionalLight1");
+    Ogre::Light* directionalLight = mSceneMgr->createLight("directionalLight");
     directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
     directionalLight->setDiffuseColour( Ogre::ColourValue::White);
-    directionalLight->setSpecularColour(Ogre::ColourValue(0.4, 0.4, 0.4));
+    directionalLight->setSpecularColour(Ogre::ColourValue(0.4f, 0.4f, 0.4f));
     directionalLight->setDirection(directionalLightDir);
     
     // Create the skybox
@@ -62,10 +73,13 @@ void GraphicsApplication::createScene (void)
 
     // Set the shadow renderer
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+}
 
 
-    // LOAD THE SCENE ASSETS
-    // Create the ground plane mesh
+/// @brief  Builds the initial arena.
+void GraphicsApplication::setupArena (void)
+{
+    // Create the ground plane and wall meshes
     Ogre::Plane groundPlane(Ogre::Vector3::UNIT_Y, 0);
     Ogre::MeshManager::getSingleton().createPlane("GroundMesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 5000, 20, 20, true, 1, 20, 20, Ogre::Vector3::UNIT_Z);
     Ogre::Plane wallPlane1(Ogre::Vector3::UNIT_Z, 0);
@@ -79,183 +93,129 @@ void GraphicsApplication::createScene (void)
 
     // Load and meshes and create entities
     Ogre::Entity* groundEntity = mSceneMgr->createEntity("Ground", "GroundMesh");
-    Ogre::Entity* wallEntity1 = mSceneMgr->createEntity("Wall1", "WallMesh1");
-    Ogre::Entity* wallEntity2 = mSceneMgr->createEntity("Wall2", "WallMesh1");
-    Ogre::Entity* wallEntity3 = mSceneMgr->createEntity("Wall3", "WallMesh1");
-    Ogre::Entity* wallEntity4 = mSceneMgr->createEntity("Wall4", "WallMesh1");
-    Ogre::Entity* ninjaEntity = mSceneMgr->createEntity("Ninja", "ninja.mesh");
-	Ogre::Entity* carEntity = mSceneMgr->createEntity("Car", "car_highpoly_body.mesh");
     groundEntity->setMaterialName("Examples/GrassFloor");
     groundEntity->setCastShadows(false);
+    Ogre::Entity* wallEntity1 = mSceneMgr->createEntity("Wall1", "WallMesh1");
     wallEntity1->setMaterialName("Examples/Rockwall");
     wallEntity1->setCastShadows(true);
+    Ogre::Entity* wallEntity2 = mSceneMgr->createEntity("Wall2", "WallMesh1");
     wallEntity2->setMaterialName("Examples/Rockwall");
     wallEntity2->setCastShadows(true);
+    Ogre::Entity* wallEntity3 = mSceneMgr->createEntity("Wall3", "WallMesh1");
     wallEntity3->setMaterialName("Examples/Rockwall");
     wallEntity3->setCastShadows(true);
+    Ogre::Entity* wallEntity4 = mSceneMgr->createEntity("Wall4", "WallMesh1");
     wallEntity4->setMaterialName("Examples/Rockwall");
     wallEntity4->setCastShadows(true);
-    ninjaEntity->setCastShadows(true);
-    carEntity->setCastShadows(true);
 
     // Create scene nodes and attach the entities
     Ogre::SceneNode* groundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, 0, 0));
-    Ogre::SceneNode* wallNode1 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode1", Ogre::Vector3(0, 100, 2500));
-    Ogre::SceneNode* wallNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode2", Ogre::Vector3(2500, 100, 0));
-    Ogre::SceneNode* wallNode3 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode3", Ogre::Vector3(0, 100, -2500));
-    Ogre::SceneNode* wallNode4 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode4", Ogre::Vector3(-2500, 100, 0));
-    Ogre::SceneNode* ninjaNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
-	mPlayerNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode");
-	Ogre::SceneNode* carNode = mPlayerNode->createChildSceneNode("CarNode");
-    Ogre::SceneNode* camNode = mPlayerNode->createChildSceneNode("CamNode");
     groundNode->attachObject(groundEntity);
+    Ogre::SceneNode* wallNode1 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode1", Ogre::Vector3(0, 100, 2500));
     wallNode1->attachObject(wallEntity1);
+    Ogre::SceneNode* wallNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode2", Ogre::Vector3(2500, 100, 0));
     wallNode2->attachObject(wallEntity2);
+    Ogre::SceneNode* wallNode3 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode3", Ogre::Vector3(0, 100, -2500));
     wallNode3->attachObject(wallEntity3);
+    Ogre::SceneNode* wallNode4 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode4", Ogre::Vector3(-2500, 100, 0));
     wallNode4->attachObject(wallEntity4);
-    ninjaNode->attachObject(ninjaEntity);
-	carNode->attachObject(carEntity);
-    camNode->attachObject(mCamera);
 
+    // Adjust the node rotations.
     wallNode1->pitch(Ogre::Degree(-90));
     wallNode3->pitch(Ogre::Degree(90));
     wallNode2->pitch(Ogre::Degree(90));
     wallNode2->roll(Ogre::Degree(90));
     wallNode4->pitch(Ogre::Degree(-90));
     wallNode4->roll(Ogre::Degree(-90));
-	ninjaNode->translate(50, 0, 0);
-    carNode->scale(4, 4, 4);
-    carNode->yaw(Ogre::Degree(180));
-    camNode->translate(0, 200, 400);
-
-    
-    // CREATE THE CAMERAS
-    // Create the camera scene nodes
-    //camNode = camNode->createChildSceneNode("PitchNode1");
 }
 
 
+/// @brief  Configures the networking, retreiving the required data from the server.
+void GraphicsApplication::setupNetworking (void)
+{
+    //clientID = server.allocateClientID();
+    clientID = 0;
+}
+
+
+/// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
 	GraphicsCore::createFrameListener();
-     
-    // set the rotation and move speed
-    carTurningConstant = 0.6;
-    carAccelerationConstant = 800; // every second the car will increase in speed by 800 units per second (linearly)
-    carFrictionConstant = 0.4; // every second 40% of the cars momentum will be lost to friction
-    carTopSpeedConstant = 800;
-    carSpeed = 0;
-    carAcceleration = 0;
-    carRotation = Ogre::Degree(0);
 }
 
 
+/// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.
+/// @param  evt  The FrameEvent associated with this frame's rendering.
+/// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
     if (mWindow->isClosed())
         return false;
-    if (mShutDown)
-        return false;
+
+    // Capture user input
     mKeyboard->capture();
     mMouse->capture();
+
+    // Calculte 2D overlay statistics
     mTrayMgr->frameRenderingQueued(evt);
+    
+    // Process keyboard input and produce an InputState object from this.
+    if (mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+        return false;
+    InputState inputState(mKeyboard->isKeyDown(OIS::KC_W),
+                          mKeyboard->isKeyDown(OIS::KC_S),
+                          mKeyboard->isKeyDown(OIS::KC_A),
+                          mKeyboard->isKeyDown(OIS::KC_D));
 
-    carSpeed += carAcceleration * evt.timeSinceLastFrame;
-    carSpeed -= carSpeed * carFrictionConstant * evt.timeSinceLastFrame;
-    if (carSpeed > carTopSpeedConstant)
-        carSpeed = carTopSpeedConstant;
-    //static Ogre::Vector3 playerPosition = mPlayerNode->getPosition();
+    // Capture a PlayerState.
+    PlayerState currentPlayerState = clientPlayerList[clientID].capturePlayer();
 
-    mPlayerNode->translate(Ogre::Vector3(0, 0, carSpeed) * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
-    mPlayerNode->yaw(Ogre::Degree(carRotation), Ogre::Node::TS_WORLD);
+    // Create a Frame object.
+    Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
 
-    return true;
-}
+    // Calculate the new PlayerState based on the input.
+    PlayerState newPlayerState = frame.calculateNewState();
 
+    // Update the player.
+    clientPlayerList[clientID].updatePlayer(newPlayerState);
 
-bool GraphicsApplication::keyPressed (const OIS::KeyEvent& evt)
-{
-    switch (evt.key)
-    {
-        case OIS::KC_ESCAPE: 
-            mShutDown = true;
-            break;
-        case OIS::KC_UP:
-        case OIS::KC_W:
-            carAcceleration = -carAccelerationConstant;
-            break;
-        case OIS::KC_DOWN:
-        case OIS::KC_S:
-            carAcceleration = carAccelerationConstant;
-            break;
-        case OIS::KC_LEFT:
-        case OIS::KC_A:
-            carRotation = carTurningConstant;
-            break;
-        case OIS::KC_RIGHT:
-        case OIS::KC_D:
-            carRotation = -carTurningConstant;
-            break;
-        default:
-            break;
-    }
+    // Perform Client Side Prediction.
 
     return true;
 }
 
 
-bool GraphicsApplication::keyReleased (const OIS::KeyEvent& evt)
-{
-    switch (evt.key)
-    {
-        case OIS::KC_UP:
-        case OIS::KC_W:
-            carAcceleration = 0;
-            break;
-        case OIS::KC_DOWN:
-        case OIS::KC_S:
-            carAcceleration = 0;
-            break;
-        case OIS::KC_LEFT:
-        case OIS::KC_A:
-            carRotation = 0;
-            break;
-        case OIS::KC_RIGHT:
-        case OIS::KC_D:
-            carRotation = 0;
-            break;
-        default:
-            break;
-    }
-
-    return true;
-}
-
-
+/// @brief  Called whenever the mouse is moved.
+/// @param  evt  The MouseEvent associated with this call.
+/// @return Whether the event has been serviced.
 bool GraphicsApplication::mouseMoved (const OIS::MouseEvent& evt)
 {
     return true;
 }
 
 
+/// @brief  Called whenever a mouse button is pressed.
+/// @param  evt  The MouseEvent associated with this call.
+/// @param  id   The mouse button that was pressed.
+/// @return Whether the event has been serviced.
 bool GraphicsApplication::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     return true;
 }
 
 
+/// @brief  Called whenever a mouse button is released.
+/// @param  evt  The MouseEvent associated with this call.
+/// @param  id   The mouse button that was released.
+/// @return Whether the event has been serviced.
 bool GraphicsApplication::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     return true;
 }
 
 
-/*------------------------------------------------------------------------------
-  Method:       INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
-  Parameters:   Unknown.
-  Outputs:      Unknown.
-  Purpose:      Does something for Win32. Unknown.
- ------------------------------------------------------------------------------*/
+// The following code is not understood. Does something for Win32: unknown. Best just leave it alone.
 #ifdef __cplusplus
 extern "C" {
 #endif
