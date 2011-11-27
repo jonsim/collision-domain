@@ -15,7 +15,6 @@
 /*-------------------- CLASS DEFINITIONS --------------------*/
 class Frame
 {
-#define PI 3.14159265
 
 public:
     Frame (void);

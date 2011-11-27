@@ -13,10 +13,10 @@
 /// @brief  Constructor, setting all values (location, speed, acceleration and rotation) to 0.
 PlayerState::PlayerState (void)
 {
-    playerTurningConstant = 200;
-    playerAccelerationConstant = 400;
-    playerTopSpeed = 600;
-    playerFrictionConstant = 0.4f;
+    playerTurningConstant = PI / 1.5f;
+    playerAccelerationConstant = 100;
+    playerTopSpeed = 100;
+    playerFrictionConstant = 0.08f;
 
     playerLocation = Ogre::Vector3::ZERO;
     playerSpeed = 0;
@@ -30,12 +30,12 @@ PlayerState::PlayerState (void)
 /// @param  speed       The player's speed (units / sec).
 /// @param  acceleration    The player's acceleration (units / sec^2).
 /// @param  rotation    The player's rotation from the z axis (degrees).
-PlayerState::PlayerState (Ogre::Vector3 location, float speed, float acceleration, int rotation)
+PlayerState::PlayerState (Ogre::Vector3 location, float speed, float acceleration, float rotation)
 {
-    playerTurningConstant = 200;
-    playerAccelerationConstant = 400;
-    playerTopSpeed = 600;
-    playerFrictionConstant = 0.4f;
+    playerTurningConstant = PI / 1.5f;
+    playerAccelerationConstant = 100;
+    playerTopSpeed = 100;
+    playerFrictionConstant = 0.08f;
 
     playerLocation = location;
     playerSpeed = speed;
@@ -66,9 +66,9 @@ int PlayerState::getAccelerationConstant (void)
 }
 
 
-/// @brief  Returns the amount that the player turns when cornering (degrees / sec).
+/// @brief  Returns the amount that the player turns when cornering (radians / sec).
 /// @return The player's turning constant.
-int PlayerState::getTurningConstant (void)
+float PlayerState::getTurningConstant (void)
 {
     return playerTurningConstant;
 }
@@ -106,9 +106,9 @@ float PlayerState::getAcceleration (void)
 }
 
 
-/// @brief  Returns the player's rotation (degrees).
+/// @brief  Returns the player's rotation (radians).
 /// @return The player's rotation.
-int PlayerState::getRotation (void)
+float PlayerState::getRotation (void)
 {
     return playerRotation;
 }

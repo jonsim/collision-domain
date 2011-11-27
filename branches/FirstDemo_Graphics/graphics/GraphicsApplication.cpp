@@ -160,9 +160,16 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // Calculte 2D overlay statistics
     mTrayMgr->frameRenderingQueued(evt);
     
-    // Process keyboard input and produce an InputState object from this.
+    // Check for key presses
     if (mKeyboard->isKeyDown(OIS::KC_ESCAPE))
         return false;
+    if (mKeyboard->isKeyDown(OIS::KC_G)) 
+    {
+        mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
+        mDetailsPanel->show();
+    }
+
+    // Process keyboard input and produce an InputState object from this.
     InputState inputState(mKeyboard->isKeyDown(OIS::KC_W),
                           mKeyboard->isKeyDown(OIS::KC_S),
                           mKeyboard->isKeyDown(OIS::KC_A),
@@ -170,6 +177,17 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Capture a PlayerState.
     PlayerState currentPlayerState = clientPlayerList[clientID].capturePlayer();
+
+    // print debug output if necessary
+    if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
+    {
+        mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(currentPlayerState.getSpeed()));
+        mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(currentPlayerState.getRotation()));
+        mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(sin(currentPlayerState.getRotation())));
+        mDetailsPanel->setParamValue(3, Ogre::StringConverter::toString(cos(currentPlayerState.getRotation())));
+        mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(currentPlayerState.getLocation()));
+        mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(evt.timeSinceLastFrame));
+    }
 
     // Create a Frame object.
     Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);

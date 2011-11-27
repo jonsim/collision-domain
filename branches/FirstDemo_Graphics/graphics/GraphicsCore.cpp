@@ -126,21 +126,22 @@ void GraphicsCore::createFrameListener(void)
 
     // create a params panel for displaying sample details
     Ogre::StringVector items;
-    items.push_back("cam.pX");
-    items.push_back("cam.pY");
-    items.push_back("cam.pZ");
-    items.push_back("");
-    items.push_back("cam.oW");
-    items.push_back("cam.oX");
-    items.push_back("cam.oY");
-    items.push_back("cam.oZ");
-    items.push_back("");
-    items.push_back("Filtering");
-    items.push_back("Poly Mode");
+    items.push_back("Player speed:");
+    items.push_back("Player rotation:");
+    items.push_back("sin(rotation):");
+    items.push_back("cos(rotation):");
+    items.push_back("Player location:");
+    items.push_back("Time since last frame:");
+    //items.push_back("cam.oX");
+    //items.push_back("cam.oY");
+    //items.push_back("cam.oZ");
+    //items.push_back("");
+    //items.push_back("Filtering");
+    //items.push_back("Poly Mode");
 
-    mDetailsPanel = mTrayMgr->createParamsPanel(OgreBites::TL_NONE, "DetailsPanel", 200, items);
-    mDetailsPanel->setParamValue(9, "Bilinear");
-    mDetailsPanel->setParamValue(10, "Solid");
+    mDetailsPanel = mTrayMgr->createParamsPanel(OgreBites::TL_NONE, "DetailsPanel", 400, items);
+    //mDetailsPanel->setParamValue(9, "Bilinear");
+    //mDetailsPanel->setParamValue(10, "Solid");
     mDetailsPanel->hide();
 
     mRoot->addFrameListener(this);

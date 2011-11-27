@@ -36,7 +36,8 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
 	playerNode = sm->getRootSceneNode()->createChildSceneNode("PlayerNode");
 	carNode = playerNode->createChildSceneNode("CarNode");
     camNode = playerNode->createChildSceneNode("CamNode");
-    camNode->translate(0, 200, 400);
+    camNode->yaw(Ogre::Degree(180));
+    camNode->translate(0, 200, -400);
 
     // Load the car mesh and attach it to the car node (this will be a large if statement)
     carEntity = sm->createEntity("CarEntity", "car_highpoly_body.mesh");
@@ -45,7 +46,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
 
     // adjust the car's properties.
     carNode->scale(4, 4, 4);
-    carNode->yaw(Ogre::Degree(180));
+    //carNode->yaw(Ogre::Degree(180));
 }
 
 
@@ -64,8 +65,13 @@ void Player::updatePlayer (PlayerState newState)
 	state = newState;
 
     //playerNode->setPosition(newState.getLocation());
-    playerNode->translate(playerNode->getOrientation() * newState.getLocation(), Ogre::Node::TS_WORLD); // getLocation returns the distance to move, not the location due to a slight hack to get the maths working quickly
-    playerNode->yaw(Ogre::Degree(newState.getRotation()), Ogre::Node::TS_WORLD);
+    //playerNode->translate(playerNode->getOrientation() * newState.getLocation(), Ogre::Node::TS_WORLD); // getLocation returns the distance to move, not the location due to a slight hack to get the maths working quickly
+    //playerNode->yaw(Ogre::Degree(newState.getRotation()), Ogre::Node::TS_WORLD);
+    //playerNode->setOrientation(cos(newState.getRotation() / 2.0f), 0, 1, 0);
+    //playerNode->yaw(Ogre::Radian(newState.getRotation()), Ogre::Node::TS_WORLD);
+    //playerNode->translate(newState.getLocation());
+    playerNode->setPosition(newState.getLocation());
+    playerNode->setOrientation(Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y));
 }
 
 
