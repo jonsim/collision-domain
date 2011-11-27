@@ -59,15 +59,6 @@ void Input::capture (void)
 }
 
 
-/// @brief  Returns whether or not the key given is currently down (at the time of the last Input::capture()).
-/// @param  kc  The key code of the key to be checked
-/// @return Whether or not the key was down at the time of the previous sample.
-bool Input::keyDown (OIS::KeyCode kc)
-{
-    return (mKeyboard->isKeyDown(kc));
-}
-
-
 /// @brief  Constructs an InputState object based on the key state (at the time of the last Input::capture()).
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState Input::getInputState (void)
@@ -76,22 +67,6 @@ InputState Input::getInputState (void)
                       mKeyboard->isKeyDown(OIS::KC_S),
                       mKeyboard->isKeyDown(OIS::KC_A),
                       mKeyboard->isKeyDown(OIS::KC_D) );
-}
-
-
-/// @brief  Provides the mouse object (so it can be attached to windows etc.).
-/// @return The mouse device object.
-OIS::Mouse* Input::getMouse (void)
-{
-    return mMouse;
-}
-
-
-/// @brief  Provides the keyboard object (so it can be attached to windows etc.)
-/// @return The keyboard device object.
-OIS::Keyboard* Input::getKeyboard (void)
-{
-    return mKeyboard;
 }
 
 

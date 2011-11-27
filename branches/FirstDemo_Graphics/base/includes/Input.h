@@ -23,10 +23,12 @@ public:
     void createInputSystem (OIS::ParamList pl);
     void destroyInputSystem (void);
     void capture (void);
-    bool keyDown (OIS::KeyCode kc);
     InputState getInputState (void);
-    OIS::Mouse* getMouse (void);
-    OIS::Keyboard* getKeyboard (void);
+
+    //OIS Input devices
+    OIS::InputManager* mInputManager;
+    OIS::Mouse*    mMouse;
+    OIS::Keyboard* mKeyboard;
 
 protected:
     // OIS::KeyListener
@@ -37,10 +39,6 @@ protected:
     virtual bool mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id);
     virtual bool mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id);
     
-    //OIS Input devices
-    OIS::InputManager* mInputManager;
-    OIS::Mouse*    mMouse;
-    OIS::Keyboard* mKeyboard;
 };
 
 #endif // #ifndef INPUT_H
