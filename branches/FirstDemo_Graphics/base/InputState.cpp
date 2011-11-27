@@ -1,6 +1,6 @@
 /**
  * @file	InputState.h
- * @brief 	Contains an uneditable snapshot of the player's input state 
+ * @brief 	An uneditable snapshot of the player's input state 
  */
 
 /*-------------------- INCLUDES --------------------*/

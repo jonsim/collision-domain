@@ -18,6 +18,9 @@ enum CarType {SMALL, MEDIUM, LARGE};
 /// CarSkin represents the texture applied to the player object.
 enum CarSkin {SKIN0, SKIN1, SKIN2, SKIN3, SKIN4, SKIN5, SKIN6, SKIN7, SKIN8, SKIN9};
 
+/**
+ *  @brief 	Contains the Player nodes and the related data.
+ */
 class Player //: public PhysicsEntity
 {
  

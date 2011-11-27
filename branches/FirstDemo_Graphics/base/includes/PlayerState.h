@@ -13,6 +13,9 @@
 /*-------------------- CLASS DEFINITIONS --------------------*/
 #define PI (float) 3.14159265
 
+/**
+ *  @brief 	Contains the player's data such as speed, bearing etc.
+ */
 class PlayerState
 {
 public:

@@ -1,6 +1,6 @@
 /**
  * @file	InputState.h
- * @brief 	Contains an uneditable snapshot of the player's input state 
+ * @brief 	An uneditable snapshot of the player's input state 
  */
 #ifndef INPUTSTATE_H
 #define INPUTSTATE_H
@@ -11,6 +11,9 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+/**
+ *  @brief 	An uneditable snapshot of the player's input state 
+ */
 class InputState
 {
 /// PlayerKeyState represents the state of a key (essentially a 3-state boolean).

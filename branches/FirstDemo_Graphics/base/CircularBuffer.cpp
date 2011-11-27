@@ -2,15 +2,6 @@
  * @file	CircularBuffer.cpp
  * @author  Jonathan Simmonds
  * @brief 	Very fast implementation of a Circular Buffer.
- *          NB: To maximise speed a minimum amount of bound-checking is done, please
- *          ensure you understand how to use the functions beforehand.
- *          A circular buffer is used to implement a queue when the queue has a fixed
- *          maximum size. Once space in the buffer is always left empty for technical
- *          reasons, so ensure that this is accounted for when the bufferSize is 
- *          decided upon. All operations on the Circular Buffer can be performed in 
- *          constant time.
- *          For further information on circular buffers, see:
- *          http://en.wikipedia.org/wiki/Circular_buffer
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -21,8 +12,8 @@
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
-/// @brief  Constructor, configuring the CircularBuffer.
-/// @param  bs  The buffer size. This is not changeable.
+/// @brief  Constructor, setting the CircularBuffer's variables.
+/// @param  bs  The buffer size. Once initialised this is not changeable.
 template <class T>
 CircularBuffer<T>::CircularBuffer (uint8_t bs = 32) : bufferSize(bs), bufferSizeMinusTwo(bs - 2)
 {
@@ -39,7 +30,7 @@ CircularBuffer<T>::~CircularBuffer (void)
 
 
 /// @brief  sMod performs the calculation (x % bufferSize) where x < 2*bufferSize and x >= 0.
-/*          The function performs the calculation much faster than the modulo function, however
+/**         The function performs the calculation much faster than the modulo function, however
             it is important that the two restrictions on x are observed. */
 /// @param  x   x in the calculation (x % bufferSize).
 /// @return The solution to the calculation (x % bufferSize).
@@ -69,10 +60,10 @@ inline bool CircularBuffer<T>::isEmpty (void)
 }
 
 
-/// @brief  Treats the buffer like an array (elements 0... bufferSize-1) and returns the item from
+/// @brief  Treats the buffer like an array (elements 0, 1, ..., bufferSize-1) and returns the item from
 ///         the buffer located at the given index.
-///         Please note, the index MUST BE VALID (i.e. index >= 0, index < bufferSize-2 (because for
-///         technical reasons the buffer always has 1 empty space).
+///         Please note, the index MUST BE VALID (i.e. index >= 0,   index < bufferSize-2 (as the buffer
+///         always has 1 empty space for technical reasons)).
 /// @param  index   The index of the target element in the virtual 'array'.
 /// @return A pointer to the target element.
 template <class T>

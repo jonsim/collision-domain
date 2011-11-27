@@ -13,6 +13,13 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+/**
+ * @brief 	Builds the window and provides the necessary low level functions.
+ *
+ *          Loads the required Ogre libraries and provides the Graphics Application
+ *          with underlying functions to keep it tidy.
+ *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
+ */
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
 public:

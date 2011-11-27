@@ -13,6 +13,9 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+/**
+ * @brief 	Contains the information needed to calculate a frame.
+ */
 class Frame
 {
 

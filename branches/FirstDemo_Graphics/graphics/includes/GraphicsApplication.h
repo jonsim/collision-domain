@@ -1,7 +1,6 @@
 /**
  * @file	GraphicsApplication.h
  * @brief 	Adds objects to the graphics interface.
- *          Derived from the Ogre Tutorial Framework (TutorialApplication.h).
  */
 #ifndef GRAPHICSAPPLICATION_H
 #define GRAPHICSAPPLICATION_H
@@ -17,6 +16,11 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+/**
+ *  @brief  Adds objects to the graphics interface.
+ *
+ *          Derived from the Ogre Tutorial Framework (TutorialApplication.h).
+ */
 class GraphicsApplication : public GraphicsCore
 {
 public:
