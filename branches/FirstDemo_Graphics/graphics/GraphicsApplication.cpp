@@ -154,29 +154,25 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 
     // Capture user input
-    mKeyboard->capture();
-    mMouse->capture();
+    mUserInput.capture();
 
     // Calculte 2D overlay statistics
     mTrayMgr->frameRenderingQueued(evt);
     
     // Check for key presses
-    if (mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+    if (mUserInput.keyDown(OIS::KC_ESCAPE))
         return false;
-    if (mKeyboard->isKeyDown(OIS::KC_G)) 
+    if (mUserInput.keyDown(OIS::KC_G)) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
     }
 
     // Process keyboard input and produce an InputState object from this.
-    InputState inputState(mKeyboard->isKeyDown(OIS::KC_W),
-                          mKeyboard->isKeyDown(OIS::KC_S),
-                          mKeyboard->isKeyDown(OIS::KC_A),
-                          mKeyboard->isKeyDown(OIS::KC_D));
+    InputState inputState = mUserInput.getInputState();
 
     // Capture a PlayerState.
-    PlayerState currentPlayerState = clientPlayerList[clientID].capturePlayer();
+    PlayerState currentPlayerState = clientPlayerList[clientID].getPlayerState();
 
     // print debug output if necessary
     if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
@@ -200,35 +196,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Perform Client Side Prediction.
 
-    return true;
-}
-
-
-/// @brief  Called whenever the mouse is moved.
-/// @param  evt  The MouseEvent associated with this call.
-/// @return Whether the event has been serviced.
-bool GraphicsApplication::mouseMoved (const OIS::MouseEvent& evt)
-{
-    return true;
-}
-
-
-/// @brief  Called whenever a mouse button is pressed.
-/// @param  evt  The MouseEvent associated with this call.
-/// @param  id   The mouse button that was pressed.
-/// @return Whether the event has been serviced.
-bool GraphicsApplication::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
-{
-    return true;
-}
-
-
-/// @brief  Called whenever a mouse button is released.
-/// @param  evt  The MouseEvent associated with this call.
-/// @param  id   The mouse button that was released.
-/// @return Whether the event has been serviced.
-bool GraphicsApplication::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
-{
     return true;
 }
 

@@ -77,7 +77,7 @@ void Player::updatePlayer (PlayerState newState)
 
 /// @brief  Returns the Player's current state.
 /// @return The Player's current state.
-PlayerState Player::capturePlayer (void)
+PlayerState Player::getPlayerState (void)
 {
 	return state;
 }

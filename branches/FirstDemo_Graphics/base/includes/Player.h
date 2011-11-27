@@ -30,7 +30,7 @@ public:
     void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s);
     void attachCamera (Ogre::Camera* cam);
 	void updatePlayer (PlayerState newState);
-	PlayerState capturePlayer (void);
+	PlayerState getPlayerState (void);
     
 private:
 	PlayerState state;              ///< The player's current state.

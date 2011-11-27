@@ -31,9 +31,6 @@ protected:
     virtual void createScene(void);
     virtual void createFrameListener(void);
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-    virtual bool mouseMoved( const OIS::MouseEvent& evt );
-    virtual bool mousePressed( const OIS::MouseEvent& evt, OIS::MouseButtonID id );
-    virtual bool mouseReleased( const OIS::MouseEvent& evt, OIS::MouseButtonID id );
 
 private:
     void setupLighting (void);

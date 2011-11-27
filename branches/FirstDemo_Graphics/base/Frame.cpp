@@ -36,7 +36,7 @@ PlayerState Frame::calculateNewState (void)
 {
     float newAcceleration = 0;
     
-    float newRotation = playerState.getRotation() + (inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame);
+    float newRotation = playerState.getRotation() + (inputState.getFrwdBack() * inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame);
     float newSpeed = playerState.getSpeed() + (inputState.getFrwdBack() * playerState.getTopSpeed() * timeSinceLastFrame);
     newSpeed = newSpeed - (newSpeed * playerState.getFrictionConstant());
 

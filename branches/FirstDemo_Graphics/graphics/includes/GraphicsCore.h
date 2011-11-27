@@ -9,6 +9,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
+#include "Input.h"
 
 
 
@@ -20,7 +21,7 @@
  *          with underlying functions to keep it tidy.
  *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
  */
-class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
+class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener
 {
 public:
     GraphicsCore (void);
@@ -42,14 +43,9 @@ protected:
 
     // Ogre::FrameListener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-
-    // OIS::KeyListener
-    virtual bool keyPressed( const OIS::KeyEvent &arg );
-    virtual bool keyReleased( const OIS::KeyEvent &arg );
-    // OIS::MouseListener
-    virtual bool mouseMoved( const OIS::MouseEvent &arg );
-    virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
-    virtual bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
+    
+    // OIS user input
+    Input mUserInput;
 
     // Ogre::WindowEventListener
     // Adjust mouse clipping area
@@ -71,10 +67,6 @@ protected:
     bool mCursorWasVisible;                    // was cursor visible before dialog appeared
     bool mShutDown;
 
-    //OIS Input devices
-    OIS::InputManager* mInputManager;
-    OIS::Mouse*    mMouse;
-    OIS::Keyboard* mKeyboard;
 };
 
 #endif // #ifndef GRAPHICSCORE_H
