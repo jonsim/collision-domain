@@ -46,10 +46,10 @@ void GraphicsApplication::createScene (void)
 	ninjaNode2->translate(0, 100, 0);
     
     // Add all players
-    clientPlayerList[0].createPlayer(mSceneMgr, MEDIUM, SKIN0);
+    players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0);
 
     // Attach a camera to the first player
-    clientPlayerList[0].attachCamera(mCamera);
+    players[clientID].attachCamera(mCamera);
 }
 
 
@@ -172,7 +172,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     InputState inputState = mUserInput.getInputState();
 
     // Capture a PlayerState.
-    PlayerState currentPlayerState = clientPlayerList[clientID].getPlayerState();
+    PlayerState currentPlayerState = players[clientID].getPlayerState();
 
     // print debug output if necessary
     if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
@@ -192,7 +192,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     PlayerState newPlayerState = frame.calculateNewState();
 
     // Update the player.
-    clientPlayerList[clientID].updatePlayer(newPlayerState);
+    players[clientID].updatePlayer(newPlayerState);
+    players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
+    players[clientID].updateWheels(inputState.getLeftRght());
 
     // Perform Client Side Prediction.
 

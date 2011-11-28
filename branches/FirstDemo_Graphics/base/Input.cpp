@@ -12,7 +12,7 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, initialising OIS input devices.
-Input::Input (void) : mInputManager(0), mMouse(0), mKeyboard(0)
+Input::Input () : mInputManager(0), mMouse(0), mKeyboard(0)
 {
 }
 

@@ -38,7 +38,6 @@ protected:
     virtual bool mouseMoved (const OIS::MouseEvent& evt);
     virtual bool mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id);
     virtual bool mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id);
-    
 };
 
 #endif // #ifndef INPUT_H

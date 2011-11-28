@@ -27,6 +27,9 @@ public:
     GraphicsApplication(void);
     virtual ~GraphicsApplication(void);
 
+    int clientID;               ///< The client ID which is assigned by the server.
+    Player players[1]; ///< An array of all players in the game to keep track of.
+
 protected:
     virtual void createScene(void);
     virtual void createFrameListener(void);
@@ -37,8 +40,6 @@ private:
     void setupArena (void);
     void setupNetworking (void);
     
-    int clientID;               ///< The client ID which is assigned by the server.
-    Player clientPlayerList[1]; ///< An array of all players in the game to keep track of.
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H
