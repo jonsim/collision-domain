@@ -55,7 +55,7 @@ bool GraphicsCore::configure(void)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "TutorialApplication Render Window");
+        mWindow = mRoot->initialise(true, "Collision Domain (First Demo)");
 
         return true;
     }
