@@ -40,12 +40,14 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
     camNode->translate(0, 200, -400);
 
     // Load the car mesh and attach it to the car node (this will be a large if statement)
-    carEntity = sm->createEntity("CarEntity", "car_highpoly_body.mesh");
+    carEntity = sm->createEntity("CarEntity", "car2_body.mesh");
+    carEntity->setMaterialName("car2_body_car_auv");
     carEntity->setCastShadows(true);
 	carNode->attachObject(carEntity);
 
     // adjust the car's properties.
-    carNode->scale(4, 4, 4);
+    //carNode->scale(4, 4, 4);
+    carNode->translate(0, 0, 100);
     //carNode->yaw(Ogre::Degree(180));
 }
 

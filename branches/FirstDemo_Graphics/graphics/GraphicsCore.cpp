@@ -111,7 +111,7 @@ void GraphicsCore::createFrameListener(void)
     //Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
 
-    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mUserInput.getMouse(), this);
+    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mUserInput.mMouse, this);
     mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
     mTrayMgr->hideCursor();
@@ -299,7 +299,7 @@ void GraphicsCore::windowResized(Ogre::RenderWindow* rw)
     int left, top;
     rw->getMetrics(width, height, depth, left, top);
 
-    const OIS::MouseState &ms = mUserInput.getMouse()->getMouseState();
+    const OIS::MouseState &ms = mUserInput.mMouse->getMouseState();
     ms.width = width;
     ms.height = height;
 }

@@ -160,9 +160,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     mTrayMgr->frameRenderingQueued(evt);
     
     // Check for key presses
-    if (mUserInput.keyDown(OIS::KC_ESCAPE))
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
         return false;
-    if (mUserInput.keyDown(OIS::KC_G)) 
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_G)) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
