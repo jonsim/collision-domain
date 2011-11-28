@@ -13,9 +13,11 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+/**
+ * @brief 	Contains the information needed to calculate a frame.
+ */
 class Frame
 {
-#define PI 3.14159265
 
 public:
     Frame (void);

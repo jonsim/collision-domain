@@ -46,10 +46,10 @@ void GraphicsApplication::createScene (void)
 	ninjaNode2->translate(0, 100, 0);
     
     // Add all players
-    clientPlayerList[0].createPlayer(mSceneMgr, MEDIUM, SKIN0);
+    players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0);
 
     // Attach a camera to the first player
-    clientPlayerList[0].attachCamera(mCamera);
+    players[clientID].attachCamera(mCamera);
 }
 
 
@@ -154,22 +154,36 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 
     // Capture user input
-    mKeyboard->capture();
-    mMouse->capture();
+    mUserInput.capture();
 
     // Calculte 2D overlay statistics
     mTrayMgr->frameRenderingQueued(evt);
     
-    // Process keyboard input and produce an InputState object from this.
-    if (mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+    // Check for key presses
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
         return false;
-    InputState inputState(mKeyboard->isKeyDown(OIS::KC_W),
-                          mKeyboard->isKeyDown(OIS::KC_S),
-                          mKeyboard->isKeyDown(OIS::KC_A),
-                          mKeyboard->isKeyDown(OIS::KC_D));
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_G)) 
+    {
+        mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
+        mDetailsPanel->show();
+    }
+
+    // Process keyboard input and produce an InputState object from this.
+    InputState inputState = mUserInput.getInputState();
 
     // Capture a PlayerState.
-    PlayerState currentPlayerState = clientPlayerList[clientID].capturePlayer();
+    PlayerState currentPlayerState = players[clientID].getPlayerState();
+
+    // print debug output if necessary
+    if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
+    {
+        mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(currentPlayerState.getSpeed()));
+        mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(currentPlayerState.getRotation()));
+        mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(sin(currentPlayerState.getRotation())));
+        mDetailsPanel->setParamValue(3, Ogre::StringConverter::toString(cos(currentPlayerState.getRotation())));
+        mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(currentPlayerState.getLocation()));
+        mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(evt.timeSinceLastFrame));
+    }
 
     // Create a Frame object.
     Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
@@ -178,39 +192,12 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     PlayerState newPlayerState = frame.calculateNewState();
 
     // Update the player.
-    clientPlayerList[clientID].updatePlayer(newPlayerState);
+    players[clientID].updatePlayer(newPlayerState);
+    players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
+    players[clientID].updateWheels(inputState.getLeftRght());
 
     // Perform Client Side Prediction.
 
-    return true;
-}
-
-
-/// @brief  Called whenever the mouse is moved.
-/// @param  evt  The MouseEvent associated with this call.
-/// @return Whether the event has been serviced.
-bool GraphicsApplication::mouseMoved (const OIS::MouseEvent& evt)
-{
-    return true;
-}
-
-
-/// @brief  Called whenever a mouse button is pressed.
-/// @param  evt  The MouseEvent associated with this call.
-/// @param  id   The mouse button that was pressed.
-/// @return Whether the event has been serviced.
-bool GraphicsApplication::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
-{
-    return true;
-}
-
-
-/// @brief  Called whenever a mouse button is released.
-/// @param  evt  The MouseEvent associated with this call.
-/// @param  id   The mouse button that was released.
-/// @return Whether the event has been serviced.
-bool GraphicsApplication::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
-{
     return true;
 }
 

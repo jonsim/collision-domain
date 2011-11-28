@@ -34,28 +34,21 @@ Frame::~Frame (void)
 /// @return The new PlayerState which should be rendered in the next frame.
 PlayerState Frame::calculateNewState (void)
 {
-    /*
-    float newAcceleration = inputState.getFrwdBack() * playerState.getAccelerationConstant() * timeSinceLastFrame;
-    float newSpeed        = playerState.getSpeed() + newAcceleration;
-    if (newSpeed > playerState.getTopSpeed())
-        newSpeed = playerState.getTopSpeed();*/
-    //int newRotation     = playerState.getRotation() + (inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame);
-    //float newRotationRad = ((float) newRotation) * (PI / 180);
-    int newRotation     = inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame;
-    //float newRotationRad = ((float) newRotation) * (PI / 180);
-    
     float newAcceleration = 0;
-    float newSpeed = playerState.getTopSpeed() * inputState.getFrwdBack() * timeSinceLastFrame;
+    
+    float newRotation = playerState.getRotation() + (inputState.getFrwdBack() * inputState.getLeftRght() * playerState.getTurningConstant() * timeSinceLastFrame);
+    float newSpeed = playerState.getSpeed() + (inputState.getFrwdBack() * playerState.getTopSpeed() * timeSinceLastFrame);
+    newSpeed = newSpeed - (newSpeed * playerState.getFrictionConstant());
 
-    //Ogre::Vector3 loc = playerState.getLocation();
-    //float newX = loc.x + (newSpeed * sin(newRotationRad));
-    //float newZ = loc.z + (newSpeed * cos(newRotationRad));
-    //float newY = loc.y;
-    //Ogre::Vector3 newLocation(newX, newY, newZ);
+    //Ogre::Vector3 translation(0, 0, newSpeed);
+    //Ogre::Quaternion rotation(Ogre::Radian(newRotation), Ogre::Vector3::UNIT_Y);
+    Ogre::Vector3 playerLocation = playerState.getLocation();
+    float newX = playerLocation.x + (newSpeed * Ogre::Math::Sin(newRotation));
+    float newZ = playerLocation.z + (newSpeed * Ogre::Math::Cos(newRotation));
+    Ogre::Vector3 newLocation(newX, playerLocation.y, newZ);
 
-    Ogre::Vector3 distance(0, 0, -newSpeed);
-
-    PlayerState result(distance, newSpeed, newAcceleration, newRotation);
+    //PlayerState result(rotation * translation, newSpeed, newAcceleration, newRotation);
+    PlayerState result(newLocation, newSpeed, newAcceleration, newRotation);
     return result;
 }
 
