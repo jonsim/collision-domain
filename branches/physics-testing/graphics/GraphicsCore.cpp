@@ -271,7 +271,8 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mUserInput.capture();
 
     mTrayMgr->frameRenderingQueued(evt);
-
+	
+    // print debug output if necessary
     if (!mTrayMgr->isDialogVisible())
     {
         mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
@@ -289,9 +290,6 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     return true;
 }
-
-
-
 
 
 /// @brief  Adjust mouse clipping area.

@@ -30,9 +30,6 @@ Player::~Player (void)
 /// @param  s   The texture to apply to the car model.
 void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore)
 {
-	Ogre::Entity* carEntity;
-    Ogre::Entity* carEntityAttachment;
-
     // First set up the scene node relationships
 	playerNode = sm->getRootSceneNode()->createChildSceneNode("PlayerNode");
     camArmNode = playerNode->createChildSceneNode("CamArmNode");
@@ -76,27 +73,26 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
 
     // tidy front left wheel
 	createGeometry(sm, "CarEntity_FLWheel", "car2_wheel.mesh", "car2_wheel", carFLWheelNode);
-    carFLWheelNode->translate(45, 18, 95);
+//    carFLWheelNode->translate(45, 18, 95);
 
     // delightful front right wheel
 	createGeometry(sm, "CarEntity_FRWheel", "car2_wheel.mesh", "car2_wheel", carFRWheelNode);
-    carFRWheelNode->translate(-45, 18, 95);
+//    carFRWheelNode->translate(-45, 18, 95);
     carFRWheelNode->scale(-1, 1, 1);
 
     // and now an arousing rear left wheel
 	createGeometry(sm, "CarEntity_RLWheel", "car2_wheel.mesh", "car2_wheel", carRLWheelNode);
-    carRLWheelNode->translate(45, 18, -72);
+//    carRLWheelNode->translate(45, 18, -72);
 
     // and finally a rear right wheel to seal the deal. beaut.
 	createGeometry(sm, "CarEntity_RRWheel", "car2_wheel.mesh", "car2_wheel", carRRWheelNode);
-    carRRWheelNode->translate(-45, 18, -72);
+//    carRRWheelNode->translate(-45, 18, -72);
     carRRWheelNode->scale(-1, 1, 1);
 
 
 	const Ogre::Vector3 carPosition(15, 30,-25);
 	const Ogre::Vector3 chassisShift(0, 1.0, 0);
-	Ogre::SceneNode *carNode = playerNode, *wheelNode0 = carFLWheelNode, *wheelNode1 = carFRWheelNode, *wheelNode2 = carRLWheelNode, *wheelNode3 = carRRWheelNode;
-	physicsCore->newCar(carPosition, chassisShift, carNode, wheelNode0, wheelNode1, wheelNode2, wheelNode3);
+	physicsCore->newCar(carPosition, chassisShift, playerNode, carFLWheelNode, carFRWheelNode, carRLWheelNode, carRRWheelNode);
 }
 
 

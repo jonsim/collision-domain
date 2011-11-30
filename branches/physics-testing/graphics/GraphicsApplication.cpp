@@ -150,18 +150,11 @@ void GraphicsApplication::createFrameListener (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    if (mWindow->isClosed())
-        return false;
-
-    // Capture user input
-    mUserInput.capture();
-
-    // Calculte 2D overlay statistics
-    mTrayMgr->frameRenderingQueued(evt);
+    // do the core things (GraphicsCore is extended by this class)
+    GraphicsCore::frameRenderingQueued(evt);
     
     // Check for key presses
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-        return false;
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_G)) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
@@ -173,17 +166,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Capture a PlayerState.
     PlayerState currentPlayerState = players[clientID].getPlayerState();
-
-    // print debug output if necessary
-    if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
-    {
-        mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(currentPlayerState.getSpeed()));
-        mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(currentPlayerState.getRotation()));
-        mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(sin(currentPlayerState.getRotation())));
-        mDetailsPanel->setParamValue(3, Ogre::StringConverter::toString(cos(currentPlayerState.getRotation())));
-        mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(currentPlayerState.getLocation()));
-        mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(evt.timeSinceLastFrame));
-    }
 
     // Create a Frame object.
     Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
@@ -198,6 +180,36 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Perform Client Side Prediction.
 
+
+    return true;
+}
+
+
+bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
+{
+	// stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
+	// By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+	// in order to keep the simulation real-time, the maximum number of substeps can be clamped to
+	// 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
+	// as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
+	// J - If framerate is low (<15fps) it may be valid to make fixedTimeStep a larger number (at the
+	// expense of physics accuracy. Server will be correcting this though).
+	// maxSubSteps = 7.5 - this will do up to 1/8 second's worth of processing here and 1/8 second's worth
+	// processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
+	// and rely on the server to solve.
+	mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    return true;
+}
+
+
+bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
+{
+	// stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
+	// By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+	// in order to keep the simulation real-time, the maximum number of substeps can be clamped to
+	// 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
+	// as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
+    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 
