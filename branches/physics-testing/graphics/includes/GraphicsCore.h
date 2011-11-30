@@ -67,7 +67,7 @@ protected:
     bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
 	
-	PhysicsCore *mPhysicsCore;				// OgreBullet!
+    PhysicsCore *mPhysicsCore;				// OgreBullet!
 };
 
 #endif // #ifndef GRAPHICSCORE_H

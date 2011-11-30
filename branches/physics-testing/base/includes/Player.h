@@ -30,13 +30,13 @@ public:
     ~Player (void);
     void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
-	void updatePlayer (PlayerState newState);
+    void updatePlayer (PlayerState newState);
     void updateWheels (signed char m);
     void updateCamera (int XRotation, int YRotation);
-	PlayerState getPlayerState (void);
+    PlayerState getPlayerState (void);
     
 private:
-	PlayerState state;              ///< The player's current state.
+    PlayerState state;              ///< The player's current state.
     const float cameraRotationConstant;
 
     Ogre::SceneNode* playerNode;	///< The complete player node - this is what should be moved when the car moves.
@@ -52,11 +52,11 @@ private:
     Ogre::SceneNode* carRLWheelNode;
     Ogre::SceneNode* carRRWheelNode;
 
-	void Player::createGeometry(Ogre::SceneManager *sm,
-								const std::string &entityName,
-								const std::string &meshName,
-								const std::string &materialName,
-								Ogre::SceneNode *toAttachTo);
+    void Player::createGeometry(Ogre::SceneManager *sm,
+                                const std::string &entityName,
+                                const std::string &meshName,
+                                const std::string &materialName,
+                                Ogre::SceneNode *toAttachTo);
 };
 
 #endif // #ifndef PLAYER_H

@@ -187,28 +187,28 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
 bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 {
-	// stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
-	// By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
-	// in order to keep the simulation real-time, the maximum number of substeps can be clamped to
-	// 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
-	// as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
-	// J - If framerate is low (<15fps) it may be valid to make fixedTimeStep a larger number (at the
-	// expense of physics accuracy. Server will be correcting this though).
-	// maxSubSteps = 7.5 - this will do up to 1/8 second's worth of processing here and 1/8 second's worth
-	// processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
-	// and rely on the server to solve.
-	mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    // stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
+    // By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+    // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
+    // 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
+    // as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
+    // J - If framerate is low (<15fps) it may be valid to make fixedTimeStep a larger number (at the
+    // expense of physics accuracy. Server will be correcting this though).
+    // maxSubSteps = 7.5 - this will do up to 1/8 second's worth of processing here and 1/8 second's worth
+    // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
+    // and rely on the server to solve.
+    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 
 
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
-	// stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
-	// By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
-	// in order to keep the simulation real-time, the maximum number of substeps can be clamped to
-	// 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
-	// as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
+    // stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
+    // By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+    // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
+    // 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
+    // as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
     mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
