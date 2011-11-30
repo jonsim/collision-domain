@@ -1,23 +1,29 @@
 
-#ifndef __CDPhysicsCore_h_
-#define __CDPhysicsCore_h_
+#ifndef __PhysicsCore_h_
+#define __PhysicsCore_h_
 
-#include "OgreIncludes.h"
-#include "OgreBulletDynamicsRigidBody.h"
-#include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
-#include "Shapes/OgreBulletCollisionsBoxShape.h"
-#include "Shapes/OgreBulletCollisionsCompoundShape.h"
+#include "stdafx.h"
 
-class CDPhysicsCore
+// This is used for physics integration with ogre. (And neat housekeeping)
+enum QueryFlags
+{
+	ANY_QUERY_MASK					= 1<<0,
+	RAGDOLL_QUERY_MASK				= 1<<1,
+	GEOMETRY_QUERY_MASK				= 1<<2,
+	VEHICLE_QUERY_MASK				= 1<<3,
+	STATIC_GEOMETRY_QUERY_MASK		= 1<<4
+};
+
+class PhysicsCore
 {
 public:
     OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
-    CDPhysicsCore(Ogre::SceneManager* sceneMgr);
-    virtual ~CDPhysicsCore(void);
+    PhysicsCore(Ogre::SceneManager* sceneMgr);
+    virtual ~PhysicsCore(void);
 	int getUniqueEntityID(void);
-	void CDPhysicsCore::newPlane();
-	void CDPhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised);
+	void newPlane();
+	void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised);
 	void newCar(Ogre::Vector3 carPosition,
 				Ogre::Vector3 chassisShift,
 				Ogre::SceneNode *carNode,
@@ -37,4 +43,4 @@ private:
 	Ogre::Real mBulletMoveSpeed;
 };
 
-#endif // #ifndef __CDPhysicsCore_h_
+#endif // #ifndef __PhysicsCore_h_

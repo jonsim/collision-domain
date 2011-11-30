@@ -46,7 +46,7 @@ void GraphicsApplication::createScene (void)
 	ninjaNode2->translate(0, 100, 0);
     
     // Add all players
-    players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0);
+    players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0, mPhysicsCore);
 
     // Attach a camera to the first player
     players[clientID].attachCamera(mCamera);

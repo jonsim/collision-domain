@@ -39,7 +39,6 @@ private:
     void setupLighting (void);
     void setupArena (void);
     void setupNetworking (void);
-    
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

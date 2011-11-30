@@ -71,6 +71,9 @@ void GraphicsCore::chooseSceneManager(void)
 {
     // Get the SceneManager, in this case a generic one
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+
+	// get the core physics object up and runnning
+	mPhysicsCore = new PhysicsCore(mSceneMgr);
 }
 
 

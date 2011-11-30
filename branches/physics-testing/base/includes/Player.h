@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "PlayerState.h"
 #include "InputState.h"
-
+#include "PhysicsCore.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -28,7 +28,7 @@ class Player //: public PhysicsEntity
 public:
     Player (void);
     ~Player (void);
-    void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s);
+    void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
 	void updatePlayer (PlayerState newState);
     void updateWheels (signed char m);
@@ -51,6 +51,12 @@ private:
     Ogre::SceneNode* carFRWheelNode;
     Ogre::SceneNode* carRLWheelNode;
     Ogre::SceneNode* carRRWheelNode;
+
+	void Player::createGeometry(Ogre::SceneManager *sm,
+								const std::string &entityName,
+								const std::string &meshName,
+								const std::string &materialName,
+								Ogre::SceneNode *toAttachTo);
 };
 
 #endif // #ifndef PLAYER_H

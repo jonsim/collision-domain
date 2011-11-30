@@ -10,7 +10,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "Input.h"
-
+#include "PhysicsCore.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -62,11 +62,12 @@ protected:
 
     // OgreBites
     OgreBites::SdkTrayManager* mTrayMgr;
-    OgreBites::SdkCameraMan* mCameraMan;       // basic camera controller
-    OgreBites::ParamsPanel* mDetailsPanel;     // sample details panel
-    bool mCursorWasVisible;                    // was cursor visible before dialog appeared
+    OgreBites::SdkCameraMan* mCameraMan;    // basic camera controller
+    OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
+    bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
-
+	
+	PhysicsCore *mPhysicsCore;				// OgreBullet!
 };
 
 #endif // #ifndef GRAPHICSCORE_H

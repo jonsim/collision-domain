@@ -1,9 +1,10 @@
 
 
-#include "CDPhysicsCore.h"
+#include "stdafx.h"
+#include "PhysicsCore.h"
 
 
-CDPhysicsCore::CDPhysicsCore(Ogre::SceneManager* sceneMgr)
+PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 {
 	mSceneMgr = sceneMgr;
 
@@ -24,7 +25,7 @@ CDPhysicsCore::CDPhysicsCore(Ogre::SceneManager* sceneMgr)
 }
 
 
-CDPhysicsCore::~CDPhysicsCore(void)
+PhysicsCore::~PhysicsCore(void)
 {
 	// OgreBullet physic delete - RigidBodies
 	std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
@@ -50,14 +51,14 @@ CDPhysicsCore::~CDPhysicsCore(void)
 
 /**	@brief mNumEntitiesInstances should only ever be modified through this method! (Potential crashes otherwise)
 	@return an int which has never before been used (in an entity name) */
-int CDPhysicsCore::getUniqueEntityID()
+int PhysicsCore::getUniqueEntityID()
 {
 	mNumEntitiesInstanced++;
 	return mNumEntitiesInstanced;
 }
 
 
-void CDPhysicsCore::newPlane()
+void PhysicsCore::newPlane()
 {
 	OgreBulletCollisions::CollisionShape *Shape;
     Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0); // (normal vector, distance)
@@ -71,7 +72,7 @@ void CDPhysicsCore::newPlane()
 }
 
 
-void CDPhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised)
+void PhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised)
 {
 		size *= 0.05f;                  // don't forget to scale down the Bullet-box too
 		// after that create the Bullet shape with the calculated size
@@ -96,7 +97,7 @@ void CDPhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::
 
 /** @brief There is still a lot of hardcoded stuff in here, which will vary depending on mesh size and initial rotation
 */
-void CDPhysicsCore::newCar(
+void PhysicsCore::newCar(
 	Ogre::Vector3 carPosition,
 	Ogre::Vector3 chassisShift,
 	Ogre::SceneNode *carNode,

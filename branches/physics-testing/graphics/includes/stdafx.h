@@ -5,6 +5,9 @@
  */
 
 /*-------------------- INCLUDES --------------------*/
+
+#include <string>
+
 // Standard includes (it is unlikely these will need changing)
 #include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -25,6 +28,10 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+#include "OgreBulletDynamicsRigidBody.h"
+#include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
+#include "Shapes/OgreBulletCollisionsBoxShape.h"
+#include "Shapes/OgreBulletCollisionsCompoundShape.h"
 
 // Windows specific include
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

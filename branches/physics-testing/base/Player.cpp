@@ -28,7 +28,7 @@ Player::~Player (void)
 /// @param  sm  The SceneManager to which the 3D player object is attached.
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
-void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
+void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore)
 {
 	Ogre::Entity* carEntity;
     Ogre::Entity* carEntityAttachment;
@@ -54,70 +54,70 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s)
     camNode->translate(0, 0, -500);
 
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    carEntity = sm->createEntity("CarEntity", "car2_body.mesh");
-    carEntity->setMaterialName("car2_body");
-    carEntity->setCastShadows(true);
-	carNode->attachObject(carEntity);
+	createGeometry(sm, "CarEntity", "car2_body.mesh", "car2_body", carNode);
     //carNode->translate(0, 0, 100);
     
     // load the left door baby
-    carEntityAttachment = sm->createEntity("CarEntity_LDoor", "car2_door.mesh");
-    carEntityAttachment->setMaterialName("car2_door");
-    carEntityAttachment->setCastShadows(true);
-    carLDoorNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_LDoor", "car2_door.mesh", "car2_door", carLDoorNode);
     carLDoorNode->translate(43, 20, 22);
     
     // lets get a tasty right door
-    carEntityAttachment = sm->createEntity("CarEntity_RDoor", "car2_door.mesh");
-    carEntityAttachment->setMaterialName("car2_door");
-    carEntityAttachment->setCastShadows(true);
-    carRDoorNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_RDoor", "car2_door.mesh", "car2_door", carRDoorNode);
     carRDoorNode->scale(-1, 1, 1);
     carRDoorNode->translate(-46, 20, 22);
 
     // and now a sweet sweet front bumper
-    carEntityAttachment = sm->createEntity("CarEntity_FBumper", "car2_Fbumper.mesh");
-    carEntityAttachment->setMaterialName("car2_Fbumper");
-    carEntityAttachment->setCastShadows(true);
-    carFBumperNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_FBumper", "car2_Fbumper.mesh", "car2_Fbumper", carFBumperNode);
     carFBumperNode->translate(0, 20, 140);
 
     // and now a regular rear bumper
-    carEntityAttachment = sm->createEntity("CarEntity_RBumper", "car2_Rbumper.mesh");
-    carEntityAttachment->setMaterialName("car2_Rbumper");
-    carEntityAttachment->setCastShadows(true);
-    carRBumperNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_RBumper", "car2_Rbumper.mesh", "car2_Rbumper", carRBumperNode);
     carRBumperNode->translate(0, 20, -135);
 
     // tidy front left wheel
-    carEntityAttachment = sm->createEntity("CarEntity_FLWheel", "car2_wheel.mesh");
-    carEntityAttachment->setMaterialName("car2_wheel");
-    carEntityAttachment->setCastShadows(true);
-    carFLWheelNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_FLWheel", "car2_wheel.mesh", "car2_wheel", carFLWheelNode);
     carFLWheelNode->translate(45, 18, 95);
 
     // delightful front right wheel
-    carEntityAttachment = sm->createEntity("CarEntity_FRWheel", "car2_wheel.mesh");
-    carEntityAttachment->setMaterialName("car2_wheel");
-    carEntityAttachment->setCastShadows(true);
-    carFRWheelNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_FRWheel", "car2_wheel.mesh", "car2_wheel", carFRWheelNode);
     carFRWheelNode->translate(-45, 18, 95);
     carFRWheelNode->scale(-1, 1, 1);
 
     // and now an arousing rear left wheel
-    carEntityAttachment = sm->createEntity("CarEntity_RLWheel", "car2_wheel.mesh");
-    carEntityAttachment->setMaterialName("car2_wheel");
-    carEntityAttachment->setCastShadows(true);
-    carRLWheelNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_RLWheel", "car2_wheel.mesh", "car2_wheel", carRLWheelNode);
     carRLWheelNode->translate(45, 18, -72);
 
     // and finally a rear right wheel to seal the deal. beaut.
-    carEntityAttachment = sm->createEntity("CarEntity_RRWheel", "car2_wheel.mesh");
-    carEntityAttachment->setMaterialName("car2_wheel");
-    carEntityAttachment->setCastShadows(true);
-    carRRWheelNode->attachObject(carEntityAttachment);
+	createGeometry(sm, "CarEntity_RRWheel", "car2_wheel.mesh", "car2_wheel", carRRWheelNode);
     carRRWheelNode->translate(-45, 18, -72);
     carRRWheelNode->scale(-1, 1, 1);
+
+
+	const Ogre::Vector3 carPosition(15, 30,-25);
+	const Ogre::Vector3 chassisShift(0, 1.0, 0);
+	Ogre::SceneNode *carNode = playerNode, *wheelNode0 = carFLWheelNode, *wheelNode1 = carFRWheelNode, *wheelNode2 = carRLWheelNode, *wheelNode3 = carRRWheelNode;
+	physicsCore->newCar(carPosition, chassisShift, carNode, wheelNode0, wheelNode1, wheelNode2, wheelNode3);
+}
+
+
+void Player::createGeometry(Ogre::SceneManager *sm,
+							const std::string &entityName,
+							const std::string &meshName,
+							const std::string &materialName,
+							Ogre::SceneNode *toAttachTo)
+{
+	Ogre::Entity* entity;
+
+    entity = sm->createEntity(entityName, meshName);
+    entity->setMaterialName(materialName);
+
+	entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
+#if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0))
+	entity->setNormaliseNormals(true);
+#endif // only applicable before shoggoth (1.5.0)
+
+    entity->setCastShadows(true);
+    toAttachTo->attachObject(entity);
 }
 
 
