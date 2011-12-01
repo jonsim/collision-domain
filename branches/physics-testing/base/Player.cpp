@@ -94,7 +94,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     //carRRWheelNode->scale(-1, 1, 1);
 
 
-    const Ogre::Vector3 carPosition(0, 0, 0);
+    const Ogre::Vector3 carPosition(0, 500, 0);
     const Ogre::Vector3 chassisShift(0, 50.0, 0); // shift chassis collisionbox up 50 units above origin
     mVehicle = physicsCore->newCar(carPosition, chassisShift, playerNode, carFLWheelNode, carFRWheelNode, carRLWheelNode, carRRWheelNode);
 }

@@ -26,6 +26,8 @@ class Player //: public PhysicsEntity
 {
  
 public:
+    OgreBulletDynamics::RaycastVehicle *mVehicle;
+
     Player (void);
     ~Player (void);
     void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
@@ -39,7 +41,6 @@ private:
     PlayerState state;              ///< The player's current state.
     const float cameraRotationConstant;
 
-    OgreBulletDynamics::RaycastVehicle *mVehicle;
     Ogre::SceneNode* playerNode;	///< The complete player node - this is what should be moved when the car moves.
     Ogre::SceneNode* camNode;		///< The node onto which a camera can be attached to observe the car.
     Ogre::SceneNode* camArmNode;

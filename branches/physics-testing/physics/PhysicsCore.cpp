@@ -10,7 +10,7 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 
     mBulletGravity = Ogre::Vector3(0,-9.81,0);
     mBulletAlignedBox = Ogre::AxisAlignedBox(Ogre::Vector3(-10000, -10000, -10000), Ogre::Vector3(10000,  10000,  10000));
-    mBulletMoveSpeed = 9999;
+    mBulletMoveSpeed = .50;
     mNumEntitiesInstanced = 0; // how many shapes are created
 
     // Start Bullet
@@ -118,9 +118,9 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
     static float gMaxSuspensionTravelCm = 500.0;
     static float gFrictionSlip = 10.5;
 			
-    static float gWheelRadius = 0.5f;
-    static float gWheelWidth = 0.4f;
-    static float gWheelFriction = 1e30f;//1000;//1e30f;
+    static float gWheelRadius = 15.5f;
+    static float gWheelWidth = 50.4f;
+    static float gWheelFriction = 1000;//1e30f;//1000;//1e30f;
     float connectionHeight = 20.7f; // shift the wheels upwards
 
     OgreBulletCollisions::BoxCollisionShape* chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(50.f,36.f,140.0f));//Ogre::Vector3(1.f,0.75f,2.1f));

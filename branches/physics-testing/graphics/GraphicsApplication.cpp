@@ -175,9 +175,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Calculate the new PlayerState based on the input.
     PlayerState newPlayerState = frame.calculateNewState();
-
+    
     // Update the player.
-    players[clientID].updatePlayer(newPlayerState);
+//    players[clientID].updatePlayer(newPlayerState);
     players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
 //    players[clientID].updateWheels(inputState.getLeftRght());
 
@@ -200,6 +200,10 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // maxSubSteps = 7.5 - this will do up to 1/8 second's worth of processing here and 1/8 second's worth
     // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
     // and rely on the server to solve.
+    //players[clientID].mVehicle->getBulletVehicle()->setBrake(0,0);
+    //players[clientID].mVehicle->getBulletVehicle()->setBrake(0,1);
+    players[clientID].mVehicle->applyEngineForce(30000,0);
+    players[clientID].mVehicle->applyEngineForce(30000,1);
     mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
@@ -212,6 +216,8 @@ bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
     // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
     // 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
     // as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
+    //players[clientID].mVehicle->applyEngineForce(3000,0);
+    //players[clientID].mVehicle->applyEngineForce(3000,1);
     mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
