@@ -54,11 +54,11 @@ private:
     Ogre::SceneNode* carRLWheelNode;
     Ogre::SceneNode* carRRWheelNode;
 
-    void Player::createGeometry(Ogre::SceneManager *sm,
-                                const std::string &entityName,
-                                const std::string &meshName,
-                                const std::string &materialName,
-                                Ogre::SceneNode *toAttachTo);
+    void createGeometry(Ogre::SceneManager *sm,
+                        const std::string &entityName,
+                        const std::string &meshName,
+                        const std::string &materialName,
+                        Ogre::SceneNode *toAttachTo);
 };
 
 #endif // #ifndef PLAYER_H
