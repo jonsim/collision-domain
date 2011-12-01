@@ -8,9 +8,13 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 {
     mSceneMgr = sceneMgr;
 
-    mBulletGravity = Ogre::Vector3(0,-9.81*8.,0);
+    // Gravity is not in the normal sense. Acceleration will look "normal" when the value is set to
+    // the number of units used for a model of height 1m
+    mBulletGravity = Ogre::Vector3(0,-72./*-9.81*/,0);
+
+
+
     mBulletAlignedBox = Ogre::AxisAlignedBox(Ogre::Vector3(-10000, -10000, -10000), Ogre::Vector3(10000,  10000,  10000));
-    mBulletMoveSpeed = 50;
     mNumEntitiesInstanced = 0; // how many shapes are created
 
     // Start Bullet
@@ -113,15 +117,15 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
     static float gSuspensionStiffness = 20.f;
     static float gSuspensionDamping = 2.3f;
     static float gSuspensionCompression = 4.4f;
-    static float gRollInfluence = 0.1f;//1.0f;
-    static float gSuspensionRestLength = 0.6;
-    static float gMaxSuspensionTravelCm = 500.0;
+    static float gRollInfluence = 2.f;//1.0f;
+    static float gSuspensionRestLength = 15.;
+    static float gMaxSuspensionTravelCm = 900.0;
     static float gFrictionSlip = 10.5;
-			
-    static float gWheelRadius = 15.5f;
-    static float gWheelWidth = 55.4f;
+
+    static float gWheelRadius = 50.f; // very high values put front wheels at back
+    static float gWheelWidth = 20.f; // very high values bring wheels together
     static float gWheelFriction = 1000;//1e30f;//1000;//1e30f;
-    float connectionHeight = 20.7f; // shift the wheels upwards
+    float connectionHeight = 30.f; // shift the wheels upwards
 
     OgreBulletCollisions::BoxCollisionShape* chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(50.f,36.f,140.0f));//Ogre::Vector3(1.f,0.75f,2.1f));
     OgreBulletCollisions::CompoundCollisionShape* compound = new OgreBulletCollisions::CompoundCollisionShape();

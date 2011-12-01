@@ -21,9 +21,9 @@ class InputState
  *  (which could be encoded with 4 bits (a single unsigned char)). It also uses less space than if an enum were used
  *  as enums always used signed 32-bit ints to represent their values. */   
 typedef signed char PlayerKeyState;
-#define POSITIVE 1
+#define POSITIVE 0.8
 #define ZERO     0
-#define NEGATIVE -1
+#define NEGATIVE -0.8
 
 public:
     InputState (void);

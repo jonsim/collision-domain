@@ -40,7 +40,6 @@ private:
     Ogre::AxisAlignedBox mBulletAlignedBox;
     OgreBulletCollisions::DebugDrawer *debugDrawer;
     int mNumEntitiesInstanced;
-    Ogre::Real mBulletMoveSpeed;
 };
 
 #endif // #ifndef __PhysicsCore_h_
