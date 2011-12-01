@@ -39,6 +39,7 @@ private:
     PlayerState state;              ///< The player's current state.
     const float cameraRotationConstant;
 
+    OgreBulletDynamics::RaycastVehicle *mVehicle;
     Ogre::SceneNode* playerNode;	///< The complete player node - this is what should be moved when the car moves.
     Ogre::SceneNode* camNode;		///< The node onto which a camera can be attached to observe the car.
     Ogre::SceneNode* camArmNode;

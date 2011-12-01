@@ -21,15 +21,15 @@ class Frame
 
 public:
     Frame (void);
-	Frame (PlayerState player, InputState input, Ogre::Real tslf);
+    Frame (PlayerState player, InputState input, Ogre::Real tslf);
     ~Frame (void);
-	PlayerState calculateNewState (void);
-	PlayerState recalculateState (PlayerState updatedState);
+    PlayerState calculateNewState (void);
+    PlayerState recalculateState (PlayerState updatedState);
 
 private:
-	PlayerState playerState;	///< The player's state at the time of rendering the frame.
-	InputState	inputState;		///< The player's input state at the time of rendering the frame.
-	Ogre::Real	timeSinceLastFrame;	///< The time since the last frame was rendered.
+    PlayerState playerState;	///< The player's state at the time of rendering the frame.
+    InputState	inputState;		///< The player's input state at the time of rendering the frame.
+    Ogre::Real	timeSinceLastFrame;	///< The time since the last frame was rendered.
 };
 
 #endif // #ifndef FRAME_H

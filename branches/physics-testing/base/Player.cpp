@@ -30,8 +30,10 @@ Player::~Player (void)
 /// @param  s   The texture to apply to the car model.
 void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore)
 {
+    std::string uniqueItemNo = Ogre::StringConverter::toString(physicsCore->getUniqueEntityID());
+
     // First set up the scene node relationships
-    playerNode = sm->getRootSceneNode()->createChildSceneNode("PlayerNode");
+    playerNode = sm->getRootSceneNode()->createChildSceneNode("PlayerNode" + uniqueItemNo);
     camArmNode = playerNode->createChildSceneNode("CamArmNode");
     camNode = camArmNode->createChildSceneNode("CamNode");
     carNode = playerNode->createChildSceneNode("CarNode");
@@ -39,10 +41,10 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     carRDoorNode = carNode->createChildSceneNode("CarRDoorNode");
     carFBumperNode = carNode->createChildSceneNode("CarFBumperNode");
     carRBumperNode = carNode->createChildSceneNode("CarRBumperNode");
-    carFLWheelNode = carNode->createChildSceneNode("CarFLWheelNode");
-    carFRWheelNode = carNode->createChildSceneNode("CarFRWheelNode");
-    carRLWheelNode = carNode->createChildSceneNode("CarRLWheelNode");
-    carRRWheelNode = carNode->createChildSceneNode("CarRRWheelNode");
+    carFLWheelNode = sm->getRootSceneNode()->createChildSceneNode("CarFLWheelNode");
+    carFRWheelNode = sm->getRootSceneNode()->createChildSceneNode("CarFRWheelNode");
+    carRLWheelNode = sm->getRootSceneNode()->createChildSceneNode("CarRLWheelNode");
+    carRRWheelNode = sm->getRootSceneNode()->createChildSceneNode("CarRRWheelNode");
 
     // sort out the camera's shit
     camArmNode->translate(0, 100, 0);
@@ -74,25 +76,27 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     // tidy front left wheel
     createGeometry(sm, "CarEntity_FLWheel", "car2_wheel.mesh", "car2_wheel", carFLWheelNode);
 //    carFLWheelNode->translate(45, 18, 95);
+    carFLWheelNode->scale(-1, 1, 1);
 
     // delightful front right wheel
     createGeometry(sm, "CarEntity_FRWheel", "car2_wheel.mesh", "car2_wheel", carFRWheelNode);
 //    carFRWheelNode->translate(-45, 18, 95);
-    carFRWheelNode->scale(-1, 1, 1);
+    //carFRWheelNode->scale(-1, 1, 1);
 
     // and now an arousing rear left wheel
     createGeometry(sm, "CarEntity_RLWheel", "car2_wheel.mesh", "car2_wheel", carRLWheelNode);
 //    carRLWheelNode->translate(45, 18, -72);
+    carRLWheelNode->scale(-1, 1, 1);
 
     // and finally a rear right wheel to seal the deal. beaut.
     createGeometry(sm, "CarEntity_RRWheel", "car2_wheel.mesh", "car2_wheel", carRRWheelNode);
 //    carRRWheelNode->translate(-45, 18, -72);
-    carRRWheelNode->scale(-1, 1, 1);
+    //carRRWheelNode->scale(-1, 1, 1);
 
 
-    const Ogre::Vector3 carPosition(15, 30,-25);
-    const Ogre::Vector3 chassisShift(0, 1.0, 0);
-    physicsCore->newCar(carPosition, chassisShift, playerNode, carFLWheelNode, carFRWheelNode, carRLWheelNode, carRRWheelNode);
+    const Ogre::Vector3 carPosition(0, 0, 0);
+    const Ogre::Vector3 chassisShift(0, 50.0, 0); // shift chassis collisionbox up 50 units above origin
+    mVehicle = physicsCore->newCar(carPosition, chassisShift, playerNode, carFLWheelNode, carFRWheelNode, carRLWheelNode, carRRWheelNode);
 }
 
 
@@ -131,8 +135,11 @@ void Player::updatePlayer (PlayerState newState)
 {
     state = newState;
 
-    playerNode->setPosition(newState.getLocation());
-    playerNode->setOrientation(Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y));
+    //playerNode->setPosition(newState.getLocation());
+    //playerNode->setOrientation(Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y));
+    mVehicle->applyEngineForce(5000., 2);
+    mVehicle->applyEngineForce(5000., 3);
+
 }
 
 

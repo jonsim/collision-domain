@@ -10,7 +10,7 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 
     mBulletGravity = Ogre::Vector3(0,-9.81,0);
     mBulletAlignedBox = Ogre::AxisAlignedBox(Ogre::Vector3(-10000, -10000, -10000), Ogre::Vector3(10000,  10000,  10000));
-    mBulletMoveSpeed = 50;   // defined in ExampleFrameListener
+    mBulletMoveSpeed = 9999;
     mNumEntitiesInstanced = 0; // how many shapes are created
 
     // Start Bullet
@@ -61,7 +61,7 @@ int PhysicsCore::getUniqueEntityID()
 void PhysicsCore::newPlane()
 {
     OgreBulletCollisions::CollisionShape *Shape;
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0); // (normal vector, distance)
+    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 12); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
             "BasePlane",
             mWorld);
@@ -97,13 +97,13 @@ void PhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Ve
 
 /** @brief There is still a lot of hardcoded stuff in here, which will vary depending on mesh size and initial rotation
 */
-void PhysicsCore::newCar(Ogre::Vector3 carPosition,
+OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPosition,
                          Ogre::Vector3 chassisShift,
                          Ogre::SceneNode *carNode,
-                         Ogre::SceneNode *wheelNode0,
-                         Ogre::SceneNode *wheelNode1,
-                         Ogre::SceneNode *wheelNode2,
-                         Ogre::SceneNode *wheelNode3)
+                         Ogre::SceneNode *wheelNodeFrontLeft,
+                         Ogre::SceneNode *wheelNodeFrontRight,
+                         Ogre::SceneNode *wheelNodeRearLeft,
+                         Ogre::SceneNode *wheelNodeRearRight)
 {
     OgreBulletDynamics::WheeledRigidBody *mCarChassis;
     OgreBulletDynamics::VehicleTuning    *mTuning;
@@ -121,12 +121,13 @@ void PhysicsCore::newCar(Ogre::Vector3 carPosition,
     static float gWheelRadius = 0.5f;
     static float gWheelWidth = 0.4f;
     static float gWheelFriction = 1e30f;//1000;//1e30f;
-    float connectionHeight = 0.7f;
+    float connectionHeight = 20.7f; // shift the wheels upwards
 
-    OgreBulletCollisions::BoxCollisionShape* chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.f,0.75f,2.1f));
+    OgreBulletCollisions::BoxCollisionShape* chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(50.f,36.f,140.0f));//Ogre::Vector3(1.f,0.75f,2.1f));
     OgreBulletCollisions::CompoundCollisionShape* compound = new OgreBulletCollisions::CompoundCollisionShape();
 
     compound->addChildShape(chassisShape, chassisShift);
+    
 
     mCarChassis = new OgreBulletDynamics::WheeledRigidBody("carChassis" + Ogre::StringConverter::toString(getUniqueEntityID()), mWorld); // name given here needs to be unique to have more than one in the scene
 
@@ -150,21 +151,21 @@ void PhysicsCore::newCar(Ogre::Vector3 carPosition,
     {
         // This line is needed otherwise the model appears wrongly rotated.
         mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
-		
+        
         Ogre::Vector3 wheelDirectionCS0(0,-1,0);
         Ogre::Vector3 wheelAxleCS(-1,0,0);
 
         {
-            #define CUBE_HALF_EXTENTS 1
+            #define CUBE_HALF_EXTENTS 50 // 1
             bool isFrontWheel = true;
 
-            // Wheel 1
+            // Wheel 1 - Front Left
             Ogre::Vector3 connectionPointCS0 (
                     CUBE_HALF_EXTENTS-(0.3*gWheelWidth),
                     connectionHeight,
                     2*CUBE_HALF_EXTENTS-gWheelRadius);
             mVehicle->addWheel(
-                    wheelNode0,
+                    wheelNodeFrontLeft,
                     connectionPointCS0,
                     wheelDirectionCS0,
                     wheelAxleCS,
@@ -172,13 +173,13 @@ void PhysicsCore::newCar(Ogre::Vector3 carPosition,
                     gWheelRadius,
                     isFrontWheel, gWheelFriction, gRollInfluence);
 
-            // Wheel 2
+            // Wheel 2 - Front Right
             connectionPointCS0 = Ogre::Vector3(
                     -CUBE_HALF_EXTENTS+(0.3*gWheelWidth),
                     connectionHeight,
                     2*CUBE_HALF_EXTENTS-gWheelRadius);
             mVehicle->addWheel(
-                    wheelNode1,
+                    wheelNodeFrontRight,
                     connectionPointCS0,
                     wheelDirectionCS0,
                     wheelAxleCS,
@@ -188,13 +189,13 @@ void PhysicsCore::newCar(Ogre::Vector3 carPosition,
 					
             isFrontWheel = false;
 
-            // Wheel 3
+            // Wheel 3 - Rear Right
             connectionPointCS0 = Ogre::Vector3(
                     -CUBE_HALF_EXTENTS+(0.3*gWheelWidth),
                     connectionHeight,
                     -2*CUBE_HALF_EXTENTS+gWheelRadius);
             mVehicle->addWheel(
-                    wheelNode2,
+                    wheelNodeRearRight,
                     connectionPointCS0,
                     wheelDirectionCS0,
                     wheelAxleCS,
@@ -202,13 +203,13 @@ void PhysicsCore::newCar(Ogre::Vector3 carPosition,
                     gWheelRadius,
                     isFrontWheel, gWheelFriction, gRollInfluence);
 
-            // Wheel 4
+            // Wheel 4 - Rear Left
             connectionPointCS0 = Ogre::Vector3(
                     CUBE_HALF_EXTENTS-(0.3*gWheelWidth),
                     connectionHeight,
                     -2*CUBE_HALF_EXTENTS+gWheelRadius);
             mVehicle->addWheel(
-                    wheelNode3,
+                    wheelNodeRearLeft,
                     connectionPointCS0,
                     wheelDirectionCS0,
                     wheelAxleCS,
@@ -216,5 +217,7 @@ void PhysicsCore::newCar(Ogre::Vector3 carPosition,
                     gWheelRadius,
                     isFrontWheel, gWheelFriction, gRollInfluence);
         }
+
+        return mVehicle;
     }
 }

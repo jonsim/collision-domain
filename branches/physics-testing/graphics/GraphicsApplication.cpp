@@ -127,6 +127,9 @@ void GraphicsApplication::setupArena (void)
     wallNode2->roll(Ogre::Degree(90));
     wallNode4->pitch(Ogre::Degree(-90));
     wallNode4->roll(Ogre::Degree(-90));
+
+    // create collideable floor so shit doesn't freefall. It will hit the floor.
+    mPhysicsCore->newPlane();
 }
 
 
@@ -176,9 +179,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // Update the player.
     players[clientID].updatePlayer(newPlayerState);
     players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
-    players[clientID].updateWheels(inputState.getLeftRght());
+//    players[clientID].updateWheels(inputState.getLeftRght());
 
-    // Perform Client Side Prediction.
+    // Perform Client Side Prediction. Possibly in a new thread.
 
 
     return true;
