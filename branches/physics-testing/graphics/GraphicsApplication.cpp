@@ -1,6 +1,6 @@
 /**
- * @file	GraphicsApplication.cpp
- * @brief 	Adds objects to the graphics interface.
+ * @file    GraphicsApplication.cpp
+ * @brief     Adds objects to the graphics interface.
  *          Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
  */
 
@@ -36,14 +36,14 @@ void GraphicsApplication::createScene (void)
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
-	ninjaNode->translate(0, 0, 0);
+    ninjaNode->translate(0, 0, 0);
     Ogre::Entity* ninjaEntity2 = mSceneMgr->createEntity("Ninja2", "ninja.mesh");
     ninjaEntity2->setCastShadows(true);
     Ogre::SceneNode* ninjaNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
     ninjaNode2->attachObject(ninjaEntity2);
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
-	ninjaNode2->translate(0, 100, 0);
+    ninjaNode2->translate(0, 100, 0);
     
     // Add all players
     players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0, mPhysicsCore);
@@ -130,6 +130,15 @@ void GraphicsApplication::setupArena (void)
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
     mPhysicsCore->newPlane();
+    //make the four walls collidable
+    mPhysicsCore->addCube("wallObstacle1", Ogre::Vector3(0,  100, 2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                          Ogre::Vector3::UNIT_X), Ogre::Vector3(2500, 10, 100), 0.3, 0.8, 0);
+    mPhysicsCore->addCube("wallObstacle2", Ogre::Vector3(2510, 100, 10), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                              Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2510, 100), 0.3, 0.8, 0);
+    mPhysicsCore->addCube("wallObstacle3", Ogre::Vector3(0, 100, -2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(2510, 10, 100), 0.3, 0.8, 0);
+    mPhysicsCore->addCube("wallObstacle4", Ogre::Vector3(-2510, 100, 0), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2500, 100), 0.3, 0.8, 0);
 }
 
 
@@ -144,7 +153,7 @@ void GraphicsApplication::setupNetworking (void)
 /// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
-	GraphicsCore::createFrameListener();
+    GraphicsCore::createFrameListener();
 }
 
 
@@ -243,6 +252,11 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
         players[clientID].mVehicle->applyEngineForce(150000,0);
         players[clientID].mVehicle->applyEngineForce(150000,1);
     }
+    else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_S))
+    {
+        players[clientID].mVehicle->applyEngineForce(-150000, 0);
+        players[clientID].mVehicle->applyEngineForce(-150000, 1);
+    }
     else
     {
         players[clientID].mVehicle->applyEngineForce(0,0);
@@ -297,3 +311,4 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
