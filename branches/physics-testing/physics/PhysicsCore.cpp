@@ -75,8 +75,40 @@ void PhysicsCore::newPlane()
     mBodies.push_back(defaultPlaneBody);
 }
 
+void PhysicsCore::addCube(Ogre::String instanceName,
+                                       Ogre::Vector3 pos, Ogre::Quaternion q, Ogre::Vector3 size,
+                                       Ogre::Real bodyRestitution, Ogre::Real bodyFriction,
+                                       Ogre::Real bodyMass)
+{
+    Ogre::Entity *entity = mSceneMgr->createEntity(instanceName , "Bulletbox.mesh");
+    // "Crate.mesh");
+    // "Crate1.mesh");
+    // "Crate2.mesh");
 
-void PhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised)
+
+    entity->setQueryFlags (GEOMETRY_QUERY_MASK);
+#if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0)) // only applicable before shoggoth (1.5.0)
+    entity->setNormaliseNormals(true);
+#endif
+    entity->setCastShadows(true);
+
+    entity->setMaterialName("Bullet/box");
+
+    OgreBulletCollisions::BoxCollisionShape *sceneCubeShape = new OgreBulletCollisions::BoxCollisionShape(size);
+
+    OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(instanceName, mWorld);
+
+    Ogre::SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
+    node->attachObject (entity);
+
+    defaultBody->setShape (node,  sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
+
+    mShapes.push_back(sceneCubeShape);
+    mBodies.push_back(defaultBody);
+
+}
+
+void PhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass)
 {
     size *= 0.05f; // don't forget to scale down the Bullet-box too
     // after that create the Bullet shape with the calculated size
@@ -89,11 +121,11 @@ void PhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Ve
                           sceneBoxShape,
                           0.6f,         // dynamic body restitution
                           0.6f,         // dynamic body friction
-                          1.0f,          // dynamic bodymass
+                          mass,          // dynamic bodymass
                           position,      // starting position of the box
-                          Ogre::Quaternion(0,0,0,1));// orientation of the box
+                          Ogre::Quaternion(0,0,2,1));// orientation of the box
     defaultBody->setLinearVelocity(cameraDirectionNormalised * 7.0f ); // shooting speed
-	    // push the created objects to the deques
+        // push the created objects to the deques
     mShapes.push_back(sceneBoxShape);
     mBodies.push_back(defaultBody);
 }
@@ -113,7 +145,7 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
     OgreBulletDynamics::VehicleTuning    *mTuning;
     OgreBulletDynamics::VehicleRayCaster *mVehicleRayCaster;
     OgreBulletDynamics::RaycastVehicle   *mVehicle;
-			
+            
     static float gSuspensionStiffness = 20.f;
     static float gSuspensionDamping = 2.3f;
     static float gSuspensionCompression = 4.4f;
@@ -151,7 +183,7 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
 
     mVehicleRayCaster = new OgreBulletDynamics::VehicleRayCaster(mWorld);
     mVehicle = new OgreBulletDynamics::RaycastVehicle(mCarChassis, mTuning, mVehicleRayCaster);
-	
+    
     {
         // This line is needed otherwise the model appears wrongly rotated.
         mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
@@ -190,7 +222,7 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
                     gSuspensionRestLength,
                     gWheelRadius,
                     isFrontWheel, gWheelFriction, gRollInfluence);
-					
+                    
             isFrontWheel = false;
 
             // Wheel 3 - Rear Right
@@ -225,3 +257,4 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
         return mVehicle;
     }
 }
+
