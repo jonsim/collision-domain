@@ -23,7 +23,7 @@ public:
     virtual ~PhysicsCore(void);
     int getUniqueEntityID(void);
     void newPlane();
-    void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised);
+    void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
     OgreBulletDynamics::RaycastVehicle *newCar(Ogre::Vector3 carPosition,
                                                Ogre::Vector3 chassisShift,
                                                Ogre::SceneNode *carNode,
@@ -31,6 +31,8 @@ public:
                                                Ogre::SceneNode *wheelNodeFrontRight,
                                                Ogre::SceneNode *wheelNodeRearLeft,
                                                Ogre::SceneNode *wheelNodeRearRight);
+    void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
+                 const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);
 
 private:
     Ogre::SceneManager* mSceneMgr; // Graphics object
@@ -43,3 +45,4 @@ private:
 };
 
 #endif // #ifndef __PhysicsCore_h_
+
