@@ -10,7 +10,7 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 
     // Gravity is not in the normal sense. Acceleration will look "normal" when the value is set to
     // the number of units used for a model of height 1m
-    mBulletGravity = Ogre::Vector3(0,-72./*-9.81*/,0);
+    mBulletGravity = Ogre::Vector3(0,-82./*-9.81*/,0);
 
 
 
@@ -62,7 +62,7 @@ int PhysicsCore::getUniqueEntityID()
 }
 
 
-void PhysicsCore::newPlane()
+void PhysicsCore::createFloorPlane()
 {
     OgreBulletCollisions::CollisionShape *Shape;
     Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 12); // (normal vector, distance)
@@ -74,6 +74,67 @@ void PhysicsCore::newPlane()
     mShapes.push_back(Shape);
     mBodies.push_back(defaultPlaneBody);
 }
+
+
+void PhysicsCore::createWallPlanes()
+{
+    // -2500 is good 2500 is bad. positive distances DO NOT WORK. Seriously, don't even bother
+    OgreBulletCollisions::CollisionShape *Shape2;
+    Shape2 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,1), -2500); // (normal vector, distance)
+    OgreBulletDynamics::RigidBody *defaultPlaneBody2 = new OgreBulletDynamics::RigidBody(
+            "BasePlane2",
+            mWorld);
+    defaultPlaneBody2->setStaticShape(Shape2, 0.1, 0.8); // (shape, restitution, friction)
+    //defaultPlaneBody2-> ->setPosition();
+    // push the created objects to the deques
+    mShapes.push_back(Shape2);
+    mBodies.push_back(defaultPlaneBody2);
+
+
+    OgreBulletCollisions::CollisionShape *Shape3;
+    Shape3 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,-1), -2500); // (normal vector, distance)
+    OgreBulletDynamics::RigidBody *defaultPlaneBody3 = new OgreBulletDynamics::RigidBody(
+            "BasePlane3",
+            mWorld);
+    defaultPlaneBody3->setStaticShape(Shape3, 0.1, 0.8); // (shape, restitution, friction)
+    // push the created objects to the deques
+    mShapes.push_back(Shape3);
+    mBodies.push_back(defaultPlaneBody3);
+
+    
+    OgreBulletCollisions::CollisionShape *Shape4;
+    Shape4 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(1,0,0), -2500); // (normal vector, distance)
+    OgreBulletDynamics::RigidBody *defaultPlaneBody4 = new OgreBulletDynamics::RigidBody(
+            "BasePlane4",
+            mWorld);
+    defaultPlaneBody4->setStaticShape(Shape4, 0.1, 0.8); // (shape, restitution, friction)
+    // push the created objects to the deques
+    mShapes.push_back(Shape4);
+    mBodies.push_back(defaultPlaneBody4);
+
+
+    OgreBulletCollisions::CollisionShape *Shape5;
+    Shape5 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(-1,0,0), -2500); // (normal vector, distance)
+    OgreBulletDynamics::RigidBody *defaultPlaneBody5 = new OgreBulletDynamics::RigidBody(
+            "BasePlane5",
+            mWorld);
+    defaultPlaneBody5->setStaticShape(Shape5, 0.1, 0.8); // (shape, restitution, friction)
+    // push the created objects to the deques
+    mShapes.push_back(Shape5);
+    mBodies.push_back(defaultPlaneBody5);
+	
+	
+    //make the four walls collidable
+    /*mPhysicsCore->addCube("wallObstacle1", Ogre::Vector3(0,  100, 2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                          Ogre::Vector3::UNIT_X), Ogre::Vector3(2500, 10, 100), 0.3, 0.8, 0);
+    mPhysicsCore->addCube("wallObstacle2", Ogre::Vector3(2510, 100, 10), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                              Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2510, 100), 0.3, 0.8, 0);
+    mPhysicsCore->addCube("wallObstacle3", Ogre::Vector3(0, 100, -2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(2510, 10, 100), 0.3, 0.8, 0);
+    mPhysicsCore->addCube("wallObstacle4", Ogre::Vector3(-2510, 100, 0), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
+                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2500, 100), 0.3, 0.8, 0);*/
+}
+
 
 void PhysicsCore::addCube(Ogre::String instanceName,
                                        Ogre::Vector3 pos, Ogre::Quaternion q, Ogre::Vector3 size,
@@ -157,7 +218,7 @@ OgreBulletDynamics::RaycastVehicle *PhysicsCore::newCar(Ogre::Vector3 carPositio
     static float gWheelRadius = 50.f; // very high values put front wheels at back
     static float gWheelWidth = 20.f; // very high values bring wheels together
     static float gWheelFriction = 1000;//1e30f;//1000;//1e30f;
-    float connectionHeight = 30.f; // shift the wheels upwards
+    float connectionHeight = 28.f; // shift the wheels upwards
 
     OgreBulletCollisions::BoxCollisionShape* chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(50.f,36.f,140.0f));//Ogre::Vector3(1.f,0.75f,2.1f));
     OgreBulletCollisions::CompoundCollisionShape* compound = new OgreBulletCollisions::CompoundCollisionShape();

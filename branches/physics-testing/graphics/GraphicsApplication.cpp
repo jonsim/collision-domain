@@ -129,16 +129,8 @@ void GraphicsApplication::setupArena (void)
     wallNode4->roll(Ogre::Degree(-90));
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
-    mPhysicsCore->newPlane();
-    //make the four walls collidable
-    mPhysicsCore->addCube("wallObstacle1", Ogre::Vector3(0,  100, 2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                          Ogre::Vector3::UNIT_X), Ogre::Vector3(2500, 10, 100), 0.3, 0.8, 0);
-    mPhysicsCore->addCube("wallObstacle2", Ogre::Vector3(2510, 100, 10), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                              Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2510, 100), 0.3, 0.8, 0);
-    mPhysicsCore->addCube("wallObstacle3", Ogre::Vector3(0, 100, -2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(2510, 10, 100), 0.3, 0.8, 0);
-    mPhysicsCore->addCube("wallObstacle4", Ogre::Vector3(-2510, 100, 0), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2500, 100), 0.3, 0.8, 0);
+    mPhysicsCore->createFloorPlane();
+    mPhysicsCore->createWallPlanes();
 }
 
 
@@ -210,26 +202,6 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
     // and rely on the server to solve.
 
-    // Check for key presses
-    /*if ((mUserInput.mKeyboard->isKeyDown(OIS::KC_LEFT) || mUserInput.mKeyboard->isKeyDown(OIS::KC_RIGHT))
-        && !(mUserInput.mKeyboard->isKeyDown(OIS::KC_LEFT) && mUserInput.mKeyboard->isKeyDown(OIS::KC_RIGHT))) 
-    {
-        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_LEFT))
-        {
-            players[clientID].mVehicle->setSteeringValue(0.8,0);
-            players[clientID].mVehicle->setSteeringValue(0.8,1);
-        }
-        else
-        {
-            players[clientID].mVehicle->setSteeringValue(-0.8,0);
-            players[clientID].mVehicle->setSteeringValue(-0.8,1);
-        }
-    }
-    else
-    {
-        players[clientID].mVehicle->setSteeringValue(0.,0);
-        players[clientID].mVehicle->setSteeringValue(0.,1);
-    }*/
     
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_A))
     {

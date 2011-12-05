@@ -22,7 +22,8 @@ public:
     PhysicsCore(Ogre::SceneManager* sceneMgr);
     virtual ~PhysicsCore(void);
     int getUniqueEntityID(void);
-    void newPlane();
+    void createFloorPlane();
+    void createWallPlanes();
     void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
     OgreBulletDynamics::RaycastVehicle *newCar(Ogre::Vector3 carPosition,
                                                Ogre::Vector3 chassisShift,
