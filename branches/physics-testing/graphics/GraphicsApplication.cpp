@@ -205,37 +205,37 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_A))
     {
-            players[clientID].mVehicle->setSteeringValue(0.8,0);
-            players[clientID].mVehicle->setSteeringValue(0.8,1);
+            //players[clientID].mVehicle->setSteeringValue(0.8,0);
+            //players[clientID].mVehicle->setSteeringValue(0.8,1);
     }
     else if (mUserInput.mKeyboard->isKeyDown(OIS::KC_D))
     {
-        players[clientID].mVehicle->setSteeringValue(-0.8,0);
-        players[clientID].mVehicle->setSteeringValue(-0.8,1);
+        //players[clientID].mVehicle->setSteeringValue(-0.8,0);
+        //players[clientID].mVehicle->setSteeringValue(-0.8,1);
     }
     else
     {
-        players[clientID].mVehicle->setSteeringValue(0,0);
-        players[clientID].mVehicle->setSteeringValue(0,1);
+        //players[clientID].mVehicle->setSteeringValue(0,0);
+        //players[clientID].mVehicle->setSteeringValue(0,1);
     }
 
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_W))
     {
-        players[clientID].mVehicle->applyEngineForce(150000,0);
-        players[clientID].mVehicle->applyEngineForce(150000,1);
+        //players[clientID].mVehicle->applyEngineForce(150000,0);
+        //players[clientID].mVehicle->applyEngineForce(150000,1);
     }
     else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_S))
     {
-        players[clientID].mVehicle->applyEngineForce(-150000, 0);
-        players[clientID].mVehicle->applyEngineForce(-150000, 1);
+        //players[clientID].mVehicle->applyEngineForce(-150000, 0);
+        //players[clientID].mVehicle->applyEngineForce(-150000, 1);
     }
     else
     {
-        players[clientID].mVehicle->applyEngineForce(0,0);
-        players[clientID].mVehicle->applyEngineForce(0,1);
+        //players[clientID].mVehicle->applyEngineForce(0,0);
+        //players[clientID].mVehicle->applyEngineForce(0,1);
     }
 
-    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/3, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 
@@ -247,7 +247,7 @@ bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
     // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
     // 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
     // as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
-    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/3, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 

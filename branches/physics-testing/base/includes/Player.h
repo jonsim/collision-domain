@@ -26,7 +26,7 @@ class Player //: public PhysicsEntity
 {
  
 public:
-    OgreBulletDynamics::RaycastVehicle *mVehicle;
+    //OgreBulletDynamics::RaycastVehicle *mVehicle;
 
     Player (void);
     ~Player (void);
@@ -41,24 +41,25 @@ private:
     PlayerState state;              ///< The player's current state.
     const float cameraRotationConstant;
 
-    Ogre::SceneNode* playerNode;	///< The complete player node - this is what should be moved when the car moves.
+    //Ogre::SceneNode* playerNode;	///< The complete player node - this is what should be moved when the car moves.
     Ogre::SceneNode* camNode;		///< The node onto which a camera can be attached to observe the car.
     Ogre::SceneNode* camArmNode;
-    Ogre::SceneNode* carNode;		///< The node onto which the car object and its components attach.
-    Ogre::SceneNode* carLDoorNode;
-    Ogre::SceneNode* carRDoorNode;
-    Ogre::SceneNode* carFBumperNode;
-    Ogre::SceneNode* carRBumperNode;
-    Ogre::SceneNode* carFLWheelNode;
-    Ogre::SceneNode* carFRWheelNode;
-    Ogre::SceneNode* carRLWheelNode;
-    Ogre::SceneNode* carRRWheelNode;
+    //Ogre::SceneNode* bodyNode;		///< The node onto which the car object and its components attach.
+    //Ogre::SceneNode* wheelsNode;
+    //Ogre::SceneNode* carLDoorNode;
+    //Ogre::SceneNode* carRDoorNode;
+    //Ogre::SceneNode* carFBumperNode;
+    //Ogre::SceneNode* carRBumperNode;
+    //Ogre::SceneNode* carFLWheelNode;
+    //Ogre::SceneNode* carFRWheelNode;
+    //Ogre::SceneNode* carRLWheelNode;
+    //Ogre::SceneNode* carRRWheelNode;
 
-    void createGeometry(Ogre::SceneManager *sm,
+    /*void createGeometry(Ogre::SceneManager *sm,
                         const std::string &entityName,
                         const std::string &meshName,
                         const std::string &materialName,
-                        Ogre::SceneNode *toAttachTo);
+                        Ogre::SceneNode *toAttachTo);*/
 };
 
 #endif // #ifndef PLAYER_H
