@@ -181,7 +181,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     PlayerState newPlayerState = frame.calculateNewState();
     
     // Update the player.
-    players[clientID].processControls(&mUserInput);
+    players[clientID].processControlsTick(&mUserInput);
     players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
 
     // Perform Client Side Prediction. Possibly in a new thread.
@@ -204,14 +204,14 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
     // and rely on the server to solve.
 
-    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/0, /*fixedTimeStep*/1./60.);
+    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);
     return true;
 }
 
 
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
-    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/0, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 

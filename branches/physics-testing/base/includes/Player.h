@@ -35,7 +35,7 @@ public:
     void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
     void updatePlayer (PlayerState newState);
-    void processControls(Input *userInput);
+    void processControlsTick(Input *userInput);
     void updateWheels (signed char m);
     void updateCamera (int XRotation, int YRotation);
     PlayerState getPlayerState (void);

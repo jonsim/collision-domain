@@ -7,26 +7,32 @@ using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
 
 
-OgreBulletDynamics::RaycastVehicle *BulletBuggyCar::getVehicle()
+void BulletBuggyCar::initTuning()
 {
-    return mVehicle;
+    // mTuning related values
+    mSteer = 0.0f;
+    
+    // mTuning fixed properties
+    mSuspensionStiffness    =  20.0f;
+    mSuspensionDamping      =   2.3f;
+    mSuspensionCompression  =   4.4f;
+    mRollInfluence          =   0.1f;//1.0f;
+    mSuspensionRestLength   =   0.6f;
+    mMaxSuspensionTravelCm  = 500.0f;
+    mFrictionSlip           =  10.5f;
+
+    mWheelRadius      =  0.5f;
+    mWheelWidth       =  0.4f;
+    mWheelFriction    = 1e30f;//1000;//1e30f;
+    mConnectionHeight =  0.7f;
+    
+    mSteerIncrement = 0.025f;
+    mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
+    mSteerClamp = 0.75f;
+
+    mMaxAccelForce = 3000.0f;
+    mMaxBrakeForce = 4000.0f;
 }
-
-
-/// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
-/// @return The node onto which a camera can be attached to observe the car.
-Ogre::SceneNode *BulletBuggyCar::attachCamNode()
-{
-    if (mCamNode != NULL) return mCamNode;
-
-    // else we need to make a new camera
-    mCamArmNode = mBodyNode->createChildSceneNode("CamArmNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mCamNode = mCamArmNode->createChildSceneNode("CamNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
-    return mCamNode;
-}
-
-
 
 
 
@@ -66,23 +72,6 @@ BulletBuggyCar::~BulletBuggyCar(void)
 }
 
 
-void BulletBuggyCar::initTuning()
-{
-    mSuspensionStiffness    =  20.0f;
-    mSuspensionDamping      =   2.3f;
-    mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;//1.0f;
-    mSuspensionRestLength   =   0.6f;
-    mMaxSuspensionTravelCm  = 500.0f;
-    mFrictionSlip           =  10.5f;
-
-    mWheelRadius      =  0.5f;
-    mWheelWidth       =  0.4f;
-    mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f;
-}
-
-
 void BulletBuggyCar::initNodes()
 {
     mPlayerNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -110,20 +99,20 @@ void BulletBuggyCar::initNodes()
 void BulletBuggyCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    createGeometry("CarBody", "chassis.mesh", "car2_body", mChassisNode); // "car2_body.mesh"
+    createGeometry("CarBody", "chassis.mesh", mChassisNode); // "car2_body.mesh"
     mChassisNode->setPosition(chassisShift);
 
     // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "wheel.mesh", "car2_wheel", mFLWheelNode);
+    createGeometry("CarEntity_FLWheel", "wheel.mesh", mFLWheelNode);
 
     // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "wheel.mesh", "car2_wheel", mFRWheelNode);
+    createGeometry("CarEntity_FRWheel", "wheel.mesh", mFRWheelNode);
 
     // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "wheel.mesh", "car2_wheel", mRLWheelNode);
+    createGeometry("CarEntity_RLWheel", "wheel.mesh", mRLWheelNode);
 
     // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "wheel.mesh", "car2_wheel", mRRWheelNode);
+    createGeometry("CarEntity_RRWheel", "wheel.mesh", mRRWheelNode);
 }
 
 
@@ -185,24 +174,3 @@ void BulletBuggyCar::initWheels()
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 }
-
-
-void BulletBuggyCar::createGeometry(const std::string &entityName,
-                    const std::string &meshName,
-                    const std::string &materialName,
-                    Ogre::SceneNode *toAttachTo)
-{
-    Ogre::Entity* entity;
-    entity = mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
-    //entity->setMaterialName(materialName);
-
-    int GEOMETRY_QUERY_MASK = 1<<2;
-    entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
-#if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0))
-    entity->setNormaliseNormals(true);
-#endif // only applicable before shoggoth (1.5.0)
-
-    //entity->setCastShadows(true);
-    toAttachTo->attachObject(entity);
-}
-

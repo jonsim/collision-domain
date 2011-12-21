@@ -66,28 +66,25 @@ void Player::attachCamera (Ogre::Camera* cam)
 
 /// @brief  Updates the Player's PlayerState to the one provided.
 /// @param  newState    The new state to update to.
-void Player::processControls(Input *userInput)
+void Player::processControlsTick(Input *userInput)
 {
     // apply csp
     // create new PlayerState newState from generated controls
     
     //state = newState; - store the states for later
     
-    // process steering on both wheels (+1 = left, -1 = right)
-    float leftRight = 0;
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_A)) leftRight += 1.0f;
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_D)) leftRight -= 1.0f;
-
-    mCar->getVehicle()->setSteeringValue(leftRight, 0);
-    mCar->getVehicle()->setSteeringValue(leftRight, 1);
+    // process steering
+    mCar->steerInputTick(
+        userInput->mKeyboard->isKeyDown(OIS::KC_A),
+        userInput->mKeyboard->isKeyDown(OIS::KC_D));
     
     // apply acceleration 4wd style
-    float forwardBack = 0;
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_W)) forwardBack += 1.0f;
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_S)) forwardBack -= 1.0f;
+    mCar->accelInputTick(
+        userInput->mKeyboard->isKeyDown(OIS::KC_W),
+        userInput->mKeyboard->isKeyDown(OIS::KC_S));
 
-    mCar->getVehicle()->applyEngineForce(3000.0 * forwardBack, 0);
-    mCar->getVehicle()->applyEngineForce(3000.0 * forwardBack, 1);
+    //xyz, wxyz
+   // mCar->mPlayerNode->
 
     //playerNode->setPosition(newState.getLocation());
     //playerNode->setOrientation(Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y));

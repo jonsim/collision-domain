@@ -7,24 +7,33 @@ using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
 
 
-OgreBulletDynamics::RaycastVehicle *SimpleCoupeCar::getVehicle()
+void SimpleCoupeCar::initTuning()
 {
-    return mVehicle;
+    // mTuning related values
+    mSteer = 0.0f;
+    
+    // mTuning fixed properties
+    mSuspensionStiffness    =  20.0f;
+    mSuspensionDamping      =   2.3f;
+    mSuspensionCompression  =   4.4f;
+    mRollInfluence          =   0.1f;//1.0f;
+    mSuspensionRestLength   =   0.6f;
+    mMaxSuspensionTravelCm  = 500.0f;
+    mFrictionSlip           =  10.5f;
+
+    mWheelRadius      =  0.361902462f;
+    mWheelWidth       =  0.1349448267f;
+    mWheelFriction    = 1e30f;//1000;//1e30f;
+    mConnectionHeight =  0.7f;
+    
+    mSteerIncrement = 0.025f;
+    mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
+    mSteerClamp = 0.75f;
+
+    mMaxAccelForce = 3000.0f;
+    mMaxBrakeForce = 4000.0f;
 }
 
-
-/// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
-/// @return The node onto which a camera can be attached to observe the car.
-Ogre::SceneNode *SimpleCoupeCar::attachCamNode()
-{
-    if (mCamNode != NULL) return mCamNode;
-
-    // else we need to make a new camera
-    mCamArmNode = mBodyNode->createChildSceneNode("CamArmNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mCamNode = mCamArmNode->createChildSceneNode("CamNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
-    return mCamNode;
-}
 
 
 
@@ -63,23 +72,6 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     // Cleanup Shapes:
     delete compoundChassisShape;
     delete chassisShape;
-}
-
-
-void SimpleCoupeCar::initTuning()
-{
-    mSuspensionStiffness    =  20.0f;
-    mSuspensionDamping      =   2.3f;
-    mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;//1.0f;
-    mSuspensionRestLength   =   0.6f;
-    mMaxSuspensionTravelCm  = 500.0f;
-    mFrictionSlip           =  10.5f;
-
-    mWheelRadius      =  0.361902462f;
-    mWheelWidth       =  0.1349448267f;
-    mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f;
 }
 
 
@@ -216,27 +208,5 @@ void SimpleCoupeCar::initWheels()
     connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, -2*CUBE_HALF_EXTENTS+mWheelRadius);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
-}
-
-
-void SimpleCoupeCar::createGeometry(const std::string &entityName,
-                    const std::string &meshName,
-                    const std::string &materialName,
-                    Ogre::SceneNode *toAttachTo)
-{
-    Ogre::Entity* entity;
-    entity = mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
-    //entity->setMaterialName(materialName);
-    //toAttachTo->scale(0.5, 0.5, 0.5);
-
-    int GEOMETRY_QUERY_MASK = 1<<2;
-    entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
-#if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0))
-    entity->setNormaliseNormals(true);
-#endif // only applicable before shoggoth (1.5.0)
-
-    //DOESNT WORKmSceneMgr->setFlipCullingOnNegativeScale(false); // make sure that the culling mesh gets flipped for negatively scaled nodes
-    entity->setCastShadows(true);
-    toAttachTo->attachObject(entity);
 }
 
