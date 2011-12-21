@@ -1,13 +1,58 @@
 
 
 #include "stdafx.h"
-#include "Car.h"
-#include "boost\lexical_cast.hpp"
+#include "cars/SimpleCoupeCar.h"
 
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
 
-Car::~Car(void)
+
+OgreBulletDynamics::RaycastVehicle *SimpleCoupeCar::getVehicle()
+{
+    return mVehicle;
+}
+
+
+/// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
+/// @return The node onto which a camera can be attached to observe the car.
+Ogre::SceneNode *SimpleCoupeCar::attachCamNode()
+{
+    if (mCamNode != NULL) return mCamNode;
+
+    // else we need to make a new camera
+    mCamArmNode = mBodyNode->createChildSceneNode("CamArmNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mCamNode = mCamArmNode->createChildSceneNode("CamNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+
+    return mCamNode;
+}
+
+
+
+
+
+
+
+
+
+
+SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
+{
+    mSceneMgr = sceneMgr;
+    mWorld = world;
+    mUniqueCarID = uniqueCarID;
+    
+    Ogre::Vector3 carPosition(16, 13, -15);
+    Ogre::Vector3 chassisShift(0, 0.97, 0);
+
+    initTuning();
+    initNodes();
+    initGraphics(chassisShift);
+    initBody(carPosition, chassisShift);
+    initWheels();
+}
+
+
+SimpleCoupeCar::~SimpleCoupeCar(void)
 {
     // Cleanup Bodies:
     delete mVehicle;
@@ -20,21 +65,8 @@ Car::~Car(void)
     delete chassisShape;
 }
 
-Car::Car(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
-{
-    mSceneMgr = sceneMgr;
-    mWorld = world;
-    mUniqueCarID = uniqueCarID;
-    
-    initTuning();
-    initNodes();
-    initGraphics();
-    initBody();
-    initWheels();
-}
 
-
-void Car::initTuning()
+void SimpleCoupeCar::initTuning()
 {
     mSuspensionStiffness    =  20.0f;
     mSuspensionDamping      =   2.3f;
@@ -44,14 +76,14 @@ void Car::initTuning()
     mMaxSuspensionTravelCm  = 500.0f;
     mFrictionSlip           =  10.5f;
 
-    mWheelRadius      =  0.5f;
-    mWheelWidth       =  0.4f;
+    mWheelRadius      =  0.361902462f;
+    mWheelWidth       =  0.1349448267f;
     mWheelFriction    = 1e30f;//1000;//1e30f;
     mConnectionHeight =  0.7f;
 }
 
 
-void Car::initNodes()
+void SimpleCoupeCar::initNodes()
 {
     mPlayerNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
@@ -75,66 +107,63 @@ void Car::initNodes()
 }
 
 
-void Car::initGraphics()
+void SimpleCoupeCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    createGeometry("CarBody", "chassis.mesh", "car2_body", mChassisNode); // "car2_body.mesh"
-    Ogre::Vector3 chassisShift(0, 1.0, 0);
-    mChassisNode->setPosition(chassisShift);
-
-    //mBodyNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
+    createGeometry("CarBody", "car2_body.mesh", "car2_body", mChassisNode);
+    mChassisNode->scale(0.019, 0.019, 0.019);
+   // mChassisNode->setPosition(chassisShift); - Doesn't work well with this mesh!!!
 
     // load the left door baby
-    //createGeometry("CarEntity_LDoor", "car2_door.mesh", "car2_door", mLDoorNode);
-    //mLDoorNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-    //mLDoorNode->translate(43, 20, 22);
+    createGeometry("CarEntity_LDoor", "car2_door.mesh", "car2_door", mLDoorNode);
+    mLDoorNode->scale(0.019, 0.019, 0.019);
+    mLDoorNode->translate(43.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
     
     // lets get a tasty right door
-    //createGeometry("CarEntity_RDoor", "car2_door.mesh", "car2_door", mRDoorNode);
-    //mRDoorNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-    //mRDoorNode->scale(-1, 1, 1);
-    //mRDoorNode->translate(-46, 20, 22);
+    createGeometry("CarEntity_RDoor", "car2_door.mesh", "car2_door", mRDoorNode);
+    mRDoorNode->scale(-1, 1, 1);
+    mRDoorNode->scale(0.019, 0.019, 0.019);
+    mRDoorNode->translate(-46.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
 
     // and now a sweet sweet front bumper
-    //createGeometry("CarEntity_FBumper", "car2_Fbumper.mesh", "car2_Fbumper", mFBumperNode);
-    //mFBumperNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-    //mFBumperNode->translate(0, 20, 140);
+    createGeometry("CarEntity_FBumper", "car2_Fbumper.mesh", "car2_Fbumper", mFBumperNode);
+    mFBumperNode->scale(0.019, 0.019, 0.019);
+    mFBumperNode->translate(0, 20.0 * 0.019, 140.0 * 0.019);
 
     // and now a regular rear bumper
-    //createGeometry("CarEntity_RBumper", "car2_Rbumper.mesh", "car2_Rbumper", mRBumperNode);
-    //mRBumperNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-    //mRBumperNode->translate(0, 20, -135);
+    createGeometry("CarEntity_RBumper", "car2_Rbumper.mesh", "car2_Rbumper", mRBumperNode);
+    mRBumperNode->scale(-1, 1, 1);
+    mRBumperNode->scale(0.019, 0.019, 0.019);
+    mRBumperNode->translate(0, 20.0 * 0.019, -135.0 * 0.019);
 
     // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "wheel.mesh", "car2_wheel", mFLWheelNode); // "car2_wheel.mesh"
-    //mFLWheelNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-    //mFLWheelNode->scale(-1, 1, 1);
+    createGeometry("CarEntity_FLWheel", "car2_wheel.mesh", "car2_wheel", mFLWheelNode);
+    mFLWheelNode->scale(-1, 1, 1);
+    mFLWheelNode->scale(0.019, 0.019, 0.019);
 
     // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "wheel.mesh", "car2_wheel", mFRWheelNode); // "car2_wheel.mesh"
-    //mFRWheelNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
+    createGeometry("CarEntity_FRWheel", "car2_wheel.mesh", "car2_wheel", mFRWheelNode);
+    mFRWheelNode->scale(0.019, 0.019, 0.019);
 
     // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "wheel.mesh", "car2_wheel", mRLWheelNode); // "car2_wheel.mesh"
-    //mRLWheelNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-    //mRLWheelNode->scale(-1, 1, 1);
+    createGeometry("CarEntity_RLWheel", "car2_wheel.mesh", "car2_wheel", mRLWheelNode);
+    mRLWheelNode->scale(-1, 1, 1);
+    mRLWheelNode->scale(0.019, 0.019, 0.019);
 
     // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "wheel.mesh", "car2_wheel", mRRWheelNode); // "car2_wheel.mesh"
-    //mRRWheelNode->scale(Ogre::Real(0.05), Ogre::Real(0.05), Ogre::Real(0.05));
-
+    createGeometry("CarEntity_RRWheel", "car2_wheel.mesh", "car2_wheel", mRRWheelNode);
+    mRRWheelNode->scale(0.019, 0.019, 0.019);
+    
+    //Ogre::Entity *entity = mSceneMgr->createEntity("fag","car2_wheel.mesh");
+    //const Ogre::AxisAlignedBox boundingBox = entity->getBoundingBox();
 }
 
 
-void Car::initBody()
+void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
-    //Ogre::Vector3 carPosition;
-    //Ogre::Vector3 chassisShift;
+    // shift chassis collisionbox up chassisShift units above origin
 
-    const Ogre::Vector3 carPosition(15, 3, -15);
-    const Ogre::Vector3 chassisShift(0, 1.0, 0); // shift chassis collisionbox up 50 units above origin
-
-    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0f, 0.75f, 2.1f));//Ogre::Vector3(1.f,0.75f,2.1f));
+    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.63f, 2.6f));//Ogre::Vector3(1.f,0.75f,2.1f));
 
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
     compoundChassisShape->addChildShape(chassisShape, chassisShift);
@@ -158,7 +187,7 @@ void Car::initBody()
 }
 
 
-void Car::initWheels()
+void SimpleCoupeCar::initWheels()
 {
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
@@ -190,22 +219,7 @@ void Car::initWheels()
 }
 
 
-/// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.
-/// @param  evt  The FrameEvent associated with this frame's rendering.
-/// @return Whether the application should continue (i.e.\ false will force a shut down).
-Ogre::SceneNode *Car::attachCamNode()
-{
-    if (mCamNode != NULL) return mCamNode;
-
-    // else we need to make a new camera
-    mCamArmNode = mBodyNode->createChildSceneNode("CamArmNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mCamNode = mCamArmNode->createChildSceneNode("CamNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
-    return mCamNode;
-}
-
-
-void Car::createGeometry(const std::string &entityName,
+void SimpleCoupeCar::createGeometry(const std::string &entityName,
                     const std::string &meshName,
                     const std::string &materialName,
                     Ogre::SceneNode *toAttachTo)
@@ -213,6 +227,7 @@ void Car::createGeometry(const std::string &entityName,
     Ogre::Entity* entity;
     entity = mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
     //entity->setMaterialName(materialName);
+    //toAttachTo->scale(0.5, 0.5, 0.5);
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
@@ -220,7 +235,8 @@ void Car::createGeometry(const std::string &entityName,
     entity->setNormaliseNormals(true);
 #endif // only applicable before shoggoth (1.5.0)
 
-    //entity->setCastShadows(true);
+    //DOESNT WORKmSceneMgr->setFlipCullingOnNegativeScale(false); // make sure that the culling mesh gets flipped for negatively scaled nodes
+    entity->setCastShadows(true);
     toAttachTo->attachObject(entity);
 }
 

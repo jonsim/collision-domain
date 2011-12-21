@@ -266,12 +266,14 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     if(mShutDown)
         return false;
-
+    
     //Need to capture/update each device
     mUserInput.capture();
 
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
+
     mTrayMgr->frameRenderingQueued(evt);
-	
+
     // print debug output if necessary
     if (!mTrayMgr->isDialogVisible())
     {

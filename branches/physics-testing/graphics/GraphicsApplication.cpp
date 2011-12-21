@@ -7,7 +7,10 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GraphicsApplication.h"
-
+/*#include <stdio.h> // for showWin32Console()
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>*/
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -154,11 +157,11 @@ void GraphicsApplication::createFrameListener (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    // do the core things (GraphicsCore is extended by this class)
-    GraphicsCore::frameRenderingQueued(evt);
+    // MUST BE THE FIRST THING - do the core things (GraphicsCore is extended by this class)
+    if (!GraphicsCore::frameRenderingQueued(evt)) return false;
     
+
     // Check for key presses
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_G)) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
@@ -170,7 +173,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Capture a PlayerState.
     PlayerState currentPlayerState = players[clientID].getPlayerState();
-
+    
     // Create a Frame object.
     Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
 
@@ -178,19 +181,18 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     PlayerState newPlayerState = frame.calculateNewState();
     
     // Update the player.
-//    players[clientID].updatePlayer(newPlayerState);
+    players[clientID].processControls(&mUserInput);
     players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
-//    players[clientID].updateWheels(inputState.getLeftRght());
 
     // Perform Client Side Prediction. Possibly in a new thread.
-
-
+    //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/0, /*fixedTimeStep*/1./60.);
     return true;
 }
 
 
 bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 {
+
     // stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
     // By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
     // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
@@ -202,52 +204,14 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
     // and rely on the server to solve.
 
-    
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_A))
-    {
-            //players[clientID].mVehicle->setSteeringValue(0.8,0);
-            //players[clientID].mVehicle->setSteeringValue(0.8,1);
-    }
-    else if (mUserInput.mKeyboard->isKeyDown(OIS::KC_D))
-    {
-        //players[clientID].mVehicle->setSteeringValue(-0.8,0);
-        //players[clientID].mVehicle->setSteeringValue(-0.8,1);
-    }
-    else
-    {
-        //players[clientID].mVehicle->setSteeringValue(0,0);
-        //players[clientID].mVehicle->setSteeringValue(0,1);
-    }
-
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_W))
-    {
-        //players[clientID].mVehicle->applyEngineForce(150000,0);
-        //players[clientID].mVehicle->applyEngineForce(150000,1);
-    }
-    else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_S))
-    {
-        //players[clientID].mVehicle->applyEngineForce(-150000, 0);
-        //players[clientID].mVehicle->applyEngineForce(-150000, 1);
-    }
-    else
-    {
-        //players[clientID].mVehicle->applyEngineForce(0,0);
-        //players[clientID].mVehicle->applyEngineForce(0,1);
-    }
-
-    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/3, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/0, /*fixedTimeStep*/1./60.);
     return true;
 }
 
 
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
-    // stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
-    // By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
-    // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
-    // 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
-    // as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
-    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/3, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/0, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 
@@ -265,6 +229,8 @@ extern "C" {
     {
         // Create application object
         GraphicsApplication app;
+
+        //showWin32Console();
 
         try {
             app.go();
@@ -284,3 +250,43 @@ extern "C" {
 }
 #endif
 
+
+
+/*
+void showWin32Console()
+{
+    static const WORD MAX_CONSOLE_LINES = 500;
+    int hConHandle;
+    long lStdHandle;
+    CONSOLE_SCREEN_BUFFER_INFO coninfo;
+    FILE *fp;
+    // allocate a console for this app
+    AllocConsole();
+    // set the screen buffer to be big enough to let us scroll text
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+    coninfo.dwSize.Y = MAX_CONSOLE_LINES;
+    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE),
+    coninfo.dwSize);
+    // redirect unbuffered STDOUT to the console
+    lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen( hConHandle, "w" );
+    *stdout = *fp;
+    setvbuf( stdout, NULL, _IONBF, 0 );
+    // redirect unbuffered STDIN to the console
+    lStdHandle = (long)GetStdHandle(STD_INPUT_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen( hConHandle, "r" );
+    *stdin = *fp;
+    setvbuf( stdin, NULL, _IONBF, 0 );
+    // redirect unbuffered STDERR to the console
+    lStdHandle = (long)GetStdHandle(STD_ERROR_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen( hConHandle, "w" );
+    *stderr = *fp;
+    setvbuf( stderr, NULL, _IONBF, 0 );
+    // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
+    // point to console as well
+    std::ios::sync_with_stdio();
+}
+*/

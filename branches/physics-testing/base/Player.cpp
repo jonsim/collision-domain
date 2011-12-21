@@ -6,7 +6,6 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "Player.h"
-#include "Car.h"
 
 
 
@@ -35,65 +34,64 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
 
     // First set up the scene node relationships
 
-
+    mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, 0);
     // lets fuck up some cars
-    Car *car = new Car(sm, physicsCore->mWorld, 0);
-    for (int i=1; i < 40; i++)
+    
+    new BulletBuggyCar(sm, physicsCore->mWorld, 1);
+
+    for (int i=1; i < 10; i++)
     {
-        car = new Car(sm, physicsCore->mWorld, i);
+       // new Car(sm, physicsCore->mWorld, i);
     }
 
-    // only attach a camera to one of them!! Imagine the carnage if there were more
-    camNode = car->attachCamNode();
-    camArmNode = camNode->getParentSceneNode();
-
-    camArmNode->translate(0, 10, 0);
-    camArmNode->pitch(Ogre::Degree(25));
-    camNode->yaw(Ogre::Degree(180));
-    camNode->translate(0, 0, -10);
 }
-
-
-/*void Player::createGeometry(Ogre::SceneManager *sm,
-                            const std::string &entityName,
-                            const std::string &meshName,
-                            const std::string &materialName,
-                            Ogre::SceneNode *toAttachTo)
-{
-    Ogre::Entity* entity;
-
-    entity = sm->createEntity(entityName, meshName);
-    entity->setMaterialName(materialName);
-
-    entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
-#if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0))
-    entity->setNormaliseNormals(true);
-#endif // only applicable before shoggoth (1.5.0)
-
-    entity->setCastShadows(true);
-    toAttachTo->attachObject(entity);
-}*/
 
 
 /// @brief  Attaches a camera to the player.
 /// @param  cam   The camera object to attach to the player.
 void Player::attachCamera (Ogre::Camera* cam)
 {
+    // only attach a camera to one of them!! Imagine the carnage if there were more
+    Ogre::SceneNode *camNode = mCar->attachCamNode();
+    Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
+
+    camArmNode->translate(0, 0.5, 0); // place camera y above car node
+    camArmNode->pitch(Ogre::Degree(25));
+    camNode->yaw(Ogre::Degree(180));
+    camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
+
     camNode->attachObject(cam);
 }
 
 
 /// @brief  Updates the Player's PlayerState to the one provided.
 /// @param  newState    The new state to update to.
-void Player::updatePlayer (PlayerState newState)
+void Player::processControls(Input *userInput)
 {
-    state = newState;
+    // apply csp
+    // create new PlayerState newState from generated controls
+    
+    //state = newState; - store the states for later
+    
+    // process steering on both wheels (+1 = left, -1 = right)
+    float leftRight = 0;
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_A)) leftRight += 1.0f;
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_D)) leftRight -= 1.0f;
+
+    mCar->getVehicle()->setSteeringValue(leftRight, 0);
+    mCar->getVehicle()->setSteeringValue(leftRight, 1);
+    
+    // apply acceleration 4wd style
+    float forwardBack = 0;
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_W)) forwardBack += 1.0f;
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_S)) forwardBack -= 1.0f;
+
+    mCar->getVehicle()->applyEngineForce(3000.0 * forwardBack, 0);
+    mCar->getVehicle()->applyEngineForce(3000.0 * forwardBack, 1);
 
     //playerNode->setPosition(newState.getLocation());
     //playerNode->setOrientation(Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y));
-    //mVehicle->applyEngineForce(5000., 2);
-    //mVehicle->applyEngineForce(5000., 3);
-
+    
 }
 
 
@@ -113,6 +111,7 @@ void Player::updateWheels (signed char m)
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
 void Player::updateCamera (int XRotation, int YRotation)
 {
+    Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
     camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
     camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * YRotation), Ogre::Node::TS_LOCAL);
 }
