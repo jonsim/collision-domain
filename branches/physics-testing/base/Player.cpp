@@ -83,12 +83,6 @@ void Player::processControlsTick(Input *userInput)
         userInput->mKeyboard->isKeyDown(OIS::KC_W),
         userInput->mKeyboard->isKeyDown(OIS::KC_S));
 
-    //xyz, wxyz
-   // mCar->mPlayerNode->
-
-    //playerNode->setPosition(newState.getLocation());
-    //playerNode->setOrientation(Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y));
-    
 }
 
 

@@ -55,6 +55,9 @@ BulletBuggyCar::BulletBuggyCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     initGraphics(chassisShift);
     initBody(carPosition, chassisShift);
     initWheels();
+
+    mCarChassis->enableActiveState();
+    mCarChassis->setVisible(false);
 }
 
 

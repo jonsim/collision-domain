@@ -58,6 +58,19 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     initGraphics(chassisShift);
     initBody(carPosition, chassisShift);
     initWheels();
+
+    //mCarChassis->enableActiveState();
+    //mCarChassis->setVisible(false);
+    //compoundChassisShape->getBulletShape()->set
+
+    //mVehicle->getBulletVehicle()->setBrake(3000.0f,0);
+    //mVehicle->getBulletVehicle()->setBrake(1.0,1);
+    //mVehicle->getBulletVehicle()->setBrake(1.0,2);
+    //mVehicle->getBulletVehicle()->setBrake(1.0,3);
+    //mVehicle->getBulletVehicle()->getRigidBody()->translate(btVector3(90.0f,30.00f,0.0f));
+    //mCarChassis->setPosition(btVector3(90.0f,30.00f,0.0f));
+    
+    
 }
 
 

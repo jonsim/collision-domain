@@ -25,11 +25,88 @@ void Car::steerInputTick(bool isLeft, bool isRight)
     //Ogre::Vector3 x = mBodyNode->getPosition();
         //OutputDebugString("Hello World1");
     if (isLeft && isRight) {
+        //mCarChassis->getBulletRigidBody()->translate(btVector3(90.0f,5.00f,0.0f));
+
+        btVector3 axis(0,1,0);
+        btScalar angle(0.0f);
+        btQuaternion quat(axis, angle);
+        btTransform transform(quat, btVector3(90.0f,2.00f,0.0f));
+        mCarChassis->getBulletRigidBody()->proceedToTransform(transform);
+        //mCarChassis->getBulletRigidBody()->setWorldTransform(transform);
+
+        // The car will now be moved and rotated as specified, but the current impulse
+        // will be pointing in the wrong direction (if rotation is now different).
+        /*mCarChassis->getBulletRigidBody()->applyCentralForce;
+        mCarChassis->getBulletRigidBody()->applyCentralImpulse;
+        mCarChassis->getBulletRigidBody()->applyCentralImpulse;
+        mCarChassis->getBulletRigidBody()->applyImpulse;
+        mCarChassis->getBulletRigidBody()->getAngularFactor;
+        mCarChassis->getBulletRigidBody()->getAngularVelocity;
+        mCarChassis->getBulletRigidBody()->getDeltaAngularVelocity;
+        mCarChassis->getBulletRigidBody()->getDeltaLinearVelocity;
+        mCarChassis->getBulletRigidBody()->getInvInertiaDiagLocal;
+        mCarChassis->getBulletRigidBody()->getInvInertiaTensorWorld;
+        mCarChassis->getBulletRigidBody()->getLinearFactor;
+        mCarChassis->getBulletRigidBody()->getLinearVelocity;
+        mCarChassis->getBulletRigidBody()->getPushVelocity;
+        mCarChassis->getBulletRigidBody()-;
+        mCarChassis->getBulletRigidBody()->setAngularFactor;
+        mCarChassis->getBulletRigidBody()->setAngularVelocity;
+        mCarChassis->getBulletRigidBody()->setInvInertiaDiagLocal;
+        mCarChassis->getBulletRigidBody()->setLinearFactor;
+        mCarChassis->getBulletRigidBody()->setLinearVelocity;
+        mCarChassis->getBulletRigidBody()->updateInertiaTensor;*/
+
+
+
+        
+        //mBodyNode->setVisible(false); 
+    //float x = mVehicle->getBulletVehicle()->getCurrentSpeedKmHour();
+    //btVector3 axis(0,1,0);
+
+    //OgreBulletCollisions::CompoundCollisionShape *compoundChassisShape;
+    //OgreBulletDynamics::WheeledRigidBody         *mCarChassis;
+    //OgreBulletDynamics::VehicleRayCaster         *mVehicleRayCaster;
+    //OgreBulletDynamics::RaycastVehicle           *mVehicle;
+        
+        
+        
+        //mCarChassis->setVisible(false);
+        //mCarChassis->setTransform(btTransform(quat, btVector3(80.0f, 20.0f, 80.0f)));
+        //mCarChassis->setVisible(true);
+
+        //mCarChassis->
+
+
+    //xyz, wxyz
+   // mCar->mPlayerNode->
+    //Ogre::Quaternion(
+    //Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y)
+
+
         //mBodyNode->setPosition(0,20,0);
         //mBodyNode->needUpdate(true);
+        //mVehicle->setTransform();
+
+        //mCarChassis->setPosition(btVector3(80.0f, 20.0f, 80.0f));
+        //mCarChassis->getBulletRigidBody(); // no setposition
+        //mCarChassis->getBulletObject(); // no setpositin
+        //mVehicleRayCaster->getBulletVehicleRayCaster(); // no setposition
+        //btScalar deltaTimeStep = 0.001;
+        //mVehicle->getBulletActionInterface()->updateAction(mWorld->getBulletCollisionWorld(), deltaTimeStep);
+        //mVehicle->getBulletVehicle()->getChassisWorldTransform();
+
+
+        //mVehicle->getBulletVehicle()->getChassisWorldTransform().setOrigin(btVector3(80.0f, 20.0f, 80.0f));
+
         //compoundChassisShape->getBulletShape->
+        //mVehicle->getBulletVehicle()->updateVehicle(0.001);
         //mVehicle->setTransform();
         //OutputDebugString("Hello World");
+        //mVehicle->getBulletActionInterface()->
+        //mChassis-
+        //Ogre::Vector3 x = mBodyNode->getPosition();
+        //OutputDebugString("Hello World2");
     }
 
 
