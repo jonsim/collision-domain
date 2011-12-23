@@ -4,6 +4,7 @@
 
 #include "stdafx.h"
 #include "boost\lexical_cast.hpp"
+#include "CarSnapshot.h"
 
 class Car
 {
@@ -11,12 +12,14 @@ public:
     // = 0 methods not implemented by Car yet!
 
     // Overrideable methods, but you can use the generic Car method with all cars
-    //virtual void forcePosition();
     virtual Ogre::SceneNode *attachCamNode();
     virtual void steerInputTick(bool isLeft, bool isRight);
     virtual void accelInputTick(bool isForward, bool isBack);
 
 protected:
+    void moveTo(const btVector3 &position);
+    void restoreSnapshot(const CarSnapshot &carSnapshot);
+    CarSnapshot getCarSnapshot();
     void createGeometry(
         const std::string &entityName,
         const std::string &meshName,
@@ -44,6 +47,7 @@ protected:
 
     // mTuning related values
     float mSteer;
+    float mEngineForce;
 
     // mTuning fixed properties
     float mSuspensionStiffness;
@@ -75,6 +79,7 @@ protected:
     OgreBulletDynamics::RaycastVehicle           *mVehicle;
 
 private:
+    void moveTo(const btVector3 &position, const btQuaternion &rotation);
     void createGeometry(
         const std::string &entityName,
         const std::string &meshName,

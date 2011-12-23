@@ -11,6 +11,7 @@ void BulletBuggyCar::initTuning()
 {
     // mTuning related values
     mSteer = 0.0f;
+    mEngineForce = 0.0f;
     
     // mTuning fixed properties
     mSuspensionStiffness    =  20.0f;
@@ -55,9 +56,6 @@ BulletBuggyCar::BulletBuggyCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     initGraphics(chassisShift);
     initBody(carPosition, chassisShift);
     initWheels();
-
-    mCarChassis->enableActiveState();
-    mCarChassis->setVisible(false);
 }
 
 

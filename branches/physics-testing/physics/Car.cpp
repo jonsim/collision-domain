@@ -4,6 +4,45 @@
 #include "Car.h"
 
 
+void Car::restoreSnapshot(const CarSnapshot &carSnapshot)
+{
+    moveTo(carSnapshot.mPosition, carSnapshot.mRotation);
+
+    // After this the car will be moved and rotated as specified, but the current velocity
+    // will be pointing in the wrong direction (if car is now rotated differently).
+    mCarChassis->getBulletRigidBody()->setAngularVelocity(carSnapshot.mAngularVelocity);
+    mCarChassis->getBulletRigidBody()->setLinearVelocity(carSnapshot.mLinearVelocity);
+}
+
+
+CarSnapshot Car::getCarSnapshot()
+{
+    return CarSnapshot(
+        btVector3(mBodyNode->getPosition().x, mBodyNode->getPosition().y, mBodyNode->getPosition().z),
+        mCarChassis->getBulletRigidBody()->getOrientation(),
+        mCarChassis->getBulletRigidBody()->getAngularVelocity(),
+        mCarChassis->getBulletRigidBody()->getLinearVelocity(),
+        mSteer,
+        mEngineForce);
+}
+
+
+void Car::moveTo(const btVector3 &position)
+{
+    moveTo(position, mCarChassis->getBulletRigidBody()->getOrientation());
+}
+
+
+/// This is PRIVATE for a reason. Without giving angular and linear velocity along with a new rotation
+/// the rotation won't be applied nicely so the car will still keeo moving in the original direction
+void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
+{
+    btTransform transform(rotation, position);
+    mCarChassis->getBulletRigidBody()->proceedToTransform(transform);
+    //mCarChassis->getBulletRigidBody()->setWorldTransform(transform);
+}
+
+
 /* TODO - steering acceleration needs to take into account timesincelastframe */
 void Car::steerInputTick(bool isLeft, bool isRight)
 {
@@ -21,94 +60,11 @@ void Car::steerInputTick(bool isLeft, bool isRight)
         else mSteer = mSteer <= -mSteerToZeroIncrement ? mSteer + mSteerToZeroIncrement : 0.0f;
     }
     
-
-    //Ogre::Vector3 x = mBodyNode->getPosition();
-        //OutputDebugString("Hello World1");
     if (isLeft && isRight) {
-        //mCarChassis->getBulletRigidBody()->translate(btVector3(90.0f,5.00f,0.0f));
-
-        btVector3 axis(0,1,0);
-        btScalar angle(0.0f);
-        btQuaternion quat(axis, angle);
-        btTransform transform(quat, btVector3(90.0f,2.00f,0.0f));
-        mCarChassis->getBulletRigidBody()->proceedToTransform(transform);
-        //mCarChassis->getBulletRigidBody()->setWorldTransform(transform);
-
-        // The car will now be moved and rotated as specified, but the current impulse
-        // will be pointing in the wrong direction (if rotation is now different).
-        /*mCarChassis->getBulletRigidBody()->applyCentralForce;
-        mCarChassis->getBulletRigidBody()->applyCentralImpulse;
-        mCarChassis->getBulletRigidBody()->applyCentralImpulse;
-        mCarChassis->getBulletRigidBody()->applyImpulse;
-        mCarChassis->getBulletRigidBody()->getAngularFactor;
-        mCarChassis->getBulletRigidBody()->getAngularVelocity;
-        mCarChassis->getBulletRigidBody()->getDeltaAngularVelocity;
-        mCarChassis->getBulletRigidBody()->getDeltaLinearVelocity;
-        mCarChassis->getBulletRigidBody()->getInvInertiaDiagLocal;
-        mCarChassis->getBulletRigidBody()->getInvInertiaTensorWorld;
-        mCarChassis->getBulletRigidBody()->getLinearFactor;
-        mCarChassis->getBulletRigidBody()->getLinearVelocity;
-        mCarChassis->getBulletRigidBody()->getPushVelocity;
-        mCarChassis->getBulletRigidBody()-;
-        mCarChassis->getBulletRigidBody()->setAngularFactor;
-        mCarChassis->getBulletRigidBody()->setAngularVelocity;
-        mCarChassis->getBulletRigidBody()->setInvInertiaDiagLocal;
-        mCarChassis->getBulletRigidBody()->setLinearFactor;
-        mCarChassis->getBulletRigidBody()->setLinearVelocity;
-        mCarChassis->getBulletRigidBody()->updateInertiaTensor;*/
-
-
-
-        
-        //mBodyNode->setVisible(false); 
-    //float x = mVehicle->getBulletVehicle()->getCurrentSpeedKmHour();
-    //btVector3 axis(0,1,0);
-
-    //OgreBulletCollisions::CompoundCollisionShape *compoundChassisShape;
-    //OgreBulletDynamics::WheeledRigidBody         *mCarChassis;
-    //OgreBulletDynamics::VehicleRayCaster         *mVehicleRayCaster;
-    //OgreBulletDynamics::RaycastVehicle           *mVehicle;
-        
-        
-        
-        //mCarChassis->setVisible(false);
-        //mCarChassis->setTransform(btTransform(quat, btVector3(80.0f, 20.0f, 80.0f)));
-        //mCarChassis->setVisible(true);
-
-        //mCarChassis->
-
-
-    //xyz, wxyz
-   // mCar->mPlayerNode->
-    //Ogre::Quaternion(
-    //Ogre::Quaternion(Ogre::Radian(newState.getRotation()), Ogre::Vector3::UNIT_Y)
-
-
-        //mBodyNode->setPosition(0,20,0);
-        //mBodyNode->needUpdate(true);
-        //mVehicle->setTransform();
-
-        //mCarChassis->setPosition(btVector3(80.0f, 20.0f, 80.0f));
-        //mCarChassis->getBulletRigidBody(); // no setposition
-        //mCarChassis->getBulletObject(); // no setpositin
-        //mVehicleRayCaster->getBulletVehicleRayCaster(); // no setposition
-        //btScalar deltaTimeStep = 0.001;
-        //mVehicle->getBulletActionInterface()->updateAction(mWorld->getBulletCollisionWorld(), deltaTimeStep);
-        //mVehicle->getBulletVehicle()->getChassisWorldTransform();
-
-
-        //mVehicle->getBulletVehicle()->getChassisWorldTransform().setOrigin(btVector3(80.0f, 20.0f, 80.0f));
-
-        //compoundChassisShape->getBulletShape->
-        //mVehicle->getBulletVehicle()->updateVehicle(0.001);
-        //mVehicle->setTransform();
-        //OutputDebugString("Hello World");
-        //mVehicle->getBulletActionInterface()->
-        //mChassis-
-        //Ogre::Vector3 x = mBodyNode->getPosition();
-        //OutputDebugString("Hello World2");
+        moveTo(
+            btVector3(90.0f,2.00f,0.0f),
+            btQuaternion(btVector3(0,1,0), btScalar(0.0f)));
     }
-
 
     // don't steer too far! Use the clamps.
     mSteer = mSteer > mSteerClamp ? mSteerClamp : (mSteer < -mSteerClamp ? -mSteerClamp : mSteer);
@@ -124,10 +80,17 @@ void Car::accelInputTick(bool isForward, bool isBack)
     if (isForward) forwardBack += 1;
     if (isBack)    forwardBack -= 1;
 
-    float f = forwardBack < 0 ? mMaxBrakeForce : mMaxAccelForce; 
+    float f = forwardBack < 0 ? mMaxBrakeForce : mMaxAccelForce;
 
-    mVehicle->applyEngineForce(f * forwardBack, 0);
-    mVehicle->applyEngineForce(f * forwardBack, 1);
+    mEngineForce = f * forwardBack;
+
+    mVehicle->applyEngineForce(mEngineForce, 0);
+    mVehicle->applyEngineForce(mEngineForce, 1);
+
+    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 0);
+    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 1);
+    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 2);
+    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 3);
 }
 
 
