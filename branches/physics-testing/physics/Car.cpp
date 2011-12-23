@@ -10,11 +10,8 @@ void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 
     // After this the car will be moved and rotated as specified, but the current velocity
     // will be pointing in the wrong direction (if car is now rotated differently).
-    mCarChassis->getBulletRigidBody()->setAngularVelocity(carSnapshot->mAngularVelocity);
-    mCarChassis->getBulletRigidBody()->setLinearVelocity(carSnapshot->mLinearVelocity);
-
-
-    carSnapshot->mEngineForce;
+    mbtRigidBody->setAngularVelocity(carSnapshot->mAngularVelocity);
+    mbtRigidBody->setLinearVelocity(carSnapshot->mLinearVelocity);
 
     mSteer = carSnapshot->mWheelPosition;
     applySteeringValue();
@@ -25,17 +22,16 @@ CarSnapshot *Car::getCarSnapshot()
 {
     return new CarSnapshot(
         btVector3(mBodyNode->getPosition().x, mBodyNode->getPosition().y, mBodyNode->getPosition().z),
-        mCarChassis->getBulletRigidBody()->getOrientation(),
-        mCarChassis->getBulletRigidBody()->getAngularVelocity(),
-        mCarChassis->getBulletRigidBody()->getLinearVelocity(),
-        mSteer,
-        mEngineForce);
+        mbtRigidBody->getOrientation(),
+        mbtRigidBody->getAngularVelocity(),
+        mbtRigidBody->getLinearVelocity(),
+        mSteer);
 }
 
 
 void Car::moveTo(const btVector3 &position)
 {
-    moveTo(position, mCarChassis->getBulletRigidBody()->getOrientation());
+    moveTo(position, mbtRigidBody->getOrientation());
 }
 
 
@@ -44,8 +40,8 @@ void Car::moveTo(const btVector3 &position)
 void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     btTransform transform(rotation, position);
-    mCarChassis->getBulletRigidBody()->proceedToTransform(transform);
-    //mCarChassis->getBulletRigidBody()->setWorldTransform(transform);
+    mbtRigidBody->proceedToTransform(transform);
+    //mbtRigidBody->setWorldTransform(transform);
 }
 
 
@@ -99,10 +95,10 @@ void Car::accelInputTick(bool isForward, bool isBack)
     mVehicle->applyEngineForce(mEngineForce, 0);
     mVehicle->applyEngineForce(mEngineForce, 1);
 
-    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 0);
-    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 1);
-    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 2);
-    //mVehicle->getBulletVehicle()->setBrake(1500.0f, 3);
+    //mbtRigidBody->setBrake(1500.0f, 0);
+    //mbtRigidBody->setBrake(1500.0f, 1);
+    //mbtRigidBody->setBrake(1500.0f, 2);
+    //mbtRigidBody->setBrake(1500.0f, 3);
 }
 
 

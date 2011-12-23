@@ -77,6 +77,7 @@ protected:
     OgreBulletDynamics::VehicleTuning            *mTuning;
     OgreBulletDynamics::VehicleRayCaster         *mVehicleRayCaster;
     OgreBulletDynamics::RaycastVehicle           *mVehicle;
+    btRigidBody                                  *mbtRigidBody;
 
 private:
     void applySteeringValue();

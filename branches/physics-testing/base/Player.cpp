@@ -15,6 +15,7 @@
 Player::Player (void) : cameraRotationConstant(0.08f)
 {
     // PlayerState state configures constants and zeros values upon creation.
+    mCarSnapshot = NULL;
 }
 
 
@@ -38,8 +39,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     // lets fuck up some cars
     
     new BulletBuggyCar(sm, physicsCore->mWorld, 1);
-
-
+    new SimpleCoupeCar(sm, physicsCore->mWorld, 2);
 
 
     for (int i=1; i < 10; i++)
@@ -71,20 +71,7 @@ void Player::attachCamera (Ogre::Camera* cam)
 /// @param  newState    The new state to update to.
 void Player::processControlsTick(Input *userInput)
 {
-    // apply csp
-    // create new PlayerState newState from generated controls
-    
-    //state = newState; - store the states for later
-    
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && userInput->mKeyboard->isKeyDown(OIS::KC_D))
-    {
-        mCar->restoreSnapshot(mCarSnapshot);
-    }
-
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && !userInput->mKeyboard->isKeyDown(OIS::KC_D))
-    {
-     //   mCarSnapshot = mCar->getCarSnapshot();
-    }
+    // apply csp to get steering controls if networking demands it
 
     // process steering
     mCar->steerInputTick(
@@ -96,6 +83,20 @@ void Player::processControlsTick(Input *userInput)
         userInput->mKeyboard->isKeyDown(OIS::KC_W),
         userInput->mKeyboard->isKeyDown(OIS::KC_S));
 
+
+    // TELEPORT TESTING
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && userInput->mKeyboard->isKeyDown(OIS::KC_D))
+    {
+        // teleport to the previously set point!
+        if (mCarSnapshot != NULL) mCar->restoreSnapshot(mCarSnapshot);
+    }
+    
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && !userInput->mKeyboard->isKeyDown(OIS::KC_D))
+    {
+        // set the new teleport point
+        if (mCarSnapshot != NULL) delete mCarSnapshot;
+        mCarSnapshot = mCar->getCarSnapshot();
+    }
 }
 
 

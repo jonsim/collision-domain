@@ -28,6 +28,8 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+//#include "OgreBulletDynamicsRigidBody.h"
+#include "OgreBulletDynamics.h"
 #include "OgreBulletDynamicsRigidBody.h"
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"

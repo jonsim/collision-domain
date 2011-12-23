@@ -177,6 +177,8 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     
     // This line is needed otherwise the model appears wrongly rotated.
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
+
+    mbtRigidBody = mCarChassis->getBulletRigidBody();
 }
 
 

@@ -15,7 +15,6 @@ public:
 
     // Car steering, engine and brake
     float mWheelPosition;
-    float mEngineForce;
 
     CarSnapshot(
         const btVector3 &position,
@@ -23,8 +22,7 @@ public:
         const btVector3 &angularVelocity,
         const btVector3 &linearVelocity,
 
-        const float &wheelPosition,
-        const float &engineForce)
+        const float &wheelPosition)
     {
         mPosition = position;
         mRotation = rotation;
@@ -32,7 +30,6 @@ public:
         mLinearVelocity = linearVelocity;
 
         mWheelPosition = wheelPosition;
-        mEngineForce = engineForce;
     };
 };
 
