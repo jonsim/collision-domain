@@ -13,6 +13,7 @@
 #include "Car.h"
 #include "cars/BulletBuggyCar.h"
 #include "cars/SimpleCoupeCar.h"
+#include "CarSnapshot.h"
 #include "Input.h"
 
 
@@ -45,7 +46,7 @@ private:
     const float cameraRotationConstant;
 
     Car *mCar;
-
+    CarSnapshot *mCarSnapshot;
 };
 
 #endif // #ifndef PLAYER_H

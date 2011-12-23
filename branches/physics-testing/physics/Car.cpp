@@ -4,20 +4,26 @@
 #include "Car.h"
 
 
-void Car::restoreSnapshot(const CarSnapshot &carSnapshot)
+void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 {
-    moveTo(carSnapshot.mPosition, carSnapshot.mRotation);
+    moveTo(carSnapshot->mPosition, carSnapshot->mRotation);
 
     // After this the car will be moved and rotated as specified, but the current velocity
     // will be pointing in the wrong direction (if car is now rotated differently).
-    mCarChassis->getBulletRigidBody()->setAngularVelocity(carSnapshot.mAngularVelocity);
-    mCarChassis->getBulletRigidBody()->setLinearVelocity(carSnapshot.mLinearVelocity);
+    mCarChassis->getBulletRigidBody()->setAngularVelocity(carSnapshot->mAngularVelocity);
+    mCarChassis->getBulletRigidBody()->setLinearVelocity(carSnapshot->mLinearVelocity);
+
+
+    carSnapshot->mEngineForce;
+
+    mSteer = carSnapshot->mWheelPosition;
+    applySteeringValue();
 }
 
 
-CarSnapshot Car::getCarSnapshot()
+CarSnapshot *Car::getCarSnapshot()
 {
-    return CarSnapshot(
+    return new CarSnapshot(
         btVector3(mBodyNode->getPosition().x, mBodyNode->getPosition().y, mBodyNode->getPosition().z),
         mCarChassis->getBulletRigidBody()->getOrientation(),
         mCarChassis->getBulletRigidBody()->getAngularVelocity(),
@@ -60,12 +66,18 @@ void Car::steerInputTick(bool isLeft, bool isRight)
         else mSteer = mSteer <= -mSteerToZeroIncrement ? mSteer + mSteerToZeroIncrement : 0.0f;
     }
     
-    if (isLeft && isRight) {
+    /*if (isLeft && isRight) {
         moveTo(
             btVector3(90.0f,2.00f,0.0f),
             btQuaternion(btVector3(0,1,0), btScalar(0.0f)));
-    }
+    }*/
 
+    applySteeringValue();
+}
+
+
+void Car::applySteeringValue()
+{
     // don't steer too far! Use the clamps.
     mSteer = mSteer > mSteerClamp ? mSteerClamp : (mSteer < -mSteerClamp ? -mSteerClamp : mSteer);
 

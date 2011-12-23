@@ -15,11 +15,11 @@ public:
     virtual Ogre::SceneNode *attachCamNode();
     virtual void steerInputTick(bool isLeft, bool isRight);
     virtual void accelInputTick(bool isForward, bool isBack);
+    virtual void moveTo(const btVector3 &position);
+    virtual void restoreSnapshot(CarSnapshot *carSnapshot);
+    virtual CarSnapshot *getCarSnapshot();
 
 protected:
-    void moveTo(const btVector3 &position);
-    void restoreSnapshot(const CarSnapshot &carSnapshot);
-    CarSnapshot getCarSnapshot();
     void createGeometry(
         const std::string &entityName,
         const std::string &meshName,
@@ -79,6 +79,7 @@ protected:
     OgreBulletDynamics::RaycastVehicle           *mVehicle;
 
 private:
+    void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
     void createGeometry(
         const std::string &entityName,

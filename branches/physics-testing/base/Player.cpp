@@ -39,6 +39,9 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     
     new BulletBuggyCar(sm, physicsCore->mWorld, 1);
 
+
+
+
     for (int i=1; i < 10; i++)
     {
        // new Car(sm, physicsCore->mWorld, i);
@@ -73,6 +76,16 @@ void Player::processControlsTick(Input *userInput)
     
     //state = newState; - store the states for later
     
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && userInput->mKeyboard->isKeyDown(OIS::KC_D))
+    {
+        mCar->restoreSnapshot(mCarSnapshot);
+    }
+
+    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && !userInput->mKeyboard->isKeyDown(OIS::KC_D))
+    {
+     //   mCarSnapshot = mCar->getCarSnapshot();
+    }
+
     // process steering
     mCar->steerInputTick(
         userInput->mKeyboard->isKeyDown(OIS::KC_A),
