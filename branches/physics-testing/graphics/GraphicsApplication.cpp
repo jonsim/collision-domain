@@ -199,9 +199,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     if (CSP.needsMePushedBack(players[clientID], carSnapshot))
     {
         // Calculate a snapshot which doesn't jolt the player harshly if it can be fixed with small movements
+        CarSnapshot *latestPlayerSnapshot = getCarSnapshotIfExistsSincePreviousGet(int clientID);
         CarSnapshot *fixSnapshot = new CarSnapshot(...);
 
-        players[clientID].getCar->restoreSnapshot(localPlayerSnapshot);
+        players[clientID].getCar->restoreSnapshot(fixSnapshot);
     }
     */
 

@@ -32,7 +32,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 }
 
 
-void CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
+CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
 {
-
+    return NULL;
 }

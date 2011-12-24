@@ -23,7 +23,7 @@ public:
     NetworkCore (void);
     ~NetworkCore (void);
     void frameEvent(InputState *inputSnapshot);
-    void CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
+    CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 };
 
 #endif // #ifndef NETWORKCORE_H
