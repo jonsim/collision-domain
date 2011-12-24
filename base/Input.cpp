@@ -38,7 +38,7 @@ void Input::createInputSystem (OIS::ParamList pl)
 
 
 /// @brief  Destroys the input system and detaches the input devices from the window.
-void Input::destroyInputSystem (void)
+void Input::destroyInputSystem ()
 {
     if (mInputManager)
     {
@@ -52,7 +52,7 @@ void Input::destroyInputSystem (void)
 
 
 /// @brief  Samples the keys being pressed by the keyboard at that moment in time, storing them in the input device objects.
-void Input::capture (void)
+void Input::capture ()
 {
     mKeyboard->capture();
     mMouse->capture();
@@ -61,12 +61,30 @@ void Input::capture (void)
 
 /// @brief  Constructs an InputState object based on the key state (at the time of the last Input::capture()).
 /// @return The InputState object containing movement key information at the time of the previous sample.
-InputState Input::getInputState (void)
+InputState* Input::getInputState()
 {
-    return InputState(mKeyboard->isKeyDown(OIS::KC_W),
-                      mKeyboard->isKeyDown(OIS::KC_S),
-                      mKeyboard->isKeyDown(OIS::KC_A),
-                      mKeyboard->isKeyDown(OIS::KC_D) );
+    return new InputState(mKeyboard->isKeyDown(OIS::KC_W),
+                          mKeyboard->isKeyDown(OIS::KC_S),
+                          mKeyboard->isKeyDown(OIS::KC_A),
+                          mKeyboard->isKeyDown(OIS::KC_D) );
+}
+
+
+bool Input::isToggleWidget()
+{
+    return mKeyboard->isKeyDown(OIS::KC_G);
+}
+
+
+int Input::getMouseXRel()
+{
+    return mMouse->getMouseState().X.rel;
+}
+
+
+int Input::getMouseYRel()
+{
+    return mMouse->getMouseState().Y.rel;
 }
 
 

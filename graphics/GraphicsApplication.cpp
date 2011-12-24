@@ -1,13 +1,16 @@
 /**
- * @file	GraphicsApplication.cpp
- * @brief 	Adds objects to the graphics interface.
+ * @file    GraphicsApplication.cpp
+ * @brief     Adds objects to the graphics interface.
  *          Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
  */
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GraphicsApplication.h"
-
+/*#include <stdio.h> // for showWin32Console()
+#include <fcntl.h>
+#include <io.h>
+#include <iostream>*/
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -36,17 +39,17 @@ void GraphicsApplication::createScene (void)
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
-	ninjaNode->translate(0, 0, 0);
+    ninjaNode->translate(0, 0, 0);
     Ogre::Entity* ninjaEntity2 = mSceneMgr->createEntity("Ninja2", "ninja.mesh");
     ninjaEntity2->setCastShadows(true);
     Ogre::SceneNode* ninjaNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
     ninjaNode2->attachObject(ninjaEntity2);
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
-	ninjaNode2->translate(0, 100, 0);
+    ninjaNode2->translate(0, 100, 0);
     
     // Add all players
-    players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0);
+    players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0, mPhysicsCore);
 
     // Attach a camera to the first player
     players[clientID].attachCamera(mCamera);
@@ -127,6 +130,10 @@ void GraphicsApplication::setupArena (void)
     wallNode2->roll(Ogre::Degree(90));
     wallNode4->pitch(Ogre::Degree(-90));
     wallNode4->roll(Ogre::Degree(-90));
+
+    // create collideable floor so shit doesn't freefall. It will hit the floor.
+    mPhysicsCore->createFloorPlane();
+    mPhysicsCore->createWallPlanes();
 }
 
 
@@ -141,7 +148,7 @@ void GraphicsApplication::setupNetworking (void)
 /// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
-	GraphicsCore::createFrameListener();
+    GraphicsCore::createFrameListener();
 }
 
 
@@ -150,54 +157,84 @@ void GraphicsApplication::createFrameListener (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    if (mWindow->isClosed())
-        return false;
-
-    // Capture user input
-    mUserInput.capture();
-
-    // Calculte 2D overlay statistics
-    mTrayMgr->frameRenderingQueued(evt);
+    // MUST BE THE FIRST THING - do the core things (GraphicsCore is extended by this class)
+    if (!GraphicsCore::frameRenderingQueued(evt)) return false;
     
-    // Check for key presses
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-        return false;
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_G)) 
+    // Toggle on screen widgets
+    if (mUserInput.isToggleWidget()) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
     }
 
+    // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
+
     // Process keyboard input and produce an InputState object from this.
-    InputState inputState = mUserInput.getInputState();
+    InputState *inputSnapshot = mUserInput.getInputState();
+    
+    // Fire network data (must be after player has had controls applied).
+    mNetworkCore->frameEvent(inputSnapshot);
 
-    // Capture a PlayerState.
-    PlayerState currentPlayerState = players[clientID].getPlayerState();
+    // Apply controls the player (who will be moved on frameEnd and frameStart).
+    players[clientID].processControlsFrameEvent(inputSnapshot);
+    players[clientID].updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
-    // print debug output if necessary
-    if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
+    // Perform Client Side Prediction. Probably in a new thread.
+    // Move any players who are out of sync
+    
+    /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
+    for (i : otherPlayerIDs)
     {
-        mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(currentPlayerState.getSpeed()));
-        mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(currentPlayerState.getRotation()));
-        mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(sin(currentPlayerState.getRotation())));
-        mDetailsPanel->setParamValue(3, Ogre::StringConverter::toString(cos(currentPlayerState.getRotation())));
-        mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(currentPlayerState.getLocation()));
-        mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(evt.timeSinceLastFrame));
+        CarSnapshot *carSnapshot = getCarSnapshotIfExistsSincePreviousGet(int playerID);
+
+        if (CSP.needsPushingBackIntoPosition(players[playerID], carSnapshot)
+        {
+            players[playerID].getCar()->restoreSnapshot(carSnapshot);
+        }
+
+        delete carSnapshot;
     }
+    
+    // Deal with the local player (who's snapshot will be x=latency ms behind the real thing)
+    if (CSP.needsMePushedBack(players[clientID], carSnapshot))
+    {
+        // Calculate a snapshot which doesn't jolt the player harshly if it can be fixed with small movements
+        CarSnapshot *latestPlayerSnapshot = getCarSnapshotIfExistsSincePreviousGet(int clientID);
+        CarSnapshot *fixSnapshot = new CarSnapshot(...);
 
-    // Create a Frame object.
-    Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
+        players[clientID].getCar->restoreSnapshot(fixSnapshot);
+    }
+    */
 
-    // Calculate the new PlayerState based on the input.
-    PlayerState newPlayerState = frame.calculateNewState();
+    // Cleanup frame specific objects so we don't rape memory. If you want to remember some, delete them later!
+    delete inputSnapshot;
 
-    // Update the player.
-    players[clientID].updatePlayer(newPlayerState);
-    players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
-    players[clientID].updateWheels(inputState.getLeftRght());
+    return true;
+}
 
-    // Perform Client Side Prediction.
 
+bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
+{
+
+    // stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
+    // By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
+    // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
+    // 'maxSubSteps'. You can disable subdividing the timestep/substepping by passing maxSubSteps=0
+    // as second argument to stepSimulation, but in that case you have to keep the timeStep constant.
+    // J - If framerate is low (<15fps) it may be valid to make fixedTimeStep a larger number (at the
+    // expense of physics accuracy. Server will be correcting this though).
+    // maxSubSteps = 7.5 - this will do up to 1/8 second's worth of processing here and 1/8 second's worth
+    // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
+    // and rely on the server to solve.
+
+    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);
+    return true;
+}
+
+
+bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
+{
+    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 
@@ -216,6 +253,8 @@ extern "C" {
         // Create application object
         GraphicsApplication app;
 
+        //showWin32Console();
+
         try {
             app.go();
         } catch( Ogre::Exception& e ) {
@@ -233,3 +272,44 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+
+
+/*
+void showWin32Console()
+{
+    static const WORD MAX_CONSOLE_LINES = 500;
+    int hConHandle;
+    long lStdHandle;
+    CONSOLE_SCREEN_BUFFER_INFO coninfo;
+    FILE *fp;
+    // allocate a console for this app
+    AllocConsole();
+    // set the screen buffer to be big enough to let us scroll text
+    GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &coninfo);
+    coninfo.dwSize.Y = MAX_CONSOLE_LINES;
+    SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE),
+    coninfo.dwSize);
+    // redirect unbuffered STDOUT to the console
+    lStdHandle = (long)GetStdHandle(STD_OUTPUT_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen( hConHandle, "w" );
+    *stdout = *fp;
+    setvbuf( stdout, NULL, _IONBF, 0 );
+    // redirect unbuffered STDIN to the console
+    lStdHandle = (long)GetStdHandle(STD_INPUT_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen( hConHandle, "r" );
+    *stdin = *fp;
+    setvbuf( stdin, NULL, _IONBF, 0 );
+    // redirect unbuffered STDERR to the console
+    lStdHandle = (long)GetStdHandle(STD_ERROR_HANDLE);
+    hConHandle = _open_osfhandle(lStdHandle, _O_TEXT);
+    fp = _fdopen( hConHandle, "w" );
+    *stderr = *fp;
+    setvbuf( stderr, NULL, _IONBF, 0 );
+    // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
+    // point to console as well
+    std::ios::sync_with_stdio();
+}
+*/

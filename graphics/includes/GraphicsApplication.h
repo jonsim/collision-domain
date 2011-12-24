@@ -9,8 +9,6 @@
 #include "stdafx.h"
 #include "GraphicsCore.h"
 #include "Player.h"
-#include "Frame.h"
-#include "PlayerState.h"
 #include "InputState.h"
 
 
@@ -33,13 +31,16 @@ public:
 protected:
     virtual void createScene(void);
     virtual void createFrameListener(void);
+	
+    // Ogre::FrameListener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    virtual bool frameStarted(const Ogre::FrameEvent& evt);
+    virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
 private:
     void setupLighting (void);
     void setupArena (void);
     void setupNetworking (void);
-    
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

@@ -71,6 +71,9 @@ void GraphicsCore::chooseSceneManager(void)
 {
     // Get the SceneManager, in this case a generic one
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+
+    // get the core physics object up and runnning
+    mPhysicsCore = new PhysicsCore(mSceneMgr);
 }
 
 
@@ -225,10 +228,12 @@ void GraphicsCore::go(void)
 /// @return Whether or not the setup was successful (if a configuration was provided).
 bool GraphicsCore::setup(void)
 {
+    mNetworkCore = new NetworkCore();
+
     mRoot = new Ogre::Root(mPluginsCfg);
 
     setupResources();
-
+    
     bool carryOn = configure();
     if (!carryOn) return false;
 
@@ -263,12 +268,15 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     if(mShutDown)
         return false;
-
+    
     //Need to capture/update each device
     mUserInput.capture();
 
+    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
+
     mTrayMgr->frameRenderingQueued(evt);
 
+    // print debug output if necessary
     if (!mTrayMgr->isDialogVisible())
     {
         mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
@@ -286,9 +294,6 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     return true;
 }
-
-
-
 
 
 /// @brief  Adjust mouse clipping area.
