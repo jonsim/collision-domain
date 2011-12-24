@@ -160,32 +160,54 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // MUST BE THE FIRST THING - do the core things (GraphicsCore is extended by this class)
     if (!GraphicsCore::frameRenderingQueued(evt)) return false;
     
-
-    // Check for key presses
-    if (mUserInput.mKeyboard->isKeyDown(OIS::KC_G)) 
+    // Toggle on screen widgets
+    if (mUserInput.isToggleWidget()) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
     }
 
+    // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
+
     // Process keyboard input and produce an InputState object from this.
-    InputState inputState = mUserInput.getInputState();
-
-    // Capture a PlayerState.
-    PlayerState currentPlayerState = players[clientID].getPlayerState();
+    InputState *inputSnapshot = mUserInput.getInputState();
     
-    // Create a Frame object.
-    Frame frame(currentPlayerState, inputState, evt.timeSinceLastFrame);
+    // Fire network data (must be after player has had controls applied).
+    mNetworkCore->frameEvent(inputSnapshot);
 
-    // Calculate the new PlayerState based on the input.
-    PlayerState newPlayerState = frame.calculateNewState();
+    // Apply controls the player (who will be moved on frameEnd and frameStart).
+    players[clientID].processControlsFrameEvent(inputSnapshot);
+    players[clientID].updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
+
+    // Perform Client Side Prediction. Probably in a new thread.
+    // Move any players who are out of sync
     
-    // Update the player.
-    players[clientID].processControlsTick(&mUserInput);
-    players[clientID].updateCamera(mUserInput.mMouse->getMouseState().X.rel, mUserInput.mMouse->getMouseState().Y.rel);
+    /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
+    for (i : otherPlayerIDs)
+    {
+        CarSnapshot *carSnapshot = getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
-    // Perform Client Side Prediction. Possibly in a new thread.
-    //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/0, /*fixedTimeStep*/1./60.);
+        if (CSP.needsPushingBackIntoPosition(players[playerID], carSnapshot)
+        {
+            players[playerID].getCar()->restoreSnapshot(carSnapshot);
+        }
+
+        delete carSnapshot;
+    }
+    
+    // Deal with the local player (who's snapshot will be x=latency ms behind the real thing)
+    if (CSP.needsMePushedBack(players[clientID], carSnapshot))
+    {
+        // Calculate a snapshot which doesn't jolt the player harshly if it can be fixed with small movements
+        CarSnapshot *fixSnapshot = new CarSnapshot(...);
+
+        players[clientID].getCar->restoreSnapshot(localPlayerSnapshot);
+    }
+    */
+
+    // Cleanup frame specific objects so we don't rape memory. If you want to remember some, delete them later!
+    delete inputSnapshot;
+
     return true;
 }
 

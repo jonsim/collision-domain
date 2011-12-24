@@ -69,29 +69,24 @@ void Player::attachCamera (Ogre::Camera* cam)
 
 /// @brief  Updates the Player's PlayerState to the one provided.
 /// @param  newState    The new state to update to.
-void Player::processControlsTick(Input *userInput)
+void Player::processControlsFrameEvent(InputState *userInput)
 {
     // apply csp to get steering controls if networking demands it
 
     // process steering
-    mCar->steerInputTick(
-        userInput->mKeyboard->isKeyDown(OIS::KC_A),
-        userInput->mKeyboard->isKeyDown(OIS::KC_D));
+    mCar->steerInputTick(userInput->isLeft(), userInput->isRight());
     
     // apply acceleration 4wd style
-    mCar->accelInputTick(
-        userInput->mKeyboard->isKeyDown(OIS::KC_W),
-        userInput->mKeyboard->isKeyDown(OIS::KC_S));
-
+    mCar->accelInputTick(userInput->isForward(), userInput->isBack());
 
     // TELEPORT TESTING
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && userInput->mKeyboard->isKeyDown(OIS::KC_D))
+    if (userInput->isLeft() && userInput->isRight())
     {
         // teleport to the previously set point!
         if (mCarSnapshot != NULL) mCar->restoreSnapshot(mCarSnapshot);
     }
     
-    if (userInput->mKeyboard->isKeyDown(OIS::KC_A) && !userInput->mKeyboard->isKeyDown(OIS::KC_D))
+    if (userInput->isLeft() && !userInput->isRight())
     {
         // set the new teleport point
         if (mCarSnapshot != NULL) delete mCarSnapshot;
@@ -100,21 +95,10 @@ void Player::processControlsTick(Input *userInput)
 }
 
 
-/// @brief  Rotates the Player's wheels using some pretty bang tidy Quaternion maths. This can be removed when the physics shit is working.
-/// @param  m   The direction to turn in (the InputState LeftRght value).
-void Player::updateWheels (signed char m)
-{
-    //Ogre::Quaternion q = carFLWheelNode->getOrientation();
-    //Ogre::Quaternion r = q + Ogre::Quaternion(Ogre::Radian(m * (PI / 6.0f)), Ogre::Vector3::UNIT_Y);
-    //carFLWheelNode->setOrientation(r);
-    //carFRWheelNode->setOrientation(r);
-}
-
-
 /// @brief  Updates the camera's rotation based on the values given.
 /// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
-void Player::updateCamera (int XRotation, int YRotation)
+void Player::updateCameraFrameEvent (int XRotation, int YRotation)
 {
     Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
     camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
@@ -122,9 +106,7 @@ void Player::updateCamera (int XRotation, int YRotation)
 }
 
 
-/// @brief  Returns the Player's current state.
-/// @return The Player's current state.
-PlayerState Player::getPlayerState (void)
+Car* Player::getCar()
 {
-    return state;
+    return mCar;
 }

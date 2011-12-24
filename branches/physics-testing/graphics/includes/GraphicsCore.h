@@ -11,6 +11,7 @@
 #include "stdafx.h"
 #include "Input.h"
 #include "PhysicsCore.h"
+#include "NetworkCore.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -27,7 +28,7 @@ public:
     GraphicsCore (void);
     virtual ~GraphicsCore (void);
     virtual void go (void);
-
+    
 protected:
     virtual bool setup();
     virtual bool configure(void);
@@ -44,14 +45,15 @@ protected:
     // Ogre::FrameListener
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
     
-    // OIS user input
-    Input mUserInput;
-
     // Ogre::WindowEventListener
     // Adjust mouse clipping area
     virtual void windowResized(Ogre::RenderWindow* rw);
     // Unattach OIS before window shutdown (very important under Linux)
     virtual void windowClosed(Ogre::RenderWindow* rw);
+
+    // OIS user input
+    Input mUserInput;
+
 
     Ogre::Root *mRoot;
     Ogre::Camera* mCamera;
@@ -67,7 +69,9 @@ protected:
     bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
 	
-    PhysicsCore *mPhysicsCore;				// OgreBullet!
+    // OgreBullet and Networking!
+    PhysicsCore *mPhysicsCore;
+    NetworkCore *mNetworkCore;
 };
 
 #endif // #ifndef GRAPHICSCORE_H

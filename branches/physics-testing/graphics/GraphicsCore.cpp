@@ -228,10 +228,12 @@ void GraphicsCore::go(void)
 /// @return Whether or not the setup was successful (if a configuration was provided).
 bool GraphicsCore::setup(void)
 {
+    mNetworkCore = new NetworkCore();
+
     mRoot = new Ogre::Root(mPluginsCfg);
 
     setupResources();
-
+    
     bool carryOn = configure();
     if (!carryOn) return false;
 

@@ -9,8 +9,6 @@
 #include "stdafx.h"
 #include "GraphicsCore.h"
 #include "Player.h"
-#include "Frame.h"
-#include "PlayerState.h"
 #include "InputState.h"
 
 
