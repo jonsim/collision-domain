@@ -1,19 +1,20 @@
 /**
- * @file	CircularBuffer.h
+ * @file    CircularBuffer.h
  * @author  Jonathan Simmonds
- * @brief 	Very fast implementation of a Circular Buffer.
+ * @brief     Very fast implementation of a Circular Buffer.
  */
 #ifndef CIRCULARBUFFER_H
 #define CIRCULARBUFFER_H
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
+#include <stdint.h>
 
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**  
- * @brief 	Very fast implementation of a Circular Buffer.
+ * @brief     Very fast implementation of a Circular Buffer.
  *
  *          NB: To maximise speed a minimum amount of bound-checking is done, please
  *          ensure you understand how to use the functions beforehand.
@@ -48,3 +49,4 @@ private:
 };
 
 #endif // #ifndef CIRCULARBUFFER_H
+

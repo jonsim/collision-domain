@@ -7,9 +7,13 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "PlayerState.h"
 #include "InputState.h"
-
+#include "PhysicsCore.h"
+#include "Car.h"
+#include "cars/BulletBuggyCar.h"
+#include "cars/SimpleCoupeCar.h"
+#include "CarSnapshot.h"
+#include "Input.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -26,31 +30,19 @@ class Player //: public PhysicsEntity
 {
  
 public:
-    Player (void);
-    ~Player (void);
-    void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s);
+    Player ();
+    ~Player ();
+    void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
-	void updatePlayer (PlayerState newState);
-    void updateWheels (signed char m);
-    void updateCamera (int XRotation, int YRotation);
-	PlayerState getPlayerState (void);
+    void processControlsFrameEvent(InputState *userInput);
+    void updateCameraFrameEvent (int XRotation, int YRotation);
+    Car* getCar();
     
 private:
-	PlayerState state;              ///< The player's current state.
     const float cameraRotationConstant;
 
-    Ogre::SceneNode* playerNode;	///< The complete player node - this is what should be moved when the car moves.
-    Ogre::SceneNode* camNode;		///< The node onto which a camera can be attached to observe the car.
-    Ogre::SceneNode* camArmNode;
-    Ogre::SceneNode* carNode;		///< The node onto which the car object and its components attach.
-    Ogre::SceneNode* carLDoorNode;
-    Ogre::SceneNode* carRDoorNode;
-    Ogre::SceneNode* carFBumperNode;
-    Ogre::SceneNode* carRBumperNode;
-    Ogre::SceneNode* carFLWheelNode;
-    Ogre::SceneNode* carFRWheelNode;
-    Ogre::SceneNode* carRLWheelNode;
-    Ogre::SceneNode* carRRWheelNode;
+    Car *mCar;
+    CarSnapshot *mCarSnapshot;
 };
 
 #endif // #ifndef PLAYER_H

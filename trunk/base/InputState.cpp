@@ -8,24 +8,7 @@
 #include "InputState.h"
 
 
-
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
-/// @brief  Constructor, setting both inputs to zero (no input).
-InputState::InputState (void)
-{
-    forwardBack = ZERO;
-    leftRight = ZERO;
-}
-
-
-/// @brief  Constructor, storing the two values provided.
-/// @param  frwdBack    The state of the forward/back keys.
-/// @param  leftRght    The state of the left/right keys.
-InputState::InputState (InputState::PlayerKeyState frwdBack, InputState::PlayerKeyState leftRght)
-{
-    forwardBack = frwdBack;
-    leftRight = leftRght;
-}
 
 /// @brief  Constructor, calculating the PlayerKeyStates from the booleans provided.
 /// @param  frwdPressed  Whether the forward key is pressed.
@@ -34,36 +17,46 @@ InputState::InputState (InputState::PlayerKeyState frwdBack, InputState::PlayerK
 /// @param  rghtPressed  Whether the right key is pressed.
 InputState::InputState (bool frwdPressed, bool backPressed, bool leftPressed, bool rghtPressed)
 {
-    forwardBack = ZERO;
-    leftRight   = ZERO;
-    if (frwdPressed)
-        forwardBack += 1;
-    if (backPressed)
-        forwardBack -= 1;
-    if (leftPressed)
-        leftRight   += 1;
-    if (rghtPressed)
-        leftRight   -= 1;
+    mForward = frwdPressed;
+    mBack = backPressed;
+    mLeft = leftPressed;
+    mRight = rghtPressed;
 }
 
 
 /// @brief  Deconstructor.
-InputState::~InputState (void)
+InputState::~InputState ()
 {
 }
 
 
 /// @brief  Returns the state of the forward/back keys.
-/// @return The forward/back key state.
-InputState::PlayerKeyState InputState::getFrwdBack (void)
+/// @return The forward key state.
+bool InputState::isForward ()
 {
-    return forwardBack;
+    return mForward;
+}
+
+
+/// @brief  Returns the state of the forward/back keys.
+/// @return The forward key state.
+bool InputState::isBack ()
+{
+    return mBack;
 }
 
 
 /// @brief  Returns the state of the left/right keys.
 /// @return The left/right key state.
-InputState::PlayerKeyState InputState::getLeftRght (void)
+bool InputState::isLeft ()
 {
-    return leftRight;
+    return mLeft;
+}
+
+
+/// @brief  Returns the state of the left/right keys.
+/// @return The left/right key state.
+bool InputState::isRight ()
+{
+    return mRight;
 }

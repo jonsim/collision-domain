@@ -17,20 +17,26 @@
  */
 class Input : public OIS::KeyListener, public OIS::MouseListener
 {
-public:
-    Input (void);
-    ~Input (void);
-    void createInputSystem (OIS::ParamList pl);
-    void destroyInputSystem (void);
-    void capture (void);
-    InputState getInputState (void);
+    friend class GraphicsCore;
 
-    //OIS Input devices
-    OIS::InputManager* mInputManager;
-    OIS::Mouse*    mMouse;
-    OIS::Keyboard* mKeyboard;
+public:
+    Input ();
+    ~Input ();
+    void createInputSystem (OIS::ParamList pl);
+    void destroyInputSystem ();
+    void capture ();
+
+    // Controls are assigned here
+    InputState *getInputState();
+    bool isToggleWidget();
+    int getMouseXRel();
+    int getMouseYRel();
 
 protected:
+    //OIS Input devices
+    OIS::InputManager* mInputManager;
+    OIS::Keyboard* mKeyboard;
+    OIS::Mouse*    mMouse;
     // OIS::KeyListener
     virtual bool keyPressed (const OIS::KeyEvent &evt);
     virtual bool keyReleased (const OIS::KeyEvent &evt);

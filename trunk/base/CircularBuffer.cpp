@@ -1,7 +1,7 @@
 /**
- * @file	CircularBuffer.cpp
+ * @file    CircularBuffer.cpp
  * @author  Jonathan Simmonds
- * @brief 	Very fast implementation of a Circular Buffer.
+ * @brief     Very fast implementation of a Circular Buffer.
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -89,6 +89,7 @@ void CircularBuffer<T>::add (const T item)
 template <class T>
 void CircularBuffer<T>::remove (void)
 {
-    if (!bufferEmpty())
+    if (!this->bufferEmpty())
         tail = sMod(tail + 1);
 }
+
