@@ -41,6 +41,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     new BulletBuggyCar(sm, physicsCore->mWorld, 1);
     new SimpleCoupeCar(sm, physicsCore->mWorld, 2);
 
+    mCar->moveTo(btVector3(0,3,0));
 
     for (int i=1; i < 10; i++)
     {
@@ -69,18 +70,21 @@ void Player::attachCamera (Ogre::Camera* cam)
 
 /// @brief  Updates the Player's PlayerState to the one provided.
 /// @param  newState    The new state to update to.
-void Player::processControlsFrameEvent(InputState *userInput)
+void Player::processControlsFrameEvent(
+        InputState *userInput,
+        Ogre::Real secondsSinceLastFrame,
+        float targetPhysicsFrameRate)
 {
     // apply csp to get steering controls if networking demands it
 
     // process steering
-    mCar->steerInputTick(userInput->isLeft(), userInput->isRight());
+    mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
     // apply acceleration 4wd style
     mCar->accelInputTick(userInput->isForward(), userInput->isBack());
 
     // TELEPORT TESTING
-    if (userInput->isLeft() && userInput->isRight())
+    /*if (userInput->isLeft() && userInput->isRight())
     {
         // teleport to the previously set point!
         if (mCarSnapshot != NULL) mCar->restoreSnapshot(mCarSnapshot);
@@ -91,7 +95,7 @@ void Player::processControlsFrameEvent(InputState *userInput)
         // set the new teleport point
         if (mCarSnapshot != NULL) delete mCarSnapshot;
         mCarSnapshot = mCar->getCarSnapshot();
-    }
+    }*/
 }
 
 

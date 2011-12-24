@@ -36,7 +36,7 @@ void Car::moveTo(const btVector3 &position)
 
 
 /// This is PRIVATE for a reason. Without giving angular and linear velocity along with a new rotation
-/// the rotation won't be applied nicely so the car will still keeo moving in the original direction
+/// the rotation won't be applied nicely so the car will still keep moving in the original direction
 void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     btTransform transform(rotation, position);
@@ -46,27 +46,46 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 
 
 /* TODO - steering acceleration needs to take into account timesincelastframe */
-void Car::steerInputTick(bool isLeft, bool isRight)
+void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate)
 {
     // process steering on both wheels (+1 = left, -1 = right)
     int leftRight = 0;
     if (isLeft)  leftRight += 1;
     if (isRight) leftRight -= 1;
 
+    float calcIncrement = 0.0f;
+    bool resetToZero = false;
+
     // we don't want to go straight to this steering value (i.e. apply acceleration to steer value)
-    if (leftRight != 0) mSteer += mSteerIncrement * leftRight;
+    if (leftRight != 0)
+    {
+        // Apply steering increment normally
+        // Else We are steering against the current wheel direction (i.e. back towards 0). Steer faster.
+        if (mSteer * leftRight >= 0) calcIncrement = mSteerIncrement * leftRight;
+        else calcIncrement = mSteerToZeroIncrement * leftRight;
+    }
     else
     {
         // go back to zero
-        if (mSteer >= 0) mSteer = mSteer >= mSteerToZeroIncrement ? mSteer - mSteerToZeroIncrement : 0.0f;
-        else mSteer = mSteer <= -mSteerToZeroIncrement ? mSteer + mSteerToZeroIncrement : 0.0f;
+        if (mSteer >= 0)
+        {
+            if (mSteer >= mSteerToZeroIncrement) calcIncrement = -mSteerToZeroIncrement;
+            else resetToZero = true;
+        }
+        else
+        {
+            if (mSteer <= -mSteerToZeroIncrement) calcIncrement = mSteerToZeroIncrement;
+            else resetToZero = true;
+        }
     }
-    
-    /*if (isLeft && isRight) {
-        moveTo(
-            btVector3(90.0f,2.00f,0.0f),
-            btQuaternion(btVector3(0,1,0), btScalar(0.0f)));
-    }*/
+
+    if (resetToZero) mSteer = 0;
+    else
+    {
+        // Framerate independent wheel turning acceleration
+        calcIncrement *= secondsSinceLastFrame / targetPhysicsFrameRate;
+        mSteer += calcIncrement;
+    }
 
     applySteeringValue();
 }

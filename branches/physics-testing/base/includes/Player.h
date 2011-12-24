@@ -34,7 +34,10 @@ public:
     ~Player ();
     void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
-    void processControlsFrameEvent(InputState *userInput);
+    void processControlsFrameEvent(
+        InputState *userInput,
+        Ogre::Real secondsSinceLastFrame,
+        float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation);
     Car* getCar();
     

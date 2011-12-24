@@ -166,7 +166,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
     }
-
+    
     // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
 
     // Process keyboard input and produce an InputState object from this.
@@ -176,10 +176,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     mNetworkCore->frameEvent(inputSnapshot);
 
     // Apply controls the player (who will be moved on frameEnd and frameStart).
-    players[clientID].processControlsFrameEvent(inputSnapshot);
+    players[clientID].processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
     players[clientID].updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
-    // Perform Client Side Prediction. Probably in a new thread.
+    // Perform Client Side Prediction.
     // Move any players who are out of sync
     
     /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
