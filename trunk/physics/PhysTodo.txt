@@ -1,0 +1,13 @@
+// Please add as you think of stuff
+
+Steering user input is not framerate independent
+events system triggered on collisions and acceleration etc. for sound triggers
+damage meter
+more complex terrain than a flat plane
+memory leak / don't make billions of CarSnapshot objects (use that struct or whatever - its all floats - how to do this david?)
+
+// Stuff not really physics
+
+shadows are messed up
+precompiled headers dont work
+we need "VIP game mode" as opposed to an aimless drive around
