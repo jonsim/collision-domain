@@ -1,1 +1,0 @@
-To use the 3D models, copy the 'media' folder, in this direcotry, to your OgreSDK folder, merging with the media folder there.
