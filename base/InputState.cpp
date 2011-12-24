@@ -1,0 +1,62 @@
+/**
+ * @file	InputState.h
+ * @brief 	An uneditable snapshot of the player's input state 
+ */
+
+/*-------------------- INCLUDES --------------------*/
+#include "stdafx.h"
+#include "InputState.h"
+
+
+/*-------------------- FUNCTION DEFINITIONS --------------------*/
+
+/// @brief  Constructor, calculating the PlayerKeyStates from the booleans provided.
+/// @param  frwdPressed  Whether the forward key is pressed.
+/// @param  backPressed  Whether the back key is pressed.
+/// @param  leftPressed  Whether the left key is pressed.
+/// @param  rghtPressed  Whether the right key is pressed.
+InputState::InputState (bool frwdPressed, bool backPressed, bool leftPressed, bool rghtPressed)
+{
+    mForward = frwdPressed;
+    mBack = backPressed;
+    mLeft = leftPressed;
+    mRight = rghtPressed;
+}
+
+
+/// @brief  Deconstructor.
+InputState::~InputState ()
+{
+}
+
+
+/// @brief  Returns the state of the forward/back keys.
+/// @return The forward key state.
+bool InputState::isForward ()
+{
+    return mForward;
+}
+
+
+/// @brief  Returns the state of the forward/back keys.
+/// @return The forward key state.
+bool InputState::isBack ()
+{
+    return mBack;
+}
+
+
+/// @brief  Returns the state of the left/right keys.
+/// @return The left/right key state.
+bool InputState::isLeft ()
+{
+    return mLeft;
+}
+
+
+/// @brief  Returns the state of the left/right keys.
+/// @return The left/right key state.
+bool InputState::isRight ()
+{
+    return mRight;
+}
