@@ -70,18 +70,24 @@ InputState* Input::getInputState()
 }
 
 
+/// @brief  Processes the key bound (here) to toggling widgets on screen.
+/// @return Whether the key bound to toggling widgets on screen is pressed or not.
 bool Input::isToggleWidget()
 {
     return mKeyboard->isKeyDown(OIS::KC_G);
 }
 
 
+/// @brief  Deals with mouse input.
+/// @return The amount the mouse has moved in the X direction.
 int Input::getMouseXRel()
 {
     return mMouse->getMouseState().X.rel;
 }
 
 
+/// @brief  Deals with mouse input.
+/// @return The amount the mouse has moved in the Y direction.
 int Input::getMouseYRel()
 {
     return mMouse->getMouseState().Y.rel;

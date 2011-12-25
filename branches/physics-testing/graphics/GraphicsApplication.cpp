@@ -181,7 +181,15 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Perform Client Side Prediction.
     // Move any players who are out of sync
-    
+    if (inputSnapshot->isLeft())
+    {
+        players[clientID].getCar()->moveTo(btVector3(0,490.5,0));
+        mPhysicsCore->mWorld->getBulletDynamicsWorld()->setGravity(btVector3(0,-9.81 * 1.9,0));
+    }
+
+    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);
+    //mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);
+
     /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
     for (i : otherPlayerIDs)
     {
@@ -213,6 +221,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 }
 
 
+/// @brief  Called once a frame every time processing for a frame has begun.
+/// @param  evt  The FrameEvent associated with this frame's rendering.
+/// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 {
 
@@ -227,14 +238,17 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
     // and rely on the server to solve.
 
-    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);
+    //mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);
     return true;
 }
 
 
+/// @brief  Called once a frame every time processing for a frame has ended.
+/// @param  evt  The FrameEvent associated with this frame's rendering.
+/// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
-    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/7, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
     return true;
 }
 

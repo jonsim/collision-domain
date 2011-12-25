@@ -1,6 +1,6 @@
 /**
  * @file	GraphicsApplication.h
- * @brief 	Adds objects to the graphics interface.
+ * @brief 	Adds objects to the graphics interface and contains the framelistener
  */
 #ifndef GRAPHICSAPPLICATION_H
 #define GRAPHICSAPPLICATION_H

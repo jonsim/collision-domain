@@ -1,6 +1,6 @@
 /**
  * @file	Player.h
- * @brief 	Contains the Player nodes and the related data.
+ * @brief 	Contains the player car and the related data specific to each player.
  */
 #ifndef PLAYER_H
 #define PLAYER_H

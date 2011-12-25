@@ -1,6 +1,6 @@
 /**
  * @file	NetworkCore.h
- * @brief 	Takes notifications and deal with them however networking needs to
+ * @brief 	Takes notifications and deals with them however networking needs to
  */
 #ifndef NETWORKCORE_H
 #define NETWORKCORE_H

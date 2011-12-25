@@ -1,6 +1,6 @@
 /**
  * @file	Player.cpp
- * @brief 	Contains the Player nodes and the related data.
+ * @brief 	Contains the player car and the related data specific to each player.
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -29,6 +29,7 @@ Player::~Player (void)
 /// @param  sm  The SceneManager to which the 3D player object is attached.
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
+/// @param  physicsCore   The class containing the physics world.
 void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore)
 {
     std::string uniqueItemNo = Ogre::StringConverter::toString(physicsCore->getUniqueEntityID());
@@ -41,7 +42,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     new BulletBuggyCar(sm, physicsCore->mWorld, 1);
     new SimpleCoupeCar(sm, physicsCore->mWorld, 2);
 
-    mCar->moveTo(btVector3(0,3,0));
+    mCar->moveTo(btVector3(0,0,0));
 
     for (int i=1; i < 10; i++)
     {
@@ -68,15 +69,15 @@ void Player::attachCamera (Ogre::Camera* cam)
 }
 
 
-/// @brief  Updates the Player's PlayerState to the one provided.
-/// @param  newState    The new state to update to.
+/// @brief  Applies the player controls to the car so it will move on next stepSimulation.
+/// @param  userInput               The latest user keypresses.
+/// @param  secondsSinceLastFrame   The time in seconds since the last frame, for framerate independence.
+/// @param  targetPhysicsFrameRate  The target framerate to normalise acceleration to.
 void Player::processControlsFrameEvent(
         InputState *userInput,
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
-    // apply csp to get steering controls if networking demands it
-
     // process steering
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
@@ -110,6 +111,8 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation)
 }
 
 
+/// @brief  Supplies the Car object which contains player position and methods on that. 
+/// @return The Car object which allows forcing a player to a given CarSnapshot or getting a CarSnapshot.
 Car* Player::getCar()
 {
     return mCar;

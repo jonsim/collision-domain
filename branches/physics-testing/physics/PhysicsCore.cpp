@@ -1,9 +1,13 @@
-
-
+/**
+ * @file	PhysicsCore.cpp
+ * @brief 	Contains the physics world and methods relating to it (currently there are not many such methods)
+ */
 #include "stdafx.h"
 #include "PhysicsCore.h"
 
 
+/// @brief  Constructor to create physics stuff
+/// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.
 PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 {
     mSceneMgr = sceneMgr;
@@ -12,13 +16,12 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
     // the number of units used for a model of height 1m
     mBulletGravity = Ogre::Vector3(0,-9.81,0);
 
-
-
     mBulletAlignedBox = Ogre::AxisAlignedBox(Ogre::Vector3(-10000, -10000, -10000), Ogre::Vector3(10000,  10000,  10000));
     mNumEntitiesInstanced = 0; // how many shapes are created
 
     // Start Bullet
     mWorld = new OgreBulletDynamics::DynamicsWorld(mSceneMgr, mBulletAlignedBox, mBulletGravity);
+
     // add Debug info display tool
     debugDrawer = new OgreBulletCollisions::DebugDrawer();
     debugDrawer->setDrawWireframe(true);   // we want to see the Bullet containers
@@ -29,6 +32,7 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 }
 
 
+/// @brief  Destructor to clean up
 PhysicsCore::~PhysicsCore(void)
 {
     // OgreBullet physic delete - RigidBodies
@@ -53,8 +57,8 @@ PhysicsCore::~PhysicsCore(void)
 }
 
 
-/** @brief mNumEntitiesInstances should only ever be modified through this method! (Potential crashes otherwise)
-    @return an int which has never before been used (in an entity name) */
+/// @brief  mNumEntitiesInstances should only ever be modified through this method! (Potential crashes otherwise).
+/// @return an int which has never before been used (in an entity name).
 int PhysicsCore::getUniqueEntityID()
 {
     mNumEntitiesInstanced++;
@@ -62,6 +66,7 @@ int PhysicsCore::getUniqueEntityID()
 }
 
 
+/// @brief  Create the floor plane at y = 0 and add it to the physics world.
 void PhysicsCore::createFloorPlane()
 {
     OgreBulletCollisions::CollisionShape *Shape;
@@ -76,6 +81,7 @@ void PhysicsCore::createFloorPlane()
 }
 
 
+/// @brief  Create the walls at +2500 and -2500 and add them to the physics world.
 void PhysicsCore::createWallPlanes()
 {
     // -2500 is good 2500 is bad. positive distances DO NOT WORK. Seriously, don't even bother
@@ -136,10 +142,22 @@ void PhysicsCore::createWallPlanes()
 }
 
 
-void PhysicsCore::addCube(Ogre::String instanceName,
-                                       Ogre::Vector3 pos, Ogre::Quaternion q, Ogre::Vector3 size,
-                                       Ogre::Real bodyRestitution, Ogre::Real bodyFriction,
-                                       Ogre::Real bodyMass)
+/// @brief  Creates a cube and adds it to the physics world
+/// @param  instanceName  Name to be used for the imported cube mesh.
+/// @param  pos  Position for the resulting cube.
+/// @param  q  Rotation for the resulting cube.
+/// @param  size  Size for the resulting cube.
+/// @param  bodyRestitution  How bouncy the cube is.
+/// @param  bodyFriction  How slidey the cube is.
+/// @param  bodyMass  How heavy the cube is.
+void PhysicsCore::addCube(
+        Ogre::String instanceName,
+        Ogre::Vector3 pos,
+        Ogre::Quaternion q,
+        Ogre::Vector3 size,
+        Ogre::Real bodyRestitution,
+        Ogre::Real bodyFriction,
+        Ogre::Real bodyMass)
 {
     Ogre::Entity *entity = mSceneMgr->createEntity(instanceName , "Bulletbox.mesh");
     // "Crate.mesh");
@@ -170,7 +188,13 @@ void PhysicsCore::addCube(Ogre::String instanceName,
 }
 
 
-void PhysicsCore::newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass)
+/// @brief  Creates a cube with velocity
+void PhysicsCore::newBox(
+        Ogre::SceneNode *node,
+        Ogre::Vector3 position,
+        Ogre::Vector3 size,
+        Ogre::Vector3 cameraDirectionNormalised,
+        float mass)
 {
     size *= 0.05f; // don't forget to scale down the Bullet-box too
     // after that create the Bullet shape with the calculated size
