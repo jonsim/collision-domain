@@ -1,4 +1,7 @@
-
+/**
+ * @file	BulletBuggyCar.h
+ * @brief 	A Car object with specific mesh and texture to create an untextured buggy style car
+ */
 #ifndef __BulletBuggyCar_h_
 #define __BulletBuggyCar_h_
 

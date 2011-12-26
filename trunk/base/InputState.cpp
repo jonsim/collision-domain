@@ -1,5 +1,5 @@
 /**
- * @file	InputState.h
+ * @file	InputState.cpp
  * @brief 	An uneditable snapshot of the player's input state 
  */
 

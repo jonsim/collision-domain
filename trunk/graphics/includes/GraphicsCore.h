@@ -1,5 +1,5 @@
 /**
- * @file	GraphicsApplication.h
+ * @file	GraphicsCore.h
  * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
  *          the Graphics Application with underlying functions to keep it tidy.
  *          Derived from the Ogre Tutorial Framework (BaseApplication.h).

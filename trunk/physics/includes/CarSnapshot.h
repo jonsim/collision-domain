@@ -1,4 +1,8 @@
-
+/**
+ * @file	CarSnapshot.h
+ * @brief 	Contains all the required parameters to reliably "teleport" a car to a certain position.
+                If you take a CarSnapshot it can later be restored by the interface in the Car class.
+ */
 #ifndef __CarSnapshot_h_
 #define __CarSnapshot_h_
 

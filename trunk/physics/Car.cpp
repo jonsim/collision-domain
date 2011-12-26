@@ -1,9 +1,16 @@
-
-
+/**
+ * @file	Car.cpp
+ * @brief 	Contains the core methods and variables common to all different types of car.
+                Extend or implement this class as required to create a functioning car.
+                This class and its subclasses deal with the physics and the graphics which are
+                car related and expose an interface to do stuff to the cars.
+ */
 #include "stdafx.h"
 #include "Car.h"
 
 
+/// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
+/// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
 void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 {
     moveTo(carSnapshot->mPosition, carSnapshot->mRotation);
@@ -18,6 +25,8 @@ void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 }
 
 
+/// @brief  The CarSnapshot specifying the current location of this car which can be restored later if need be.
+/// @return The CarSnapshot specifying where and how to place the car at its current location.
 CarSnapshot *Car::getCarSnapshot()
 {
     return new CarSnapshot(
@@ -29,14 +38,18 @@ CarSnapshot *Car::getCarSnapshot()
 }
 
 
+/// @brief  Moves the car to the specified position keeping current rotation, velocity etc.
+/// @param  position  The position to move to.
 void Car::moveTo(const btVector3 &position)
 {
     moveTo(position, mbtRigidBody->getOrientation());
 }
 
 
-/// This is PRIVATE for a reason. Without giving angular and linear velocity along with a new rotation
-/// the rotation won't be applied nicely so the car will still keep moving in the original direction
+/// @brief  This is PRIVATE for a reason. Without giving angular and linear velocity along with a new rotation
+///         the rotation won't be applied nicely so the car will still keep moving in the original direction.
+/// @param  position  The position to move to.
+/// @param  rotation  The rotation to move to.
 void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     btTransform transform(rotation, position);
@@ -45,7 +58,13 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 }
 
 
-/* TODO - steering acceleration needs to take into account timesincelastframe */
+/// @brief  Called once every frame with new user input and updates steering from this.
+/// @param  isLeft                  User input specifying if the left control is pressed.
+/// @param  isRight                 User input specifying if the right control is pressed.
+/// @param  secondsSinceLastFrame   For framerate independence as the wheel turning "accelerate" with keypresses.
+/// @param  targetPhysicsFrameRate  The target framerate in seconds anything other than 1/60 will result in an
+///         unexpected steering rate. This does not mean the controls aren't framerate independent, its just the
+///         fixed frame length in seconds which is taken as "base" for applying normalised steering increments.
 void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate)
 {
     // process steering on both wheels (+1 = left, -1 = right)
@@ -91,16 +110,22 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
 }
 
 
+/// @brief  Sets the wheel position from the mSteer variable, and clamps mSteer to its bounds.
 void Car::applySteeringValue()
 {
     // don't steer too far! Use the clamps.
-    mSteer = mSteer > mSteerClamp ? mSteerClamp : (mSteer < -mSteerClamp ? -mSteerClamp : mSteer);
+    float steer = mSteer > mSteerClamp ? mSteerClamp : (mSteer < -mSteerClamp ? -mSteerClamp : mSteer);
 
-    mVehicle->setSteeringValue(mSteer, 0);
-    mVehicle->setSteeringValue(mSteer, 1);
+    mVehicle->setSteeringValue(steer, 0);
+    mVehicle->setSteeringValue(steer, 1);
+
+    mSteer = steer;
 }
 
 
+/// @brief  Called once every frame with new user input and updates forward/back engine forces from this.
+/// @param  isForward  User input specifying if the forward control is pressed.
+/// @param  isBack     User input specifying if the back control is pressed.
 void Car::accelInputTick(bool isForward, bool isBack)
 {
     int forwardBack = 0;
@@ -122,7 +147,8 @@ void Car::accelInputTick(bool isForward, bool isBack)
 
 
 /// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
-/// @return The node onto which a camera can be attached to observe the car.
+/// @return The node onto which a camera can be attached to observe the car. The parent of this node is
+///         guaranteed to be the arm node.
 Ogre::SceneNode *Car::attachCamNode()
 {
     if (mCamNode != NULL) return mCamNode;
@@ -135,6 +161,11 @@ Ogre::SceneNode *Car::attachCamNode()
 }
 
 
+/// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
+///         with this car's unique ID so that (forbidden) name collisions don't occur.
+/// @param  entityName  Name which the imported mesh will be given.
+/// @param  meshName    Name of the mesh which is to be imported.
+/// @param  toAttachTo  The SceneNode which the mesh should be imported and attached to.
 void Car::createGeometry(
                     const std::string &entityName,
                     const std::string &meshName,
@@ -144,6 +175,12 @@ void Car::createGeometry(
 }
 
 
+/// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
+///         with this car's unique ID so that (forbidden) name collisions don't occur.
+/// @param  entityName    Name which the imported mesh will be given.
+/// @param  meshName      Name of the mesh which is to be imported.
+/// @param  materialName  The name of the material file which is to be imported and applied to the mesh.
+/// @param  toAttachTo    The SceneNode which the mesh should be imported and attached to.
 void Car::createGeometry(
                     const std::string &entityName,
                     const std::string &meshName,
@@ -154,6 +191,13 @@ void Car::createGeometry(
 }
 
 
+/// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
+///         with this car's unique ID so that (forbidden) name collisions don't occur.
+/// @param  entityName     Name which the imported mesh will be given.
+/// @param  meshName       Name of the mesh which is to be imported.
+/// @param  applyMaterial  Specified whether to apply the given material (which may be NULL) or not.
+/// @param  materialName   The name of the material file which is to be imported and applied to the mesh.
+/// @param  toAttachTo     The SceneNode which the mesh should be imported and attached to.
 void Car::createGeometry(
                     const std::string &entityName,
                     const std::string &meshName,
