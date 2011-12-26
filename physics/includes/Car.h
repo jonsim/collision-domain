@@ -1,4 +1,10 @@
-
+/**
+ * @file	Car.h
+ * @brief 	Contains the core methods and variables common to all different types of car.
+                Extend or implement this class as required to create a functioning car.
+                This class and its subclasses deal with the physics and the graphics which are
+                car related and expose an interface to do stuff to the cars.
+ */
 #ifndef __Car_h_
 #define __Car_h_
 

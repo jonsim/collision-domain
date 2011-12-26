@@ -1,5 +1,7 @@
-
-
+/**
+ * @file	BulletBuggyCar.cpp
+ * @brief 	A Car object with specific mesh and texture to create an untextured buggy style car
+ */
 #include "stdafx.h"
 #include "cars/BulletBuggyCar.h"
 
@@ -7,6 +9,7 @@ using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
 
 
+/// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void BulletBuggyCar::initTuning()
 {
     // mTuning related values
@@ -31,8 +34,8 @@ void BulletBuggyCar::initTuning()
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
     mSteerClamp = 0.75f;
 
-    mMaxAccelForce = 3000.0f;
-    mMaxBrakeForce = 4000.0f;
+    mMaxAccelForce = 8000.0f;
+    mMaxBrakeForce = 10000.0f;
 }
 
 
@@ -42,6 +45,10 @@ void BulletBuggyCar::initTuning()
 
 
 
+/// @brief  Constructor to create a car, add its graphical model to ogre and add its physics model to bullet.
+/// @param  sceneMgr     The Ogre graphics world.
+/// @param  world        The bullet physics world.
+/// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
 BulletBuggyCar::BulletBuggyCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
 {
     mSceneMgr = sceneMgr;
@@ -59,6 +66,7 @@ BulletBuggyCar::BulletBuggyCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
 }
 
 
+/// @brief  Destructor to clean up. Doesn't currently remove the car from the physics world though.
 BulletBuggyCar::~BulletBuggyCar(void)
 {
     // Cleanup Bodies:
@@ -73,6 +81,7 @@ BulletBuggyCar::~BulletBuggyCar(void)
 }
 
 
+/// @brief  Initialises the node tree for this car.
 void BulletBuggyCar::initNodes()
 {
     mPlayerNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -97,6 +106,7 @@ void BulletBuggyCar::initNodes()
 }
 
 
+/// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
 void BulletBuggyCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
@@ -117,6 +127,7 @@ void BulletBuggyCar::initGraphics(Ogre::Vector3 chassisShift)
 }
 
 
+/// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
 void BulletBuggyCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
     // shift chassis collisionbox up chassisShift units above origin
@@ -147,6 +158,7 @@ void BulletBuggyCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
 }
 
 
+/// @brief  Attaches 4 wheels to the car chassis.
 void BulletBuggyCar::initWheels()
 {
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);

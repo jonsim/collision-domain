@@ -1,4 +1,7 @@
-
+/**
+ * @file	PhysicsCore.h
+ * @brief 	Contains the physics world and methods relating to it (currently there are not many such methods)
+ */
 #ifndef __PhysicsCore_h_
 #define __PhysicsCore_h_
 
