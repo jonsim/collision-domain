@@ -34,8 +34,8 @@ void BulletBuggyCar::initTuning()
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
     mSteerClamp = 0.75f;
 
-    mMaxAccelForce = 3000.0f;
-    mMaxBrakeForce = 4000.0f;
+    mMaxAccelForce = 8000.0f;
+    mMaxBrakeForce = 10000.0f;
 }
 
 

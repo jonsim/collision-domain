@@ -42,7 +42,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     new BulletBuggyCar(sm, physicsCore->mWorld, 1);
     new SimpleCoupeCar(sm, physicsCore->mWorld, 2);
 
-    mCar->moveTo(btVector3(0,0,0));
+    mCar->moveTo(btVector3(0,0.5,0));
 
     for (int i=1; i < 10; i++)
     {

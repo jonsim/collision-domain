@@ -148,6 +148,8 @@ void GraphicsApplication::setupNetworking (void)
 /// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
+    firstFrameOccurred = false;
+    mClock = new btClock();
     GraphicsCore::createFrameListener();
 }
 
@@ -181,14 +183,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Perform Client Side Prediction.
     // Move any players who are out of sync
-    if (inputSnapshot->isLeft())
-    {
-        players[clientID].getCar()->moveTo(btVector3(0,490.5,0));
-        mPhysicsCore->mWorld->getBulletDynamicsWorld()->setGravity(btVector3(0,-9.81 * 1.9,0));
-    }
-
-    mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);
-    //mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);
 
     /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
     for (i : otherPlayerIDs)
@@ -217,6 +211,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // Cleanup frame specific objects so we don't rape memory. If you want to remember some, delete them later!
     delete inputSnapshot;
 
+    // Minimum of 10 FPS (maxSubsteps=6) before physics becomes wrong
+    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
+
     return true;
 }
 
@@ -226,7 +223,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 {
-
     // stepSimulation proceeds the simulation over 'timeStep', units in preferably in seconds.
     // By default, Bullet will subdivide the timestep in constant substeps of each 'fixedTimeStep'.
     // in order to keep the simulation real-time, the maximum number of substeps can be clamped to
@@ -238,7 +234,7 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // processing in frameEnded. so minumum frame rate of 4fps before physics will become innacurate
     // and rely on the server to solve.
 
-    //mPhysicsCore->mWorld->stepSimulation(/*timeStep*/evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);
+    //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
     return true;
 }
 
@@ -248,7 +244,7 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
-    //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, /*maxSubSteps*/9999, /*fixedTimeStep*/1./60.);   // update Bullet Physics animation
+    //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
     return true;
 }
 
