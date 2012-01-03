@@ -5,15 +5,18 @@ BUT, as RakNet will be required in the end when there's some stuff to implement.
 
 1. Download RakNet - http://www.raknet.com/raknet/downloads/RakNet_PC-4.033.zip 
 
-2. Unpack somewhere obvs
+2. Unpack somewhere
 
 3. Add an environment variable for it if you want, but as we're all using our own project files / make things at the moment that doesn't really matter
 
-4. ADDITIONAL INCLUDE DIRECTORIES (for header files) : path/to/RakNet/src
+4. ADDITIONAL INCLUDE DIRECTORIES (for header files) : path/to/RakNet/source/
 
 5. ADDITONNAL LIBRARIES (to link against) : ws2_32.lib
+
+Also need to compile the files in raknet/source/
+Can ignore the /cat/ folder it seems
 
 It's basically given in the first tutorial at http://www.raknet.net/raknet/manual/tutorial.html
 But just add stuff into the project you already have when the time comes.
 
-It also says to change Character Set to 'Not Set' but Ogre asks for something else. Don't know what destruction that will cause. Hide behind something just in case.
+It also says to change Character Set to 'Not Set' but Ogre asks for something else. Not Set seems to work fine.
