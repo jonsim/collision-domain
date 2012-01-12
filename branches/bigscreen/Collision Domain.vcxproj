@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="base\CircularBuffer.cpp" />
+    <ClCompile Include="base\Frame.cpp" />
+    <ClCompile Include="base\Input.cpp" />
+    <ClCompile Include="base\InputState.cpp" />
+    <ClCompile Include="base\Player.cpp" />
+    <ClCompile Include="base\PlayerState.cpp" />
+    <ClCompile Include="base\stdafx.cpp" />
+    <ClCompile Include="gameplay\Gameplay.cpp" />
+    <ClCompile Include="gameplay\Team.cpp" />
+    <ClCompile Include="graphics\GraphicsApplication.cpp" />
+    <ClCompile Include="graphics\GraphicsCore.cpp" />
+    <ClCompile Include="graphics\ViewportManager.cpp" />
+    <ClCompile Include="physics\Car.cpp" />
+    <ClCompile Include="physics\cars\BulletBuggyCar.cpp" />
+    <ClCompile Include="physics\cars\SimpleCoupeCar.cpp" />
+    <ClCompile Include="physics\PhysicsCore.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="base\includes\CircularBuffer.h" />
+    <ClInclude Include="base\includes\Frame.h" />
+    <ClInclude Include="base\includes\Input.h" />
+    <ClInclude Include="base\includes\InputState.h" />
+    <ClInclude Include="base\includes\Player.h" />
+    <ClInclude Include="base\includes\PlayerState.h" />
+    <ClInclude Include="base\includes\stdafx.h" />
+    <ClInclude Include="gameplay\includes\Gameplay.h" />
+    <ClInclude Include="gameplay\includes\Team.h" />
+    <ClInclude Include="graphics\includes\GraphicsApplication.h" />
+    <ClInclude Include="graphics\includes\GraphicsCore.h" />
+    <ClInclude Include="graphics\includes\ViewportManager.h" />
+    <ClInclude Include="physics\includes\Car.h" />
+    <ClInclude Include="physics\includes\cars\BulletBuggyCar.h" />
+    <ClInclude Include="physics\includes\cars\SimpleCoupeCar.h" />
+    <ClInclude Include="physics\includes\PhysicsCore.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DB77EF71-1B7C-4D1A-9B2D-C9F758DB81CA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>CollisionDomain</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(OGREBULLET_ROOT)\Collisions\include;$(OGREBULLET_ROOT)\Dynamics\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OGREBULLET_ROOT)\lib\Debug;$(OGREBULLET_ROOT)\lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(OGREBULLET_ROOT)\Collisions\include;$(OGREBULLET_ROOT)\Dynamics\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OGREBULLET_ROOT)\lib\Debug;$(OGREBULLET_ROOT)\lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;$(ProjectDir)\base\includes;$(ProjectDir)\graphics\includes;$(ProjectDir)\networking\includes;$(ProjectDir)\physics\includes;$(ProjectDir)\base;$(ProjectDir)\graphics;$(ProjectDir)\networking;$(ProjectDir)\physics;$(ProjectDir);$(OGREBULLET_ROOT)\Dynamics\include;$(OGREBULLET_ROOT)\Collisions\include</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalOptions> -Zm142 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;C:\Users\Ash\Desktop\OgreBullet\lib;C:\bullet-2.79-rev2440\bullet-2.79\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:libc.lib /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;D:\Programs\Collision Domain\Collision Domain\include;D:\Programs\Collision Domain\Collision Domain\Release;$(OGREBULLET_HOME)\Dynamics\src;$(OGREBULLET_HOME)\Collisions\src</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;C:\Users\Ash\Desktop\OgreBullet\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
