@@ -11,8 +11,10 @@
 #include "Player.h"
 #include "InputState.h"
 #include "btQuickprof.h"
-
-
+#include "Vehicle.h"
+#include "BaseGameEntity.h"
+#include "Obstacle.h"
+#include <vector>
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -28,8 +30,11 @@ public:
 
     int clientID;               ///< The client ID which is assigned by the server.
     Player players[1]; ///< An array of all players in the game to keep track of.
+    Vehicle* mVehicle; //ai player
+    Vehicle* mPursuitVehicle;
     btClock *mClock;
     bool firstFrameOccurred;
+    std::vector<Obstacle*> mObstacles;
 
 protected:
     virtual void createScene(void);
@@ -44,6 +49,8 @@ private:
     void setupLighting (void);
     void setupArena (void);
     void setupNetworking (void);
+    void createAgent(void);
+    void createPursuitVehicle(void);
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H
