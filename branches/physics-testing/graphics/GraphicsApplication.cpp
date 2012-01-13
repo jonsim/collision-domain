@@ -18,12 +18,45 @@
 /// @brief  Constructor.
 GraphicsApplication::GraphicsApplication (void)
 {
+	mVehicle = NULL;
 }
 
 
 /// @brief  Destructor.
 GraphicsApplication::~GraphicsApplication (void)
 {
+}
+
+void GraphicsApplication::createAgent(void)
+{
+  double rotation = 0;
+  double maxSpeed = 10;
+  double maxForce = 3; //The bigger this is, the faster is the braking and acceleration
+  double maxTurnRate = 3;  //The bigger this is, the curves get steepers
+  double scale = 1;
+  double mass = 1;
+  Vector3 vAgentStartPos = Vector3(3, 0, 10);
+  Vector3 vAgentVelocity = Vector3( 0, 0, 0);
+
+  mVehicle = new Vehicle(vAgentStartPos, rotation, vAgentVelocity, mass ,
+						   maxForce, maxSpeed, maxTurnRate, scale, mSceneMgr,
+						   mPhysicsCore, 4);
+}
+
+void GraphicsApplication::createPursuitVehicle(void)
+{
+  double rotation    = 0;
+  double maxSpeed    = 15;
+  double maxForce    = 2;
+  double maxTurnRate = 2;
+  double scale       = 1;
+  double mass        = 1;
+  Vector3 startPos   = Vector3(-300, 0, 350);
+  Vector3 startSpeed = Vector3(0, 0, 0);
+
+  mPursuitVehicle = new Vehicle(startPos, rotation, startSpeed, mass, maxForce,
+								  maxSpeed, maxTurnRate, scale, mSceneMgr,
+								  mPhysicsCore, 5);
 }
 
 
@@ -47,12 +80,38 @@ void GraphicsApplication::createScene (void)
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
     ninjaNode2->translate(0, 100, 0);
-    
+
+    //initialise random seed
+    srand( (unsigned)time( NULL ) );
+
+    //create columns which ai players will avoid
+    /*for(int i = 0; i < 60; i++)
+    {
+    	String columName = "Column" + StringConverter::toString(i);
+        Vector3 pos(Vector3(Math::RangeRandom(-490,490),0,Math::RangeRandom(-490,490)));
+        mObstacles.push_back(new Obstacle(pos, 6, columName, "Cylinder.mesh" ,mSceneMgr));
+    }*/
+
     // Add all players
     players[clientID].createPlayer(mSceneMgr, MEDIUM, SKIN0, mPhysicsCore);
-
     // Attach a camera to the first player
     players[clientID].attachCamera(mCamera);
+
+    //add ai wanderer player and ai pursuit vehicle
+    createAgent();
+    createPursuitVehicle();
+    //give the pursuit vehicle a target
+    //mVehicle->Steering()->ObstacleOn();
+    mVehicle->Steering()->EvadeOn();
+    mVehicle->Steering()->WanderOn();
+    mVehicle->SetTargetFlee(mPursuitVehicle->Pos());
+    mVehicle->Steering()->SetTargetAgent1(mPursuitVehicle);
+    mPursuitVehicle->Steering()->SetTargetAgent1(mVehicle);
+    mPursuitVehicle->Steering()->WanderOn();
+    mPursuitVehicle->Steering()->PursuitOn();
+    mPursuitVehicle->SetTargetSeek(mVehicle->Pos());
+    //mPursuitVehicle->Steering()->ObstacleOn();
+
 }
 
 
@@ -181,6 +240,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     players[clientID].processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
     players[clientID].updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
+    //update the evade and pusuit targets
+    mPursuitVehicle->SetTargetSeek(mVehicle->Pos());
+    mVehicle->SetTargetFlee(mPursuitVehicle->Pos());
+
     // Perform Client Side Prediction.
     // Move any players who are out of sync
 
@@ -235,6 +298,9 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
     // and rely on the server to solve.
 
     //mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
+	mVehicle->Update(evt.timeSinceLastFrame);
+	mPursuitVehicle->Update(evt.timeSinceLastFrame);
+
     return true;
 }
 
