@@ -30,7 +30,7 @@ void SimpleCoupeCar::initTuning()
     mWheelFriction    = 1e30f;//1000;//1e30f;
     mConnectionHeight =  0.7f;
     
-    mSteerIncrement = 0.025f;
+    mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
     mSteerClamp = 0.75f;
 
@@ -59,7 +59,7 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 0.97, 0);
+    Ogre::Vector3 chassisShift(0, 0.70, 0.0);
 
     initTuning();
     initNodes();
@@ -167,10 +167,18 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
 {
     // shift chassis collisionbox up chassisShift units above origin
 
-    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.63f, 2.6f));//Ogre::Vector3(1.f,0.75f,2.1f));
-
+    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.33f, 2.6f));
+	
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
     compoundChassisShape->addChildShape(chassisShape, chassisShift);
+
+    OgreBulletCollisions::BoxCollisionShape *chassisShapeTop = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.764775, 0.33f, 1.06672f));
+    compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 1.3f, -0.25f));
+
+    OgreBulletCollisions::BoxCollisionShape *chassisShapeAntiRoll = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.01, 0.15, 0.01));
+    compoundChassisShape->addChildShape(chassisShapeAntiRoll, Ogre::Vector3(0.0f, 1.63f, 0.0f));
+
+
     
     // name given here needs to be unique to have more than one in the scene
     mCarChassis = new OgreBulletDynamics::WheeledRigidBody("CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID), mWorld);
@@ -203,24 +211,24 @@ void SimpleCoupeCar::initWheels()
     bool isFrontWheel = true;
 
     // Wheel 1 - Front Left
-    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, 2*CUBE_HALF_EXTENTS-mWheelRadius);
+    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 2 - Front Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, 2*CUBE_HALF_EXTENTS-mWheelRadius);
+    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
                     
     isFrontWheel = false;
 
     // Wheel 3 - Rear Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, -2*CUBE_HALF_EXTENTS+mWheelRadius);
+    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
     mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 4 - Rear Left
-    connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, -2*CUBE_HALF_EXTENTS+mWheelRadius);
+    connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 }

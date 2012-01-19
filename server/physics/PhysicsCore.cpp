@@ -24,9 +24,9 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 
     // add Debug info display tool
     debugDrawer = new OgreBulletCollisions::DebugDrawer();
-    debugDrawer->setDrawWireframe(true);   // we want to see the Bullet containers
+    debugDrawer->setDrawWireframe(false);   // we want to see the Bullet containers
     mWorld->setDebugDrawer(debugDrawer);
-    mWorld->setShowDebugShapes(true);      // enable it if you want to see the Bullet containers
+    mWorld->setShowDebugShapes(false);      // enable it if you want to see the Bullet containers
     Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
     node->attachObject(static_cast <Ogre::SimpleRenderable *> (debugDrawer));
 }
