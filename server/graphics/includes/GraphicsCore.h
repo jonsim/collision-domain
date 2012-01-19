@@ -40,6 +40,16 @@ public:
 	PhysicsCore* mPhysicsCore;
 
 	Ogre::Camera* mCamera;
+	Ogre::Camera* mViewCam1;
+	Ogre::Camera* mViewCam2;
+	Ogre::Camera* mViewCam3;
+	Ogre::Camera* mViewCam4;
+	Ogre::Camera* mViewCam5;
+	Ogre::Camera* mViewCam6;
+	Ogre::Camera* mViewCam7;
+	Ogre::Camera* mViewCam8;
+	Ogre::Camera* mViewCamBlank;
+
     Ogre::SceneManager* mSceneMgr;
 
     
