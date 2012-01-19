@@ -8,7 +8,8 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GraphicsCore.h"
-
+#include "gameplay\includes\Gameplay.h"
+#include "ViewportManager.h"
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -55,7 +56,7 @@ bool GraphicsCore::configure(void)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "Collision Domain (First Demo)");
+        mWindow = mRoot->initialise(true, "Collision Domain Server");
 
         return true;
     }
@@ -82,14 +83,32 @@ void GraphicsCore::createCamera(void)
 {
     // Create the camera
     mCamera = mSceneMgr->createCamera("PlayerCam");
+	mViewCam1 = mSceneMgr->createCamera("ViewCam1");
+	mViewCam2 = mSceneMgr->createCamera("ViewCam2");
+	mViewCam3 = mSceneMgr->createCamera("ViewCam3");
+	mViewCam4 = mSceneMgr->createCamera("ViewCam4");
+	mViewCam5 = mSceneMgr->createCamera("ViewCam5");
+	mViewCam6 = mSceneMgr->createCamera("ViewCam6");
+	mViewCam7 = mSceneMgr->createCamera("ViewCam7");
+	mViewCam8 = mSceneMgr->createCamera("ViewCam8");
+	mViewCamBlank = mSceneMgr->createCamera("ViewCamBlank");
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,0,80));
+    mCamera->setPosition(Ogre::Vector3(0,5000,-100));
     // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,0,-300));
+    mCamera->lookAt(Ogre::Vector3(0,0,0));
     mCamera->setNearClipDistance(5);
 
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+    //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+
+	
+	mViewCam1->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam1->setNearClipDistance(5);
+	mViewCam1->lookAt(Ogre::Vector3(0,0,-300));
+	
+	mViewCam2->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam2->setNearClipDistance(5);
+	mViewCam2->lookAt(Ogre::Vector3(0,0,-300));
 }
 
 
@@ -139,6 +158,17 @@ void GraphicsCore::createFrameListener(void)
     //mDetailsPanel->setParamValue(10, "Solid");
     mDetailsPanel->hide();
 
+	//Handle Game play
+	Gameplay* gp = new Gameplay();
+	Team* t1 = gp->createTeam("Team1Name");
+	Team* t2 = gp->createTeam("Team2Name");
+
+	OgreBites::ProgressBar* mProgressBar = mTrayMgr->createProgressBar(OgreBites::TL_TOPLEFT, "PBarT1", t1->getName(), 200,200);
+	mProgressBar->setProgress(1.0);
+	OgreBites::ProgressBar* mProgressBar2 = mTrayMgr->createProgressBar(OgreBites::TL_TOPRIGHT, "PBarT2", t2->getName(), 200,200);
+	mProgressBar2->setProgress(1.0);
+
+
     mRoot->addFrameListener(this);
 }
 
@@ -152,13 +182,16 @@ void GraphicsCore::destroyScene(void)
 /// @brief  Adds a single viewport that spans the entire window.
 void GraphicsCore::createViewports(void)
 {
-    // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
-
-    // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(
-        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+	ViewportManager* vpm = new ViewportManager(8,mWindow);
+	vpm->addViewport(mCamera,true);
+	vpm->addViewport(mViewCam1,false);
+	vpm->addViewport(mViewCam2,false);
+	vpm->addViewport(mViewCam3,false);
+	vpm->addViewport(mViewCam4,false);
+	vpm->addViewport(mViewCam5,false);
+	vpm->addViewport(mViewCam6,false);
+	vpm->addViewport(mViewCam7,false);
+	vpm->addViewport(mViewCam8,false);
 }
 
 
@@ -259,7 +292,7 @@ bool GraphicsCore::setup(void)
 	mNetworkCore->init();
 	Player *pPlayer = mPlayerPool->getLocalPlayer();
 	pPlayer->createPlayer( mSceneMgr, MEDIUM, SKIN0, mPhysicsCore );
-	pPlayer->attachCamera( mCamera );
+	//pPlayer->attachCamera( mCamera );
 
     createFrameListener();
 
@@ -288,7 +321,7 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
     // print debug output if necessary
     if (!mTrayMgr->isDialogVisible())
     {
-        mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
+        //mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
         if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
         {
             mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(mCamera->getDerivedPosition().x));
