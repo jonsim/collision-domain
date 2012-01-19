@@ -28,8 +28,12 @@ NetworkCore::NetworkCore( char *szHost, int iPort, char *szPass )
 
 	RegisterRPCSlots();
 
+	FILE *fHandle = fopen( "host.txt", "r" );
+	char szFileHost[512];
+	fgets( szFileHost, 64, fHandle );
+
 	// Connect to the specified server
-	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szHost, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
+	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szFileHost, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
 	m_pRak->SetOccasionalPing( true );
 
 	if( bCon == RakNet::ConnectionAttemptResult::CONNECTION_ATTEMPT_STARTED )
