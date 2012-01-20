@@ -57,3 +57,8 @@ Ogre::Viewport* ViewportManager::addViewport(Ogre::Camera* camera_P, bool main_P
 		return tmp;
 	}
 }
+
+bool ViewportManager::declareNewPlayer(Player* player)
+{
+	return false;
+}

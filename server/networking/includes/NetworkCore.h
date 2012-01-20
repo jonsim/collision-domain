@@ -19,6 +19,7 @@
 #include "CarSnapshot.h"
 #include "InputState.h"
 #include "PlayerPool.h"
+#include "BigScreen.h"
 
 // RakNet includes
 #include "BitStream.h"
@@ -76,6 +77,7 @@ private:
 	static RakNet::RPC4 m_RPC;
 	static RakNet::TimeMS timeLastUpdate;
 
+	//BigScreen* bigScreen;
 public:
     NetworkCore( char *szHost, int iPort, char *szPass );
     ~NetworkCore (void);

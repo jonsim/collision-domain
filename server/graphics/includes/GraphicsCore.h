@@ -52,7 +52,8 @@ public:
 
     Ogre::SceneManager* mSceneMgr;
 
-    
+    BigScreen* bigScreen;
+	ViewportManager* vpm;
 protected:
     virtual bool configure(void);
     virtual void chooseSceneManager(void);
@@ -89,6 +90,7 @@ protected:
     OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
     bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
+	
 	
 };
 
