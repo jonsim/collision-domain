@@ -81,6 +81,10 @@ void GraphicsCore::chooseSceneManager(void)
 /// @brief  Creates and positions the camera.
 void GraphicsCore::createCamera(void)
 {
+	//Create the bigscreen manager
+	vpm = new ViewportManager(8,mWindow);
+	bigScreen = new BigScreen(vpm);
+
     // Create the camera
     mCamera = mSceneMgr->createCamera("PlayerCam");
 	mViewCam1 = mSceneMgr->createCamera("ViewCam1");
@@ -92,6 +96,9 @@ void GraphicsCore::createCamera(void)
 	mViewCam7 = mSceneMgr->createCamera("ViewCam7");
 	mViewCam8 = mSceneMgr->createCamera("ViewCam8");
 	mViewCamBlank = mSceneMgr->createCamera("ViewCamBlank");
+
+	bigScreen->addCamera(mViewCam1);
+	bigScreen->addCamera(mViewCam2);
 
     // Position it at 500 in Z direction
     mCamera->setPosition(Ogre::Vector3(0,5000,-100));
@@ -182,7 +189,7 @@ void GraphicsCore::destroyScene(void)
 /// @brief  Adds a single viewport that spans the entire window.
 void GraphicsCore::createViewports(void)
 {
-	ViewportManager* vpm = new ViewportManager(8,mWindow);
+	//ViewportManager* vpm = new ViewportManager(8,mWindow);
 	vpm->addViewport(mCamera,true);
 	vpm->addViewport(mViewCam1,false);
 	vpm->addViewport(mViewCam2,false);

@@ -305,6 +305,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	m_RPC.Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
 	SetupGameForPlayer( pkt->guid );
+
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -329,6 +330,9 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	Player *pPlayer = mPlayerPool->getPlayer( pkt->guid );
 	pPlayer->createPlayer( mGraphics->mSceneMgr, MEDIUM, SKIN0, mGraphics->mPhysicsCore );
+
+	// Alert the BigScreen we've had a player spawned
+	mGraphics->bigScreen->declareNewPlayer(pkt->guid);
 
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
@@ -391,3 +395,11 @@ void log( char *data, ... )
 	
 	return;
 }
+
+// This links the big screen view into the networkcore so we can push updates
+/* 
+void NetworkCore::linkBigScreen(BigScreen* bigScreen_P)
+{
+	bigScreen = bigScreen_P;
+}
+*/

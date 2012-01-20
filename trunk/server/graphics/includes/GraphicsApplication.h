@@ -10,8 +10,6 @@
 #include "GraphicsCore.h"
 #include "Player.h"
 #include "InputState.h"
-#include "btQuickprof.h"
-
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
