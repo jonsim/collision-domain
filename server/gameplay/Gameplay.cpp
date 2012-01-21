@@ -79,7 +79,9 @@ void Gameplay::setAllNewVIP()
 	for(itr = teams.begin(); itr<teams.end(); ++itr)
 	{
 		Team* team = *itr;
-		team->setNewVIP(team->getRandomPlayer());
+		Player* vipPlayer = team->getRandomPlayer();
+		team->setNewVIP(vipPlayer);
+		//vipPlayer->getCar()->
 	}
 }
 
