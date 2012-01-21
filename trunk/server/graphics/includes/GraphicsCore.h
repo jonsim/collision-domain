@@ -13,6 +13,8 @@
 #include "PhysicsCore.h"
 #include "NetworkCore.h"
 #include "PlayerPool.h"
+#include "Gameplay.h"
+#include "ViewportManager.h"
 
 class NetworkCore;
 class PhysicsCore;
@@ -54,6 +56,7 @@ public:
 
     BigScreen* bigScreen;
 	ViewportManager* vpm;
+	Gameplay* mGameplay;
 protected:
     virtual bool configure(void);
     virtual void chooseSceneManager(void);

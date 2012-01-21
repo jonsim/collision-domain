@@ -8,8 +8,6 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GraphicsCore.h"
-#include "gameplay\includes\Gameplay.h"
-#include "ViewportManager.h"
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -166,9 +164,9 @@ void GraphicsCore::createFrameListener(void)
     mDetailsPanel->hide();
 
 	//Handle Game play
-	Gameplay* gp = new Gameplay();
-	Team* t1 = gp->createTeam("Team1Name");
-	Team* t2 = gp->createTeam("Team2Name");
+	mGameplay = new Gameplay();
+	Team* t1 = mGameplay->createTeam("Team1Name");
+	Team* t2 = mGameplay->createTeam("Team2Name");
 
 	OgreBites::ProgressBar* mProgressBar = mTrayMgr->createProgressBar(OgreBites::TL_TOPLEFT, "PBarT1", t1->getName(), 200,200);
 	mProgressBar->setProgress(1.0);
@@ -322,6 +320,12 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mUserInput.capture();
 
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
+
+	//Assign new 
+	if (mUserInput.mKeyboard->isKeyDown(OIS::KC_V))
+	{
+		mGameplay->setAllNewVIP();
+	}
 
     mTrayMgr->frameRenderingQueued(evt);
 
