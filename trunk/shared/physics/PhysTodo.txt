@@ -7,6 +7,6 @@ more complex terrain than a flat plane
 
 // Stuff not really physics
 
-shadows are messed up
+shadows are messed up (inverted meshes cause this)
 precompiled headers dont work
 we need "VIP game mode" as opposed to an aimless drive around
