@@ -333,6 +333,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	// Alert the BigScreen we've had a player spawned
 	mGraphics->bigScreen->declareNewPlayer(pkt->guid);
+	mGraphics->mGameplay->declareNewPlayer(pkt->guid);
 
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );

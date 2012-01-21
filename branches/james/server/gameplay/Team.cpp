@@ -26,3 +26,36 @@ std::string Team::getName()
 {
 	return Team::teamName;
 }
+
+Player*	Team::getRandomPlayer()
+{
+	if(players.size() > 0)
+	{
+		int pickNum = rand() % players.size();
+		return players[pickNum];
+	}
+	else
+	{
+		OutputDebugString("Unable to fetch player, No players in team\n");
+		return NULL;
+	}
+}
+
+Player* Team::setNewVIP(Player* player)
+{
+	if(player!=NULL)
+	{
+		OutputDebugString("Set new VIP player\n");
+		vipPlayer = player;
+		return player;
+	}
+	else
+	{
+		return NULL;
+	}
+}
+
+int Team::getTeamSize()
+{
+	return players.size();
+}
