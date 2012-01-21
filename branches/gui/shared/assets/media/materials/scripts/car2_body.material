@@ -1,0 +1,36 @@
+material car2_body_seat
+{
+	technique
+	{
+		pass
+		{
+
+		}
+	}
+}
+
+material car2_body_steeringwheel
+{
+	technique
+	{
+		pass
+		{
+
+		}
+	}
+}
+
+material car2_body_car_auv
+{
+	technique
+	{
+		pass
+		{
+		
+			texture_unit
+			{
+				texture car_uv.jpg
+			}
+		}
+	}
+}
