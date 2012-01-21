@@ -36,6 +36,7 @@ Player*	Team::getRandomPlayer()
 	}
 	else
 	{
+		OutputDebugString("Unable to fetch player, No players in team\n");
 		return NULL;
 	}
 }
