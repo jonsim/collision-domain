@@ -22,6 +22,7 @@ bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )
 	Player* tmpPlayer = NetworkCore::mPlayerPool->getPlayer(playerid);
 	if(cameraVector[0] != NULL)
 	{
+		cameraVector[0]->detachFromParent();
 		tmpPlayer->attachCamera(cameraVector[0]);
 		OutputDebugString("Attached Camera to new player\n");
 	}
