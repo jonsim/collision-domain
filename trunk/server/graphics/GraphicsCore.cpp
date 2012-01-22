@@ -97,6 +97,12 @@ void GraphicsCore::createCamera(void)
 
 	bigScreen->addCamera(mViewCam1);
 	bigScreen->addCamera(mViewCam2);
+	bigScreen->addCamera(mViewCam3);
+	bigScreen->addCamera(mViewCam4);
+	bigScreen->addCamera(mViewCam5);
+	bigScreen->addCamera(mViewCam6);
+	bigScreen->addCamera(mViewCam7);
+	bigScreen->addCamera(mViewCam8);
 
     // Position it at 500 in Z direction
     mCamera->setPosition(Ogre::Vector3(0,5000,-100));
@@ -114,6 +120,30 @@ void GraphicsCore::createCamera(void)
 	mViewCam2->setPosition(Ogre::Vector3(0,0,80));
 	mViewCam2->setNearClipDistance(5);
 	mViewCam2->lookAt(Ogre::Vector3(0,0,-300));
+
+	mViewCam3->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam3->setNearClipDistance(5);
+	mViewCam3->lookAt(Ogre::Vector3(0,0,-300));
+
+	mViewCam4->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam4->setNearClipDistance(5);
+	mViewCam4->lookAt(Ogre::Vector3(0,0,-300));
+
+	mViewCam5->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam5->setNearClipDistance(5);
+	mViewCam5->lookAt(Ogre::Vector3(0,0,-300));
+
+	mViewCam6->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam6->setNearClipDistance(5);
+	mViewCam6->lookAt(Ogre::Vector3(0,0,-300));
+
+	mViewCam7->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam7->setNearClipDistance(5);
+	mViewCam7->lookAt(Ogre::Vector3(0,0,-300));
+
+	mViewCam8->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam8->setNearClipDistance(5);
+	mViewCam8->lookAt(Ogre::Vector3(0,0,-300));
 }
 
 
