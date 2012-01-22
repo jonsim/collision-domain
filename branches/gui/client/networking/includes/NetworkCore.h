@@ -78,8 +78,10 @@ private:
 	static RakNet::TimeMS timeLastUpdate;
 
 public:
-    NetworkCore( char *szHost, int iPort, char *szPass );
+    NetworkCore();
     ~NetworkCore (void);
+
+	bool Connect( const char *szHost, int iPort, char *szPass );
 
 	RakNet::RakPeerInterface* getRakInterface();
 	void RegisterRPCSlots();

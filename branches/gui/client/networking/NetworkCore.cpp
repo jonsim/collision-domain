@@ -18,7 +18,7 @@ RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
 
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore( char *szHost, int iPort, char *szPass )
+NetworkCore::NetworkCore()
 {
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
@@ -27,19 +27,22 @@ NetworkCore::NetworkCore( char *szHost, int iPort, char *szPass )
 	bConnected = false;
 
 	RegisterRPCSlots();
+}
 
-	FILE *fHandle = fopen( "host.txt", "r" );
-	char szFileHost[512];
-	fgets( szFileHost, 64, fHandle );
-
+bool NetworkCore::Connect( const char *szHost, int iPort, char *szPass )
+{
 	// Connect to the specified server
-	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szFileHost, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
+	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szHost, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
 	m_pRak->SetOccasionalPing( true );
 
 	if( bCon == RakNet::ConnectionAttemptResult::CONNECTION_ATTEMPT_STARTED )
+	{
 		log( "Connecting to %s : %i", szHost, iPort );
-	else
-		log( "Failed to connect to %s : %i", szHost, iPort );
+		return true;
+	}
+
+	log( "Failed to connect to %s : %i", szHost, iPort );
+	return false;
 }
 
 RakNet::RakPeerInterface* NetworkCore::getRakInterface() { return m_pRak; }

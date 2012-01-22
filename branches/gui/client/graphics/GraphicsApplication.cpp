@@ -30,6 +30,10 @@ GraphicsApplication::~GraphicsApplication (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
+	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+	mGui = new GameGUI( mGuiRenderer );
+	mGui->setupGUI();
+
     setupLighting();
     setupArena();
     setupNetworking();
@@ -47,6 +51,8 @@ void GraphicsApplication::createScene (void)
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
     ninjaNode2->translate(0, 100, 0);
+
+	mGui->displayConnectBox();
 }
 
 
@@ -141,7 +147,6 @@ void GraphicsApplication::setupNetworking (void)
 void GraphicsApplication::createFrameListener (void)
 {
     firstFrameOccurred = false;
-    mClock = new btClock();
     GraphicsCore::createFrameListener();
 }
 
@@ -155,11 +160,11 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     if (!GraphicsCore::frameRenderingQueued(evt)) return false;
 
     // Toggle on screen widgets
-    if (mUserInput.isToggleWidget()) 
+    /*if (mUserInput.isToggleWidget()) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
-    }
+    }*/
     
     // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
 

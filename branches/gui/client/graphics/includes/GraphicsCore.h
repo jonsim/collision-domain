@@ -26,7 +26,7 @@ class PlayerPool;
  *          with underlying functions to keep it tidy.
  *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
  */
-class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener
+class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener
 {
 public:
     GraphicsCore (void);
@@ -74,9 +74,9 @@ protected:
     Ogre::String mPluginsCfg;
 
     // OgreBites
-    OgreBites::SdkTrayManager* mTrayMgr;
+    //OgreBites::SdkTrayManager* mTrayMgr;
     OgreBites::SdkCameraMan* mCameraMan;    // basic camera controller
-    OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
+    //OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
     bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
 	

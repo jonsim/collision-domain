@@ -10,7 +10,7 @@
 #include "GraphicsCore.h"
 #include "Player.h"
 #include "InputState.h"
-#include "btQuickprof.h"
+#include "GameGUI.h"
 
 
 
@@ -27,12 +27,13 @@ public:
     virtual ~GraphicsApplication(void);
 
     int clientID;               ///< The client ID which is assigned by the server.
-
-    //Player players[1]; ///< An array of all players in the game to keep track of.
-    btClock *mClock;
     bool firstFrameOccurred;
 
 protected:
+
+	CEGUI::OgreRenderer* mGuiRenderer;
+	GameGUI* mGui;
+
     virtual void createScene(void);
     virtual void createFrameListener(void);
 	
@@ -45,6 +46,7 @@ private:
     void setupLighting (void);
     void setupArena (void);
     void setupNetworking (void);
+	void setupGUI(void);
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

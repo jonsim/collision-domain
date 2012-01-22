@@ -99,6 +99,13 @@ int Input::getMouseYRel()
 /// @return Whether the event has been serviced.
 bool Input::keyPressed (const OIS::KeyEvent &evt)
 {
+	// Get the GUI system and inject the key press
+	CEGUI::System &sys = CEGUI::System::getSingleton();
+	sys.injectKeyDown(evt.key);
+
+	// Inject text seperately (for multi-lang keyboards)
+	sys.injectChar(evt.text);
+
     return true;
 }
 
@@ -108,16 +115,22 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::keyReleased (const OIS::KeyEvent &evt)
 {
+	CEGUI::System::getSingleton().injectKeyUp(evt.key);
+
     return true;
 }
-
-
 
 /// @brief  Called whenever the mouse is moved.
 /// @param  evt  The MouseEvent associated with this call.
 /// @return Whether the event has been serviced.
 bool Input::mouseMoved (const OIS::MouseEvent& evt)
 {
+	CEGUI::System &sys = CEGUI::System::getSingleton();
+	sys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
+	// Scroll wheel.
+	if (evt.state.Z.rel)
+		sys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+
     return true;
 }
 
@@ -128,6 +141,7 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 /// @return Whether the event has been serviced.
 bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
+	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
     return true;
 }
 
@@ -138,5 +152,24 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 /// @return Whether the event has been serviced.
 bool Input::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
+	CEGUI::System::getSingleton().injectMouseButtonUp(convertButton(id));
     return true;
+}
+
+CEGUI::MouseButton Input::convertButton(OIS::MouseButtonID buttonID)
+{
+    switch (buttonID)
+    {
+    case OIS::MB_Left:
+        return CEGUI::LeftButton;
+ 
+    case OIS::MB_Right:
+        return CEGUI::RightButton;
+ 
+    case OIS::MB_Middle:
+        return CEGUI::MiddleButton;
+ 
+    default:
+        return CEGUI::LeftButton;
+    }
 }
