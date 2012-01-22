@@ -10,7 +10,7 @@
 #include "GraphicsCore.h"
 #include "Player.h"
 #include "InputState.h"
-#include "btQuickprof.h"
+//#include "btQuickprof.h"
 
 
 
@@ -29,7 +29,7 @@ public:
     int clientID;               ///< The client ID which is assigned by the server.
 
     //Player players[1]; ///< An array of all players in the game to keep track of.
-    btClock *mClock;
+    //btClock *mClock;
     bool firstFrameOccurred;
 
 protected:

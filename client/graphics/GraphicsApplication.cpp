@@ -141,7 +141,7 @@ void GraphicsApplication::setupNetworking (void)
 void GraphicsApplication::createFrameListener (void)
 {
     firstFrameOccurred = false;
-    mClock = new btClock();
+    //mClock = new btClock();
     GraphicsCore::createFrameListener();
 }
 
