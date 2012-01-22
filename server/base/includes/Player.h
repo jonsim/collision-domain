@@ -45,6 +45,7 @@ public:
     
 private:
     const float cameraRotationConstant;
+	float		hp;
 
     Car *mCar;
     CarSnapshot *mCarSnapshot;

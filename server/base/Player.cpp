@@ -50,6 +50,9 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
 		fclose( fLog );
 	}
 
+	//Set HP. More clever damage might be implemented in the future
+	hp = 1.0;
+
     mCar->moveTo(btVector3(0,0.5,0));
 }
 
@@ -67,6 +70,7 @@ void Player::attachCamera (Ogre::Camera* cam)
     camNode->yaw(Ogre::Degree(180));
     camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
 
+	camNode->detachAllObjects(); //Program crashes if you attach more than one cam to each objet.
     camNode->attachObject(cam);
 }
 
