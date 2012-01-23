@@ -310,7 +310,7 @@ bool GraphicsCore::setup(void)
     createScene();
     
     // MORE GAMECORE RELATED INIT
-	GameCore::mNetworkCore->init();
+	GameCore::mNetworkCore->init( NULL );
 	Player *pPlayer = GameCore::mPlayerPool->getLocalPlayer();
 	pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
 	//pPlayer->attachCamera( mCamera );

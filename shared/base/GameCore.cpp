@@ -14,6 +14,7 @@ PlayerPool*  GameCore::mPlayerPool;
 GraphicsCore* GameCore::mGraphicsCore;
 NetworkCore* GameCore::mNetworkCore;
 PhysicsCore* GameCore::mPhysicsCore;
+GameGUI* GameCore::mGui;
 
 
 void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr)
@@ -22,8 +23,9 @@ void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneM
     GameCore::mPlayerPool = new PlayerPool();
 
     GameCore::mGraphicsCore = graphicsCore;
-    GameCore::mNetworkCore = new NetworkCore( "192.168.0.2", SERVER_PORT, NULL ); // "localhost" in the server
+    GameCore::mNetworkCore = new NetworkCore();
     GameCore::mPhysicsCore = new PhysicsCore(GameCore::mSceneMgr);
+	GameCore::mGui = new GameGUI();
 }
 
 void GameCore::destroy()

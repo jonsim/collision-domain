@@ -25,6 +25,7 @@ public:
     GraphicsCore (void);
     virtual ~GraphicsCore (void);
     virtual void go (void);
+	void shutdown() { mShutDown = true; }
 
     Ogre::Camera* mCamera;
     
@@ -58,9 +59,9 @@ protected:
     Ogre::String mPluginsCfg;
 
     // OgreBites
-    OgreBites::SdkTrayManager* mTrayMgr;
+    //OgreBites::SdkTrayManager* mTrayMgr;
     OgreBites::SdkCameraMan* mCameraMan;    // basic camera controller
-    OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
+    //OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
     bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
 	

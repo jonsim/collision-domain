@@ -18,7 +18,7 @@ RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
 
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore( char *szHost, int iPort, char *szPass )
+NetworkCore::NetworkCore()
 {
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
@@ -31,6 +31,12 @@ NetworkCore::NetworkCore( char *szHost, int iPort, char *szPass )
 		return;
 	}
 
+	RegisterRPCSlots();
+}
+
+/// @brief Initialize the local player and set connected state
+void NetworkCore::init( char *szPass )
+{
 	// Allow incoming connections, turn on occasional ping
 	m_pRak->SetMaximumIncomingConnections( MAX_PLAYERS );
 	m_pRak->SetOccasionalPing( true );
@@ -39,12 +45,6 @@ NetworkCore::NetworkCore( char *szHost, int iPort, char *szPass )
 	if( szPass != NULL )
 		m_pRak->SetIncomingPassword( szPass, strlen( szPass ) );
 
-	RegisterRPCSlots();
-}
-
-/// @brief Initialize the local player and set connected state
-void NetworkCore::init()
-{
 	bConnected = true;
 	// Add the local player
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "Localplayer" );	

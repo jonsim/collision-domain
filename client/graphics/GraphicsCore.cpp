@@ -20,9 +20,7 @@ GraphicsCore::GraphicsCore(void)
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
-    mTrayMgr(0),
     mCameraMan(0),
-    mDetailsPanel(0),
     mCursorWasVisible(false),
     mShutDown(false)
 {
@@ -32,7 +30,6 @@ GraphicsCore::GraphicsCore(void)
 /// @brief  Deconstructor.
 GraphicsCore::~GraphicsCore(void)
 {
-    if (mTrayMgr) delete mTrayMgr;
     if (mCameraMan) delete mCameraMan;
 
     //Remove ourself as a Window listener
@@ -102,7 +99,7 @@ void GraphicsCore::createFrameListener(void)
     //Register as a Window listener
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
 
-    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mUserInput.mMouse, this);
+    /*mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mUserInput.mMouse, this);
     mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
     mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
     mTrayMgr->hideCursor();
@@ -125,7 +122,7 @@ void GraphicsCore::createFrameListener(void)
     mDetailsPanel = mTrayMgr->createParamsPanel(OgreBites::TL_NONE, "DetailsPanel", 400, items);
     //mDetailsPanel->setParamValue(9, "Bilinear");
     //mDetailsPanel->setParamValue(10, "Solid");
-    mDetailsPanel->hide();
+    mDetailsPanel->hide();*/
 
     mRoot->addFrameListener(this);
 }
@@ -261,10 +258,10 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
     
     //Need to capture/update each device
     mUserInput.capture();
-
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE)) return false;
-
-    mTrayMgr->frameRenderingQueued(evt);
+	CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+	
+    /*mTrayMgr->frameRenderingQueued(evt);
 
     // print debug output if necessary
     if (!mTrayMgr->isDialogVisible())
@@ -280,7 +277,7 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
             mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().y));
             mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().z));
         }
-    }
+    }*/
 
     return true;
 }

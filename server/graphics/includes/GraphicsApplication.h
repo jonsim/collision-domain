@@ -29,6 +29,8 @@ public:
     bool firstFrameOccurred;
 
 protected:
+	CEGUI::OgreRenderer* mGuiRenderer;
+
     virtual void createScene(void);
     virtual void createFrameListener(void);
 	

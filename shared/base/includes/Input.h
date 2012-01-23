@@ -28,6 +28,8 @@ public:
     // Controls are assigned here
     InputState* getInputState();
     bool isToggleWidget();
+	bool isToggleChatbox();
+	bool isToggleConsole();
     int getMouseXRel();
     int getMouseYRel();
 
@@ -43,6 +45,8 @@ protected:
     virtual bool mouseMoved (const OIS::MouseEvent& evt);
     virtual bool mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id);
     virtual bool mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id);
+
+	CEGUI::MouseButton convertButton(OIS::MouseButtonID buttonID);
 };
 
 #endif // #ifndef INPUT_H

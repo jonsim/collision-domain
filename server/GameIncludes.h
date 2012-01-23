@@ -16,5 +16,6 @@
 #include "GraphicsCore.h"
 #include "GraphicsApplication.h"
 #include "NetworkCore.h"
+#include "GameGUI.h"
 
 #endif // #ifndef SERVERINCLUDES_H
