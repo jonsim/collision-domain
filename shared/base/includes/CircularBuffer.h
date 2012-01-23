@@ -8,8 +8,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
+#include "SharedIncludes.h"
 #include <stdint.h>
-
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

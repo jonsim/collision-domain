@@ -7,6 +7,7 @@
 #define __CarSnapshot_h_
 
 #include "stdafx.h"
+#include "SharedIncludes.h"
 
 class CarSnapshot
 {

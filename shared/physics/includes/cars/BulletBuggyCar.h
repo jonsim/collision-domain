@@ -6,7 +6,7 @@
 #define __BulletBuggyCar_h_
 
 #include "stdafx.h"
-#include "Car.h"
+#include "SharedIncludes.h"
 #include "boost\lexical_cast.hpp"
 
 class BulletBuggyCar : Car

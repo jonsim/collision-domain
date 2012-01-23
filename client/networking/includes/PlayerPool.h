@@ -4,13 +4,8 @@
 #define MAX_PLAYERS 100
 
 #include "stdafx.h"
-#include "Player.h"
-#include "CarSnapshot.h"
-
-// RakNet includes
-#include "RakNetTypes.h"
-
-class Player;
+#include "ClientIncludes.h"
+#include "RakNetTypes.h" // RakNet includes
 
 class PlayerPool
 {

@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "InputState.h"
+#include "SharedIncludes.h"
 
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/

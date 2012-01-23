@@ -6,6 +6,7 @@
 #define __PhysicsCore_h_
 
 #include "stdafx.h"
+#include "SharedIncludes.h"
 
 // This is used for physics integration with ogre. (And neat housekeeping)
 enum QueryFlags

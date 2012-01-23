@@ -3,16 +3,12 @@
  * @brief 	Takes notifications and deal with them however networking needs to
  */
 
-/*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "NetworkCore.h"
-#include "GraphicsCore.h"
-/*-------------------- METHOD DEFINITIONS --------------------*/
+#include "ClientIncludes.h"
+
 
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
 RakNet::RPC4 NetworkCore::m_RPC;
-GraphicsCore* NetworkCore::mGraphics = NULL;
-PlayerPool* NetworkCore::mPlayerPool = NULL;
 bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
@@ -64,7 +60,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 	if( RakNet::GreaterThan( timeNow, timeLastUpdate + UPDATE_INTERVAL ) )
 	{
 		// If we're not connected, don't do anything here
-		if( bConnected && mPlayerPool->getLocalPlayer()->getCar() )
+		if( bConnected && GameCore::mPlayerPool->getLocalPlayer()->getCar() )
 		{
 			// Bools are written as 1 bit by raknet :D
 
@@ -169,10 +165,10 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 
 	Player *pUpdate;
 
-	if( playerid == mPlayerPool->getLocalPlayerID() )
-		pUpdate = mPlayerPool->getLocalPlayer();
+	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
+		pUpdate = GameCore::mPlayerPool->getLocalPlayer();
 	else
-		pUpdate = mPlayerPool->getPlayer( playerid );
+		pUpdate = GameCore::mPlayerPool->getPlayer( playerid );
 
 	if( pUpdate == NULL )
 		return;
@@ -205,7 +201,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 
 	// Add ourselves to the player pool
-	mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), szNickname );
+	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), szNickname );
 	log( "GameJoin : local playerid %s", m_pRak->GetMyGUID().ToString() );
 
 	bConnected = true;
@@ -228,7 +224,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 
-	mPlayerPool->addPlayer( playerid, szNickname );
+	GameCore::mPlayerPool->addPlayer( playerid, szNickname );
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -236,7 +232,7 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	RakNet::RakNetGUID playerid;
 	bitStream->Read( playerid );
 
-	mPlayerPool->delPlayer( playerid );
+	GameCore::mPlayerPool->delPlayer( playerid );
 }
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -256,17 +252,17 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
-	if( playerid == mPlayerPool->getLocalPlayerID() )
+	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	{
-		pPlayer = mPlayerPool->getLocalPlayer();
-		pPlayer->createPlayer( mGraphics->mSceneMgr, MEDIUM, SKIN0, mGraphics->mPhysicsCore );
-		pPlayer->attachCamera( mGraphics->mCamera );
+		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
+		pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
+                                pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
 	}
 	else
 	{
-		pPlayer = mPlayerPool->getPlayer( playerid );
+		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		if( pPlayer != NULL )
-			pPlayer->createPlayer( mGraphics->mSceneMgr, MEDIUM, SKIN0, mGraphics->mPhysicsCore );
+			pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
 		else
 			log( "..invalid player" );
 	}

@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "Player.h"
+#include "ClientIncludes.h"
 
 
 
@@ -16,8 +16,8 @@ Player::Player (void) : cameraRotationConstant(0.08f)
 {
     // PlayerState state configures constants and zeros values upon creation.
     mCarSnapshot = NULL;
-	mSnapshots = NULL;
-	mCar = NULL;
+    mSnapshots = NULL;
+    mCar = NULL;
 }
 
 
@@ -39,16 +39,9 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
     // lets fuck up some cars
 
-	if( !mCar )
-		exit(1);
+    if( !mCar ) exit(1); // lovely error handling ;)
 
     mCar->moveTo(btVector3(0,0.5,0));
-
-    for (int i=1; i < 10; i++)
-    {
-       // new Car(sm, physicsCore->mWorld, i);
-    }
-
 }
 
 
