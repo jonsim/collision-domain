@@ -7,9 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GraphicsCore.h"
-#include "Player.h"
-#include "InputState.h"
+#include "GameIncludes.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

@@ -14,5 +14,7 @@
 #include "PhysicsCore.h"
 #include "cars/SimpleCoupeCar.h"
 #include "cars/BulletBuggyCar.h"
+#include "ViewCamera.h"
+#include "GameCore.h"
 
 #endif // #ifndef SHAREDINCLUDES_H

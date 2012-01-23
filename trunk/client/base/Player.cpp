@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "ClientIncludes.h"
+#include "GameIncludes.h"
 
 
 

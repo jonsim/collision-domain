@@ -7,11 +7,10 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "ViewportManager.h"
+#include "GameIncludes.h"
+
 #include "RakNetTypes.h"
-#include "NetworkCore.h"
 #include <vector>
-#include "ViewCamera.h"
 #include "RakNetTime.h"
 #include "GetTime.h"
 

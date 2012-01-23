@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.h"
-#include "ClientIncludes.h"
+#include "SharedIncludes.h"
 
 
 Ogre::SceneManager* GameCore::mSceneMgr;
@@ -22,7 +22,7 @@ void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneM
     GameCore::mPlayerPool = new PlayerPool();
 
     GameCore::mGraphicsCore = graphicsCore;
-    GameCore::mNetworkCore = new NetworkCore( "192.168.0.2", SERVER_PORT, NULL );
+    GameCore::mNetworkCore = new NetworkCore( "192.168.0.2", SERVER_PORT, NULL ); // "localhost" in the server
     GameCore::mPhysicsCore = new PhysicsCore(GameCore::mSceneMgr);
 }
 

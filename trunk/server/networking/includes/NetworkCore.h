@@ -16,10 +16,7 @@
 
 // Game includes
 #include "stdafx.h"
-#include "CarSnapshot.h"
-#include "InputState.h"
-#include "PlayerPool.h"
-#include "BigScreen.h"
+#include "GameIncludes.h"
 
 // RakNet includes
 #include "BitStream.h"
@@ -77,7 +74,6 @@ private:
 	static RakNet::RPC4 m_RPC;
 	static RakNet::TimeMS timeLastUpdate;
 
-	//BigScreen* bigScreen;
 public:
     NetworkCore( char *szHost, int iPort, char *szPass );
     ~NetworkCore (void);
@@ -102,8 +98,6 @@ public:
 	static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 
-	static GraphicsCore *mGraphics;
-	static PlayerPool *mPlayerPool;
 	static bool bConnected;
 
 };

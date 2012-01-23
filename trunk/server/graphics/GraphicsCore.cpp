@@ -7,7 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GraphicsCore.h"
+#include "GameIncludes.h"
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -16,7 +16,6 @@
 GraphicsCore::GraphicsCore(void)
     : mRoot(0),
     mCamera(0),
-    mSceneMgr(0),
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
@@ -65,17 +64,6 @@ bool GraphicsCore::configure(void)
 }
 
 
-/// @brief  Selects the SceneManager.
-void GraphicsCore::chooseSceneManager(void)
-{
-    // Get the SceneManager, in this case a generic one
-    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-
-    // get the core physics object up and runnning
-    mPhysicsCore = new PhysicsCore(mSceneMgr);
-}
-
-
 /// @brief  Creates and positions the camera.
 void GraphicsCore::createCamera(void)
 {
@@ -84,16 +72,16 @@ void GraphicsCore::createCamera(void)
 	bigScreen = new BigScreen(vpm);
 
     // Create the camera
-    mCamera = mSceneMgr->createCamera("PlayerCam");
-	mViewCam1 = mSceneMgr->createCamera("ViewCam1");
-	mViewCam2 = mSceneMgr->createCamera("ViewCam2");
-	mViewCam3 = mSceneMgr->createCamera("ViewCam3");
-	mViewCam4 = mSceneMgr->createCamera("ViewCam4");
-	mViewCam5 = mSceneMgr->createCamera("ViewCam5");
-	mViewCam6 = mSceneMgr->createCamera("ViewCam6");
-	mViewCam7 = mSceneMgr->createCamera("ViewCam7");
-	mViewCam8 = mSceneMgr->createCamera("ViewCam8");
-	mViewCamBlank = mSceneMgr->createCamera("ViewCamBlank");
+    mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
+	mViewCam1 = GameCore::mSceneMgr->createCamera("ViewCam1");
+	mViewCam2 = GameCore::mSceneMgr->createCamera("ViewCam2");
+	mViewCam3 = GameCore::mSceneMgr->createCamera("ViewCam3");
+	mViewCam4 = GameCore::mSceneMgr->createCamera("ViewCam4");
+	mViewCam5 = GameCore::mSceneMgr->createCamera("ViewCam5");
+	mViewCam6 = GameCore::mSceneMgr->createCamera("ViewCam6");
+	mViewCam7 = GameCore::mSceneMgr->createCamera("ViewCam7");
+	mViewCam8 = GameCore::mSceneMgr->createCamera("ViewCam8");
+	mViewCamBlank = GameCore::mSceneMgr->createCamera("ViewCamBlank");
 
 	bigScreen->addCamera(mViewCam1);
 	bigScreen->addCamera(mViewCam2);
@@ -289,8 +277,7 @@ void GraphicsCore::go(void)
 
     // clean up
     destroyScene();
-
-	mNetworkCore->~NetworkCore();
+	GameCore::destroy();
 }
 
 
@@ -305,7 +292,9 @@ bool GraphicsCore::setup(void)
     bool carryOn = configure();
     if (!carryOn) return false;
 
-    chooseSceneManager();
+    // Init core classes, also init the SceneManager, in this case a generic one
+    GameCore::initialise(this, mRoot->createSceneManager(Ogre::ST_GENERIC));
+
     createCamera();
     createViewports();
 
@@ -319,14 +308,11 @@ bool GraphicsCore::setup(void)
 
     // Create the scene
     createScene();
-
-	mPlayerPool = new PlayerPool();
-    mNetworkCore = new NetworkCore( "localhost", SERVER_PORT, NULL );
-	NetworkCore::mGraphics = this;
-	NetworkCore::mPlayerPool = this->mPlayerPool;
-	mNetworkCore->init();
-	Player *pPlayer = mPlayerPool->getLocalPlayer();
-	pPlayer->createPlayer( mSceneMgr, MEDIUM, SKIN0, mPhysicsCore );
+    
+    // MORE GAMECORE RELATED INIT
+	GameCore::mNetworkCore->init();
+	Player *pPlayer = GameCore::mPlayerPool->getLocalPlayer();
+	pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
 	//pPlayer->attachCamera( mCamera );
 
     createFrameListener();

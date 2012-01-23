@@ -6,11 +6,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GraphicsApplication.h"
-/*#include <stdio.h> // for showWin32Console()
-#include <fcntl.h>
-#include <io.h>
-#include <iostream>*/
+#include "GameIncludes.h"
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -35,14 +31,14 @@ void GraphicsApplication::createScene (void)
     setupNetworking();
 
     // Load the ninjas
-    Ogre::Entity* ninjaEntity = mSceneMgr->createEntity("Ninja", "ninja.mesh");
+    Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");
     ninjaEntity->setCastShadows(true);
-    Ogre::SceneNode* ninjaNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
+    Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->translate(0, 0, 0);
-    Ogre::Entity* ninjaEntity2 = mSceneMgr->createEntity("Ninja2", "ninja.mesh");
+    Ogre::Entity* ninjaEntity2 = GameCore::mSceneMgr->createEntity("Ninja2", "ninja.mesh");
     ninjaEntity2->setCastShadows(true);
-    Ogre::SceneNode* ninjaNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
+    Ogre::SceneNode* ninjaNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
     ninjaNode2->attachObject(ninjaEntity2);
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
@@ -54,22 +50,22 @@ void GraphicsApplication::createScene (void)
 void GraphicsApplication::setupLighting (void)
 {
     // Set the ambient light.
-    mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
+    GameCore::mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
     
     // Add a directional light
     Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
     directionalLightDir.normalise();
-    Ogre::Light* directionalLight = mSceneMgr->createLight("directionalLight");
+    Ogre::Light* directionalLight = GameCore::mSceneMgr->createLight("directionalLight");
     directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
     directionalLight->setDiffuseColour( Ogre::ColourValue::White);
     directionalLight->setSpecularColour(Ogre::ColourValue(0.4f, 0.4f, 0.4f));
     directionalLight->setDirection(directionalLightDir);
     
     // Create the skybox
-    mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+    GameCore::mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
 
     // Set the shadow renderer
-    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 }
 
 
@@ -89,32 +85,32 @@ void GraphicsApplication::setupArena (void)
     Ogre::MeshManager::getSingleton().createPlane("WallMesh4", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 200, 20, 1, true, 1, 20, 1, Ogre::Vector3::UNIT_Z);
 
     // Load and meshes and create entities
-    Ogre::Entity* groundEntity = mSceneMgr->createEntity("Ground", "GroundMesh");
+    Ogre::Entity* groundEntity = GameCore::mSceneMgr->createEntity("Ground", "GroundMesh");
     groundEntity->setMaterialName("Examples/GrassFloor");
     groundEntity->setCastShadows(false);
-    Ogre::Entity* wallEntity1 = mSceneMgr->createEntity("Wall1", "WallMesh1");
+    Ogre::Entity* wallEntity1 = GameCore::mSceneMgr->createEntity("Wall1", "WallMesh1");
     wallEntity1->setMaterialName("Examples/Rockwall");
     wallEntity1->setCastShadows(true);
-    Ogre::Entity* wallEntity2 = mSceneMgr->createEntity("Wall2", "WallMesh1");
+    Ogre::Entity* wallEntity2 = GameCore::mSceneMgr->createEntity("Wall2", "WallMesh1");
     wallEntity2->setMaterialName("Examples/Rockwall");
     wallEntity2->setCastShadows(true);
-    Ogre::Entity* wallEntity3 = mSceneMgr->createEntity("Wall3", "WallMesh1");
+    Ogre::Entity* wallEntity3 = GameCore::mSceneMgr->createEntity("Wall3", "WallMesh1");
     wallEntity3->setMaterialName("Examples/Rockwall");
     wallEntity3->setCastShadows(true);
-    Ogre::Entity* wallEntity4 = mSceneMgr->createEntity("Wall4", "WallMesh1");
+    Ogre::Entity* wallEntity4 = GameCore::mSceneMgr->createEntity("Wall4", "WallMesh1");
     wallEntity4->setMaterialName("Examples/Rockwall");
     wallEntity4->setCastShadows(true);
 
     // Create scene nodes and attach the entities
-    Ogre::SceneNode* groundNode = mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, 0, 0));
+    Ogre::SceneNode* groundNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, 0, 0));
     groundNode->attachObject(groundEntity);
-    Ogre::SceneNode* wallNode1 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode1", Ogre::Vector3(0, 100, 2500));
+    Ogre::SceneNode* wallNode1 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode1", Ogre::Vector3(0, 100, 2500));
     wallNode1->attachObject(wallEntity1);
-    Ogre::SceneNode* wallNode2 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode2", Ogre::Vector3(2500, 100, 0));
+    Ogre::SceneNode* wallNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode2", Ogre::Vector3(2500, 100, 0));
     wallNode2->attachObject(wallEntity2);
-    Ogre::SceneNode* wallNode3 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode3", Ogre::Vector3(0, 100, -2500));
+    Ogre::SceneNode* wallNode3 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode3", Ogre::Vector3(0, 100, -2500));
     wallNode3->attachObject(wallEntity3);
-    Ogre::SceneNode* wallNode4 = mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode4", Ogre::Vector3(-2500, 100, 0));
+    Ogre::SceneNode* wallNode4 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode4", Ogre::Vector3(-2500, 100, 0));
     wallNode4->attachObject(wallEntity4);
 
     // Adjust the node rotations.
@@ -126,8 +122,8 @@ void GraphicsApplication::setupArena (void)
     wallNode4->roll(Ogre::Degree(-90));
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
-    mPhysicsCore->createFloorPlane();
-    mPhysicsCore->createWallPlanes();
+    GameCore::mPhysicsCore->createFloorPlane();
+    GameCore::mPhysicsCore->createWallPlanes();
 }
 
 
@@ -170,13 +166,13 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     InputState *inputSnapshot = mUserInput.getInputState();
     
     // Process the networking. Sends client's input and receives data
-    mNetworkCore->frameEvent(inputSnapshot);
+    GameCore::mNetworkCore->frameEvent(inputSnapshot);
 
 	// Process the player pool. Perform updates on other players
-	mPlayerPool->frameEvent( evt );
+	GameCore::mPlayerPool->frameEvent( evt );
 
     // Apply controls the player (who will be moved on frameEnd and frameStart).
-	mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
+	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
     //mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
 	// LOCAL
@@ -225,7 +221,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     delete inputSnapshot;
 
     // Minimum of 10 FPS (maxSubsteps=6) before physics becomes wrong
-    mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
+    GameCore::mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
 
     return true;
 }

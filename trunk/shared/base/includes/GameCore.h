@@ -5,9 +5,14 @@
 #ifndef GAMECORE_H
 #define GAMECORE_H
 
-
 #include "stdafx.h"
-#include "ClientIncludes.h"
+
+// needed for non-shared variables like GraphicsCore and NetworkCore
+#include "GameIncludes.h"
+class PlayerPool;
+class NetworkCore;
+class GraphicsCore;
+
 
 /**
  *  @brief 	Will contain PlayerPool, PhysicsCore, AudioCore etc.
