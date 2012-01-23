@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "BigScreen.h"
+#include "GameIncludes.h"
 
 /*
 BigScreen::BigScreen(ViewportManager* vpm_P, NetworkCore* networkCore)
@@ -19,7 +19,7 @@ BigScreen::BigScreen(ViewportManager* vpm_P)
 
 bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
-	Player* tmpPlayer = NetworkCore::mPlayerPool->getPlayer(playerid);
+	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 	
 	ViewCamera* bestCanidateVC = NULL;
 	std::vector<ViewCamera*>::iterator itr;

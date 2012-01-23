@@ -7,9 +7,10 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
+#include "GameIncludes.h"
+
 #include <math.h>
 #include <string>
-#include "Player.h"
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 class Team

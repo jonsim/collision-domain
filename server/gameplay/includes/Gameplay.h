@@ -7,12 +7,11 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
+#include "GameIncludes.h"
+
 #include <math.h>
 #include <string>
-#include "Team.h"
-#include "Player.h"
 #include "RakNetTypes.h"
-#include "NetworkCore.h"
 
 /*-------------------- ENUM TYPES -------------------*/
 enum

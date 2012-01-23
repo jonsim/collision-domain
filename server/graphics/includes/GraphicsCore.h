@@ -9,16 +9,9 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "Input.h"
-#include "PhysicsCore.h"
-#include "NetworkCore.h"
-#include "PlayerPool.h"
-#include "Gameplay.h"
-#include "ViewportManager.h"
+#include "GameIncludes.h"
 
-class NetworkCore;
-class PhysicsCore;
-class PlayerPool;
+//class BigScreen;
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -34,32 +27,25 @@ public:
     GraphicsCore (void);
     virtual ~GraphicsCore (void);
     virtual void go (void);
-	virtual bool setup(); // Moved here so network can call
 
-	// Might implement getters for these instead. soon.
-	PlayerPool* mPlayerPool;
-    NetworkCore* mNetworkCore;
-	PhysicsCore* mPhysicsCore;
-
-	Ogre::Camera* mCamera;
-	Ogre::Camera* mViewCam1;
-	Ogre::Camera* mViewCam2;
-	Ogre::Camera* mViewCam3;
-	Ogre::Camera* mViewCam4;
-	Ogre::Camera* mViewCam5;
-	Ogre::Camera* mViewCam6;
-	Ogre::Camera* mViewCam7;
-	Ogre::Camera* mViewCam8;
-	Ogre::Camera* mViewCamBlank;
-
-    Ogre::SceneManager* mSceneMgr;
+    Ogre::Camera* mCamera;
+    Ogre::Camera* mViewCam1;
+    Ogre::Camera* mViewCam2;
+    Ogre::Camera* mViewCam3;
+    Ogre::Camera* mViewCam4;
+    Ogre::Camera* mViewCam5;
+    Ogre::Camera* mViewCam6;
+    Ogre::Camera* mViewCam7;
+    Ogre::Camera* mViewCam8;
+    Ogre::Camera* mViewCamBlank;
 
     BigScreen* bigScreen;
-	ViewportManager* vpm;
-	Gameplay* mGameplay;
+    ViewportManager* vpm;
+    Gameplay* mGameplay;
+
 protected:
+    virtual bool setup(); // Moved here so network can't call :-)
     virtual bool configure(void);
-    virtual void chooseSceneManager(void);
     virtual void createCamera(void);
     virtual void createFrameListener(void);
     virtual void createScene(void) = 0;     // This needs to be overridden to display anything

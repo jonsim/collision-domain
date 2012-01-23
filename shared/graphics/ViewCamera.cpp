@@ -1,4 +1,4 @@
-#include "ViewCamera.h"
+#include "SharedIncludes.h"
 
 ViewCamera::ViewCamera(Ogre::Camera* cam)
 {

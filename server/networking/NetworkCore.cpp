@@ -6,16 +6,13 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "NetworkCore.h"
-#include "GraphicsCore.h"
+#include "GameIncludes.h"
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 // Lots of static variable initialization
 // Needed to be accessed from RPC funcs which have to be static
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
 RakNet::RPC4 NetworkCore::m_RPC;
-GraphicsCore* NetworkCore::mGraphics;
-PlayerPool* NetworkCore::mPlayerPool = NULL;
 bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
@@ -50,7 +47,7 @@ void NetworkCore::init()
 {
 	bConnected = true;
 	// Add the local player
-	mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "Localplayer" );	
+	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "Localplayer" );	
 
 }
 
@@ -148,11 +145,11 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 		playerInput.backPressed, playerInput.leftPressed, playerInput.rghtPressed );
 
 	// Delete any old unused input state
-	if( mPlayerPool->getPlayer( pkt->guid )->newInput != NULL )
-		delete( mPlayerPool->getPlayer( pkt->guid )->newInput );
+	if( GameCore::mPlayerPool->getPlayer( pkt->guid )->newInput != NULL )
+		delete( GameCore::mPlayerPool->getPlayer( pkt->guid )->newInput );
 
 	// Store the new state in the player's object
-	mPlayerPool->getPlayer( pkt->guid )->newInput = inputState;
+	GameCore::mPlayerPool->getPlayer( pkt->guid )->newInput = inputState;
 
 }
 
@@ -172,7 +169,7 @@ void NetworkCore::BroadcastUpdates()
 	for( j = 0; j < MAX_PLAYERS; j ++ )
 	{
 
-		sendPlayer = mPlayerPool->getPlayer( j );
+		sendPlayer = GameCore::mPlayerPool->getPlayer( j );
 		if( sendPlayer == NULL )
 			continue;
 
@@ -184,13 +181,13 @@ void NetworkCore::BroadcastUpdates()
 		RakNet::Time curTime = RakNet::GetTime();
 
 		bitSend.Write( packetid );
-		bitSend.Write( mPlayerPool->getPlayerGUID( j ) );
+		bitSend.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
 		
 		PLAYER_SYNC_DATA playerState;
 		CarSnapshot *playerSnap = sendPlayer->getCar()->getCarSnapshot();
 
 		playerState.timestamp = curTime;
-		playerState.playerid = mPlayerPool->getPlayerGUID( j );	
+		playerState.playerid = GameCore::mPlayerPool->getPlayerGUID( j );	
 		playerState.vPosition = playerSnap->mPosition;
 		playerState.fWheelPos = playerSnap->mWheelPosition;
 		playerState.qRotation = playerSnap->mRotation;
@@ -199,7 +196,7 @@ void NetworkCore::BroadcastUpdates()
 
 		bitSend.Write( (char*)&playerState, sizeof( PLAYER_SYNC_DATA ) );
 
-		m_pRak->Send( &bitSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, mPlayerPool->getLocalPlayerID(), true );
+		m_pRak->Send( &bitSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true );
 
 		delete( playerSnap );
 	}
@@ -215,7 +212,7 @@ void NetworkCore::GamestateUpdatePlayer( RakNet::RakNetGUID playerid )
 
 	for( int j = 0; j < MAX_PLAYERS; j ++ )
 	{
-		sendPlayer = mPlayerPool->getPlayer( j );
+		sendPlayer = GameCore::mPlayerPool->getPlayer( j );
 		if( sendPlayer == NULL )
 			continue;
 
@@ -227,13 +224,13 @@ void NetworkCore::GamestateUpdatePlayer( RakNet::RakNetGUID playerid )
 		RakNet::Time curTime = RakNet::GetTime();
 
 		bitSend.Write( packetid );
-		bitSend.Write( mPlayerPool->getPlayerGUID( j ) );
+		bitSend.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
 		
 		PLAYER_SYNC_DATA playerState;
 		CarSnapshot *playerSnap = sendPlayer->getCar()->getCarSnapshot();
 
 		playerState.timestamp = curTime;
-		playerState.playerid = mPlayerPool->getPlayerGUID( j );		
+		playerState.playerid = GameCore::mPlayerPool->getPlayerGUID( j );		
 		playerState.fWheelPos = playerSnap->mWheelPosition;
 		playerState.qRotation = playerSnap->mRotation;
 		playerState.vAngVel = playerSnap->mAngularVelocity;
@@ -256,14 +253,14 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 	for( int j = 0; j < MAX_PLAYERS; j ++ )
 	{
 		// Don't send a new client PlayerJoin of themselves
-		if( mPlayerPool->getPlayerGUID( j ) == playerid )
+		if( GameCore::mPlayerPool->getPlayerGUID( j ) == playerid )
 			continue;
 
-		playerSend = mPlayerPool->getPlayer( j );
+		playerSend = GameCore::mPlayerPool->getPlayer( j );
 		if( playerSend )
 		{
 			RakNet::BitStream bsJoin;
-			bsJoin.Write( mPlayerPool->getPlayerGUID( j ) );
+			bsJoin.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
 			RakNet::StringCompressor().EncodeString( RakNet::RakString("RemotePlayer"), 128, &bsJoin );
 			m_RPC.Signal( "PlayerJoin", &bsJoin, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
 		}
@@ -288,7 +285,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 	
 	// Add the player to server player pool
-	mPlayerPool->addPlayer( pkt->guid, szNickname );
+	GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
 
 	RakNet::BitStream bsNewPlayer;
 	RakNet::BitStream bsSend;
@@ -313,7 +310,7 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	// Check and make sure things from Player are deleted
 	// send an RPC to tell other clients they quit
 
-	mPlayerPool->delPlayer( pkt->guid );
+	GameCore::mPlayerPool->delPlayer( pkt->guid );
 }
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -328,30 +325,30 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 {
 	// Do some checking here to make sure the player is allowed to spawn before sending the RPC back
 
-	Player *pPlayer = mPlayerPool->getPlayer( pkt->guid );
-	pPlayer->createPlayer( mGraphics->mSceneMgr, MEDIUM, SKIN0, mGraphics->mPhysicsCore );
+	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
+	pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
 
 	// Alert the BigScreen we've had a player spawned
-	mGraphics->bigScreen->declareNewPlayer(pkt->guid);
-	mGraphics->mGameplay->declareNewPlayer(pkt->guid);
+	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(pkt->guid);
+    GameCore::mGraphicsCore->mGameplay->declareNewPlayer(pkt->guid);
 
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
-	m_RPC.Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, mPlayerPool->getLocalPlayerID(), true, false );
+	m_RPC.Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
 	for( int i = 0; i < MAX_PLAYERS; i ++ )
 	{
-		if( mPlayerPool->getPlayerGUID( i ) == pkt->guid )
+		if( GameCore::mPlayerPool->getPlayerGUID( i ) == pkt->guid )
 			continue;
 
-		Player *pRemote = mPlayerPool->getPlayer( i );
+		Player *pRemote = GameCore::mPlayerPool->getPlayer( i );
 		if( pRemote )
 		{
 			if( pRemote->getCar() )
 			{
 				RakNet::BitStream bsSpawn;
-				bsSpawn.Write( mPlayerPool->getPlayerGUID( i ) );
+				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( i ) );
 				m_RPC.Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 			}
 		}

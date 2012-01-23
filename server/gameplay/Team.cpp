@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "includes\Team.h"
+#include "GameIncludes.h"
 
 Team::Team(std::string teamName_P)
 {

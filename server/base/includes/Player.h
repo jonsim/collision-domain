@@ -7,13 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "InputState.h"
-#include "PhysicsCore.h"
-#include "Car.h"
-#include "cars/BulletBuggyCar.h"
-#include "cars/SimpleCoupeCar.h"
-#include "CarSnapshot.h"
-#include "Input.h"
+#include "GameIncludes.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -35,9 +29,9 @@ public:
     void createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent(
-        InputState *userInput,
-        Ogre::Real secondsSinceLastFrame,
-        float targetPhysicsFrameRate);
+    InputState *userInput,
+    Ogre::Real secondsSinceLastFrame,
+    float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation);
     Car* getCar();
 	

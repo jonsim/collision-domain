@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "Gameplay.h"
+#include "GameIncludes.h"
 
 
 Gameplay::Gameplay()
@@ -87,7 +87,7 @@ void Gameplay::setAllNewVIP()
 
 Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
-	Player* tmpPlayer = NetworkCore::mPlayerPool->getPlayer(playerid);
+	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 	Team* teamToJoin = getTeamToJoin();
 	teamToJoin->addPlayer(tmpPlayer);
 	OutputDebugString("Joined player to team");

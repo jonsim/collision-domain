@@ -7,7 +7,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "Player.h"
+#include "GameIncludes.h"
+
 #include <math.h>
 #include <vector>
 

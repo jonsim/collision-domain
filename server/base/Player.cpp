@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "Player.h"
+#include "GameIncludes.h"
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
