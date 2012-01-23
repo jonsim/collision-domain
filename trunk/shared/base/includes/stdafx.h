@@ -28,6 +28,10 @@
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+// CEGUI includes
+#include <CEGUI.h>
+#include <RendererModules/Ogre/CEGUIOgreRenderer.h>
+
 //#include "OgreBulletDynamicsRigidBody.h"
 #include "OgreBulletDynamics.h"
 #include "OgreBulletDynamicsRigidBody.h"

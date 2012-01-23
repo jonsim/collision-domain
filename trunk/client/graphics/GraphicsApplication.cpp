@@ -26,6 +26,9 @@ GraphicsApplication::~GraphicsApplication (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
+	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+	GameCore::mGui->setupGUI();
+
     setupLighting();
     setupArena();
     setupNetworking();
@@ -43,6 +46,10 @@ void GraphicsApplication::createScene (void)
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
     ninjaNode2->translate(0, 100, 0);
+
+	GameCore::mGui->displayConnectBox();
+	GameCore::mGui->displayConsole();
+	GameCore::mGui->displayChatbox();
 }
 
 
@@ -151,32 +158,54 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     if (!GraphicsCore::frameRenderingQueued(evt)) return false;
 
     // Toggle on screen widgets
-    if (mUserInput.isToggleWidget()) 
+    /*if (mUserInput.isToggleWidget()) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
-    }
+    }*/
     
     // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
 
-    // Process keyboard input and produce an InputState object from this.
-    InputState *inputSnapshot = mUserInput.getInputState();
+	InputState *inputSnapshot;
+
+	if( NetworkCore::bConnected )
+	{
+		if( !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+		{
+			// If we're not typing anywhere, capture the user's control keys
+			inputSnapshot = mUserInput.getInputState();
+
+			if( mUserInput.isToggleConsole() )
+				GameCore::mGui->toggleConsole();
+			else if( mUserInput.isToggleChatbox() )
+				GameCore::mGui->toggleChatbox();
+		}
+		else
+		{
+			// Don't want to capture any keys (typing things)
+			inputSnapshot = new InputState( false, false, false, false );
+		}
+	}
+	else
+	{
+		inputSnapshot = new InputState( false, false, false, false );
+	}
     
     // Process the networking. Sends client's input and receives data
     GameCore::mNetworkCore->frameEvent(inputSnapshot);
 
-    if( NetworkCore::bConnected == true )
-    {
-        // Process the player pool. Perform updates on other players
-        GameCore::mPlayerPool->frameEvent();
+	if( NetworkCore::bConnected == true )
+	{
+		// Process the player pool. Perform updates on other players
+		GameCore::mPlayerPool->frameEvent();
 
-        // Apply controls the player (who will be moved on frameEnd and frameStart).
-        if( GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
-        {
-            GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
-            GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
-        }
-    }
+		// Apply controls the player (who will be moved on frameEnd and frameStart).
+		if( GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
+		{
+			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
+			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
+		}
+	}
 
     // LOCAL
     // get new snapshpot from control press - don't move the car though

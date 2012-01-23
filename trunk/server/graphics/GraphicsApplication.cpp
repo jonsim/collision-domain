@@ -26,6 +26,9 @@ GraphicsApplication::~GraphicsApplication (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
+	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+	GameCore::mGui->setupGUI();
+
     setupLighting();
     setupArena();
     setupNetworking();
@@ -43,6 +46,9 @@ void GraphicsApplication::createScene (void)
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
     ninjaNode2->translate(0, 100, 0);
+
+	GameCore::mGui->displayConsole();
+	GameCore::mGui->displayChatbox();
 }
 
 
@@ -154,16 +160,31 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		return true;
 
     // Toggle on screen widgets
-    if (mUserInput.isToggleWidget()) 
+    /*if (mUserInput.isToggleWidget()) 
     {
         mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
         mDetailsPanel->show();
-    }
+    }*/
     
     // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
 
     // Process keyboard input and produce an InputState object from this.
-    InputState *inputSnapshot = mUserInput.getInputState();
+    InputState *inputSnapshot;
+	
+	if( !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+	{
+		inputSnapshot = mUserInput.getInputState();
+
+		if( mUserInput.isToggleConsole() )
+			GameCore::mGui->toggleConsole();
+		else if( mUserInput.isToggleChatbox() )
+			GameCore::mGui->toggleChatbox();
+	}
+	else
+	{
+		// Don't want to capture any keys (typing things)
+		inputSnapshot = new InputState( false, false, false, false );
+	}
     
     // Process the networking. Sends client's input and receives data
     GameCore::mNetworkCore->frameEvent(inputSnapshot);
