@@ -1,0 +1,35 @@
+<?xml version="1.0" ?>
+<GUILayout>
+	<Window Type="Vanilla/FrameWindow" Name="/Console" >
+		<Property Name="Text" Value="Collision Domain Developer Console" />
+		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+		<Property Name="TitlebarEnabled" Value="True" />
+		<Property Name="SizingEnabled" Value="False" />
+		<Property Name="DragMovingEnabled" Value="True" />
+		<Property Name="UnifiedAreaRect" Value="{{0,5},{0,5},{0.4,0},{0.3,0}}" />
+		<Property Name="Alpha" Value="0.8" />
+			
+		<Window Type="Vanilla/MultiLineEditbox" Name="/Console/buffer">		
+			<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+			<Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{0.8,0}}" />
+			<Property Name="MaxTextLength" Value="1073741823" />
+			<Property Name="Text" Value="Welcome to Collision Domain" />
+			<Property Name="ReadOnly" Value="True" />
+		</Window>
+		
+		<Window Type="Vanilla/Editbox" Name="/Console/input">
+			<Property Name="VerticalAlignment" Value="Bottom" />			
+			<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+			<Property Name="UnifiedPosition" Value="{{0,0},{0,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.8,0},{0.13,0}}" />
+			<Property Name="Text" Value="" />
+		</Window>
+		
+		<Window Type="Vanilla/Button" Name="/Console/cmdInput">
+			<Property Name="VerticalAlignment" Value="Bottom" />
+			<Property Name="UnifiedPosition" Value="{{0.8,5},{0,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.2,-5},{0.13,0}}" />
+			<Property Name="Text" Value="Send" />
+		</Window>
+	</Window>
+</GUILayout>
