@@ -16,9 +16,7 @@
 
 // Game includes
 #include "stdafx.h"
-#include "CarSnapshot.h"
-#include "InputState.h"
-#include "PlayerPool.h"
+#include "ClientIncludes.h"
 
 // RakNet includes
 #include "BitStream.h"
@@ -44,61 +42,58 @@ void log( char *data, ... );
 // Define our custom packet ID's
 enum
 {
-	ID_PLAYER_SNAPSHOT = ID_USER_PACKET_ENUM,
-	ID_PLAYER_INPUT
-
+    ID_PLAYER_SNAPSHOT = ID_USER_PACKET_ENUM,
+    ID_PLAYER_INPUT
 };
 
 struct PLAYER_INPUT_DATA
 {
-	bool frwdPressed;
-	bool backPressed;
-	bool leftPressed;
-	bool rghtPressed;
+    bool frwdPressed;
+    bool backPressed;
+    bool leftPressed;
+    bool rghtPressed;
 };
 
 struct PLAYER_SYNC_DATA
 {
-	RakNet::RakNetGUID playerid;
-	RakNet::Time timestamp;
-	btVector3 vPosition;
+    RakNet::RakNetGUID playerid;
+    RakNet::Time timestamp;
+    btVector3 vPosition;
     btQuaternion qRotation;
     btVector3 vAngVel;
     btVector3 vLinVel;
-	float fWheelPos;
+    float fWheelPos;
 };
 
 class NetworkCore
 {
 private:
-	static RakNet::RakPeerInterface *m_pRak;
-	static RakNet::RPC4 m_RPC;
-	RakNet::RakNetGUID serverGUID;
+    static RakNet::RakPeerInterface *m_pRak;
+    static RakNet::RPC4 m_RPC;
+    RakNet::RakNetGUID serverGUID;
 
-	static RakNet::TimeMS timeLastUpdate;
+    static RakNet::TimeMS timeLastUpdate;
 
 public:
     NetworkCore( char *szHost, int iPort, char *szPass );
     ~NetworkCore (void);
 
-	RakNet::RakPeerInterface* getRakInterface();
-	void RegisterRPCSlots();
+    RakNet::RakPeerInterface* getRakInterface();
+    void RegisterRPCSlots();
 
     void frameEvent(InputState *inputSnapshot);
-	void ProcessPlayerState( RakNet::Packet *pkt );
+    void ProcessPlayerState( RakNet::Packet *pkt );
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
-	// RPC Calls
-	static void GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    // RPC Calls
+    static void GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 
-	static GraphicsCore *mGraphics;
-	static PlayerPool *mPlayerPool;
-	static bool bConnected;
+    static bool bConnected;
 
 };
 

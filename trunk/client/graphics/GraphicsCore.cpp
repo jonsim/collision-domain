@@ -7,7 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GraphicsCore.h"
+#include "ClientIncludes.h"
 
 
 
@@ -17,7 +17,6 @@
 GraphicsCore::GraphicsCore(void)
     : mRoot(0),
     mCamera(0),
-    mSceneMgr(0),
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
@@ -66,22 +65,11 @@ bool GraphicsCore::configure(void)
 }
 
 
-/// @brief  Selects the SceneManager.
-void GraphicsCore::chooseSceneManager(void)
-{
-    // Get the SceneManager, in this case a generic one
-    mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-
-    // get the core physics object up and runnning
-    mPhysicsCore = new PhysicsCore(mSceneMgr);
-}
-
-
 /// @brief  Creates and positions the camera.
 void GraphicsCore::createCamera(void)
 {
     // Create the camera
-    mCamera = mSceneMgr->createCamera("PlayerCam");
+    mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
 
     // Position it at 500 in Z direction
     mCamera->setPosition(Ogre::Vector3(0,0,80));
@@ -214,11 +202,6 @@ void GraphicsCore::go(void)
     mPluginsCfg = "plugins.cfg";
 #endif
 
-	mPlayerPool = new PlayerPool();
-    mNetworkCore = new NetworkCore( "192.168.0.2", SERVER_PORT, NULL );
-	NetworkCore::mGraphics = this;
-	NetworkCore::mPlayerPool = this->mPlayerPool;
-
 	if( !setup() )
 		return;
 
@@ -227,7 +210,7 @@ void GraphicsCore::go(void)
     // clean up
     destroyScene();
 
-	mNetworkCore->~NetworkCore();
+    GameCore::destroy();
 }
 
 
@@ -242,7 +225,9 @@ bool GraphicsCore::setup(void)
     bool carryOn = configure();
     if (!carryOn) return false;
 
-    chooseSceneManager();
+    // Init core classes, also init the SceneManager, in this case a generic one
+    GameCore::initialise(this, mRoot->createSceneManager(Ogre::ST_GENERIC));
+
     createCamera();
     createViewports();
 

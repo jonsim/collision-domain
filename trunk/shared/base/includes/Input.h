@@ -7,9 +7,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "InputState.h"
-
-
+#include "SharedIncludes.h"
+class GraphicsCore;
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -27,7 +26,7 @@ public:
     void capture ();
 
     // Controls are assigned here
-    InputState *getInputState();
+    InputState* getInputState();
     bool isToggleWidget();
     int getMouseXRel();
     int getMouseYRel();

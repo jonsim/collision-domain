@@ -7,11 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GraphicsCore.h"
-#include "Player.h"
-#include "InputState.h"
-//#include "btQuickprof.h"
-
+#include "ClientIncludes.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -26,10 +22,7 @@ public:
     GraphicsApplication(void);
     virtual ~GraphicsApplication(void);
 
-    int clientID;               ///< The client ID which is assigned by the server.
-
-    //Player players[1]; ///< An array of all players in the game to keep track of.
-    //btClock *mClock;
+    int clientID; ///< The client ID which is assigned by the server.
     bool firstFrameOccurred;
 
 protected:

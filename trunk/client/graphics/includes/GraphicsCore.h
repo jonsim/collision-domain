@@ -9,14 +9,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "Input.h"
-#include "PhysicsCore.h"
-#include "NetworkCore.h"
-#include "PlayerPool.h"
-
-class NetworkCore;
-class PhysicsCore;
-class PlayerPool;
+#include "ClientIncludes.h"
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -32,20 +25,12 @@ public:
     GraphicsCore (void);
     virtual ~GraphicsCore (void);
     virtual void go (void);
-	virtual bool setup(); // Moved here so network can call
 
-	// Might implement getters for these instead. soon.
-	PlayerPool* mPlayerPool;
-    NetworkCore* mNetworkCore;
-	PhysicsCore* mPhysicsCore;
-
-	Ogre::Camera* mCamera;
-    Ogre::SceneManager* mSceneMgr;
-
+    Ogre::Camera* mCamera;
     
 protected:
+    virtual bool setup(); // Moved here so network cant call :P
     virtual bool configure(void);
-    virtual void chooseSceneManager(void);
     virtual void createCamera(void);
     virtual void createFrameListener(void);
     virtual void createScene(void) = 0;     // This needs to be overridden to display anything
@@ -66,7 +51,6 @@ protected:
 
     // OIS user input
     Input mUserInput;
-
 
     Ogre::Root *mRoot;
     Ogre::RenderWindow* mWindow;

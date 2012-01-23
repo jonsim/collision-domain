@@ -6,7 +6,7 @@
                 car related and expose an interface to do stuff to the cars.
  */
 #include "stdafx.h"
-#include "Car.h"
+#include "SharedIncludes.h"
 
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).

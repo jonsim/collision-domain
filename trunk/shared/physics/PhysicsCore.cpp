@@ -3,7 +3,7 @@
  * @brief 	Contains the physics world and methods relating to it (currently there are not many such methods)
  */
 #include "stdafx.h"
-#include "PhysicsCore.h"
+#include "SharedIncludes.h"
 
 
 /// @brief  Constructor to create physics stuff

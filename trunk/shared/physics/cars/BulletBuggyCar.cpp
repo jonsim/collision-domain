@@ -3,7 +3,7 @@
  * @brief 	A Car object with specific mesh and texture to create an untextured buggy style car
  */
 #include "stdafx.h"
-#include "cars/BulletBuggyCar.h"
+#include "SharedIncludes.h"
 
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;

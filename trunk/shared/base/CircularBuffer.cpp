@@ -6,7 +6,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "CircularBuffer.h"
+#include "SharedIncludes.h"
+
 
 
 

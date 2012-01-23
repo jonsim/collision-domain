@@ -7,13 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "InputState.h"
-#include "PhysicsCore.h"
-#include "Car.h"
-#include "cars/BulletBuggyCar.h"
-#include "cars/SimpleCoupeCar.h"
-#include "CarSnapshot.h"
-#include "Input.h"
+#include "ClientIncludes.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

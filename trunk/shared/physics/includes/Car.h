@@ -9,8 +9,7 @@
 #define __Car_h_
 
 #include "stdafx.h"
-#include "boost\lexical_cast.hpp"
-#include "CarSnapshot.h"
+#include "SharedIncludes.h"
 
 class Car
 {
