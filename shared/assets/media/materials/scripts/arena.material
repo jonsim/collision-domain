@@ -1,0 +1,13 @@
+material arena_uv
+{
+	technique
+	{
+		pass
+		{
+			texture_unit
+			{
+				texture arena_uv.jpg
+			}
+		}
+	}
+}
