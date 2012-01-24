@@ -523,6 +523,27 @@
     <ClInclude Include="..\..\shared\raknet\_FindFirst.h">
       <Filter>shared\raknet</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\GameGUI.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\networking\includes\Config.h">
+      <Filter>client\networking</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\GameIncludes.h">
+      <Filter>client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\AudioCore.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\GameCore.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\SharedIncludes.h">
+      <Filter>shared</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -845,6 +866,18 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\raknet\_FindFirst.cpp">
       <Filter>shared\raknet</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\GameGUI.cpp">
+      <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\AudioCore.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\GameCore.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp">
+      <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

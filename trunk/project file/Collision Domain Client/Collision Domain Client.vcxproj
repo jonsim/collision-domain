@@ -12,14 +12,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\base\includes\Player.h" />
+    <ClInclude Include="..\..\client\GameIncludes.h" />
+    <ClInclude Include="..\..\client\graphics\includes\GameGUI.h" />
     <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h" />
     <ClInclude Include="..\..\client\graphics\includes\GraphicsCore.h" />
+    <ClInclude Include="..\..\client\networking\includes\Config.h" />
     <ClInclude Include="..\..\client\networking\includes\NetworkCore.h" />
     <ClInclude Include="..\..\client\networking\includes\PlayerPool.h" />
+    <ClInclude Include="..\..\shared\base\includes\AudioCore.h" />
     <ClInclude Include="..\..\shared\base\includes\CircularBuffer.h" />
+    <ClInclude Include="..\..\shared\base\includes\GameCore.h" />
     <ClInclude Include="..\..\shared\base\includes\Input.h" />
     <ClInclude Include="..\..\shared\base\includes\InputState.h" />
     <ClInclude Include="..\..\shared\base\includes\stdafx.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
     <ClInclude Include="..\..\shared\physics\includes\Car.h" />
     <ClInclude Include="..\..\shared\physics\includes\CarSnapshot.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h" />
@@ -172,18 +178,23 @@
     <ClInclude Include="..\..\shared\raknet\WSAStartupSingleton.h" />
     <ClInclude Include="..\..\shared\raknet\XBox360Includes.h" />
     <ClInclude Include="..\..\shared\raknet\_FindFirst.h" />
+    <ClInclude Include="..\..\shared\SharedIncludes.h" />
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp" />
+    <ClCompile Include="..\..\client\graphics\GameGUI.cpp" />
     <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp" />
     <ClCompile Include="..\..\client\graphics\GraphicsCore.cpp" />
     <ClCompile Include="..\..\client\networking\NetworkCore.cpp" />
     <ClCompile Include="..\..\client\networking\PlayerPool.cpp" />
+    <ClCompile Include="..\..\shared\base\AudioCore.cpp" />
     <ClCompile Include="..\..\shared\base\CircularBuffer.cpp" />
+    <ClCompile Include="..\..\shared\base\GameCore.cpp" />
     <ClCompile Include="..\..\shared\base\Input.cpp" />
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
     <ClCompile Include="..\..\shared\base\stdafx.cpp" />
+    <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
     <ClCompile Include="..\..\shared\physics\Car.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp" />
@@ -333,15 +344,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\raknet;..\..\client\base\includes;..\..\client\physics\includes;..\..\client\graphics\includes;..\..\client\networking\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;..\..\client;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\client\base\includes;..\..\client\physics\includes;..\..\client\graphics\includes;..\..\client\networking\includes</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalOptions> -Zm142 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;ConvexDecomposition_debug.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\shared\cegui\lib;$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;ConvexDecomposition_debug.lib;ws2_32.lib;CEGUIOgreRenderer_d.lib;CEGUIBase_d.lib;CEGUIExpatParser_d.lib;CEGUIFalagardWRBase_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:libc.lib /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -356,15 +367,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;D:\Programs\Collision Domain\Collision Domain\include;D:\Programs\Collision Domain\Collision Domain\Release</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;..\..\client;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\client\base\includes;..\..\client\physics\includes;..\..\client\graphics\includes;..\..\client\networking\includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\shared\cegui\lib;$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;CEGUIOgreRenderer.lib;CEGUIBase.lib;CEGUIExpatParser.lib;CEGUIFalagardWRBase.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
