@@ -24,22 +24,20 @@ copy /shared/assets/media/sounds folder into OGRE_HOME/media
 
 
 
-You will also need the lastest version of OpenAL sdk: 1.1 which can be downloaded from here: http://www.softpedia.com/get/Programming/SDK-DDK/OpenAL-SDK.shtml
-
-You may or may not need to run the redistributable... (we'll know when the first person tries ;))
+You may or may not need to run the redistributable... Try it if it crashes (though I don't know what will happen if you dont have it)
 
 
 
 Add the following to your C/C++-->General-->additional include directories:
-$(OPENAL_SDK)/include
-$(OGRE_HOME)\boost_1_44
+shared/openal/include
+$(OGRE_HOME)\boost_1_44\lib
 shared/ogreoggsound/include
 
 
 
 Add the following to your linker-->General-->Additional library directories:
-$(OPENAL_SDK)/lib
-$(OGRE_HOME)\boost_1_44
+																(not needed - shared/openal/lib)
+$(OGRE_HOME)\boost_1_44\lib
 shared/ogreoggsound/lib
 
 
