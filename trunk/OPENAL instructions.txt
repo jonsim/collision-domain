@@ -24,12 +24,12 @@ copy /shared/assets/media/sounds folder into OGRE_HOME/media
 
 
 
-You may or may not need to run the redistributable... Try it if it crashes (though I don't know what will happen if you dont have it)
+You probably wont need to run the redistributable exe... If the program crashes with an openal related error try it I guess... (though I don't know what exactly will happen if you dont have openal)
 
 
 
 Add the following to your C/C++-->General-->additional include directories:
-shared/openal/include
+shared/ogreoggsound/openal/include
 $(OGRE_HOME)\boost_1_44\lib
 shared/ogreoggsound/include
 
