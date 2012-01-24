@@ -119,6 +119,10 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
 
+    if (evt.key == OIS::KC_K) {
+        GameCore::mAudioCore->playEngineIdle();
+    }
+
     return true;
 }
 
