@@ -12,6 +12,7 @@
 class PlayerPool;
 class NetworkCore;
 class GraphicsCore;
+class AudioCore;
 class GameGUI;
 
 
@@ -27,6 +28,7 @@ public:
     static GraphicsCore* mGraphicsCore;
     static NetworkCore* mNetworkCore;
     static PhysicsCore* mPhysicsCore;
+    static AudioCore* mAudioCore;
 	static GameGUI* mGui;
 
     static void initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr);

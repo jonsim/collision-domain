@@ -14,6 +14,7 @@ PlayerPool*  GameCore::mPlayerPool;
 GraphicsCore* GameCore::mGraphicsCore;
 NetworkCore* GameCore::mNetworkCore;
 PhysicsCore* GameCore::mPhysicsCore;
+AudioCore* GameCore::mAudioCore;
 GameGUI* GameCore::mGui;
 
 
@@ -25,6 +26,7 @@ void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneM
     GameCore::mGraphicsCore = graphicsCore;
     GameCore::mNetworkCore = new NetworkCore();
     GameCore::mPhysicsCore = new PhysicsCore(GameCore::mSceneMgr);
+    GameCore::mAudioCore = new AudioCore();
 	GameCore::mGui = new GameGUI();
 }
 
