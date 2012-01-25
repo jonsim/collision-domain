@@ -348,15 +348,15 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalOptions> -Zm142 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;ConvexDecomposition_debug.lib;ws2_32.lib;CEGUIOgreRenderer_d.lib;CEGUIBase_d.lib;CEGUIExpatParser_d.lib;CEGUIFalagardWRBase_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;..\..\shared\ogreoggsound\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;ConvexDecomposition_debug.lib;ws2_32.lib;CEGUIOgreRenderer_d.lib;CEGUIBase_d.lib;CEGUIExpatParser_d.lib;CEGUIFalagardWRBase_d.lib;OgreOggSound_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/NODEFAULTLIB:libc.lib /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -371,15 +371,15 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;CEGUIOgreRenderer.lib;CEGUIBase.lib;CEGUIExpatParser.lib;CEGUIFalagardWRBase.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;..\..\shared\ogreoggsound\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;CEGUIOgreRenderer.lib;CEGUIBase.lib;CEGUIExpatParser.lib;CEGUIFalagardWRBase.lib;OgreOggSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
