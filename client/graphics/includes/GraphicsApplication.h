@@ -40,6 +40,11 @@ private:
     void setupLighting (void);
     void setupArena (void);
     void setupNetworking (void);
+	void createSpeedo (void);
+	void updateSpeedo (float fSpeed);
+
+	Ogre::OverlayContainer *olcSpeedo;
+	Ogre::OverlayElement *oleNeedle;
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

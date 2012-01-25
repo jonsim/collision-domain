@@ -27,6 +27,7 @@ public:
     virtual void moveTo(const btVector3 &position);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();
+	virtual float getCarMph();
 
 protected:
     void createGeometry(

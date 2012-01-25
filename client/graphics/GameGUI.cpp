@@ -40,7 +40,15 @@ void GameGUI::setupGUI()
 	mSheet = CEGUI::WindowManager::getSingleton().
 		createWindow( "DefaultWindow", "root_wnd" );
 
+	CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().
+		createWindow( "Vanilla/StaticText", "root_wnd/mph" );
+
+	mph->setText( "MPH: " );
+	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.05, 0)));
+
 	CEGUI::System::getSingleton().setGUISheet( mSheet );
+
+	mSheet->addChildWindow( mph );
 }
 
 /*-------------------- CONNECTION BOX --------------------*/
