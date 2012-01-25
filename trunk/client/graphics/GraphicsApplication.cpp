@@ -50,6 +50,38 @@ void GraphicsApplication::createScene (void)
 	GameCore::mGui->displayConnectBox();
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
+
+	createSpeedo();
+}
+
+/// @bried Draws the speedo on-screen
+void GraphicsApplication::createSpeedo (void)
+{
+	// Create our speedometer overlays
+	Ogre::Overlay *olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
+	olSpeedo->setZOrder( 500 );
+	olSpeedo->show();
+
+	olcSpeedo = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().
+		createOverlayElement( "Panel", "SPEEDO" ) );
+
+	olcSpeedo->setMetricsMode( Ogre::GMM_PIXELS );
+	olcSpeedo->setHorizontalAlignment( Ogre::GHA_LEFT );
+	olcSpeedo->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	olcSpeedo->setDimensions( 250, 250 );
+	olcSpeedo->setMaterialName( "speedo_main" );
+	olcSpeedo->setPosition( 20, -270 );
+
+	olSpeedo->add2D( olcSpeedo );
+
+	oleNeedle = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDONEEDLE" );
+	oleNeedle->setMetricsMode( Ogre::GMM_PIXELS );
+	oleNeedle->setDimensions( 250, 250 );
+	oleNeedle->setMaterialName( "speedo_needle" );
+
+	olcSpeedo->addChild( oleNeedle );
+
+	updateSpeedo( 0 );
 }
 
 
@@ -204,6 +236,14 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		{
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
+
+			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
+			CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/mph" );
+			char szSpeed[64];
+			sprintf( szSpeed, "MPH: %f", speedmph );
+			mph->setText( szSpeed );
+
+			updateSpeedo( speedmph );
 		}
 	}
 
@@ -274,6 +314,28 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
     return true;
+}
+
+/// @brief	Update the rotation of the speedo needle
+/// @param	fSpeed	Float containing speed of car in mph
+void GraphicsApplication::updateSpeedo (float fSpeed)
+{
+	if( fSpeed < 0 )
+		fSpeed *= -1;
+
+	if( fSpeed > 220 )
+		fSpeed = 220;
+
+	float iDegree = 58; // This is 0 for some reason
+
+	// 1 mph = 298 / 220 degrees
+
+	iDegree = 58 - ( fSpeed * ( 298.0f / 220.0f ) );
+
+	Ogre::Material *matNeedle = oleNeedle->getMaterial().get();
+	Ogre::TextureUnitState *texNeedle = 
+		matNeedle->getTechnique( 0 )->getPass( 0 )->getTextureUnitState( 0 );
+	texNeedle->setTextureRotate( Ogre::Degree( iDegree ) );
 }
 
 

@@ -37,6 +37,11 @@ CarSnapshot *Car::getCarSnapshot()
         mSteer);
 }
 
+float Car::getCarMph()
+{
+	return mVehicle->getBulletVehicle()->getCurrentSpeedKmHour() * 0.621371192;
+}
+
 
 /// @brief  Moves the car to the specified position keeping current rotation, velocity etc.
 /// @param  position  The position to move to.
