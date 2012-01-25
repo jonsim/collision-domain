@@ -78,54 +78,30 @@ void GraphicsApplication::setupLighting (void)
 /// @brief  Builds the initial arena.
 void GraphicsApplication::setupArena (void)
 {
-    // Create the ground plane and wall meshes
-    Ogre::Plane groundPlane(Ogre::Vector3::UNIT_Y, 0);
-    Ogre::MeshManager::getSingleton().createPlane("GroundMesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 5000, 20, 20, true, 1, 20, 20, Ogre::Vector3::UNIT_Z);
-    Ogre::Plane wallPlane1(Ogre::Vector3::UNIT_Z, 0);
-    Ogre::MeshManager::getSingleton().createPlane("WallMesh1", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 200, 20, 1, true, 1, 20, 1, Ogre::Vector3::UNIT_Z);
-    Ogre::Plane wallPlane2(Ogre::Vector3::UNIT_Z, 0);
-    Ogre::MeshManager::getSingleton().createPlane("WallMesh2", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 200, 20, 1, true, 1, 20, 1, Ogre::Vector3::UNIT_Z);
-    Ogre::Plane wallPlane3(Ogre::Vector3::UNIT_Z, 0);
-    Ogre::MeshManager::getSingleton().createPlane("WallMesh3", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 200, 20, 1, true, 1, 20, 1, Ogre::Vector3::UNIT_Z);
-    Ogre::Plane wallPlane4(Ogre::Vector3::UNIT_Z, 0);
-    Ogre::MeshManager::getSingleton().createPlane("WallMesh4", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 200, 20, 1, true, 1, 20, 1, Ogre::Vector3::UNIT_Z);
-
     // Load and meshes and create entities
-    Ogre::Entity* groundEntity = GameCore::mSceneMgr->createEntity("Ground", "GroundMesh");
+    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena.mesh");
+    arenaEntity->setMaterialName("arena_uv");
+    arenaEntity->setCastShadows(true); // without shadows you can't see the seating rows
+    
+    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
+    arenaNode->attachObject(arenaEntity);
+    arenaNode->scale(0.15, 0.15, 0.15);
+
+
+
+    // ground plane, visible on the top down view only (unless something bad happens!!)
+    /*Ogre::Plane groundPlane(Ogre::Vector3::UNIT_Y, 0);
+    Ogre::MeshManager::getSingleton().createPlane("GroundPlaneMesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 5000, 20, 20, true, 1, 20, 20, Ogre::Vector3::UNIT_Z);
+
+    Ogre::Entity* groundEntity = GameCore::mSceneMgr->createEntity("Ground", "GroundPlaneMesh");
     groundEntity->setMaterialName("Examples/GrassFloor");
     groundEntity->setCastShadows(false);
-    Ogre::Entity* wallEntity1 = GameCore::mSceneMgr->createEntity("Wall1", "WallMesh1");
-    wallEntity1->setMaterialName("Examples/Rockwall");
-    wallEntity1->setCastShadows(true);
-    Ogre::Entity* wallEntity2 = GameCore::mSceneMgr->createEntity("Wall2", "WallMesh1");
-    wallEntity2->setMaterialName("Examples/Rockwall");
-    wallEntity2->setCastShadows(true);
-    Ogre::Entity* wallEntity3 = GameCore::mSceneMgr->createEntity("Wall3", "WallMesh1");
-    wallEntity3->setMaterialName("Examples/Rockwall");
-    wallEntity3->setCastShadows(true);
-    Ogre::Entity* wallEntity4 = GameCore::mSceneMgr->createEntity("Wall4", "WallMesh1");
-    wallEntity4->setMaterialName("Examples/Rockwall");
-    wallEntity4->setCastShadows(true);
+    
+    // Create ground plane at -5 (below lowest arena point) to avoid z-index flickering/showing the plane through arena floor.
+    Ogre::SceneNode* groundNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, -5, 0));
+    groundNode->attachObject(groundEntity);*/
 
-    // Create scene nodes and attach the entities
-    Ogre::SceneNode* groundNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, 0, 0));
-    groundNode->attachObject(groundEntity);
-    Ogre::SceneNode* wallNode1 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode1", Ogre::Vector3(0, 100, 2500));
-    wallNode1->attachObject(wallEntity1);
-    Ogre::SceneNode* wallNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode2", Ogre::Vector3(2500, 100, 0));
-    wallNode2->attachObject(wallEntity2);
-    Ogre::SceneNode* wallNode3 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode3", Ogre::Vector3(0, 100, -2500));
-    wallNode3->attachObject(wallEntity3);
-    Ogre::SceneNode* wallNode4 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("WallNode4", Ogre::Vector3(-2500, 100, 0));
-    wallNode4->attachObject(wallEntity4);
 
-    // Adjust the node rotations.
-    wallNode1->pitch(Ogre::Degree(-90));
-    wallNode3->pitch(Ogre::Degree(90));
-    wallNode2->pitch(Ogre::Degree(90));
-    wallNode2->roll(Ogre::Degree(90));
-    wallNode4->pitch(Ogre::Degree(-90));
-    wallNode4->roll(Ogre::Degree(-90));
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
     GameCore::mPhysicsCore->createFloorPlane();

@@ -29,6 +29,10 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
     mWorld->setShowDebugShapes(true);      // enable it if you want to see the Bullet containers
     Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
     node->attachObject(static_cast <Ogre::SimpleRenderable *> (debugDrawer));
+
+    // lets get the callback for collisions every substep
+    //mWorld->getBulletDynamicsWorld()->setInternalTickCallback(preTickCallback, 0, true);
+    mWorld->getBulletDynamicsWorld()->setInternalTickCallback(postTickCallback, 0, false);
 }
 
 
@@ -57,6 +61,88 @@ PhysicsCore::~PhysicsCore(void)
 }
 
 
+void PhysicsCore::preTickCallback(btDynamicsWorld *world, btScalar timeStep) {
+    //printf("The world just ticked by %f seconds\n", (float)timeStep);
+    //OutputDebugString("Pre Tick\n");
+}
+
+
+/// timeStep is the number of seconds (float) which the world just ticked by (this substep only)
+void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
+    //OutputDebugString("Post Tick\n");
+
+	// This function is called *within* stepSimulation. Let's build a list of the cars which collided so
+    // that once the stepSim finishes all its substeps (this multiple times) that list can be read off
+
+	int numManifolds = world->getDispatcher()->getNumManifolds();
+	for (int i = 0; i < numManifolds; i++)
+	{
+		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+	    
+        int flagsA = obA->getCollisionFlags();
+        int flagsB = obB->getCollisionFlags();
+        
+
+        if ((flagsA & VEHICLE_QUERY_MASK) && (flagsB & VEHICLE_QUERY_MASK))
+        {
+            //OutputDebugString("Collision\n"); // :-) it works! (but gives an odd number of outputs
+        }
+
+
+
+		int numContacts = contactManifold->getNumContacts();
+		for (int j = 0; j < numContacts; j++)
+		{
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance() < 0.f)
+			{
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+			}
+		}
+	}
+
+    /*btManifoldArray manifoldArray;
+    btBroadphasePairArray& pairArray = ghostObject->getOverlappingPairCache()->getOverlappingPairArray();
+    int numPairs = pairArray.size();
+
+    for (int i=0; i<numPairs; i++)
+    {
+        manifoldArray.clear();
+
+        const btBroadphasePair& pair = pairArray[i];
+        
+        //unless we manually perform collision detection on this pair, the contacts are in the dynamics world paircache:
+        btBroadphasePair* collisionPair = dynamicsWorld->getPairCache()->findPair(pair.m_pProxy0,pair.m_pProxy1);
+        if (!collisionPair)
+            continue;
+
+        if (collisionPair->m_algorithm)
+            collisionPair->m_algorithm->getAllContactManifolds(manifoldArray);
+
+        for (int j=0;j<manifoldArray.size();j++)
+        {
+            btPersistentManifold* manifold = manifoldArray[j];
+            btScalar directionSign = manifold->getBody0() == m_ghostObject ? btScalar(-1.0) : btScalar(1.0);
+            for (int p=0; p<manifold->getNumContacts(); p++)
+            {
+                const btManifoldPoint&pt = manifold->getContactPoint(p);
+                if (pt.getDistance()<0.f)
+                {
+	                const btVector3& ptA = pt.getPositionWorldOnA();
+	                const btVector3& ptB = pt.getPositionWorldOnB();
+	                const btVector3& normalOnB = pt.m_normalWorldOnB;
+	                /// work here
+                }
+            }
+        }
+    }*/
+}
+
+
 /// @brief  mNumEntitiesInstances should only ever be modified through this method! (Potential crashes otherwise).
 /// @return an int which has never before been used (in an entity name).
 int PhysicsCore::getUniqueEntityID()
@@ -74,7 +160,11 @@ void PhysicsCore::createFloorPlane()
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
             "BasePlane",
             mWorld);
+
     defaultPlaneBody->setStaticShape(Shape, 0.1, 0.8); // (shape, restitution, friction)
+
+    defaultPlaneBody->getBulletObject()->setCollisionFlags(STATIC_GEOMETRY_QUERY_MASK);
+
     // push the created objects to the deques
     mShapes.push_back(Shape);
     mBodies.push_back(defaultPlaneBody);
@@ -174,7 +264,7 @@ void PhysicsCore::addCube(
     entity->setMaterialName("Bullet/box");
 
     OgreBulletCollisions::BoxCollisionShape *sceneCubeShape = new OgreBulletCollisions::BoxCollisionShape(size);
-
+    
     OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(instanceName, mWorld);
 
     Ogre::SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();

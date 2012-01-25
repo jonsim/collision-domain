@@ -22,9 +22,12 @@ public:
     AudioCore();
     ~AudioCore();
     void playEngineIdle();
+    void playCarCrash();
 
 private:
     OgreOggSoundManager* mSoundManager;
+    OgreOggISound* mEngineIdleSound;
+    OgreOggISound* mCarCrashSound;
     bool mInitOK;
 };
 
