@@ -196,8 +196,9 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     
     // This line is needed otherwise the model appears wrongly rotated.
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
-
+    
     mbtRigidBody = mCarChassis->getBulletRigidBody();
+    mbtRigidBody->setCollisionFlags(VEHICLE_QUERY_MASK);
 }
 
 
@@ -209,7 +210,7 @@ void SimpleCoupeCar::initWheels()
 
     #define CUBE_HALF_EXTENTS 1
     bool isFrontWheel = true;
-
+    
     // Wheel 1 - Front Left
     Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,

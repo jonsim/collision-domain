@@ -7,12 +7,13 @@
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
+#include "boost\lexical_cast.hpp"
 
 // This is used for physics integration with ogre. (And neat housekeeping)
 enum QueryFlags
 {
     ANY_QUERY_MASK             = 1<<0,
-    RAGDOLL_QUERY_MASK         = 1<<1,
+    ARENA_STATIC_QUERY_MASK    = 1<<1,
     GEOMETRY_QUERY_MASK        = 1<<2,
     VEHICLE_QUERY_MASK         = 1<<3,
     STATIC_GEOMETRY_QUERY_MASK = 1<<4
@@ -21,8 +22,6 @@ enum QueryFlags
 class PhysicsCore
 {
 public:
-    OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
-
     PhysicsCore(Ogre::SceneManager* sceneMgr);
     virtual ~PhysicsCore(void);
     int getUniqueEntityID(void);
@@ -39,7 +38,12 @@ public:
     void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
                  const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);
 
+    OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
+
 private:
+    static void preTickCallback(btDynamicsWorld *world, btScalar timeStep);
+    static void postTickCallback(btDynamicsWorld *world, btScalar timeStep);
+
     Ogre::SceneManager* mSceneMgr; // Graphics object
     std::deque<OgreBulletDynamics::RigidBody *>        mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *> mShapes;

@@ -93,7 +93,7 @@ void GraphicsCore::createCamera(void)
 	bigScreen->addCamera(mViewCam8);
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,5000,-100));
+    mCamera->setPosition(Ogre::Vector3(0,550,-100));
     // Look back along -Z
     mCamera->lookAt(Ogre::Vector3(0,0,0));
     mCamera->setNearClipDistance(5);

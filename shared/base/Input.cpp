@@ -120,7 +120,8 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 	sys.injectChar(evt.text);
 
     if (evt.key == OIS::KC_K) {
-        GameCore::mAudioCore->playEngineIdle();
+        GameCore::mAudioCore->playCarCrash();
+        //GameCore::mAudioCore->playEngineIdle();
     }
 
     return true;
