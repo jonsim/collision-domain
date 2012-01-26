@@ -70,6 +70,7 @@ void PhysicsCore::preTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 /// timeStep is the number of seconds (float) which the world just ticked by (this substep only)
 void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
     //OutputDebugString("Post Tick\n");
+    //defaultPlaneBody->getBulletObject()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
 	// This function is called *within* stepSimulation. Let's build a list of the cars which collided so
     // that once the stepSim finishes all its substeps (this multiple times) that list can be read off
@@ -78,19 +79,40 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 	for (int i = 0; i < numManifolds; i++)
 	{
 		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+
 		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
 	    
-        int flagsA = obA->getCollisionFlags();
-        int flagsB = obB->getCollisionFlags();
-        
+        short groupA = obA->getBroadphaseHandle()->m_collisionFilterGroup;
+        short groupB = obB->getBroadphaseHandle()->m_collisionFilterGroup;
 
-        if ((flagsA & VEHICLE_QUERY_MASK) && (flagsB & VEHICLE_QUERY_MASK))
+        if (groupA & COL_CAR && groupB & COL_CAR)
         {
-            //OutputDebugString("Collision\n"); // :-) it works! (but gives an odd number of outputs
+            OutputDebugString("Car to Car collision\n");
+            
+            Player* playerA = static_cast<Player*>(obA->getUserPointer());
+            Player* playerB = static_cast<Player*>(obB->getUserPointer());
+
+
         }
+        else if (groupA & COL_CAR && groupB & COL_POWERUP || groupA & COL_POWERUP && groupB & COL_CAR)
+        {
+            OutputDebugString("Car to Powerup collision\n");
+            
+            Player* player = static_cast<Player*>(
+                (groupA & COL_CAR ? obA : obB)->getUserPointer());
+            void* powerup = static_cast<void*>(
+                (groupA & COL_POWERUP ? obA : obB)->getUserPointer());
 
 
+        }
+        else if (groupA & COL_CAR && groupB & COL_ARENA || groupA & COL_ARENA && groupB & COL_CAR)
+        {
+            //OutputDebugString("Car to Arena collision\n");
+
+
+        }
+        
 
 		int numContacts = contactManifold->getNumContacts();
 		for (int j = 0; j < numContacts; j++)
@@ -104,42 +126,6 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 			}
 		}
 	}
-
-    /*btManifoldArray manifoldArray;
-    btBroadphasePairArray& pairArray = ghostObject->getOverlappingPairCache()->getOverlappingPairArray();
-    int numPairs = pairArray.size();
-
-    for (int i=0; i<numPairs; i++)
-    {
-        manifoldArray.clear();
-
-        const btBroadphasePair& pair = pairArray[i];
-        
-        //unless we manually perform collision detection on this pair, the contacts are in the dynamics world paircache:
-        btBroadphasePair* collisionPair = dynamicsWorld->getPairCache()->findPair(pair.m_pProxy0,pair.m_pProxy1);
-        if (!collisionPair)
-            continue;
-
-        if (collisionPair->m_algorithm)
-            collisionPair->m_algorithm->getAllContactManifolds(manifoldArray);
-
-        for (int j=0;j<manifoldArray.size();j++)
-        {
-            btPersistentManifold* manifold = manifoldArray[j];
-            btScalar directionSign = manifold->getBody0() == m_ghostObject ? btScalar(-1.0) : btScalar(1.0);
-            for (int p=0; p<manifold->getNumContacts(); p++)
-            {
-                const btManifoldPoint&pt = manifold->getContactPoint(p);
-                if (pt.getDistance()<0.f)
-                {
-	                const btVector3& ptA = pt.getPositionWorldOnA();
-	                const btVector3& ptB = pt.getPositionWorldOnB();
-	                const btVector3& normalOnB = pt.m_normalWorldOnB;
-	                /// work here
-                }
-            }
-        }
-    }*/
 }
 
 
@@ -157,13 +143,18 @@ void PhysicsCore::createFloorPlane()
 {
     OgreBulletCollisions::CollisionShape *Shape;
     Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0); // (normal vector, distance)
+
+    short collisionGroup = COL_ARENA;
+    short collisionMask = -1;//COL_CAR;
+
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
             "BasePlane",
-            mWorld);
-
+            mWorld,
+            collisionGroup,
+            collisionMask);
     defaultPlaneBody->setStaticShape(Shape, 0.1, 0.8); // (shape, restitution, friction)
-
-    defaultPlaneBody->getBulletObject()->setCollisionFlags(STATIC_GEOMETRY_QUERY_MASK);
+    
+    //defaultPlaneBody->addQueryFlags(btCollisionObject::CF_STATIC_OBJECT);
 
     // push the created objects to the deques
     mShapes.push_back(Shape);
@@ -174,12 +165,17 @@ void PhysicsCore::createFloorPlane()
 /// @brief  Create the walls at +2500 and -2500 and add them to the physics world.
 void PhysicsCore::createWallPlanes()
 {
+    short collisionGroup = COL_ARENA;
+    short collisionMask = COL_CAR;
+
     // -2500 is good 2500 is bad. positive distances DO NOT WORK. Seriously, don't even bother
     OgreBulletCollisions::CollisionShape *Shape2;
     Shape2 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,1), -2500); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody2 = new OgreBulletDynamics::RigidBody(
             "BasePlane2",
-            mWorld);
+            mWorld,
+            collisionGroup,
+            collisionMask);
     defaultPlaneBody2->setStaticShape(Shape2, 0.1, 0.8); // (shape, restitution, friction)
     //defaultPlaneBody2-> ->setPosition();
     // push the created objects to the deques
@@ -191,7 +187,9 @@ void PhysicsCore::createWallPlanes()
     Shape3 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,-1), -2500); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody3 = new OgreBulletDynamics::RigidBody(
             "BasePlane3",
-            mWorld);
+            mWorld,
+            collisionGroup,
+            collisionMask);
     defaultPlaneBody3->setStaticShape(Shape3, 0.1, 0.8); // (shape, restitution, friction)
     // push the created objects to the deques
     mShapes.push_back(Shape3);
@@ -202,7 +200,9 @@ void PhysicsCore::createWallPlanes()
     Shape4 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(1,0,0), -2500); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody4 = new OgreBulletDynamics::RigidBody(
             "BasePlane4",
-            mWorld);
+            mWorld,
+            collisionGroup,
+            collisionMask);
     defaultPlaneBody4->setStaticShape(Shape4, 0.1, 0.8); // (shape, restitution, friction)
     // push the created objects to the deques
     mShapes.push_back(Shape4);
@@ -213,22 +213,13 @@ void PhysicsCore::createWallPlanes()
     Shape5 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(-1,0,0), -2500); // (normal vector, distance)
     OgreBulletDynamics::RigidBody *defaultPlaneBody5 = new OgreBulletDynamics::RigidBody(
             "BasePlane5",
-            mWorld);
+            mWorld,
+            collisionGroup,
+            collisionMask);
     defaultPlaneBody5->setStaticShape(Shape5, 0.1, 0.8); // (shape, restitution, friction)
     // push the created objects to the deques
     mShapes.push_back(Shape5);
     mBodies.push_back(defaultPlaneBody5);
-	
-	
-    //make the four walls collidable
-    /*mPhysicsCore->addCube("wallObstacle1", Ogre::Vector3(0,  100, 2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                          Ogre::Vector3::UNIT_X), Ogre::Vector3(2500, 10, 100), 0.3, 0.8, 0);
-    mPhysicsCore->addCube("wallObstacle2", Ogre::Vector3(2510, 100, 10), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                              Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2510, 100), 0.3, 0.8, 0);
-    mPhysicsCore->addCube("wallObstacle3", Ogre::Vector3(0, 100, -2510), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(2510, 10, 100), 0.3, 0.8, 0);
-    mPhysicsCore->addCube("wallObstacle4", Ogre::Vector3(-2510, 100, 0), Ogre::Quaternion(Ogre::Radian(Ogre::Degree(90)),
-                                  Ogre::Vector3::UNIT_X), Ogre::Vector3(10, 2500, 100), 0.3, 0.8, 0);*/
 }
 
 
@@ -255,7 +246,7 @@ void PhysicsCore::addCube(
     // "Crate2.mesh");
 
 
-    entity->setQueryFlags (GEOMETRY_QUERY_MASK);
+    //entity->setQueryFlags (GEOMETRY_QUERY_MASK);
 #if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0)) // only applicable before shoggoth (1.5.0)
     entity->setNormaliseNormals(true);
 #endif

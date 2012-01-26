@@ -138,7 +138,12 @@ void BulletBuggyCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     compoundChassisShape->addChildShape(chassisShape, chassisShift);
     
     // name given here needs to be unique to have more than one in the scene
-    mCarChassis = new OgreBulletDynamics::WheeledRigidBody("CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID), mWorld);
+    mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
+        new FuckOgreBulletWheeledRigidBody(
+            "CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID),
+            mWorld,
+            COL_CAR,
+            COL_CAR | COL_ARENA | COL_POWERUP));
 
     // attach physics shell to mBodyNode
     mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
@@ -155,6 +160,10 @@ void BulletBuggyCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
 
     mbtRigidBody = mCarChassis->getBulletRigidBody();
+
+    // This may not work (might need to recreate the broadphase handle or go through the setter method)
+    //mbtRigidBody->getBroadphaseHandle()->m_collisionFilterGroup = COL_CAR;
+    //mbtRigidBody->getBroadphaseHandle()->m_collisionFilterMask = COL_CAR | COL_ARENA | COL_POWERUP;
 }
 
 

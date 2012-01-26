@@ -12,6 +12,7 @@
 #include "CarSnapshot.h"
 #include "Car.h"
 #include "PhysicsCore.h"
+#include "FuckOgreBulletWheeledRigidBody.h"
 #include "cars/SimpleCoupeCar.h"
 #include "cars/BulletBuggyCar.h"
 #include "ViewCamera.h"

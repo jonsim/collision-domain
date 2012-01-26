@@ -12,11 +12,10 @@
 // This is used for physics integration with ogre. (And neat housekeeping)
 enum QueryFlags
 {
-    ANY_QUERY_MASK             = 1<<0,
-    ARENA_STATIC_QUERY_MASK    = 1<<1,
-    GEOMETRY_QUERY_MASK        = 1<<2,
-    VEHICLE_QUERY_MASK         = 1<<3,
-    STATIC_GEOMETRY_QUERY_MASK = 1<<4
+    COL_NOTHING = 1<<0,
+    COL_CAR     = 1<<1,
+    COL_ARENA   = 1<<2,
+    COL_POWERUP = 1<<3,
 };
 
 class PhysicsCore

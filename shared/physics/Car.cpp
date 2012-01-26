@@ -48,6 +48,13 @@ float Car::getCarMph()
 void Car::moveTo(const btVector3 &position)
 {
     moveTo(position, mbtRigidBody->getOrientation());
+
+    // now stop the car moving
+    mbtRigidBody->setAngularVelocity(btVector3());
+    mbtRigidBody->setLinearVelocity(btVector3());
+
+    mSteer = 0;
+    applySteeringValue();
 }
 
 
