@@ -11,3 +11,14 @@ material arena_uv
 		}
 	}
 }
+
+material arena_collision_default
+{
+	technique
+	{
+		pass
+		{
+
+		}
+	}
+}
