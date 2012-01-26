@@ -8,7 +8,7 @@
 
 
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
-RakNet::RPC4 NetworkCore::m_RPC;
+RakNet::RPC4* NetworkCore::m_RPC;
 bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
@@ -108,9 +108,9 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 				serverGUID = pkt->guid;
 
 				RakNet::BitStream bsSend;
-				RakNet::RakString strName( "RemotePlayer" );
+				RakNet::RakString *strName = new RakNet::RakString( "RemotePlayer" );
 				RakNet::StringCompressor().EncodeString( strName, 128, &bsSend );
-				m_RPC.Signal( "PlayerJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
+				m_RPC->Signal( "PlayerJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
 				break;
 			}
 
@@ -211,7 +211,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	timeLastUpdate = 0;
 
 	// Request to spawn straight away for now
-	m_RPC.Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+	m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
 	// If we're allowed to spawn, our spawn method will be called by the server automagically.
 }
@@ -275,13 +275,14 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
-	m_pRak->AttachPlugin( &m_RPC );
+    m_RPC = RakNet::RPC4::GetInstance();
+	m_pRak->AttachPlugin( m_RPC );
 
-	m_RPC.RegisterSlot( "GameJoin",			GameJoin, 0 );
-	m_RPC.RegisterSlot( "PlayerJoin",		PlayerJoin, 0 );
-	m_RPC.RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
-	m_RPC.RegisterSlot( "PlayerChat",		PlayerChat, 0 );
-	m_RPC.RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
+	m_RPC->RegisterSlot( "GameJoin",			GameJoin, 0 );
+	m_RPC->RegisterSlot( "PlayerJoin",		PlayerJoin, 0 );
+	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
+	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
+	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
 }
 
 
