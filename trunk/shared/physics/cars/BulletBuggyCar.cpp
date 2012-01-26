@@ -160,10 +160,6 @@ void BulletBuggyCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
 
     mbtRigidBody = mCarChassis->getBulletRigidBody();
-
-    // This may not work (might need to recreate the broadphase handle or go through the setter method)
-    //mbtRigidBody->getBroadphaseHandle()->m_collisionFilterGroup = COL_CAR;
-    //mbtRigidBody->getBroadphaseHandle()->m_collisionFilterMask = COL_CAR | COL_ARENA | COL_POWERUP;
 }
 
 

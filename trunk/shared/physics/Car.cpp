@@ -173,6 +173,12 @@ Ogre::SceneNode *Car::attachCamNode()
 }
 
 
+void Car::attachCollisionTickCallback(Player* player)
+{
+    mbtRigidBody->setUserPointer(player);
+}
+
+
 /// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
 ///         with this car's unique ID so that (forbidden) name collisions don't occur.
 /// @param  entityName  Name which the imported mesh will be given.

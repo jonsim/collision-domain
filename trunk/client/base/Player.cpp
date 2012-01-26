@@ -34,14 +34,18 @@ Player::~Player (void)
 /// @param  physicsCore   The class containing the physics world.
 void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore)
 {
-    // First set up the scene node relationships
-
     mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
-    // lets fuck up some cars
-
-    if( !mCar ) exit(1); // lovely error handling ;)
+    mCar->attachCollisionTickCallback(this);
 
     mCar->moveTo(btVector3(0,0.5,0));
+}
+
+
+/// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
+/// @param  damage   Currently hardcoded to 1
+void Player::collisionTickCallback(int damage)
+{
+    OutputDebugString("Client: Player collision\n");
 }
 
 
