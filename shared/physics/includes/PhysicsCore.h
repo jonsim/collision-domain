@@ -9,13 +9,13 @@
 #include "SharedIncludes.h"
 #include "boost\lexical_cast.hpp"
 
-// This is used for physics integration with ogre. (And neat housekeeping)
+// This is used for physics collision masks
 enum QueryFlags
 {
-    COL_NOTHING = 1<<0,
-    COL_CAR     = 1<<1,
-    COL_ARENA   = 1<<2,
-    COL_POWERUP = 1<<3,
+    // Raycast car must be 1 as the bullet wheel raycasts are broken and assume this collision mask (1)
+    COL_CAR        = 1<<0,
+    COL_ARENA      = 1<<1,
+    COL_POWERUP    = 1<<2
 };
 
 class PhysicsCore

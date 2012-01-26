@@ -11,6 +11,8 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
+class Player;
+
 class Car
 {
 public:
@@ -28,6 +30,7 @@ public:
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();
 	virtual float getCarMph();
+    void attachCollisionTickCallback(Player* player);
 
 protected:
     void createGeometry(

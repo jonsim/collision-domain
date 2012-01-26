@@ -190,7 +190,6 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
             COL_CAR,
             COL_CAR | COL_ARENA | COL_POWERUP));
     
-
     // attach physics shell to mBodyNode
     mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
     mCarChassis->setDamping(0.2, 0.2);
@@ -207,21 +206,6 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
-
-    // This may not work (might need to recreate the broadphase handle or go through the setter method)
-    //btBroadphaseProxy* p = mbtRigidBody->getBroadphaseHandle();
-    //mbtRigidBody->setBroadphaseHandle(p);
-    //mCarChassis->addQueryFlags(btCollisionObject::CF_KINEMATIC_OBJECT);
-    //mbtRigidBody->setBroadphaseHandle(mbtRigidBody->getBroadphaseHandle());
-    //mWorld->getBulletDynamicsWorld()->
-
-
-
-    //mCarChassis->getBulletRigidBody()->getBroadphaseHandle()->m_collisionFilterGroup = COL_CAR;
-    //mCarChassis->getBulletRigidBody()->getBroadphaseHandle()->m_collisionFilterMask = COL_CAR | COL_ARENA | COL_POWERUP;
-
-    //mWorld->removeObject(mCarChassis);
-    //mWorld->addObject(mCarChassis);
 }
 
 

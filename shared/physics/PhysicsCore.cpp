@@ -86,18 +86,29 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         short groupA = obA->getBroadphaseHandle()->m_collisionFilterGroup;
         short groupB = obB->getBroadphaseHandle()->m_collisionFilterGroup;
 
+        // group of the wheels is the chassis group
+        // mask of the wheels is -1 xor chassis mask (I think ...)
+        
         if (groupA & COL_CAR && groupB & COL_CAR)
         {
-            OutputDebugString("Car to Car collision\n");
+            GameCore::mAudioCore->playCarCrash();
             
+            // Will these pointers be the user pointer if a wheel was involved?
             Player* playerA = static_cast<Player*>(obA->getUserPointer());
             Player* playerB = static_cast<Player*>(obB->getUserPointer());
 
+            if (playerA != 0) {
+                playerA->collisionTickCallback(1);
+	        }
+
+            if (playerB != 0) {
+                playerB->collisionTickCallback(1);
+            }
 
         }
         else if (groupA & COL_CAR && groupB & COL_POWERUP || groupA & COL_POWERUP && groupB & COL_CAR)
         {
-            OutputDebugString("Car to Powerup collision\n");
+            //OutputDebugString("Car to Powerup collision\n");
             
             Player* player = static_cast<Player*>(
                 (groupA & COL_CAR ? obA : obB)->getUserPointer());
@@ -145,7 +156,7 @@ void PhysicsCore::createFloorPlane()
     Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0); // (normal vector, distance)
 
     short collisionGroup = COL_ARENA;
-    short collisionMask = -1;//COL_CAR;
+    short collisionMask = COL_CAR;
 
     OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
             "BasePlane",

@@ -39,21 +39,20 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
     // First set up the scene node relationships
 
     mCar = (Car*) new SimpleCoupeCar(sm, pc->mWorld, itemNo);
-    // lets fuck up some cars
-
-	if( mCar == NULL )
-	{
-		char buffer[128];
-		strcpy( buffer, "mCar is null\n" );
-		FILE *fLog = fopen( "cdomain.txt", "a" );
-		fwrite( buffer, 1, strlen( buffer ), fLog );
-		fclose( fLog );
-	}
+    mCar->attachCollisionTickCallback(this);
 
 	//Set HP. More clever damage might be implemented in the future
 	hp = 1.0;
 
     mCar->moveTo(btVector3(0,0.5,0));
+}
+
+
+/// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
+/// @param  damage   Currently hardcoded to 1
+void Player::collisionTickCallback(int damage)
+{
+    OutputDebugString("Server: Player collision\n");
 }
 
 

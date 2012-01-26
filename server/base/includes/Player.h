@@ -34,6 +34,7 @@ public:
     float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation);
     Car* getCar();
+    void collisionTickCallback(int damage);
 	
 	InputState *newInput;
     
