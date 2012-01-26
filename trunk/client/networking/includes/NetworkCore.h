@@ -69,7 +69,7 @@ class NetworkCore
 {
 private:
     static RakNet::RakPeerInterface *m_pRak;
-    static RakNet::RPC4 m_RPC;
+    static RakNet::RPC4 *m_RPC;
     RakNet::RakNetGUID serverGUID;
 
     static RakNet::TimeMS timeLastUpdate;

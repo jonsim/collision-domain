@@ -12,7 +12,7 @@
 // Lots of static variable initialization
 // Needed to be accessed from RPC funcs which have to be static
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
-RakNet::RPC4 NetworkCore::m_RPC;
+RakNet::RPC4* NetworkCore::m_RPC;
 bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
@@ -59,6 +59,7 @@ RakNet::RakPeerInterface* NetworkCore::getRakInterface() { return m_pRak; }
 /// @brief  Deconstructor.
 NetworkCore::~NetworkCore()
 {
+    m_pRak->Shutdown( 100, 0 );
 	RakNet::RakPeerInterface::DestroyInstance( m_pRak );
 }
 
@@ -261,8 +262,9 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 		{
 			RakNet::BitStream bsJoin;
 			bsJoin.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
-			RakNet::StringCompressor().EncodeString( RakNet::RakString("RemotePlayer"), 128, &bsJoin );
-			m_RPC.Signal( "PlayerJoin", &bsJoin, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
+            //RakNet::RakString *strName = new RakNet::RakString("RemotePlayer");
+			//RakNet::StringCompressor().EncodeString( strName, 128, &bsJoin );
+			m_RPC->Signal( "PlayerJoin", &bsJoin, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
 		}
 	}
 
@@ -282,24 +284,24 @@ CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
 void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	char szNickname[128];
-	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
+	//RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 	
 	// Add the player to server player pool
 	GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
 
 	RakNet::BitStream bsNewPlayer;
 	RakNet::BitStream bsSend;
-	RakNet::RakString strNick( szNickname );
+	//RakNet::RakString *strNick = new RakNet::RakString( szNickname );
 
 	// Alert other players that someone new has joined
 	bsNewPlayer.Write( pkt->guid );
-	RakNet::StringCompressor().EncodeString( strNick, 128, &bsNewPlayer );
-	m_RPC.Signal( "PlayerJoin", &bsNewPlayer, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, true, false );
+	//RakNet::StringCompressor().EncodeString( strNick, 128, &bsNewPlayer );
+	m_RPC->Signal( "PlayerJoin", &bsNewPlayer, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, true, false );
 
 	// Send them a GameJoin RPC so they can get set up
 	// This is where any game specific initialization can go
-	RakNet::StringCompressor().EncodeString( strNick, 128, &bsSend );
-	m_RPC.Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+	//RakNet::StringCompressor().EncodeString( strNick, 128, &bsSend );
+	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
 	SetupGameForPlayer( pkt->guid );
 
@@ -318,7 +320,7 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	// Send to all players
 
 	char szMessage[512];
-	RakNet::StringCompressor().DecodeString( szMessage, 512, bitStream );
+	//RakNet::StringCompressor().DecodeString( szMessage, 512, bitStream );
 }
 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -334,7 +336,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
-	m_RPC.Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
 	for( int i = 0; i < MAX_PLAYERS; i ++ )
@@ -349,7 +351,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 			{
 				RakNet::BitStream bsSpawn;
 				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( i ) );
-				m_RPC.Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 			}
 		}
 	}
@@ -360,12 +362,13 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
-	m_pRak->AttachPlugin( &m_RPC );
+    m_RPC = RakNet::RPC4::GetInstance();
+	m_pRak->AttachPlugin( m_RPC );
 
-	m_RPC.RegisterSlot( "PlayerJoin",		PlayerJoin, 0 );
-	m_RPC.RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
-	m_RPC.RegisterSlot( "PlayerChat",		PlayerChat, 0 );
-	m_RPC.RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
+	m_RPC->RegisterSlot( "PlayerJoin",		PlayerJoin, 0 );
+	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
+	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
+	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
 }
 
 
