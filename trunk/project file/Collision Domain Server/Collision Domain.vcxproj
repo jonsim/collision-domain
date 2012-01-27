@@ -33,6 +33,7 @@
     <ClInclude Include="..\..\shared\physics\includes\CarSnapshot.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\SimpleCoupeCar.h" />
+    <ClInclude Include="..\..\shared\physics\includes\FuckOgreBulletWheeledRigidBody.h" />
     <ClInclude Include="..\..\shared\physics\includes\PhysicsCore.h" />
     <ClInclude Include="..\..\shared\raknet\AutopatcherPatchContext.h" />
     <ClInclude Include="..\..\shared\raknet\AutopatcherRepositoryInterface.h" />
@@ -208,6 +209,7 @@
     <ClCompile Include="..\..\shared\physics\Car.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp" />
+    <ClCompile Include="..\..\shared\physics\FuckOgreBulletWheeledRigidBody.cpp" />
     <ClCompile Include="..\..\shared\physics\PhysicsCore.cpp" />
     <ClCompile Include="..\..\shared\raknet\BitStream.cpp" />
     <ClCompile Include="..\..\shared\raknet\CCRakNetSlidingWindow.cpp" />

@@ -559,6 +559,9 @@
     <ClInclude Include="..\..\shared\SharedIncludes.h">
       <Filter>shared</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\FuckOgreBulletWheeledRigidBody.h">
+      <Filter>shared\physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -908,6 +911,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp">
       <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\FuckOgreBulletWheeledRigidBody.cpp">
+      <Filter>shared\physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
