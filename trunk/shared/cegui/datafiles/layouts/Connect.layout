@@ -45,7 +45,7 @@
 		
 		<Window Type="Vanilla/Button" Name="/Connect/cmdCon">
 			<Property Name="VerticalAlignment" Value="Bottom" />
-			<Property Name="UnifiedPosition" Value="{{0.01},{0,0}}" />
+			<Property Name="UnifiedPosition" Value="{{0.01,0},{0,0}}" />
 			<Property Name="UnifiedSize" Value="{{0.3,0},{0.2,-5}}" />
 			<Property Name="Text" Value="Connect" />
 			<Property Name="Font" Value="DejaVuSans-10"/>
