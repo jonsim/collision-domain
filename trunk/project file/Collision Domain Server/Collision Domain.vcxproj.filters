@@ -562,6 +562,12 @@
     <ClInclude Include="..\..\shared\physics\includes\FuckOgreBulletWheeledRigidBody.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\PlayerCollisions.h">
+      <Filter>shared\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\Powerup.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -913,6 +919,9 @@
       <Filter>shared\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\FuckOgreBulletWheeledRigidBody.cpp">
+      <Filter>shared\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\PlayerCollisions.cpp">
       <Filter>shared\physics</Filter>
     </ClCompile>
   </ItemGroup>
