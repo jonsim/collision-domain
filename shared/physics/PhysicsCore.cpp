@@ -31,8 +31,9 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
     node->attachObject(static_cast <Ogre::SimpleRenderable *> (debugDrawer));
 
     // lets get the callback for collisions every substep
-    //mWorld->getBulletDynamicsWorld()->setInternalTickCallback(preTickCallback, 0, true);
+    mPlayerCollisions = new PlayerCollisions();
     mWorld->getBulletDynamicsWorld()->setInternalTickCallback(postTickCallback, 0, false);
+    //mWorld->getBulletDynamicsWorld()->setInternalTickCallback(preTickCallback, 0, true);
 }
 
 
@@ -61,6 +62,14 @@ PhysicsCore::~PhysicsCore(void)
 }
 
 
+void PhysicsCore::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep)
+{
+    mPlayerCollisions->frameEventStart();
+    mWorld->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
+    mPlayerCollisions->frameEventEnd();
+}
+
+
 void PhysicsCore::preTickCallback(btDynamicsWorld *world, btScalar timeStep) {
     //printf("The world just ticked by %f seconds\n", (float)timeStep);
     //OutputDebugString("Pre Tick\n");
@@ -86,56 +95,29 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         short groupA = obA->getBroadphaseHandle()->m_collisionFilterGroup;
         short groupB = obB->getBroadphaseHandle()->m_collisionFilterGroup;
 
-        // group of the wheels is the chassis group
-        // mask of the wheels is -1 xor chassis mask (I think ...)
+        // group of the wheels is the chassis group (I think ...)
+        // mask of the wheels is always 00000001 (COL_CAR)
         
+        // Car to Car collision
         if (groupA & COL_CAR && groupB & COL_CAR)
         {
-            GameCore::mAudioCore->playCarCrash();
-            
-            // Will these pointers be the user pointer if a wheel was involved?
             Player* playerA = static_cast<Player*>(obA->getUserPointer());
             Player* playerB = static_cast<Player*>(obB->getUserPointer());
-
-            if (playerA != 0) {
-                playerA->collisionTickCallback(1);
-	        }
-
-            if (playerB != 0) {
-                playerB->collisionTickCallback(1);
-            }
-
+            GameCore::mPhysicsCore->mPlayerCollisions->addCollision(playerA, playerB, contactManifold);
         }
+        // Car to Powerup collision
         else if (groupA & COL_CAR && groupB & COL_POWERUP || groupA & COL_POWERUP && groupB & COL_CAR)
         {
-            //OutputDebugString("Car to Powerup collision\n");
-            
-            Player* player = static_cast<Player*>(
-                (groupA & COL_CAR ? obA : obB)->getUserPointer());
-            void* powerup = static_cast<void*>(
-                (groupA & COL_POWERUP ? obA : obB)->getUserPointer());
-
-
+            Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
+            Powerup* powerup = static_cast<Powerup*>((groupA & COL_POWERUP ? obA : obB)->getUserPointer());
+            if (powerup && player) powerup->playerCollision(player);
         }
+        // Car to Arena collision
         else if (groupA & COL_CAR && groupB & COL_ARENA || groupA & COL_ARENA && groupB & COL_CAR)
         {
-            //OutputDebugString("Car to Arena collision\n");
-
-
+            //Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
+            //player->collisionTickCallback(1);
         }
-        
-
-		int numContacts = contactManifold->getNumContacts();
-		for (int j = 0; j < numContacts; j++)
-		{
-			btManifoldPoint& pt = contactManifold->getContactPoint(j);
-			if (pt.getDistance() < 0.f)
-			{
-				const btVector3& ptA = pt.getPositionWorldOnA();
-				const btVector3& ptB = pt.getPositionWorldOnB();
-				const btVector3& normalOnB = pt.m_normalWorldOnB;
-			}
-		}
 	}
 }
 

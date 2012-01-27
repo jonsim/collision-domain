@@ -23,11 +23,11 @@ public:
     ~AudioCore();
     void playEngineIdle();
     void playCarCrash();
+    void togglePlayCarHorn();
 
 private:
     OgreOggSoundManager* mSoundManager;
-    OgreOggISound* mEngineIdleSound;
-    OgreOggISound* mCarCrashSound;
+    OgreOggISound *mEngineIdleSound, *mCarCrashSound, *mCarHornLow, *mCarHornMid, *mCarHornHigh;
     bool mInitOK;
 };
 

@@ -36,6 +36,7 @@ public:
                                                Ogre::SceneNode *wheelNodeRearRight);
     void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
                  const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);
+    void stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep);
 
     OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
@@ -44,6 +45,7 @@ private:
     static void postTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
     Ogre::SceneManager* mSceneMgr; // Graphics object
+    PlayerCollisions* mPlayerCollisions;
     std::deque<OgreBulletDynamics::RigidBody *>        mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *> mShapes;
     Ogre::Vector3 mBulletGravity;
