@@ -50,8 +50,8 @@ void Car::moveTo(const btVector3 &position)
     moveTo(position, mbtRigidBody->getOrientation());
 
     // now stop the car moving
-    mbtRigidBody->setAngularVelocity(btVector3());
-    mbtRigidBody->setLinearVelocity(btVector3());
+    mbtRigidBody->setAngularVelocity(btVector3(0,0,0));
+    mbtRigidBody->setLinearVelocity(btVector3(0,0,0));
 
     mSteer = 0;
     applySteeringValue();
