@@ -49,9 +49,12 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, Physics
 
 
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
+///         In total this will even out to 60 calls per second :-)
 /// @param  damage   Currently hardcoded to 1
 void Player::collisionTickCallback(int damage)
 {
+    // p1 and p2 might not be the only two players who collided this physics step.
+
     OutputDebugString("Server: Player collision\n");
 }
 

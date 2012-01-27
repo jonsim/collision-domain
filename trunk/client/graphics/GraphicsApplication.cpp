@@ -268,8 +268,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // Cleanup frame specific objects so we don't rape memory. If you want to remember some, delete them later!
     delete inputSnapshot;
 
-    // Minimum of 10 FPS (maxSubsteps=6) before physics becomes wrong
-    GameCore::mPhysicsCore->mWorld->stepSimulation(evt.timeSinceLastFrame, 6, 1./60.);
+    // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, 1./60.);
 
     return true;
 }

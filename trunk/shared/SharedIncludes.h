@@ -11,6 +11,8 @@
 #include "Input.h"
 #include "CarSnapshot.h"
 #include "Car.h"
+#include "Powerup.h"
+#include "PlayerCollisions.h"
 #include "PhysicsCore.h"
 #include "FuckOgreBulletWheeledRigidBody.h"
 #include "cars/SimpleCoupeCar.h"

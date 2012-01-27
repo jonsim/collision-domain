@@ -159,6 +159,7 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 /// @return Whether the event has been serviced.
 bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
+    if (id == OIS::MB_Left) GameCore::mAudioCore->togglePlayCarHorn();
 	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
     return true;
 }
@@ -170,6 +171,7 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 /// @return Whether the event has been serviced.
 bool Input::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
+    if (id == OIS::MB_Left) GameCore::mAudioCore->togglePlayCarHorn();
 	CEGUI::System::getSingleton().injectMouseButtonUp(convertButton(id));
     return true;
 }
