@@ -14,15 +14,11 @@ void GameGUI::setupGUI()
 {
 	// Create the default font
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	CEGUI::Font *pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
+	CEGUI::Font *pFont = &CEGUI::FontManager::getSingleton().create("Verdana-outline-10.font");
+    CEGUI::System::getSingleton().setDefaultFont( pFont );
 
-	// Set font size
-	pFont->setProperty( "PointSize", "6" );
-	//pFont->setAutoScaled( false );
-
-	// Register font as default
-    if(CEGUI::FontManager::getSingleton().isDefined("DejaVuSans-10"))
-		CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
+    CEGUI::Font *pOtherFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
+    pOtherFont->setProperty( "PointSize", "6" );
 
 	// Create skin scheme outlining widget (window) parameters
 	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
@@ -45,6 +41,7 @@ void GameGUI::setupGUI()
 
 	mph->setText( "MPH: " );
 	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.05, 0)));
+    mph->setVisible( false );
 
 	CEGUI::System::getSingleton().setGUISheet( mSheet );
 
@@ -72,12 +69,18 @@ void GameGUI::displayConnectBox()
 	hostText->activate();
 
 	// Register callback for <Enter> press
-	hostText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
+	//hostText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
+	//	CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
 	cmdCon->subscribeEvent( CEGUI::PushButton::EventClicked, 
 		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
 	cmdQuit->subscribeEvent( CEGUI::PushButton::EventClicked,  
 		CEGUI::Event::Subscriber( &GameGUI::Connect_Quit, this ) );
+}
+
+void GameGUI::closeConnectBox()
+{
+    mSheet->removeChildWindow( "/Connect" );
+	CEGUI::MouseCursor::getSingleton().hide();
 }
 
 bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
@@ -87,14 +90,13 @@ bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
 	CEGUI::Editbox *connectText = 
 		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/host" ) );
 
-	// This is THE MOST retarded way of accessing the network possible..
 	bool bResult = GameCore::mNetworkCore->Connect( 
 		connectText->getText().c_str(), SERVER_PORT, NULL );
 
 	if( bResult )
 	{
-		mSheet->removeChildWindow( "/Connect" );
-		CEGUI::MouseCursor::getSingleton().hide();
+        connectText->setEnabled( false );
+        mWinMgr.getWindow( "/Connect/nick" )->setEnabled( false );
 	}
 	else
 		connectText->setText( "" );
@@ -226,31 +228,40 @@ bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
 		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Chatbox/input" ) );
 
 	char *szInput = (char*)inputText->getText().c_str();
-
-	CEGUI::Listbox *lstHistory = 
-		static_cast<CEGUI::Listbox*> ( mWinMgr.getWindow( "/Chatbox/buffer" ) );
-
-	CEGUI::ListboxTextItem *newItem;
-	if( lstHistory->getItemCount() == 13 )
-	{
-		newItem = static_cast<CEGUI::ListboxTextItem*> 
-			( lstHistory->getListboxItemFromIndex( 0 ) );
-		newItem->setAutoDeleted( false );
-		lstHistory->removeItem( newItem );
-		newItem->setAutoDeleted( true );
-		newItem->setText( inputText->getText() );
-	}
-	else
-	{
-		newItem = new CEGUI::ListboxTextItem( inputText->getText() );
-	}
-	
-	lstHistory->addItem( newItem );
-	lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
+    GameCore::mNetworkCore->sendChatMessage( szInput );
 
 	inputText->setText( "" );
 
 	mWinMgr.getWindow( "/Chatbox/input" )->hide();
 
 	return true;
+}
+
+void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
+{
+    char szBuffer[256];
+    sprintf( szBuffer, "[colour='FFED9DAA']%s :[colour='FFFFFFFF'] %s", szNickname, szMessage );
+
+    CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
+
+    CEGUI::Listbox *lstHistory = 
+	static_cast<CEGUI::Listbox*> ( mWinMgr.getWindow( "/Chatbox/buffer" ) );
+
+	CEGUI::ListboxTextItem *newItem;
+	if( lstHistory->getItemCount() == 6 )
+	{
+		newItem = static_cast<CEGUI::ListboxTextItem*> 
+			( lstHistory->getListboxItemFromIndex( 0 ) );
+		newItem->setAutoDeleted( false );
+		lstHistory->removeItem( newItem );
+		newItem->setAutoDeleted( true );
+		newItem->setText( szBuffer );
+	}
+	else
+	{
+		newItem = new CEGUI::ListboxTextItem( szBuffer );
+	}
+	
+	lstHistory->addItem( newItem );
+	lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
 }

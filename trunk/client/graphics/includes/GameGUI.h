@@ -22,6 +22,7 @@ public:
 	void setupGUI();
 
 	void displayConnectBox();
+    void closeConnectBox();
 	bool Connect_Host( const CEGUI::EventArgs &args );
 	bool Connect_Quit( const CEGUI::EventArgs &args );
 
@@ -29,6 +30,7 @@ public:
 	void toggleChatbox();
 	bool chatboxVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Chatbox/input" )->isVisible(); }
 	bool Chatbox_Send( const CEGUI::EventArgs &args );
+    void chatboxAddMessage( const char *szNickname, char *szMessage );
 
 	void displayConsole();
 	void toggleConsole();

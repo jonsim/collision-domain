@@ -108,8 +108,11 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 				serverGUID = pkt->guid;
 
 				RakNet::BitStream bsSend;
-				RakNet::RakString *strName = new RakNet::RakString( "RemotePlayer" );
-				RakNet::StringCompressor().EncodeString( strName, 128, &bsSend );
+
+				RakNet::StringCompressor().EncodeString( 
+                    CEGUI::WindowManager::getSingleton().
+                    getWindow( "/Connect/nick" )->getText().c_str(), 128, &bsSend );
+
 				m_RPC->Signal( "PlayerJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
 				break;
 			}
@@ -187,15 +190,12 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 }
 
 
-/// @brief  Called once a frame and supplies the requested user position so it can be updated onscreen.
-/// @param  playerID  An identifier for a specific player in the game.
-/// @return NULL if no CarSnapshot has been received since the last time this method was polled.
-///         The latest CarSnapshot for the requested player if one has been received (or more than one :)).
-CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
+void NetworkCore::sendChatMessage( char *szMessage )
 {
-    return NULL;
+    RakNet::BitStream bsSend;
+    RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
+    m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
 }
-
 
 void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
@@ -206,6 +206,8 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	// Add ourselves to the player pool
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), szNickname );
 	log( "GameJoin : local playerid %s", m_pRak->GetMyGUID().ToString() );
+
+    GameCore::mGui->closeConnectBox();
 
 	bConnected = true;
 	timeLastUpdate = 0;
@@ -240,11 +242,14 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-	char szMessage[512];
-	RakNet::RakNetGUID playerid;
-	bitStream->Read( playerid );
+    RakNet::RakNetGUID playerid;
+	char szMessage[128];
 
-	RakNet::StringCompressor().DecodeString( szMessage, 512, bitStream );
+	bitStream->Read( playerid );
+	RakNet::StringCompressor().DecodeString( szMessage, 128, bitStream );
+
+    GameCore::mGui->chatboxAddMessage( 
+        GameCore::mPlayerPool->getPlayer( playerid )->getNickname(), szMessage );
 }
 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

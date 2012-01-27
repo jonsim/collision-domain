@@ -7,8 +7,8 @@
 		<Property Name="SizingEnabled" Value="False" />
 		<Property Name="DragMovingEnabled" Value="True" />
 		<Property Name="CloseButtonEnabled" Value="False" />
-		<Property Name="UnifiedAreaRect" Value="{{0.68,-5},{0,5},{1,-5},{0.3,0}}" />
-		<Property Name="Alpha" Value="0.6" />
+		<Property Name="UnifiedAreaRect" Value="{{0,5},{0,5},{1,0},{0,210}}" />
+		<Property Name="Alpha" Value="0" />
 			
 		<Window Type="Vanilla/Listbox" Name="/Chatbox/buffer">		
 			<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
@@ -22,11 +22,12 @@
 			<Property Name="VerticalAlignment" Value="Bottom" />			
 			<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
 			<Property Name="UnifiedPosition" Value="{{0,0},{0,0}}" />
-			<Property Name="UnifiedSize" Value="{{1,0},{0.13,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.3,0},{0.13,0}}" />
 			<Property Name="Text" Value="" />
 			<Property Name="InheritsAlpha" Value="false" />
-			<Property Name="BoxColour" Value="30000000" />
-			<Property Name="NormalTextColour" Value="FF8899CC" />
+			<Property Name="BoxColour" Value="40000000" />
+			<Property Name="NormalTextColour" Value="FFFFFFFF" />
+			<Property Name="Font" Value="DejaVuSans-10"/>
 		</Window>
 		
 	</Window>
