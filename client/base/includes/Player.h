@@ -40,11 +40,17 @@ public:
 	
 	CarSnapshot *mSnapshots;
     
+    const char *getNickname() { return mNickname; }
+
+    // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
+    void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
+
 private:
     const float cameraRotationConstant;
 
     Car *mCar;
     CarSnapshot *mCarSnapshot;
+    char *mNickname;
 };
 
 #endif // #ifndef PLAYER_H

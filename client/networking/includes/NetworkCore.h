@@ -86,7 +86,7 @@ public:
     void frameEvent(InputState *inputSnapshot);
     void ProcessPlayerState( RakNet::Packet *pkt );
 
-    CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
+    void sendChatMessage( char *szMessage );
 
     // RPC Calls
     static void GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );

@@ -47,7 +47,7 @@ void NetworkCore::init( char *szPass )
 
 	bConnected = true;
 	// Add the local player
-	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "Localplayer" );	
+	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "SERVER" );	
 
 }
 
@@ -284,23 +284,22 @@ CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
 void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	char szNickname[128];
-	//RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
+	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 	
 	// Add the player to server player pool
 	GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
 
 	RakNet::BitStream bsNewPlayer;
 	RakNet::BitStream bsSend;
-	//RakNet::RakString *strNick = new RakNet::RakString( szNickname );
 
 	// Alert other players that someone new has joined
 	bsNewPlayer.Write( pkt->guid );
-	//RakNet::StringCompressor().EncodeString( strNick, 128, &bsNewPlayer );
+	RakNet::StringCompressor().EncodeString( szNickname, 128, &bsNewPlayer );
 	m_RPC->Signal( "PlayerJoin", &bsNewPlayer, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, true, false );
 
 	// Send them a GameJoin RPC so they can get set up
 	// This is where any game specific initialization can go
-	//RakNet::StringCompressor().EncodeString( strNick, 128, &bsSend );
+	RakNet::StringCompressor().EncodeString( szNickname, 128, &bsSend );
 	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
 	SetupGameForPlayer( pkt->guid );
@@ -319,8 +318,17 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 {
 	// Send to all players
 
-	char szMessage[512];
-	//RakNet::StringCompressor().DecodeString( szMessage, 512, bitStream );
+	char szMessage[128];
+	RakNet::StringCompressor().DecodeString( szMessage, 128, bitStream );
+
+    // This is where some checks can be done for team-only messages etc
+
+    RakNet::BitStream bsSend;
+
+    bsSend.Write( pkt->guid );
+    RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
+
+    m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 }
 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
