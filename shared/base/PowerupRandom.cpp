@@ -14,7 +14,7 @@ PowerupRandom::PowerupRandom()
     mHasBeenCollected = false;
 
     int uniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
-    Ogre::SceneNode *node = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "RandomPowerupNode" + boost::lexical_cast<std::string>(uniqueID),
             Ogre::Vector3(0,0.5,0),
             Ogre::Quaternion::IDENTITY);
@@ -31,12 +31,12 @@ PowerupRandom::PowerupRandom()
     #endif // only applicable before shoggoth (1.5.0)
 
         entity->setCastShadows(true);
-        node->attachObject(entity);
+        mNode->attachObject(entity);
 
-        node->scale(0.2,0.2,0.2);
+        mNode->scale(0.2,0.2,0.2);
 
         // this doesn't seem to do anything either? I give up until monday.
-        node->translate(Ogre::Vector3(0,-0.5,0));
+        mNode->translate(Ogre::Vector3(0,-0.5,0));
     }
 
     {
@@ -59,7 +59,7 @@ PowerupRandom::PowerupRandom()
         Ogre::Vector3 position(0,0,0);
 
         mRigidBody->setShape(
-            node,
+            mNode,
             collisionShape,
             bodyRestitution,
             bodyFriction,
@@ -67,6 +67,9 @@ PowerupRandom::PowerupRandom()
             position,
             Ogre::Quaternion::IDENTITY);
         
+        //mRigidBody->getBulletRigidBody()->translate(btVector3(0,3,0));
+        
+
         // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
         mRigidBody->getBulletRigidBody()->setUserPointer(this);
         mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
@@ -95,6 +98,8 @@ void PowerupRandom::playerCollision(Player* player)
 
     // remove powerup from map
     mHasBeenCollected = true;
+    mNode->setDebugDisplayEnabled(false);
+    mNode->setVisible(false);
     // these two lines don't seem to work, I'll finish it on monday.
     //mRigidBody->setVisible(false);
     //GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->removeRigidBody(mRigidBody->getBulletRigidBody());

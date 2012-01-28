@@ -24,6 +24,7 @@ public:
 private:
     bool mHasBeenCollected;
     OgreBulletDynamics::RigidBody* mRigidBody;
+    Ogre::SceneNode *mNode;
 };
 
 #endif // #ifndef POWERUPRANDOM_H
