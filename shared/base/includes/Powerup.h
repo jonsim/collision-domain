@@ -8,16 +8,13 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-
 /**
  *  @brief 	Headers for powerup
  */
 class Powerup
 {
 public:
-    Powerup();
-    ~Powerup();
-    virtual void playerCollision(Player* player);
+    virtual void playerCollision(Player* player) = 0;
 };
 
 #endif // #ifndef POWERUP_H
