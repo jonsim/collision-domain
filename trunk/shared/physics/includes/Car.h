@@ -31,7 +31,9 @@ public:
     virtual CarSnapshot *getCarSnapshot();
 	virtual float getCarMph();
     void attachCollisionTickCallback(Player* player);
-
+	Ogre::SceneNode *mBodyNode;
+	// Car related Nodes (initNodes())
+    Ogre::SceneNode *mPlayerNode;
 protected:
     void createGeometry(
         const std::string &entityName,
@@ -47,10 +49,9 @@ protected:
     Ogre::SceneNode *mCamArmNode;
     Ogre::SceneNode *mCamNode;
 
-    // Car related Nodes (initNodes())
-    Ogre::SceneNode *mPlayerNode;
     
-    Ogre::SceneNode *mBodyNode;
+    
+    
     Ogre::SceneNode *mWheelsNode;
 
     // Data for whole class
