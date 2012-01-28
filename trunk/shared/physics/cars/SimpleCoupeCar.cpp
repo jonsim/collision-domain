@@ -194,7 +194,7 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
     mCarChassis->setDamping(0.2, 0.2);
 
-    mCarChassis->disableDeactivation ();
+    mCarChassis->disableDeactivation();
     mTuning = new OgreBulletDynamics::VehicleTuning(
         mSuspensionStiffness, mSuspensionCompression, mSuspensionDamping, mMaxSuspensionTravelCm, mFrictionSlip);
 

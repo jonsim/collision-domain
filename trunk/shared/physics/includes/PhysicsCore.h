@@ -13,6 +13,7 @@
 enum QueryFlags
 {
     // Raycast car must be 1 as the bullet wheel raycasts are broken and assume this collision mask (1)
+    COL_NOTHING    = 0,
     COL_CAR        = 1<<0,
     COL_ARENA      = 1<<1,
     COL_POWERUP    = 1<<2

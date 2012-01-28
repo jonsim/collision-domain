@@ -10,6 +10,9 @@
 #include "SharedIncludes.h"
 #include "OgreOggSound.h"
 
+//class Powerup;
+//class PowerupRandom;
+
 using namespace OgreOggSound;
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -23,11 +26,12 @@ public:
     ~AudioCore();
     void playEngineIdle();
     void playCarCrash();
-    void togglePlayCarHorn();
+    void playCarHorn();
+    void playHealthPowerup();
 
 private:
     OgreOggSoundManager* mSoundManager;
-    OgreOggISound *mEngineIdleSound, *mCarCrashSound, *mCarHornLow, *mCarHornMid, *mCarHornHigh;
+    OgreOggISound *mEngineIdleSound, *mCarCrashSound, *mCarHornLow, *mCarHornMid, *mCarHornHigh, *mPowerupHealth;
     bool mInitOK;
 };
 

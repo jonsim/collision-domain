@@ -4,5 +4,4 @@
  *          See http://www.ogre3d.org/tikiwiki/Precompiled+headers for a tutorial on how to set this up.
  */
 
-/*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"

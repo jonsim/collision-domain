@@ -37,6 +37,7 @@
 #include "OgreBulletDynamicsRigidBody.h"
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
+#include "Shapes/OgreBulletCollisionsCylinderShape.h"
 #include "Shapes/OgreBulletCollisionsCompoundShape.h"
 
 // Windows specific include

@@ -103,7 +103,7 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         {
             Player* playerA = static_cast<Player*>(obA->getUserPointer());
             Player* playerB = static_cast<Player*>(obB->getUserPointer());
-            GameCore::mPhysicsCore->mPlayerCollisions->addCollision(playerA, playerB, contactManifold);
+            if (playerA && playerB) GameCore::mPhysicsCore->mPlayerCollisions->addCollision(playerA, playerB, contactManifold);
         }
         // Car to Powerup collision
         else if (groupA & COL_CAR && groupB & COL_POWERUP || groupA & COL_POWERUP && groupB & COL_CAR)

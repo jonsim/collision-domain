@@ -100,12 +100,12 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
         // go back to zero
         if (mSteer >= 0)
         {
-            if (mSteer >= mSteerToZeroIncrement) calcIncrement = -mSteerToZeroIncrement;
+            if (mSteer >= mSteerToZeroIncrement * (secondsSinceLastFrame / targetPhysicsFrameRate)) calcIncrement = -mSteerToZeroIncrement;
             else resetToZero = true;
         }
         else
         {
-            if (mSteer <= -mSteerToZeroIncrement) calcIncrement = mSteerToZeroIncrement;
+            if (mSteer <= -mSteerToZeroIncrement * (secondsSinceLastFrame / targetPhysicsFrameRate)) calcIncrement = mSteerToZeroIncrement;
             else resetToZero = true;
         }
     }
