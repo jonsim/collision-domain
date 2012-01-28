@@ -6,8 +6,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
-
-
+#include <sstream>
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
@@ -54,15 +53,19 @@ void Player::collisionTickCallback(int damage)
 void Player::attachCamera (Ogre::Camera* cam)
 {
     // only attach a camera to one of them!! Imagine the carnage if there were more
-    Ogre::SceneNode *camNode = mCar->attachCamNode();
-    Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
-
+    camNode = mCar->attachCamNode();
+    camArmNode = camNode->getParentSceneNode();
+	/*
     camArmNode->translate(0, 0.5, 0); // place camera y above car node
     camArmNode->pitch(Ogre::Degree(25));
     camNode->yaw(Ogre::Degree(180));
     camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
+	*/
+	
+	mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
+    //camNode->attachObject(cam);
 
-    camNode->attachObject(cam);
+	
 }
 
 
@@ -75,6 +78,13 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
+	//Update the camera
+	mCarCam->updatePosition();
+	/*
+	std::stringstream ssTmp;
+	ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
+	OutputDebugString(ssTmp.str().c_str());
+	*/
     // process steering
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
@@ -103,8 +113,9 @@ void Player::processControlsFrameEvent(
 void Player::updateCameraFrameEvent (int XRotation, int YRotation)
 {
     Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
-    camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-    camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * YRotation), Ogre::Node::TS_LOCAL);
+    //camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
+	//camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * YRotation), Ogre::Node::TS_LOCAL);
+
 }
 
 

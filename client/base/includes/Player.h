@@ -8,7 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
-
+#include "CarCam.h"
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /// CarType represents the type of car used as the player object (i.e. the model).
@@ -51,6 +51,9 @@ private:
     Car *mCar;
     CarSnapshot *mCarSnapshot;
     char *mNickname;
+	CarCam*	mCarCam;
+	Ogre::SceneNode *camNode;
+	Ogre::SceneNode *camArmNode;
 };
 
 #endif // #ifndef PLAYER_H
