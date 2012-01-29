@@ -96,7 +96,8 @@ void PowerupRandom::playerCollision(Player* player)
     Powerup *pwrRandom = GameCore::mPowerupPool->createPowerup( iType );
 
     // Hide it (won't be removed until the next frame)
-    pwrRandom->hide();
+    if( pwrRandom )
+        pwrRandom->hide();
 
     // remove powerup from map
     mHasBeenCollected = true;
