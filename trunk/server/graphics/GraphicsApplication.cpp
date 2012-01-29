@@ -172,6 +172,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
     //mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
+    GameCore::mPowerupPool->frameEvent();
+
 	// LOCAL
 	// get new snapshpot from control press - don't move the car though
 	// get old snapshot received from server
