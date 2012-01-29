@@ -62,6 +62,7 @@ void GameGUI::displayConnectBox()
 
 	// Get handles to some of the objects
 	CEGUI::Window *hostText = winMgr.getWindow( "/Connect/host" );
+    CEGUI::Window *nickText = winMgr.getWindow( "/Connect/nick" );
 	CEGUI::Window *cmdCon = winMgr.getWindow( "/Connect/cmdCon" );
 	CEGUI::Window *cmdQuit = winMgr.getWindow( "/Connect/cmdQuit" );
 
@@ -69,8 +70,10 @@ void GameGUI::displayConnectBox()
 	hostText->activate();
 
 	// Register callback for <Enter> press
-	//hostText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-	//	CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
+	hostText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
+		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
+    nickText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
+		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
 	cmdCon->subscribeEvent( CEGUI::PushButton::EventClicked, 
 		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
 	cmdQuit->subscribeEvent( CEGUI::PushButton::EventClicked,  
@@ -83,12 +86,27 @@ void GameGUI::closeConnectBox()
 	CEGUI::MouseCursor::getSingleton().hide();
 }
 
+/// @brief  Check user has filled in all details, and connect, otherwise tab into the required field
 bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 
 	CEGUI::Editbox *connectText = 
 		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/host" ) );
+    CEGUI::Editbox *nickText = 
+        static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/nick" ) );
+
+    if( connectText->getText().empty() )
+    {
+        connectText->activate();
+        return true;
+    }
+
+    if( nickText->getText().empty() )
+    {
+        nickText->activate();
+        return true;
+    }
 
 	bool bResult = GameCore::mNetworkCore->Connect( 
 		connectText->getText().c_str(), SERVER_PORT, NULL );
@@ -96,7 +114,7 @@ bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
 	if( bResult )
 	{
         connectText->setEnabled( false );
-        mWinMgr.getWindow( "/Connect/nick" )->setEnabled( false );
+        nickText->setEnabled( false );
 	}
 	else
 		connectText->setText( "" );
