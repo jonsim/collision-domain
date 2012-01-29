@@ -5,6 +5,8 @@
 #ifndef CLIENTINCLUDES_H
 #define CLIENTINCLUDES_H
 
+#define COLLISION_DOMAIN_CLIENT
+
 #include "SharedIncludes.h"
 
 #include "PlayerPool.h"
@@ -14,5 +16,6 @@
 #include "NetworkCore.h"
 #include "GameGUI.h"
 #include "CarCam.h"
+#include "SpawnScreen.h"
 
 #endif // #ifndef CLIENTINCLUDES_H

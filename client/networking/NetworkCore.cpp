@@ -189,6 +189,13 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 
 }
 
+void NetworkCore::sendSpawnRequest( int iCarType )
+{
+    RakNet::BitStream bsSend;
+    bsSend.Write( iCarType );
+
+    m_RPC->Signal( "PlayerSpawn", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
+}
 
 void NetworkCore::sendChatMessage( char *szMessage )
 {
@@ -213,7 +220,10 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	timeLastUpdate = 0;
 
 	// Request to spawn straight away for now
-	m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+
+    // Show the spawn screen
+    GameCore::mGraphicsCore->mSpawnScreen = new SpawnScreen( GameCore::mGraphicsCore->mCamera );
 
 	// If we're allowed to spawn, our spawn method will be called by the server automagically.
 }
@@ -256,21 +266,30 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 {
 	Player *pPlayer = NULL;
 	RakNet::RakNetGUID playerid;
+    int iCarType;
 	bitStream->Read( playerid );
+    bitStream->Read( iCarType );
+
+    // TODO: something with iCarType to change the model created
+    // .. which also needs changes to Player.cpp
 
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
 	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	{
+        // Get rid of our spawn screen
+        GameCore::mGraphicsCore->mSpawnScreen->~SpawnScreen();
+        GameCore::mGraphicsCore->mSpawnScreen = NULL;
+
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-		pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
-                                pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
+		pPlayer->createPlayer( GameCore::mSceneMgr, iCarType, SKIN0, GameCore::mPhysicsCore );
+        pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
 	}
 	else
 	{
 		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		if( pPlayer != NULL )
-			pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
+			pPlayer->createPlayer( GameCore::mSceneMgr, iCarType, SKIN0, GameCore::mPhysicsCore );
 		else
 			log( "..invalid player" );
 	}

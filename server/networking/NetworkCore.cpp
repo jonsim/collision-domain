@@ -334,9 +334,13 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	// Do some checking here to make sure the player is allowed to spawn before sending the RPC back
+    int iCarType;
+    bitStream->Read( iCarType );
+
+    // TODO: something with iCarType
 
 	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
-	pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
+	pPlayer->createPlayer( GameCore::mSceneMgr, iCarType, SKIN0, GameCore::mPhysicsCore );
 
 	// Alert the BigScreen we've had a player spawned
 	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(pkt->guid);
@@ -344,6 +348,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
+    bsSpawn.Write( iCarType );
 	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
@@ -359,6 +364,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 			{
 				RakNet::BitStream bsSpawn;
 				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( i ) );
+                bsSpawn.Write( GameCore::mPlayerPool->getPlayer( i )->getCarType() );
 				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 			}
 		}

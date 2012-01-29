@@ -224,6 +224,7 @@ bool GraphicsCore::setup(void)
 
     // Init core classes, also init the SceneManager, in this case a generic one
     GameCore::initialise(this, mRoot->createSceneManager(Ogre::ST_GENERIC));
+    mSpawnScreen = NULL;
 
     createCamera();
     createViewports();

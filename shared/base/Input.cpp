@@ -124,6 +124,21 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
         //GameCore::mAudioCore->playEngineIdle();
     }
 
+    // Had to put this in here for now, and the define.. well fuck you shared includes.
+    
+#ifdef COLLISION_DOMAIN_CLIENT
+    // This is safe, mSpawnScreen will only ever be not null if we are selecting
+    if( GameCore::mGraphicsCore->mSpawnScreen != NULL )
+    {
+        if( evt.key == OIS::KC_LEFT || evt.key == OIS::KC_A )
+            GameCore::mGraphicsCore->mSpawnScreen->switchCar( -1 );
+        else if( evt.key == OIS::KC_RIGHT || evt.key == OIS::KC_D )
+            GameCore::mGraphicsCore->mSpawnScreen->switchCar( 1 );
+        else if( evt.key == OIS::KC_RETURN )
+            GameCore::mGraphicsCore->mSpawnScreen->selectCar();
+    }
+#endif
+
     return true;
 }
 
