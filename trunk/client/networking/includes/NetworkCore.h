@@ -86,6 +86,7 @@ public:
     void frameEvent(InputState *inputSnapshot);
     void ProcessPlayerState( RakNet::Packet *pkt );
 
+    void sendSpawnRequest( int iCarType );
     void sendChatMessage( char *szMessage );
 
     // RPC Calls

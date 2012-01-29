@@ -19,6 +19,8 @@
  *          with underlying functions to keep it tidy.
  *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
  */
+class SpawnScreen;
+
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener
 {
 public:
@@ -28,6 +30,7 @@ public:
 	void shutdown() { mShutDown = true; }
 
     Ogre::Camera* mCamera;
+    SpawnScreen *mSpawnScreen;
     
 protected:
     virtual bool setup(); // Moved here so network cant call :P

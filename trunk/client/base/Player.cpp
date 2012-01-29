@@ -31,8 +31,12 @@ Player::~Player (void)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *physicsCore)
+void Player::createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, PhysicsCore *physicsCore)
 {
+    mCarType = iCarType;
+
+    // TODO: something with iCarType
+
     mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
     mCar->attachCollisionTickCallback(this);
 

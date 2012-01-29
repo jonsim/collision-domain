@@ -5,6 +5,8 @@
 #ifndef SERVERINCLUDES_H
 #define SERVERINCLUDES_H
 
+#define COLLISION_DOMAIN_SERVER
+
 #include "SharedIncludes.h"
 
 #include "PlayerPool.h"

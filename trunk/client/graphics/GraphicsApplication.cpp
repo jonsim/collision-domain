@@ -221,6 +221,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
 			updateSpeedo( speedmph );
 		}
+
 	}
 
     /*  NOTE TO SELF (JAMIE)

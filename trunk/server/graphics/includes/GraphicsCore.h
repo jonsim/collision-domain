@@ -21,6 +21,8 @@
  *          with underlying functions to keep it tidy.
  *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
  */
+class SpawnScreen;
+
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener
 {
 public:
@@ -43,6 +45,10 @@ public:
     BigScreen* bigScreen;
     ViewportManager* vpm;
     Gameplay* mGameplay;
+
+    // Had to put this in here as well even though it will never be used
+    // because of Input.cpp being shared. Really annoying.
+    SpawnScreen *mSpawnScreen;
 
 protected:
     virtual bool setup(); // Moved here so network can't call :-)

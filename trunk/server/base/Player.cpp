@@ -32,11 +32,14 @@ Player::~Player (void)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (Ogre::SceneManager* sm, CarType t, CarSkin s, PhysicsCore *pc)
+void Player::createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, PhysicsCore *pc)
 {
     std::string uniqueItemNo = Ogre::StringConverter::toString(pc->getUniqueEntityID());
 	int itemNo = atoi( uniqueItemNo.c_str() );
     // First set up the scene node relationships
+
+    // DO SOMETHING WITH iCarType
+    mCarType = iCarType;
 
     mCar = (Car*) new SimpleCoupeCar(sm, pc->mWorld, itemNo);
     mCar->attachCollisionTickCallback(this);
