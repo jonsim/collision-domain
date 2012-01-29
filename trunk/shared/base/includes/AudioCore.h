@@ -28,10 +28,11 @@ public:
     void playCarCrash();
     void playCarHorn();
     void playHealthPowerup();
+    void playSpeedPowerup();
 
 private:
     OgreOggSoundManager* mSoundManager;
-    OgreOggISound *mEngineIdleSound, *mCarCrashSound, *mCarHornLow, *mCarHornMid, *mCarHornHigh, *mPowerupHealth;
+    OgreOggISound *mEngineIdleSound, *mCarCrashSound, *mCarHornLow, *mCarHornMid, *mCarHornHigh, *mPowerupHealth, *mPowerupSpeed;
     bool mInitOK;
 };
 

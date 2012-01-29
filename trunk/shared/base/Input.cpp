@@ -159,10 +159,13 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 /// @return Whether the event has been serviced.
 bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
-    if (id == OIS::MB_Right) new PowerupRandom(); // just for testing, you see.
+    if (id == OIS::MB_Right)
+        GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
+        //new PowerupRandom(); // just for testing, you see.
     GameCore::mAudioCore->playCarHorn();
 
 	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
+
     return true;
 }
 

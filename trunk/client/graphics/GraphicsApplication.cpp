@@ -223,47 +223,17 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		}
 	}
 
-    // LOCAL
-    // get new snapshpot from control press - don't move the car though
-    // get old snapshot received from server
-    // create a new snapshot between new and old
-    // apply new snapshot to player
+    /*  NOTE TO SELF (JAMIE)
+        Client doesn't want to do PowerupPool::frameEvent() when powerups are networked
+        All powerup removals handled by the server's collision events
+        In fact, client probably shouldn't register any collision callbacks for powerups
+    */
+    GameCore::mPowerupPool->frameEvent();
 
-    // REMOTE
-    // get snapshot from server
-    // apply to player
-	
     // FUTURE
     // game will run x ticks behind the server
     // when a new snapshot is received, it should be in the client's future
     // interpolate based on snapshot timestamps
-
-    // Perform Client Side Prediction.
-    // Move any players who are out of sync
-
-    /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
-    for (i : otherPlayerIDs)
-    {
-        CarSnapshot *carSnapshot = getCarSnapshotIfExistsSincePreviousGet(int playerID);
-
-        if (CSP.needsPushingBackIntoPosition(players[playerID], carSnapshot)
-        {
-            players[playerID].getCar()->restoreSnapshot(carSnapshot);
-        }
-
-        delete carSnapshot;
-    }
-    
-    // Deal with the local player (who's snapshot will be x=latency ms behind the real thing)
-    if (CSP.needsMePushedBack(players[clientID], carSnapshot))
-    {
-        // Calculate a snapshot which doesn't jolt the player harshly if it can be fixed with small movements
-        CarSnapshot *latestPlayerSnapshot = getCarSnapshotIfExistsSincePreviousGet(int clientID);
-        CarSnapshot *fixSnapshot = new CarSnapshot(...);
-
-        players[clientID].getCar->restoreSnapshot(fixSnapshot);
-    }
-    */
 
     // Cleanup frame specific objects so we don't rape memory. If you want to remember some, delete them later!
     delete inputSnapshot;

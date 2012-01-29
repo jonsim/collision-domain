@@ -16,6 +16,7 @@ NetworkCore* GameCore::mNetworkCore;
 PhysicsCore* GameCore::mPhysicsCore;
 AudioCore* GameCore::mAudioCore;
 GameGUI* GameCore::mGui;
+PowerupPool* GameCore::mPowerupPool;
 
 
 void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr)
@@ -28,6 +29,7 @@ void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneM
     GameCore::mPhysicsCore = new PhysicsCore(GameCore::mSceneMgr);
     GameCore::mAudioCore = new AudioCore();
 	GameCore::mGui = new GameGUI();
+    GameCore::mPowerupPool = new PowerupPool();
 }
 
 void GameCore::destroy()
