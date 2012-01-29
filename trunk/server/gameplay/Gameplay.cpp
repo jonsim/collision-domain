@@ -230,7 +230,7 @@ void Gameplay::positionPlayers()
 			std::stringstream debugString;
 			debugString << "X: "<< x << " Y: "<<y<<"\n";
 			OutputDebugString(debugString.str().c_str());
-			tmpPlayer->getCar()->moveTo(btVector3(x,y,10));
+			tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
 		}
 	}	
 }
