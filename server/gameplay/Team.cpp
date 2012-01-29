@@ -59,3 +59,15 @@ int Team::getTeamSize()
 {
 	return players.size();
 }
+
+int Team::getTotalTeamHP()
+{
+	int totalHP = 0;
+	std::vector<Player*>::iterator itr;
+	for(itr = players.begin(); itr<players.end(); ++itr)
+	{
+		Player* tmpPlayer = *itr;
+		totalHP += tmpPlayer->getHP();
+	}
+	return totalHP;
+}

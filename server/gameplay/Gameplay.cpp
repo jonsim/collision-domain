@@ -6,6 +6,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
+#include <sstream>
 
 
 Gameplay::Gameplay()
@@ -121,4 +122,25 @@ Team* Gameplay::getTeamToJoin()
 	}
 
 	return lowestTeam;
+}
+
+void Gameplay::notifyDamage(Player* player)
+{
+	this->printTeamStats();
+}
+
+void Gameplay::printTeamStats()
+{
+	std::stringstream tmpOutputString;
+	tmpOutputString << "Team Stats \n";
+	//Loop through all teams and find the one with the lowest value
+	std::vector<Team*>::iterator itr;
+	int i=0;
+	for(itr = teams.begin(); itr<teams.end(); ++itr)
+	{
+		Team* tmpTeam = *itr;
+		tmpOutputString << "Team " << i << ": " << tmpTeam->getTotalTeamHP() << "\n";
+		i++;
+	}
+	OutputDebugString(tmpOutputString.str().c_str());
 }

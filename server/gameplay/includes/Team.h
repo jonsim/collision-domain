@@ -23,6 +23,7 @@ public:
 	Player*					getRandomPlayer();
 	Player*					setNewVIP(Player* player);
 	int						getTeamSize();
+	int						getTotalTeamHP();
 private:
 	std::vector<Player*>	players;
 	std::string				teamName;

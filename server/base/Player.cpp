@@ -45,7 +45,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, Phys
     mCar->attachCollisionTickCallback(this);
 
 	//Set HP. More clever damage might be implemented in the future
-	hp = 1.0;
+	hp = 100;
 
     mCar->moveTo(btVector3(0,0.5,0));
 }
@@ -57,8 +57,9 @@ void Player::createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, Phys
 void Player::collisionTickCallback(int damage)
 {
     // p1 and p2 might not be the only two players who collided this physics step.
-
     OutputDebugString("Server: Player collision\n");
+	hp-=damage*10; //Apply damage to player
+	GameCore::mGraphicsCore->mGameplay->notifyDamage(this);
 }
 
 
@@ -127,4 +128,9 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation)
 Car* Player::getCar()
 {
     return mCar;
+}
+
+int Player::getHP()
+{
+	return hp;
 }

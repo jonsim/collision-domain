@@ -38,10 +38,12 @@ public:
 	Player*					setNewVIP(Team* team);
 	void					setAllNewVIP();
 	Team*					declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
+	void					notifyDamage(Player* player);
 private:
 	//Methods
 	bool					vipModeGameWon();
 	Team*					getTeamToJoin();
+	void					printTeamStats();
 
 	//Variabels
 	int						numberOfTeams;
