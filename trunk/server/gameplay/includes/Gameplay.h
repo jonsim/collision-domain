@@ -34,11 +34,15 @@ public:
 	void					addPlayerToTeam(Team* team, Player* player);
 	bool					gameOver();
 	bool					hasWon(Team* team);
+	Team*					checkIfGameOver();
 	void					setGameplayMode(int gameplayMode);
 	Player*					setNewVIP(Team* team);
 	void					setAllNewVIP();
 	Team*					declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
 	void					notifyDamage(Player* player);
+	void					preparePlayers(); //Place the palyers in the correct place
+	void					resetAllHP();
+	void					positionPlayers();
 private:
 	//Methods
 	bool					vipModeGameWon();
