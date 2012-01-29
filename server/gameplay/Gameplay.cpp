@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 #include <sstream>
-
+#include <math.h>
 
 Gameplay::Gameplay()
 {
@@ -143,4 +143,87 @@ void Gameplay::printTeamStats()
 		i++;
 	}
 	OutputDebugString(tmpOutputString.str().c_str());
+}
+
+Team* Gameplay::checkIfGameOver()
+{
+	Team* winningTeam = NULL;
+	//Loop through 
+	std::vector<Team*>::iterator itr;
+	for(itr = teams.begin(); itr<teams.end(); ++itr)
+	{
+		Team* tmpTeam = *itr;
+		if(tmpTeam->getTotalTeamHP() > 0)
+		{
+			//If we already had a winning team it means we didn't as there are two
+			if(winningTeam != NULL)
+			{
+				return NULL;
+			}
+			else
+			{
+				winningTeam = tmpTeam;
+			}
+		}
+	}
+
+	return winningTeam;
+}
+
+void Gameplay::preparePlayers()
+{
+	OutputDebugString("Preparing Players");
+	resetAllHP();
+
+}
+
+//Bah this does nothing yet
+void Gameplay::resetAllHP()
+{
+
+}
+
+void Gameplay::positionPlayers()
+{
+	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
+	int hypo = 20; //The hypotonuse. Increase to spread out
+	//Calculate segment angle
+	Ogre::Real segSize = (2*M_PI)/totalNumberOfPlayers;
+
+	for(int i=0;i<totalNumberOfPlayers;i++)
+	{
+		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+		
+		//Calcualte the correct positions
+		Ogre::Real omega = (Ogre::Real)i*segSize;
+		//Calculate which sector of the circle it's in
+		int sector = floor(omega/ (M_PI/2));
+		//Adjust to keep omega under 90
+		omega-=(M_PI/2)*sector;
+
+		Ogre::Real x = 0.0;
+		Ogre::Real y = 0.0;
+
+		switch(sector)
+		{
+			case 0:
+				y = cos(omega)*hypo;
+				x = sin(omega)*hypo;
+				break;
+			case 1:
+				x = cos(omega)*hypo;
+				y = -sin(omega)*hypo;
+				break;
+			case 2:
+				y = -cos(omega)*hypo;
+				x = -sin(omega)*hypo;
+				break;
+			case 3:
+				x = -cos(omega)*hypo;
+				y = sin(omega)*hypo;
+				break;
+		}
+
+		//TODO - Move cars to correct positions
+	}	
 }

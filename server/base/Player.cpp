@@ -59,7 +59,7 @@ void Player::collisionTickCallback(int damage)
     // p1 and p2 might not be the only two players who collided this physics step.
     OutputDebugString("Server: Player collision\n");
 	hp-=damage*10; //Apply damage to player
-	GameCore::mGraphicsCore->mGameplay->notifyDamage(this);
+	GameCore::mGraphicsCore->mGameplay->notifyDamage(this);\
 }
 
 

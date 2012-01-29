@@ -30,6 +30,20 @@ void PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	}
 }
 
+int PlayerPool::getNumberOfPlayers()
+{
+	int i = 0, iNew = -1;
+	for( i = 0; i < MAX_PLAYERS; i ++ )
+	{
+		if( mPlayers[i] == NULL )
+		{
+			break;
+		}
+	}
+
+	return i;
+}
+
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
 	mLocalPlayer = new Player();
