@@ -174,7 +174,7 @@ void Gameplay::preparePlayers()
 {
 	OutputDebugString("Preparing Players");
 	resetAllHP();
-
+	positionPlayers();
 }
 
 //Bah this does nothing yet
@@ -186,44 +186,51 @@ void Gameplay::resetAllHP()
 void Gameplay::positionPlayers()
 {
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
-	int hypo = 20; //The hypotonuse. Increase to spread out
+	int hypo = 500; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
 	Ogre::Real segSize = (2*M_PI)/totalNumberOfPlayers;
 
-	for(int i=0;i<totalNumberOfPlayers;i++)
+	for(int i=0;i<MAX_PLAYERS;i++)
 	{
-		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-		
-		//Calcualte the correct positions
-		Ogre::Real omega = (Ogre::Real)i*segSize;
-		//Calculate which sector of the circle it's in
-		int sector = floor(omega/ (M_PI/2));
-		//Adjust to keep omega under 90
-		omega-=(M_PI/2)*sector;
-
-		Ogre::Real x = 0.0;
-		Ogre::Real y = 0.0;
-
-		switch(sector)
+		if(GameCore::mPlayerPool->getPlayer(i) != NULL)
 		{
-			case 0:
-				y = cos(omega)*hypo;
-				x = sin(omega)*hypo;
-				break;
-			case 1:
-				x = cos(omega)*hypo;
-				y = -sin(omega)*hypo;
-				break;
-			case 2:
-				y = -cos(omega)*hypo;
-				x = -sin(omega)*hypo;
-				break;
-			case 3:
-				x = -cos(omega)*hypo;
-				y = sin(omega)*hypo;
-				break;
-		}
+			Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+		
+			//Calcualte the correct positions
+			Ogre::Real omega = (Ogre::Real)i*segSize;
+			//Calculate which sector of the circle it's in
+			int sector = floor(omega/ (M_PI/2));
+			//Adjust to keep omega under 90
+			omega-=(M_PI/2)*sector;
 
-		//TODO - Move cars to correct positions
+			Ogre::Real x = 0.0;
+			Ogre::Real y = 0.0;
+
+			switch(sector)
+			{
+				case 0:
+					y = cos(omega)*hypo;
+					x = sin(omega)*hypo;
+					break;
+				case 1:
+					x = cos(omega)*hypo;
+					y = -sin(omega)*hypo;
+					break;
+				case 2:
+					y = -cos(omega)*hypo;
+					x = -sin(omega)*hypo;
+					break;
+				case 3:
+					x = -cos(omega)*hypo;
+					y = sin(omega)*hypo;
+					break;
+			}
+
+			//TODO - Move cars to correct positions
+			std::stringstream debugString;
+			debugString << "X: "<< x << " Y: "<<y<<"\n";
+			OutputDebugString(debugString.str().c_str());
+			tmpPlayer->getCar()->moveTo(btVector3(x,y,10));
+		}
 	}	
 }
