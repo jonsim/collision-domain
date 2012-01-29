@@ -23,6 +23,7 @@ AudioCore::AudioCore()
     // sounds which don't need to load immediately (background thread them)
     mCarCrashSound = mSoundManager->createSound("car-crash-1", "car-crash-1.wav", false, false, true, GameCore::mSceneMgr, false);
     mPowerupHealth = mSoundManager->createSound("powerup-health", "powerup-health.wav", false, false, true, GameCore::mSceneMgr, false);
+    mPowerupSpeed = mSoundManager->createSound("powerup-speed", "powerup-speed.wav", false, false, true, GameCore::mSceneMgr, false);
 }
 
 /// @brief  Deconstructor.
@@ -77,5 +78,16 @@ void AudioCore::playHealthPowerup()
     {
         mPowerupHealth->setPlayPosition(0);
         mPowerupHealth->play();
+    }
+}
+
+void AudioCore::playSpeedPowerup()
+{
+    // will need to declare one sound object for this per powerup (so we can hear them simultaneously!)
+    if (!mPowerupSpeed->isPlaying()) mPowerupSpeed->play();
+    else
+    {
+        mPowerupSpeed->setPlayPosition(0);
+        mPowerupSpeed->play();
     }
 }

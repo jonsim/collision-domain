@@ -14,6 +14,7 @@ class NetworkCore;
 class GraphicsCore;
 class AudioCore;
 class GameGUI;
+class PowerupPool;
 
 
 /**
@@ -30,6 +31,7 @@ public:
     static PhysicsCore* mPhysicsCore;
     static AudioCore* mAudioCore;
 	static GameGUI* mGui;
+    static PowerupPool* mPowerupPool;
 
     static void initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr);
     static void destroy();

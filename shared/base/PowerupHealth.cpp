@@ -9,19 +9,19 @@
 using namespace OgreBulletCollisions;
 
 /// @brief  Constructor.
-PowerupRandom::PowerupRandom()
+PowerupHealth::PowerupHealth()
 {
     mHasBeenCollected = false;
 
     int uniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "RandomPowerupNode" + boost::lexical_cast<std::string>(uniqueID),
+            "HealthPowerupNode" + boost::lexical_cast<std::string>(uniqueID),
             Ogre::Vector3(0,0.5,0),
             Ogre::Quaternion::IDENTITY);
 
     {
-        Ogre::Entity *entity = GameCore::mSceneMgr->createEntity("RandomPowerupMesh" + boost::lexical_cast<std::string>(uniqueID) , "powerup_random.mesh");
-        entity->setMaterialName("powerup_random_uv");
+        Ogre::Entity *entity = GameCore::mSceneMgr->createEntity("HealthPowerupMesh" + boost::lexical_cast<std::string>(uniqueID) , "powerup_health.mesh");
+        entity->setMaterialName("powerup_health");
 
         int GEOMETRY_QUERY_MASK = 1<<2;
         entity->setQueryFlags(GEOMETRY_QUERY_MASK);
@@ -46,7 +46,7 @@ PowerupRandom::PowerupRandom()
         CylinderCollisionShape* collisionShape = new CylinderCollisionShape(halfExtents, axis);
         
         mRigidBody = new RigidBody(
-                "RandomPowerup" + boost::lexical_cast<std::string>(uniqueID),
+                "HealthPowerup" + boost::lexical_cast<std::string>(uniqueID),
                 GameCore::mPhysicsCore->mWorld,
                 COL_POWERUP,
                 COL_CAR);
@@ -66,7 +66,7 @@ PowerupRandom::PowerupRandom()
             bodyMass,
             position,
             Ogre::Quaternion::IDENTITY);
-
+        
         //mRigidBody->getBulletRigidBody()->translate(btVector3(0,3,0));
         
 
@@ -79,24 +79,22 @@ PowerupRandom::PowerupRandom()
 
 
 /// @brief  Deconstructor.
-PowerupRandom::~PowerupRandom()
+PowerupHealth::~PowerupHealth()
 {
 }
 
 
 /// called when this powerup collides with a player
-void PowerupRandom::playerCollision(Player* player)
+void PowerupHealth::playerCollision(Player* player)
 {
     // this collision callback could potentially be called multiple times before
     // the collision object is removed, so give it to the first person who grabbed it
     if (mHasBeenCollected) return;
 
-    // Create a random powerup (again, might be a better way but for now..)
-    int iType = rand() % POWERUP_COUNT;
-    Powerup *pwrRandom = GameCore::mPowerupPool->createPowerup( iType );
+    // play powerup reward sound
+    GameCore::mAudioCore->playHealthPowerup();
 
-    // Hide it (won't be removed until the next frame)
-    pwrRandom->hide();
+    // apply powerup to player
 
     // remove powerup from map
     mHasBeenCollected = true;

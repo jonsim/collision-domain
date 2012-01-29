@@ -13,8 +13,21 @@
  */
 class Powerup
 {
+    friend class PowerupPool;
+
 public:
     virtual void playerCollision(Player* player) = 0;
+
+    int getPowerupType() { return mType; }
+    void setPowerupType( int iType ) { mType = iType; }
+
+    void hide() { mNode->setDebugDisplayEnabled( false ); mNode->setVisible(false); }
+
+    bool mHasBeenCollected;
+protected:
+    int mType;  
+    OgreBulletDynamics::RigidBody* mRigidBody;
+    Ogre::SceneNode *mNode;
 };
 
 #endif // #ifndef POWERUP_H

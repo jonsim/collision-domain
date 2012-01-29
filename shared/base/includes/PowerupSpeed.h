@@ -1,9 +1,9 @@
 /**
- * @file	PowerupRandom.h
+ * @file	PowerupSpeed.h
  * @brief 	Random powerup.
  */
-#ifndef POWERUPRANDOM_H
-#define POWERUPRANDOM_H
+#ifndef POWERUPSPEED_H
+#define POWERUPSPEED_H
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
@@ -14,14 +14,14 @@ class GameCore;
 /**
  *  @brief 	Random powerup
  */
-class PowerupRandom : public Powerup
+class PowerupSpeed : public Powerup
 {
 public:
-    PowerupRandom();
-    ~PowerupRandom();
+    PowerupSpeed();
+    ~PowerupSpeed();
     void playerCollision(Player* player);
 
 private:
 };
 
-#endif // #ifndef POWERUPRANDOM_H
+#endif // #ifndef POWERUPSPEED_H
