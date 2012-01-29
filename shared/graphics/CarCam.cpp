@@ -27,7 +27,7 @@ CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre
 	//mApproxCamNode->setPosition(Ogre::Vector3(0,0,0));
 	
 	//Attach the camera to the node
-	mApproxCamNode->translate(Ogre::Vector3(0,0,65));
+	//mApproxCamNode->translate(Ogre::Vector3(0,0,65));
 	mApproxCamNode->attachObject(mCam);
 	//mCam->setFocalLength(4);
 	
@@ -39,7 +39,7 @@ void CarCam::updatePosition()
 	Ogre::Vector3 pos =  mFollowedObject->getPosition();
 	Ogre::Quaternion orientation =  mFollowedObject->getOrientation();
 	
-	Ogre::Vector3 toMove = (pos-mApproxCamNode->getPosition())*0.2;
+	Ogre::Vector3 toMove = (pos-mApproxCamNode->getPosition());
 	mApproxCamNode->translate(toMove);
 	//mApproxCamNode->translate(Ogre::Vector3(0,0.5,0))
 	//mApproxCamNode->translate(0.0,0.05,0);
