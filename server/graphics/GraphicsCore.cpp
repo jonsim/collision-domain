@@ -9,6 +9,8 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
+//#define ADDITIONAL_SERVER_TRACKING_CAMERAS
+
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
@@ -73,6 +75,7 @@ void GraphicsCore::createCamera(void)
 
     // Create the camera
     mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
+#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	mViewCam1 = GameCore::mSceneMgr->createCamera("ViewCam1");
 	mViewCam2 = GameCore::mSceneMgr->createCamera("ViewCam2");
 	mViewCam3 = GameCore::mSceneMgr->createCamera("ViewCam3");
@@ -91,6 +94,7 @@ void GraphicsCore::createCamera(void)
 	bigScreen->addCamera(mViewCam6);
 	bigScreen->addCamera(mViewCam7);
 	bigScreen->addCamera(mViewCam8);
+#endif
 
     // Position it at 500 in Z direction
     mCamera->setPosition(Ogre::Vector3(0,550,-100));
@@ -100,7 +104,7 @@ void GraphicsCore::createCamera(void)
 
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 
-	
+#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	mViewCam1->setPosition(Ogre::Vector3(0,0,80));
 	mViewCam1->setNearClipDistance(5);
 	mViewCam1->lookAt(Ogre::Vector3(0,0,-300));
@@ -132,6 +136,7 @@ void GraphicsCore::createCamera(void)
 	mViewCam8->setPosition(Ogre::Vector3(0,0,80));
 	mViewCam8->setNearClipDistance(5);
 	mViewCam8->lookAt(Ogre::Vector3(0,0,-300));
+#endif
 }
 
 
@@ -207,6 +212,8 @@ void GraphicsCore::createViewports(void)
 {
 	//ViewportManager* vpm = new ViewportManager(8,mWindow);
 	vpm->addViewport(mCamera,true);
+
+#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	vpm->addViewport(mViewCam1,false);
 	vpm->addViewport(mViewCam2,false);
 	vpm->addViewport(mViewCam3,false);
@@ -215,6 +222,7 @@ void GraphicsCore::createViewports(void)
 	vpm->addViewport(mViewCam6,false);
 	vpm->addViewport(mViewCam7,false);
 	vpm->addViewport(mViewCam8,false);
+#endif
 }
 
 
