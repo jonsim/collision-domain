@@ -1,0 +1,31 @@
+material speedo_main
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			
+			texture_unit
+			{
+				texture speedo.png
+			}
+		}
+	}
+}
+
+material speedo_needle
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			
+			texture_unit
+			{
+				texture needle.png
+			}
+		}
+	}
+}

@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\server\base\includes\Player.h" />
+    <ClInclude Include="..\..\server\GameIncludes.h" />
+    <ClInclude Include="..\..\server\gameplay\includes\Gameplay.h" />
+    <ClInclude Include="..\..\server\gameplay\includes\Team.h" />
+    <ClInclude Include="..\..\server\graphics\includes\BigScreen.h" />
+    <ClInclude Include="..\..\server\graphics\includes\GameGUI.h" />
+    <ClInclude Include="..\..\server\graphics\includes\GraphicsApplication.h" />
+    <ClInclude Include="..\..\server\graphics\includes\GraphicsCore.h" />
+    <ClInclude Include="..\..\server\graphics\includes\ViewportManager.h" />
+    <ClInclude Include="..\..\server\networking\includes\NetworkCore.h" />
+    <ClInclude Include="..\..\server\networking\includes\PlayerPool.h" />
+    <ClInclude Include="..\..\shared\base\includes\AudioCore.h" />
+    <ClInclude Include="..\..\shared\base\includes\CircularBuffer.h" />
+    <ClInclude Include="..\..\shared\base\includes\GameCore.h" />
+    <ClInclude Include="..\..\shared\base\includes\Input.h" />
+    <ClInclude Include="..\..\shared\base\includes\InputState.h" />
+    <ClInclude Include="..\..\shared\base\includes\Powerup.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupHealth.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupMass.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupPool.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupRandom.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h" />
+    <ClInclude Include="..\..\shared\base\includes\stdafx.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
+    <ClInclude Include="..\..\shared\physics\includes\Car.h" />
+    <ClInclude Include="..\..\shared\physics\includes\CarSnapshot.h" />
+    <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h" />
+    <ClInclude Include="..\..\shared\physics\includes\cars\SimpleCoupeCar.h" />
+    <ClInclude Include="..\..\shared\physics\includes\FuckOgreBulletWheeledRigidBody.h" />
+    <ClInclude Include="..\..\shared\physics\includes\PhysicsCore.h" />
+    <ClInclude Include="..\..\shared\physics\includes\PlayerCollisions.h" />
+    <ClInclude Include="..\..\shared\raknet\AutopatcherPatchContext.h" />
+    <ClInclude Include="..\..\shared\raknet\AutopatcherRepositoryInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\BitStream.h" />
+    <ClInclude Include="..\..\shared\raknet\CCRakNetSlidingWindow.h" />
+    <ClInclude Include="..\..\shared\raknet\CCRakNetUDT.h" />
+    <ClInclude Include="..\..\shared\raknet\CheckSum.h" />
+    <ClInclude Include="..\..\shared\raknet\CloudClient.h" />
+    <ClInclude Include="..\..\shared\raknet\CloudCommon.h" />
+    <ClInclude Include="..\..\shared\raknet\CloudServer.h" />
+    <ClInclude Include="..\..\shared\raknet\CommandParserInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\ConnectionGraph2.h" />
+    <ClInclude Include="..\..\shared\raknet\ConsoleServer.h" />
+    <ClInclude Include="..\..\shared\raknet\DataCompressor.h" />
+    <ClInclude Include="..\..\shared\raknet\DirectoryDeltaTransfer.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_BinarySearchTree.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_BPlusTree.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_BytePool.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_ByteQueue.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Hash.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Heap.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_HuffmanEncodingTree.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_HuffmanEncodingTreeFactory.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_HuffmanEncodingTreeNode.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_LinkedList.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_List.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Map.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_MemoryPool.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Multilist.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_OrderedChannelHeap.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_OrderedList.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Queue.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_QueueLinkedList.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_RangeList.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Table.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_ThreadsafeAllocatingQueue.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_Tree.h" />
+    <ClInclude Include="..\..\shared\raknet\DS_WeightedGraph.h" />
+    <ClInclude Include="..\..\shared\raknet\DynDNS.h" />
+    <ClInclude Include="..\..\shared\raknet\EmailSender.h" />
+    <ClInclude Include="..\..\shared\raknet\EpochTimeToString.h" />
+    <ClInclude Include="..\..\shared\raknet\Export.h" />
+    <ClInclude Include="..\..\shared\raknet\FileList.h" />
+    <ClInclude Include="..\..\shared\raknet\FileListNodeContext.h" />
+    <ClInclude Include="..\..\shared\raknet\FileListTransfer.h" />
+    <ClInclude Include="..\..\shared\raknet\FileListTransferCBInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\FileOperations.h" />
+    <ClInclude Include="..\..\shared\raknet\FormatString.h" />
+    <ClInclude Include="..\..\shared\raknet\FullyConnectedMesh2.h" />
+    <ClInclude Include="..\..\shared\raknet\Getche.h" />
+    <ClInclude Include="..\..\shared\raknet\Gets.h" />
+    <ClInclude Include="..\..\shared\raknet\GetTime.h" />
+    <ClInclude Include="..\..\shared\raknet\gettimeofday.h" />
+    <ClInclude Include="..\..\shared\raknet\GridSectorizer.h" />
+    <ClInclude Include="..\..\shared\raknet\HTTPConnection.h" />
+    <ClInclude Include="..\..\shared\raknet\IncrementalReadInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\InternalPacket.h" />
+    <ClInclude Include="..\..\shared\raknet\Itoa.h" />
+    <ClInclude Include="..\..\shared\raknet\Kbhit.h" />
+    <ClInclude Include="..\..\shared\raknet\LinuxStrings.h" />
+    <ClInclude Include="..\..\shared\raknet\LocklessTypes.h" />
+    <ClInclude Include="..\..\shared\raknet\LogCommandParser.h" />
+    <ClInclude Include="..\..\shared\raknet\MessageFilter.h" />
+    <ClInclude Include="..\..\shared\raknet\MessageIdentifiers.h" />
+    <ClInclude Include="..\..\shared\raknet\MTUSize.h" />
+    <ClInclude Include="..\..\shared\raknet\NativeFeatureIncludes.h" />
+    <ClInclude Include="..\..\shared\raknet\NativeFeatureIncludesOverrides.h" />
+    <ClInclude Include="..\..\shared\raknet\NativeTypes.h" />
+    <ClInclude Include="..\..\shared\raknet\NatPunchthroughClient.h" />
+    <ClInclude Include="..\..\shared\raknet\NatPunchthroughServer.h" />
+    <ClInclude Include="..\..\shared\raknet\NatTypeDetectionClient.h" />
+    <ClInclude Include="..\..\shared\raknet\NatTypeDetectionCommon.h" />
+    <ClInclude Include="..\..\shared\raknet\NatTypeDetectionServer.h" />
+    <ClInclude Include="..\..\shared\raknet\NetworkIDManager.h" />
+    <ClInclude Include="..\..\shared\raknet\NetworkIDObject.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketConsoleLogger.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketFileLogger.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketizedTCP.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketLogger.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketOutputWindowLogger.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketPool.h" />
+    <ClInclude Include="..\..\shared\raknet\PacketPriority.h" />
+    <ClInclude Include="..\..\shared\raknet\PluginInterface2.h" />
+    <ClInclude Include="..\..\shared\raknet\PS3Includes.h" />
+    <ClInclude Include="..\..\shared\raknet\Rackspace.h" />
+    <ClInclude Include="..\..\shared\raknet\RakAlloca.h" />
+    <ClInclude Include="..\..\shared\raknet\RakAssert.h" />
+    <ClInclude Include="..\..\shared\raknet\RakMemoryOverride.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetCommandParser.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetDefines.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetDefinesOverrides.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetSmartPtr.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetSocket.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetStatistics.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetTime.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetTransport2.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetTypes.h" />
+    <ClInclude Include="..\..\shared\raknet\RakNetVersion.h" />
+    <ClInclude Include="..\..\shared\raknet\RakPeer.h" />
+    <ClInclude Include="..\..\shared\raknet\RakPeerInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\RakSleep.h" />
+    <ClInclude Include="..\..\shared\raknet\RakString.h" />
+    <ClInclude Include="..\..\shared\raknet\RakThread.h" />
+    <ClInclude Include="..\..\shared\raknet\RakWString.h" />
+    <ClInclude Include="..\..\shared\raknet\Rand.h" />
+    <ClInclude Include="..\..\shared\raknet\rdlmalloc-options.h" />
+    <ClInclude Include="..\..\shared\raknet\rdlmalloc.h" />
+    <ClInclude Include="..\..\shared\raknet\ReadyEvent.h" />
+    <ClInclude Include="..\..\shared\raknet\RefCountedObj.h" />
+    <ClInclude Include="..\..\shared\raknet\ReliabilityLayer.h" />
+    <ClInclude Include="..\..\shared\raknet\ReplicaEnums.h" />
+    <ClInclude Include="..\..\shared\raknet\ReplicaManager3.h" />
+    <ClInclude Include="..\..\shared\raknet\Router2.h" />
+    <ClInclude Include="..\..\shared\raknet\RPC4Plugin.h" />
+    <ClInclude Include="..\..\shared\raknet\SecureHandshake.h" />
+    <ClInclude Include="..\..\shared\raknet\SendToThread.h" />
+    <ClInclude Include="..\..\shared\raknet\SHA1.h" />
+    <ClInclude Include="..\..\shared\raknet\SignaledEvent.h" />
+    <ClInclude Include="..\..\shared\raknet\SimpleMutex.h" />
+    <ClInclude Include="..\..\shared\raknet\SimpleTCPServer.h" />
+    <ClInclude Include="..\..\shared\raknet\SingleProducerConsumer.h" />
+    <ClInclude Include="..\..\shared\raknet\SocketDefines.h" />
+    <ClInclude Include="..\..\shared\raknet\SocketIncludes.h" />
+    <ClInclude Include="..\..\shared\raknet\SocketLayer.h" />
+    <ClInclude Include="..\..\shared\raknet\StringCompressor.h" />
+    <ClInclude Include="..\..\shared\raknet\StringTable.h" />
+    <ClInclude Include="..\..\shared\raknet\SuperFastHash.h" />
+    <ClInclude Include="..\..\shared\raknet\TableSerializer.h" />
+    <ClInclude Include="..\..\shared\raknet\TCPInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\TeamBalancer.h" />
+    <ClInclude Include="..\..\shared\raknet\TelnetTransport.h" />
+    <ClInclude Include="..\..\shared\raknet\ThreadPool.h" />
+    <ClInclude Include="..\..\shared\raknet\ThreadsafePacketLogger.h" />
+    <ClInclude Include="..\..\shared\raknet\TransportInterface.h" />
+    <ClInclude Include="..\..\shared\raknet\TwoWayAuthentication.h" />
+    <ClInclude Include="..\..\shared\raknet\UDPForwarder.h" />
+    <ClInclude Include="..\..\shared\raknet\UDPProxyClient.h" />
+    <ClInclude Include="..\..\shared\raknet\UDPProxyCommon.h" />
+    <ClInclude Include="..\..\shared\raknet\UDPProxyCoordinator.h" />
+    <ClInclude Include="..\..\shared\raknet\UDPProxyServer.h" />
+    <ClInclude Include="..\..\shared\raknet\VariableDeltaSerializer.h" />
+    <ClInclude Include="..\..\shared\raknet\VariableListDeltaTracker.h" />
+    <ClInclude Include="..\..\shared\raknet\VariadicSQLParser.h" />
+    <ClInclude Include="..\..\shared\raknet\VitaIncludes.h" />
+    <ClInclude Include="..\..\shared\raknet\WindowsIncludes.h" />
+    <ClInclude Include="..\..\shared\raknet\WSAStartupSingleton.h" />
+    <ClInclude Include="..\..\shared\raknet\XBox360Includes.h" />
+    <ClInclude Include="..\..\shared\raknet\_FindFirst.h" />
+    <ClInclude Include="..\..\shared\SharedIncludes.h" />
+    <ClInclude Include="resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Collision Domain.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\server\base\Player.cpp" />
+    <ClCompile Include="..\..\server\gameplay\Gameplay.cpp" />
+    <ClCompile Include="..\..\server\gameplay\Team.cpp" />
+    <ClCompile Include="..\..\server\graphics\BigScreen.cpp" />
+    <ClCompile Include="..\..\server\graphics\GameGUI.cpp" />
+    <ClCompile Include="..\..\server\graphics\GraphicsApplication.cpp" />
+    <ClCompile Include="..\..\server\graphics\GraphicsCore.cpp" />
+    <ClCompile Include="..\..\server\graphics\ViewportManager.cpp" />
+    <ClCompile Include="..\..\server\networking\NetworkCore.cpp" />
+    <ClCompile Include="..\..\server\networking\PlayerPool.cpp" />
+    <ClCompile Include="..\..\shared\base\AudioCore.cpp" />
+    <ClCompile Include="..\..\shared\base\CircularBuffer.cpp" />
+    <ClCompile Include="..\..\shared\base\GameCore.cpp" />
+    <ClCompile Include="..\..\shared\base\Input.cpp" />
+    <ClCompile Include="..\..\shared\base\InputState.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupHealth.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupMass.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupPool.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupRandom.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp" />
+    <ClCompile Include="..\..\shared\base\stdafx.cpp" />
+    <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
+    <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
+    <ClCompile Include="..\..\shared\physics\Car.cpp" />
+    <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp" />
+    <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp" />
+    <ClCompile Include="..\..\shared\physics\FuckOgreBulletWheeledRigidBody.cpp" />
+    <ClCompile Include="..\..\shared\physics\PhysicsCore.cpp" />
+    <ClCompile Include="..\..\shared\physics\PlayerCollisions.cpp" />
+    <ClCompile Include="..\..\shared\raknet\BitStream.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CCRakNetSlidingWindow.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CCRakNetUDT.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CheckSum.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CloudClient.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CloudCommon.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CloudServer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\CommandParserInterface.cpp" />
+    <ClCompile Include="..\..\shared\raknet\ConnectionGraph2.cpp" />
+    <ClCompile Include="..\..\shared\raknet\ConsoleServer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DataCompressor.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DirectoryDeltaTransfer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DS_BytePool.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DS_ByteQueue.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DS_HuffmanEncodingTree.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DS_Table.cpp" />
+    <ClCompile Include="..\..\shared\raknet\DynDNS.cpp" />
+    <ClCompile Include="..\..\shared\raknet\EmailSender.cpp" />
+    <ClCompile Include="..\..\shared\raknet\EncodeClassName.cpp" />
+    <ClCompile Include="..\..\shared\raknet\EpochTimeToString.cpp" />
+    <ClCompile Include="..\..\shared\raknet\FileList.cpp" />
+    <ClCompile Include="..\..\shared\raknet\FileListTransfer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\FileOperations.cpp" />
+    <ClCompile Include="..\..\shared\raknet\FormatString.cpp" />
+    <ClCompile Include="..\..\shared\raknet\FullyConnectedMesh2.cpp" />
+    <ClCompile Include="..\..\shared\raknet\Getche.cpp" />
+    <ClCompile Include="..\..\shared\raknet\Gets.cpp" />
+    <ClCompile Include="..\..\shared\raknet\GetTime.cpp" />
+    <ClCompile Include="..\..\shared\raknet\gettimeofday.cpp" />
+    <ClCompile Include="..\..\shared\raknet\GridSectorizer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\HTTPConnection.cpp" />
+    <ClCompile Include="..\..\shared\raknet\IncrementalReadInterface.cpp" />
+    <ClCompile Include="..\..\shared\raknet\Itoa.cpp" />
+    <ClCompile Include="..\..\shared\raknet\LinuxStrings.cpp" />
+    <ClCompile Include="..\..\shared\raknet\LocklessTypes.cpp" />
+    <ClCompile Include="..\..\shared\raknet\LogCommandParser.cpp" />
+    <ClCompile Include="..\..\shared\raknet\MessageFilter.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NatPunchthroughClient.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NatPunchthroughServer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NatTypeDetectionClient.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NatTypeDetectionCommon.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NatTypeDetectionServer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NetworkIDManager.cpp" />
+    <ClCompile Include="..\..\shared\raknet\NetworkIDObject.cpp" />
+    <ClCompile Include="..\..\shared\raknet\PacketConsoleLogger.cpp" />
+    <ClCompile Include="..\..\shared\raknet\PacketFileLogger.cpp" />
+    <ClCompile Include="..\..\shared\raknet\PacketizedTCP.cpp" />
+    <ClCompile Include="..\..\shared\raknet\PacketLogger.cpp" />
+    <ClCompile Include="..\..\shared\raknet\PacketOutputWindowLogger.cpp" />
+    <ClCompile Include="..\..\shared\raknet\PluginInterface2.cpp" />
+    <ClCompile Include="..\..\shared\raknet\Rackspace.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakMemoryOverride.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakNetCommandParser.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakNetSocket.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakNetStatistics.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakNetTransport2.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakNetTypes.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakPeer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakSleep.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakString.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakThread.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RakWString.cpp" />
+    <ClCompile Include="..\..\shared\raknet\Rand.cpp" />
+    <ClCompile Include="..\..\shared\raknet\rdlmalloc.cpp" />
+    <ClCompile Include="..\..\shared\raknet\ReadyEvent.cpp" />
+    <ClCompile Include="..\..\shared\raknet\ReliabilityLayer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\ReplicaManager3.cpp" />
+    <ClCompile Include="..\..\shared\raknet\Router2.cpp" />
+    <ClCompile Include="..\..\shared\raknet\RPC4Plugin.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SecureHandshake.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SendToThread.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SHA1.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SignaledEvent.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SimpleMutex.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SocketLayer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\StringCompressor.cpp" />
+    <ClCompile Include="..\..\shared\raknet\StringTable.cpp" />
+    <ClCompile Include="..\..\shared\raknet\SuperFastHash.cpp" />
+    <ClCompile Include="..\..\shared\raknet\TableSerializer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\TCPInterface.cpp" />
+    <ClCompile Include="..\..\shared\raknet\TeamBalancer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\TelnetTransport.cpp" />
+    <ClCompile Include="..\..\shared\raknet\ThreadsafePacketLogger.cpp" />
+    <ClCompile Include="..\..\shared\raknet\TwoWayAuthentication.cpp" />
+    <ClCompile Include="..\..\shared\raknet\UDPForwarder.cpp" />
+    <ClCompile Include="..\..\shared\raknet\UDPProxyClient.cpp" />
+    <ClCompile Include="..\..\shared\raknet\UDPProxyCoordinator.cpp" />
+    <ClCompile Include="..\..\shared\raknet\UDPProxyServer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\VariableDeltaSerializer.cpp" />
+    <ClCompile Include="..\..\shared\raknet\VariableListDeltaTracker.cpp" />
+    <ClCompile Include="..\..\shared\raknet\VariadicSQLParser.cpp" />
+    <ClCompile Include="..\..\shared\raknet\VitaIncludes.cpp" />
+    <ClCompile Include="..\..\shared\raknet\WSAStartupSingleton.cpp" />
+    <ClCompile Include="..\..\shared\raknet\_FindFirst.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DB77EF71-1B7C-4D1A-9B2D-C9F758DB81CA}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>CollisionDomainServer</RootNamespace>
+    <ProjectName>Server</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(OGREBULLET_ROOT)\Collisions\include;$(OGREBULLET_ROOT)\Dynamics\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OGREBULLET_ROOT)\lib\Debug;$(OGREBULLET_ROOT)\lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(OGREBULLET_ROOT)\Collisions\include;$(OGREBULLET_ROOT)\Dynamics\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OGREBULLET_ROOT)\lib\Debug;$(OGREBULLET_ROOT)\lib\Release;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <AdditionalOptions> -Zm142 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;..\..\shared\ogreoggsound\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;ConvexDecomposition_debug.lib;ws2_32.lib;CEGUIOgreRenderer_d.lib;CEGUIBase_d.lib;CEGUIExpatParser_d.lib;CEGUIFalagardWRBase_d.lib;OgreOggSound_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:libc.lib /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;..\..\shared\ogreoggsound\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;CEGUIOgreRenderer.lib;CEGUIBase.lib;CEGUIExpatParser.lib;CEGUIFalagardWRBase.lib;OgreOggSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
