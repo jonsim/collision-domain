@@ -210,7 +210,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		// Apply controls the player (who will be moved on frameEnd and frameStart).
 		if( GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
 		{
-			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (float) (1./60.));
+			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
 			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
@@ -240,7 +240,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     delete inputSnapshot;
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, (float) (1./60.));
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, (1.0f / 60.0f));
 
     return true;
 }

@@ -169,7 +169,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	GameCore::mPlayerPool->frameEvent( evt );
 
     // Apply controls the player (who will be moved on frameEnd and frameStart).
-	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (float) (1./60.));
+	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
     //mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
     GameCore::mPowerupPool->frameEvent();
@@ -220,7 +220,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     delete inputSnapshot;
 
     // Minimum of 20 FPS (maxSubsteps=3) before physics becomes wrong
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 3, (float) (1./60.));
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 3, (1.0f / 60.0f));
 
     return true;
 }
