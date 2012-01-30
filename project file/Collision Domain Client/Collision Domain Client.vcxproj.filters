@@ -574,6 +574,12 @@
     <ClInclude Include="..\..\client\base\includes\SpawnScreen.h">
       <Filter>client\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\cars\SmallCar.h">
+      <Filter>shared\physics\cars</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h">
+      <Filter>shared\physics\cars</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -935,6 +941,12 @@
     </ClCompile>
     <ClCompile Include="..\..\client\base\SpawnScreen.cpp">
       <Filter>client\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\cars\SmallCar.cpp">
+      <Filter>shared\physics\cars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp">
+      <Filter>shared\physics\cars</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
