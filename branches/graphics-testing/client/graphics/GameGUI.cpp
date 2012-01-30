@@ -40,7 +40,7 @@ void GameGUI::setupGUI()
 		createWindow( "Vanilla/StaticText", "root_wnd/mph" );
 
 	mph->setText( "MPH: " );
-	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.05, 0)));
+	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
     mph->setVisible( false );
 
 	CEGUI::System::getSingleton().setGUISheet( mSheet );

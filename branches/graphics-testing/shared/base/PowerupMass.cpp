@@ -33,14 +33,14 @@ PowerupMass::PowerupMass()
         entity->setCastShadows(true);
         mNode->attachObject(entity);
 
-        mNode->scale(0.2,0.2,0.2);
+        mNode->scale(0.2f, 0.2f, 0.2f);
 
         // this doesn't seem to do anything either? I give up until monday.
-        mNode->translate(Ogre::Vector3(0,-0.5,0));
+        mNode->translate(Ogre::Vector3(0, -0.5f, 0));
     }
 
     {
-        BoxCollisionShape* collisionShape = new BoxCollisionShape( Ogre::Vector3( 0.75, 0.75, 0.75 ) );
+        BoxCollisionShape* collisionShape = new BoxCollisionShape( Ogre::Vector3( 0.75f, 0.75f, 0.75f ) );
         
         mRigidBody = new RigidBody(
                 "MassPowerup" + boost::lexical_cast<std::string>(uniqueID),

@@ -14,7 +14,7 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
 
     // Gravity is not in the normal sense. Acceleration will look "normal" when the value is set to
     // the number of units used for a model of height 1m
-    mBulletGravity = Ogre::Vector3(0,-9.81,0);
+    mBulletGravity = Ogre::Vector3(0, -9.81f, 0);
 
     mBulletAlignedBox = Ogre::AxisAlignedBox(Ogre::Vector3(-10000, -10000, -10000), Ogre::Vector3(10000,  10000,  10000));
     mNumEntitiesInstanced = 0; // how many shapes are created
@@ -145,7 +145,7 @@ void PhysicsCore::createFloorPlane()
             mWorld,
             collisionGroup,
             collisionMask);
-    defaultPlaneBody->setStaticShape(Shape, 0.1, 0.8); // (shape, restitution, friction)
+    defaultPlaneBody->setStaticShape(Shape, 0.1f, 0.8f); // (shape, restitution, friction)
     
     //defaultPlaneBody->addQueryFlags(btCollisionObject::CF_STATIC_OBJECT);
 
@@ -169,7 +169,7 @@ void PhysicsCore::createWallPlanes()
             mWorld,
             collisionGroup,
             collisionMask);
-    defaultPlaneBody2->setStaticShape(Shape2, 0.1, 0.8); // (shape, restitution, friction)
+    defaultPlaneBody2->setStaticShape(Shape2, 0.1f, 0.8f); // (shape, restitution, friction)
     //defaultPlaneBody2-> ->setPosition();
     // push the created objects to the deques
     mShapes.push_back(Shape2);
@@ -183,7 +183,7 @@ void PhysicsCore::createWallPlanes()
             mWorld,
             collisionGroup,
             collisionMask);
-    defaultPlaneBody3->setStaticShape(Shape3, 0.1, 0.8); // (shape, restitution, friction)
+    defaultPlaneBody3->setStaticShape(Shape3, 0.1f, 0.8f); // (shape, restitution, friction)
     // push the created objects to the deques
     mShapes.push_back(Shape3);
     mBodies.push_back(defaultPlaneBody3);
@@ -196,7 +196,7 @@ void PhysicsCore::createWallPlanes()
             mWorld,
             collisionGroup,
             collisionMask);
-    defaultPlaneBody4->setStaticShape(Shape4, 0.1, 0.8); // (shape, restitution, friction)
+    defaultPlaneBody4->setStaticShape(Shape4, 0.1f, 0.8f); // (shape, restitution, friction)
     // push the created objects to the deques
     mShapes.push_back(Shape4);
     mBodies.push_back(defaultPlaneBody4);
@@ -209,7 +209,7 @@ void PhysicsCore::createWallPlanes()
             mWorld,
             collisionGroup,
             collisionMask);
-    defaultPlaneBody5->setStaticShape(Shape5, 0.1, 0.8); // (shape, restitution, friction)
+    defaultPlaneBody5->setStaticShape(Shape5, 0.1f, 0.8f); // (shape, restitution, friction)
     // push the created objects to the deques
     mShapes.push_back(Shape5);
     mBodies.push_back(defaultPlaneBody5);

@@ -129,8 +129,8 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 /// @params *pkt  Packet containing the snapshot data
 void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 {
-	unsigned char bHasTime;
-	RakNet::Time timestamp;
+// UNUSED VARIABLE	unsigned char bHasTime;
+// UNUSED VARIABLE	RakNet::Time timestamp;
 	unsigned char bPacketID;
 	PLAYER_INPUT_DATA playerInput;
 
