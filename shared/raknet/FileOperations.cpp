@@ -48,10 +48,10 @@ bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength
 	
 	#ifdef _WIN32
 	#pragma warning( disable : 4966 ) // mkdir declared deprecated by Microsoft in order to make it harder to be cross platform.  I don't agree it's deprecated.
-				res = mkdir( pathCopy );
+				res = _mkdir( pathCopy );
 	#else
 	
-				res = mkdir( pathCopy, 0744 );
+				res = _mkdir( pathCopy, 0744 );
 	#endif
 				if (res<0 && errno!=EEXIST && errno!=EACCES)
 				{
@@ -84,9 +84,9 @@ bool WriteFileWithDirectories( const char *path, char *data, unsigned dataLength
 	{
 #ifdef _WIN32
 #pragma warning( disable : 4966 ) // mkdir declared deprecated by Microsoft in order to make it harder to be cross platform.  I don't agree it's deprecated.
-		res = mkdir( pathCopy );
+		res = _mkdir( pathCopy );
 #else
-		res = mkdir( pathCopy, 0744 );
+		res = _mkdir( pathCopy, 0744 );
 #endif
 
 		if (res<0 && errno!=EEXIST)

@@ -586,6 +586,12 @@
     <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h">
       <Filter>shared\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\cars\SmallCar.h">
+      <Filter>shared\physics\cars</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h">
+      <Filter>shared\physics\cars</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -959,6 +965,12 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp">
       <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\cars\SmallCar.cpp">
+      <Filter>shared\physics\cars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp">
+      <Filter>shared\physics\cars</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -24,6 +24,7 @@ class PhysicsCore
 public:
     PhysicsCore(Ogre::SceneManager* sceneMgr);
     virtual ~PhysicsCore(void);
+	static void auto_scale_scenenode (Ogre::SceneNode* n);
     int getUniqueEntityID(void);
     void createFloorPlane();
     void createWallPlanes();

@@ -40,6 +40,8 @@
     <ClInclude Include="..\..\shared\physics\includes\CarSnapshot.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\SimpleCoupeCar.h" />
+    <ClInclude Include="..\..\shared\physics\includes\cars\SmallCar.h" />
+    <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\FuckOgreBulletWheeledRigidBody.h" />
     <ClInclude Include="..\..\shared\physics\includes\PhysicsCore.h" />
     <ClInclude Include="..\..\shared\physics\includes\PlayerCollisions.h" />
@@ -223,6 +225,8 @@
     <ClCompile Include="..\..\shared\physics\Car.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp" />
+    <ClCompile Include="..\..\shared\physics\cars\SmallCar.cpp" />
+    <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp" />
     <ClCompile Include="..\..\shared\physics\FuckOgreBulletWheeledRigidBody.cpp" />
     <ClCompile Include="..\..\shared\physics\PhysicsCore.cpp" />
     <ClCompile Include="..\..\shared\physics\PlayerCollisions.cpp" />
@@ -364,7 +368,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalOptions> -Zm142 %(AdditionalOptions)</AdditionalOptions>
@@ -387,7 +391,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>

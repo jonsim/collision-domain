@@ -31,7 +31,8 @@ bool NetworkCore::Connect( const char *szHost, int iPort, char *szPass )
 	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szHost, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
 	m_pRak->SetOccasionalPing( true );
 
-	if( bCon == RakNet::ConnectionAttemptResult::CONNECTION_ATTEMPT_STARTED )
+	//if( bCon == RakNet::ConnectionAttemptResult::CONNECTION_ATTEMPT_STARTED ) // C4482
+	if( bCon == RakNet::CONNECTION_ATTEMPT_STARTED )
 	{
 		log( "Connecting to %s : %i", szHost, iPort );
 		return true;
