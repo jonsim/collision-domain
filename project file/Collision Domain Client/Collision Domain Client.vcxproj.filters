@@ -553,6 +553,27 @@
     <ClInclude Include="..\..\shared\base\includes\Powerup.h">
       <Filter>shared\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\CarCam.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\PowerupHealth.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\PowerupMass.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\PowerupPool.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\PowerupRandom.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\base\includes\SpawnScreen.h">
+      <Filter>client\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -893,6 +914,27 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\PlayerCollisions.cpp">
       <Filter>shared\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\CarCam.cpp">
+      <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\PowerupHealth.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\PowerupMass.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\PowerupPool.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\PowerupRandom.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\base\SpawnScreen.cpp">
+      <Filter>client\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
