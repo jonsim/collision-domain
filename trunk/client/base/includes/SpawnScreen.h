@@ -4,20 +4,12 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-enum
-{
-    CAR_BANGER,
-    CAR_SMALL,
-    CAR_TRUCK,
-
-    CAR_COUNT, // Num of car types
-};
 
 class SpawnScreen
 {
 private:
     Car *mViewCar[CAR_COUNT];
-    int mCurrentCar;
+    CarType mCurrentCar;
     bool bSpawned;
 
     Ogre::Camera *mCam;

@@ -229,7 +229,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         All powerup removals handled by the server's collision events
         In fact, client probably shouldn't register any collision callbacks for powerups
     */
-    GameCore::mPowerupPool->frameEvent();
+    GameCore::mPowerupPool->frameEvent( evt );
 
     // FUTURE
     // game will run x ticks behind the server

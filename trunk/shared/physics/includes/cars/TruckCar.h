@@ -2,18 +2,18 @@
  * @file	SimpleCoupeCar.h
  * @brief 	A Car object with specific mesh and texture to create a simple coupe car
  */
-#ifndef __SimpleCoupeCar_h_
-#define __SimpleCoupeCar_h_
+#ifndef __TRUCKCAR_H
+#define __TRUCKCAR_H
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
 #include "boost\lexical_cast.hpp"
 
-class SimpleCoupeCar : Car
+class TruckCar : Car
 {
 public:
-    SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
-    virtual ~SimpleCoupeCar(void);
+    TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
+    virtual ~TruckCar(void);
 
 private:
     void initTuning();
@@ -24,12 +24,12 @@ private:
     
     // Car related Nodes (initNodes())
     Ogre::SceneNode *mChassisNode;
-    Ogre::SceneNode *mFLDoorNode;
-    Ogre::SceneNode *mFRDoorNode;
-    Ogre::SceneNode *mRLDoorNode;
-    Ogre::SceneNode *mRRDoorNode;
+    Ogre::SceneNode *mLDoorNode;
+    Ogre::SceneNode *mRDoorNode;
     Ogre::SceneNode *mFBumperNode;
     Ogre::SceneNode *mRBumperNode;
+    Ogre::SceneNode *mLWingmirrorNode;
+    Ogre::SceneNode *mRWingmirrorNode;
 
     Ogre::SceneNode *mFLWheelNode;
     Ogre::SceneNode *mFRWheelNode;
@@ -37,5 +37,5 @@ private:
     Ogre::SceneNode *mRRWheelNode;
 };
 
-#endif // #ifndef __SimpleCoupeCar_h_
+#endif // #ifndef __TRUCKCAR_H
 

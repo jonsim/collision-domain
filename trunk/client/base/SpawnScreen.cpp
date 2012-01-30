@@ -11,11 +11,11 @@ SpawnScreen::SpawnScreen( Ogre::Camera* cam )
         GameCore::mPhysicsCore->mWorld, 
         GameCore::mPhysicsCore->getUniqueEntityID() );
 
-    mViewCar[CAR_SMALL] = (Car*) new SimpleCoupeCar( GameCore::mSceneMgr, 
+    mViewCar[CAR_SMALL] = (Car*) new SmallCar( GameCore::mSceneMgr, 
         GameCore::mPhysicsCore->mWorld, 
         GameCore::mPhysicsCore->getUniqueEntityID() );
 
-    mViewCar[CAR_TRUCK] = (Car*) new SimpleCoupeCar( GameCore::mSceneMgr, 
+    mViewCar[CAR_TRUCK] = (Car*) new TruckCar( GameCore::mSceneMgr, 
         GameCore::mPhysicsCore->mWorld, 
         GameCore::mPhysicsCore->getUniqueEntityID() );
 
@@ -60,11 +60,12 @@ void SpawnScreen::switchCar( int direction )
     hideCar();
 
     direction = direction <= 0 ? -1 : 1;
-    mCurrentCar += direction;
+    int newCar = (int)mCurrentCar + direction;
+    mCurrentCar = (CarType)newCar;
     if( mCurrentCar == -1 )
-        mCurrentCar = CAR_COUNT - 1;
+        mCurrentCar = (CarType)(CAR_COUNT - 1);
     if( mCurrentCar == CAR_COUNT )
-        mCurrentCar = 0;
+        mCurrentCar = (CarType)0;
 
     showCar();
 }

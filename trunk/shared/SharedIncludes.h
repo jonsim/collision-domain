@@ -17,6 +17,8 @@
 #include "FuckOgreBulletWheeledRigidBody.h"
 #include "cars/SimpleCoupeCar.h"
 #include "cars/BulletBuggyCar.h"
+#include "cars/SmallCar.h"
+#include "cars/TruckCar.h"
 #include "ViewCamera.h"
 #include "GameCore.h"
 

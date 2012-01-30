@@ -44,6 +44,9 @@ PowerupRandom::PowerupRandom()
         Ogre::Vector3 halfExtents(1, 1, 0.125);
 
         CylinderCollisionShape* collisionShape = new CylinderCollisionShape(halfExtents, axis);
+
+        CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
+        compoundShape->addChildShape(collisionShape, Ogre::Vector3(0,1.0,0));
         
         mRigidBody = new RigidBody(
                 "RandomPowerup" + boost::lexical_cast<std::string>(uniqueID),
@@ -55,16 +58,13 @@ PowerupRandom::PowerupRandom()
         float bodyFriction = 0;
         float bodyMass = 0;
 
-        // changing this won't actually do anything, annoying I know.
-        Ogre::Vector3 position(0,0,0);
-
         mRigidBody->setShape(
             mNode,
-            collisionShape,
+            compoundShape,
             bodyRestitution,
             bodyFriction,
             bodyMass,
-            position,
+            mNode->getPosition(),
             Ogre::Quaternion::IDENTITY);
 
         //mRigidBody->getBulletRigidBody()->translate(btVector3(0,3,0));
@@ -72,8 +72,13 @@ PowerupRandom::PowerupRandom()
 
         // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
         mRigidBody->getBulletRigidBody()->setUserPointer(this);
-        mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
         mRigidBody->disableDeactivation();
+
+        /*GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->removeRigidBody(mRigidBody->getBulletRigidBody());
+        mRigidBody->getBulletRigidBody()->setAngularVelocity( btVector3(5, 5, 2) );
+        GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addRigidBody(mRigidBody->getBulletRigidBody());*/
+
     }
 }
 

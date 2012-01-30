@@ -334,7 +334,7 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	// Do some checking here to make sure the player is allowed to spawn before sending the RPC back
-    int iCarType;
+    CarType iCarType;
     bitStream->Read( iCarType );
 
     // TODO: something with iCarType
