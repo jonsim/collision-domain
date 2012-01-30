@@ -26,14 +26,17 @@ GraphicsApplication::~GraphicsApplication (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
+	// Setup the GUI
 	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
 	GameCore::mGui->setupGUI();
 
+	// Setup the scene
+	setupShadowSystem();
     setupLighting();
     setupArena();
     setupNetworking();
 
-    // Load the ninjas
+    // Load the ninjas into the scene. This is for testing purposes only and can be removed later.
     Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
@@ -47,6 +50,7 @@ void GraphicsApplication::createScene (void)
     ninjaNode2->roll(Ogre::Degree(180));
     ninjaNode2->translate(0, 100, 0);
 
+	// Attach the GUI components
 	GameCore::mGui->displayConnectBox();
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
@@ -54,7 +58,7 @@ void GraphicsApplication::createScene (void)
 	createSpeedo();
 }
 
-/// @bried Draws the speedo on-screen
+/// @brief Draws the speedo on-screen
 void GraphicsApplication::createSpeedo (void)
 {
 	// Create our speedometer overlays
@@ -85,6 +89,15 @@ void GraphicsApplication::createSpeedo (void)
 }
 
 
+/// @brief Configure the shadow system. This should be the *FIRST* thing in the scene setup, because the shadow technique can alter the way meshes are loaded.
+void GraphicsApplication::setupShadowSystem (void)
+{
+    // Set the shadow renderer
+    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+	// THIS NEEDS TO BE SET, DEFAULTS TO ZERO. GameCore::mSceneMgr->setShadowFarDistance();
+}
+
+
 /// @brief  Adds and configures lights to the scene.
 void GraphicsApplication::setupLighting (void)
 {
@@ -102,9 +115,6 @@ void GraphicsApplication::setupLighting (void)
     
     // Create the skybox
     GameCore::mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
-
-    // Set the shadow renderer
-    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 }
 
 
