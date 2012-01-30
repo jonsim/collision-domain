@@ -19,8 +19,8 @@ ViewportManager::ViewportManager(int numViewports_P, Ogre::RenderWindow* window_
 Ogre::Viewport* ViewportManager::addViewport(Ogre::Camera* camera_P, bool main_P)
 {
 	zOrdering++; //Keep track of Z-Ordering
-	float widthOfViewport	= 0.2;
-	float heightOfViewport	= 0.2;
+	float widthOfViewport	= 0.2f;
+	float heightOfViewport	= 0.2f;
 
 	if(main_P) {
 		float x = widthOfViewport;
@@ -39,7 +39,7 @@ Ogre::Viewport* ViewportManager::addViewport(Ogre::Camera* camera_P, bool main_P
 		if((viewportsAdded % 2) == 0) {
 			x = 0;
 		} else {
-			x = 0.8;
+			x = 0.8f;
 		}
 
 		float y = 1.0f - ((floor(viewportsAdded/2.0)+1)*heightOfViewport);

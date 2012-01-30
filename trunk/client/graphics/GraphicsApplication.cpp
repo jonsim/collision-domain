@@ -26,14 +26,17 @@ GraphicsApplication::~GraphicsApplication (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
+	// Setup the GUI
 	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
 	GameCore::mGui->setupGUI();
 
+	// Setup the scene
+	setupShadowSystem();
     setupLighting();
     setupArena();
     setupNetworking();
 
-    // Load the ninjas
+    // Load the ninjas into the scene. This is for testing purposes only and can be removed later.
     Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
@@ -47,6 +50,7 @@ void GraphicsApplication::createScene (void)
     ninjaNode2->roll(Ogre::Degree(180));
     ninjaNode2->translate(0, 100, 0);
 
+	// Attach the GUI components
 	GameCore::mGui->displayConnectBox();
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
@@ -54,7 +58,7 @@ void GraphicsApplication::createScene (void)
 	createSpeedo();
 }
 
-/// @bried Draws the speedo on-screen
+/// @brief Draws the speedo on-screen
 void GraphicsApplication::createSpeedo (void)
 {
 	// Create our speedometer overlays
@@ -85,6 +89,15 @@ void GraphicsApplication::createSpeedo (void)
 }
 
 
+/// @brief Configure the shadow system. This should be the *FIRST* thing in the scene setup, because the shadow technique can alter the way meshes are loaded.
+void GraphicsApplication::setupShadowSystem (void)
+{
+    // Set the shadow renderer
+    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+	// THIS NEEDS TO BE SET, DEFAULTS TO ZERO. GameCore::mSceneMgr->setShadowFarDistance();
+}
+
+
 /// @brief  Adds and configures lights to the scene.
 void GraphicsApplication::setupLighting (void)
 {
@@ -102,9 +115,6 @@ void GraphicsApplication::setupLighting (void)
     
     // Create the skybox
     GameCore::mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
-
-    // Set the shadow renderer
-    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 }
 
 
@@ -118,7 +128,7 @@ void GraphicsApplication::setupArena (void)
     
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
     arenaNode->attachObject(arenaEntity);
-    arenaNode->scale(0.15, 0.15, 0.15);
+    arenaNode->scale(0.15f, 0.15f, 0.15f);
 
 
 
@@ -210,7 +220,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		// Apply controls the player (who will be moved on frameEnd and frameStart).
 		if( GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
 		{
-			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, 1./60.);
+			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
 			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
@@ -240,7 +250,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     delete inputSnapshot;
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, 1./60.);
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, (1.0f / 60.0f));
 
     return true;
 }
