@@ -28,7 +28,13 @@
     <ClInclude Include="..\..\shared\base\includes\Input.h" />
     <ClInclude Include="..\..\shared\base\includes\InputState.h" />
     <ClInclude Include="..\..\shared\base\includes\Powerup.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupHealth.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupMass.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupPool.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupRandom.h" />
+    <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h" />
     <ClInclude Include="..\..\shared\base\includes\stdafx.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
     <ClInclude Include="..\..\shared\physics\includes\Car.h" />
     <ClInclude Include="..\..\shared\physics\includes\CarSnapshot.h" />
@@ -206,7 +212,13 @@
     <ClCompile Include="..\..\shared\base\GameCore.cpp" />
     <ClCompile Include="..\..\shared\base\Input.cpp" />
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupHealth.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupMass.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupPool.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupRandom.cpp" />
+    <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp" />
     <ClCompile Include="..\..\shared\base\stdafx.cpp" />
+    <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
     <ClCompile Include="..\..\shared\physics\Car.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp" />
