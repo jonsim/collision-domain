@@ -12,12 +12,19 @@
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /// CarType represents the type of car used as the player object (i.e. the model).
-enum CarType {SMALL, MEDIUM, LARGE};
+//enum CarType {SMALL, MEDIUM, LARGE};
 
 /// CarSkin represents the texture applied to the player object.
 enum CarSkin {SKIN0, SKIN1, SKIN2, SKIN3, SKIN4, SKIN5, SKIN6, SKIN7, SKIN8, SKIN9};
 
-class PhysicsCore;
+enum CarType : int
+{
+    CAR_BANGER = 0,
+    CAR_SMALL,
+    CAR_TRUCK,
+
+    CAR_COUNT, // Num of car types
+};
 
 /**
  *  @brief 	Contains the Player nodes and the related data.
@@ -28,7 +35,7 @@ class Player //: public PhysicsEntity
 public:
     Player ();
     ~Player ();
-    void createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, PhysicsCore *physicsCore);
+    void createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, PhysicsCore *physicsCore);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent(
         InputState *userInput,
@@ -56,7 +63,7 @@ private:
 	Ogre::SceneNode *camNode;
 	Ogre::SceneNode *camArmNode;
 
-    int mCarType;
+    CarType mCarType;
 };
 
 #endif // #ifndef PLAYER_H

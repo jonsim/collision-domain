@@ -31,13 +31,27 @@ Player::~Player (void)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, PhysicsCore *physicsCore)
+void Player::createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, PhysicsCore *physicsCore)
 {
     mCarType = iCarType;
 
     // TODO: something with iCarType
+    switch( iCarType )
+    {
+    case CAR_BANGER:
+        mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    case CAR_SMALL:
+        mCar = (Car*) new SmallCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    case CAR_TRUCK:
+        mCar = (Car*) new TruckCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    default:
+        mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    }
 
-    mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
     mCar->attachCollisionTickCallback(this);
 
     mCar->moveTo(btVector3(0,0.5,0));

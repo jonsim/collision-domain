@@ -189,7 +189,7 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 
 }
 
-void NetworkCore::sendSpawnRequest( int iCarType )
+void NetworkCore::sendSpawnRequest( CarType iCarType )
 {
     RakNet::BitStream bsSend;
     bsSend.Write( iCarType );
@@ -266,7 +266,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 {
 	Player *pPlayer = NULL;
 	RakNet::RakNetGUID playerid;
-    int iCarType;
+    CarType iCarType;
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
 

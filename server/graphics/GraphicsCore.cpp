@@ -312,7 +312,7 @@ bool GraphicsCore::setup(void)
     // MORE GAMECORE RELATED INIT
 	GameCore::mNetworkCore->init( NULL );
 	Player *pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-	pPlayer->createPlayer( GameCore::mSceneMgr, MEDIUM, SKIN0, GameCore::mPhysicsCore );
+	pPlayer->createPlayer( GameCore::mSceneMgr, CAR_BANGER, SKIN0, GameCore::mPhysicsCore );
 	//pPlayer->attachCamera( mCamera );
 
     createFrameListener();

@@ -39,7 +39,7 @@ public:
     void deletePowerup( int index );
     Powerup *getPowerup();
 
-    void frameEvent();
+    void frameEvent( const Ogre::FrameEvent& evt );
 };
 
 #endif // #ifndef POWERUPPOOL_H

@@ -69,7 +69,7 @@ void GraphicsCore::createCamera(void)
     mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,3,20));
+    mCamera->setPosition(Ogre::Vector3(0,3,60));
     // Look back along -Z
     mCamera->lookAt(Ogre::Vector3(0,0,-300));
     mCamera->setNearClipDistance(5);

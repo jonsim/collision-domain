@@ -32,17 +32,26 @@ Player::~Player (void)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (Ogre::SceneManager* sm, int iCarType, CarSkin s, PhysicsCore *pc)
+void Player::createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, PhysicsCore *physicsCore)
 {
-    std::string uniqueItemNo = Ogre::StringConverter::toString(pc->getUniqueEntityID());
-	int itemNo = atoi( uniqueItemNo.c_str() );
-    // First set up the scene node relationships
-
-    // DO SOMETHING WITH iCarType
     mCarType = iCarType;
 
-    mCar = (Car*) new SimpleCoupeCar(sm, pc->mWorld, itemNo);
-    mCar->attachCollisionTickCallback(this);
+    // TODO: something with iCarType
+    switch( iCarType )
+    {
+    case CAR_BANGER:
+        mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    case CAR_SMALL:
+        mCar = (Car*) new SmallCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    case CAR_TRUCK:
+        mCar = (Car*) new TruckCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    default:
+        mCar = (Car*) new SimpleCoupeCar(sm, physicsCore->mWorld, physicsCore->getUniqueEntityID());
+        break;
+    }
 
 	//Set HP. More clever damage might be implemented in the future
 	hp = 100;

@@ -10,7 +10,7 @@ using namespace OgreBulletDynamics;
 
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
-void SimpleCoupeCar::initTuning()
+void SmallCar::initTuning()
 {
     // mTuning related values
     mSteer = 0.0f;
@@ -39,20 +39,11 @@ void SimpleCoupeCar::initTuning()
 }
 
 
-
-
-
-
-
-
-
-
-
 /// @brief  Constructor to create a car, add its graphical model to ogre and add its physics model to bullet.
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
+SmallCar::SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
 {
     mSceneMgr = sceneMgr;
     mWorld = world;
@@ -70,7 +61,7 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
 
 
 /// @brief  Destructor to clean up. Doesn't currently remove the car from the physics world though.
-SimpleCoupeCar::~SimpleCoupeCar(void)
+SmallCar::~SmallCar(void)
 {
     // Cleanup Bodies:
     delete mVehicle;
@@ -85,7 +76,7 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
 
 
 /// @brief  Initialises the node tree for this car.
-void SimpleCoupeCar::initNodes()
+void SmallCar::initNodes()
 {
     mPlayerNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
@@ -93,12 +84,12 @@ void SimpleCoupeCar::initNodes()
     mWheelsNode  = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
     mChassisNode = mBodyNode->createChildSceneNode("ChassisNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFLDoorNode   = mBodyNode->createChildSceneNode("FLDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFRDoorNode   = mBodyNode->createChildSceneNode("FRDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRLDoorNode   = mBodyNode->createChildSceneNode("RLDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRRDoorNode   = mBodyNode->createChildSceneNode("RRDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mLDoorNode   = mBodyNode->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRDoorNode   = mBodyNode->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mFBumperNode = mBodyNode->createChildSceneNode("FBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode = mBodyNode->createChildSceneNode("RBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mLHeadlightNode = mBodyNode->createChildSceneNode("mLHeadlightNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRHeadlightNode = mBodyNode->createChildSceneNode("mRHeadlightNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
     mFLWheelNode = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -112,62 +103,57 @@ void SimpleCoupeCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SimpleCoupeCar::initGraphics(Ogre::Vector3 chassisShift)
+void SmallCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    createGeometry("CarBody", "banger_body.mesh", "banger_body_uv", mChassisNode);
+    createGeometry("CarBody", "small_car_body.mesh", "small_car_body_uv", mChassisNode);
     mChassisNode->scale(0.019, 0.019, 0.019);
    // mChassisNode->setPosition(chassisShift); - Doesn't work well with this mesh!!!
 
     // load the left door baby
-    createGeometry("CarEntity_FLDoor", "banger_fldoor.mesh", "banger_fdoor_uv", mFLDoorNode);
-    mFLDoorNode->scale(0.019, 0.019, 0.019);
+    createGeometry("CarEntity_LDoor", "small_car_ldoor.mesh", "small_car_door_uv", mLDoorNode);
+    mLDoorNode->scale(0.019, 0.019, 0.019);
     //mLDoorNode->translate(43.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
     
     // lets get a tasty right door
-    createGeometry("CarEntity_FRDoor", "banger_frdoor.mesh", "banger_fdoor_uv", mFRDoorNode);
-    //mRDoorNode->scale(-1, 1, 1);
-    mFRDoorNode->scale(0.019, 0.019, 0.019);
-    //mRDoorNode->translate(-46.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
-
-    // load the left door baby
-    createGeometry("CarEntity_RLDoor", "banger_rldoor.mesh", "banger_rdoor_uv", mRLDoorNode);
-    mRLDoorNode->scale(0.019, 0.019, 0.019);
-    //mLDoorNode->translate(43.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
-    
-    // lets get a tasty right door
-    createGeometry("CarEntity_RRDoor", "banger_rrdoor.mesh", "banger_rdoor_uv", mRRDoorNode);
-    //mRDoorNode->scale(-1, 1, 1);
-    mRRDoorNode->scale(0.019, 0.019, 0.019);
+    createGeometry("CarEntity_RDoor", "small_car_rdoor.mesh", "small_car_door_uv", mRDoorNode);
+    mRDoorNode->scale(0.019, 0.019, 0.019);
     //mRDoorNode->translate(-46.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
 
     // and now a sweet sweet front bumper
-    createGeometry("CarEntity_FBumper", "banger_fbumper.mesh", "banger_bumper", mFBumperNode);
+    createGeometry("CarEntity_FBumper", "small_car_fbumper.mesh", "small_car_bumper", mFBumperNode);
     mFBumperNode->scale(0.019, 0.019, 0.019);
     //mFBumperNode->translate(0, 20.0 * 0.019, 140.0 * 0.019);
 
     // and now a regular rear bumper
-    createGeometry("CarEntity_RBumper", "banger_rbumper.mesh", "banger_bumper", mRBumperNode);
+    createGeometry("CarEntity_RBumper", "small_car_rbumper.mesh", "small_car_bumper", mRBumperNode);
     mRBumperNode->scale(-1, 1, 1);
     mRBumperNode->scale(0.019, 0.019, 0.019);
     //mRBumperNode->translate(0, 20.0 * 0.019, -135.0 * 0.019);
 
+    // Headlights
+    createGeometry("CarEntity_LHeadlight", "small_car_lheadlight.mesh", "small_car_headlight_uv", mLHeadlightNode);
+    mLHeadlightNode->scale( 0.019, 0.019, 0.019 );
+
+    createGeometry("CarEntity_RHeadlight", "small_car_rheadlight.mesh", "small_car_headlight_uv", mRHeadlightNode);
+    mRHeadlightNode->scale( 0.019, 0.019, 0.019 );
+
     // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "banger_wheel.mesh", "banger_wheel_uv", mFLWheelNode);
+    createGeometry("CarEntity_FLWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mFLWheelNode);
     mFLWheelNode->scale(-1, 1, 1);
     mFLWheelNode->scale(0.019, 0.019, 0.019);
 
     // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "banger_wheel.mesh", "banger_wheel_uv", mFRWheelNode);
+    createGeometry("CarEntity_FRWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mFRWheelNode);
     mFRWheelNode->scale(0.019, 0.019, 0.019);
 
     // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "banger_wheel.mesh", "banger_wheel_uv", mRLWheelNode);
+    createGeometry("CarEntity_RLWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mRLWheelNode);
     mRLWheelNode->scale(-1, 1, 1);
     mRLWheelNode->scale(0.019, 0.019, 0.019);
 
     // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "banger_wheel.mesh", "banger_wheel_uv", mRRWheelNode);
+    createGeometry("CarEntity_RRWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mRRWheelNode);
     mRRWheelNode->scale(0.019, 0.019, 0.019);
     
     //Ogre::Entity *entity = mSceneMgr->createEntity("fag","car2_wheel.mesh");
@@ -176,7 +162,7 @@ void SimpleCoupeCar::initGraphics(Ogre::Vector3 chassisShift)
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
-void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
+void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
     // shift chassis collisionbox up chassisShift units above origin
 
@@ -223,7 +209,7 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
 
 
 /// @brief  Attaches 4 wheels to the car chassis.
-void SimpleCoupeCar::initWheels()
+void SmallCar::initWheels()
 {
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);

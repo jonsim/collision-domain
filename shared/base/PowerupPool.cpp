@@ -63,7 +63,7 @@ void PowerupPool::deletePowerup( int index )
 }
 
 /// @brief  Process state changes for powerups and delete collected ones
-void PowerupPool::frameEvent()
+void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
 {
     int i = 0, iNew = -1;
 	for( i = 0; i < MAX_POWERUPS; i ++ )
@@ -74,10 +74,12 @@ void PowerupPool::frameEvent()
         // This has to be done here, because the instance can't be deleted in the collision  
         // callback (you can't call delete() then return to the deleted object's method!)
         if( mPowerups[i]->mHasBeenCollected )
+        {
             deletePowerup( i );
+        }
         else
         {
-            // do some nice rotation
+            mPowerups[i]->mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(evt.timeSinceLastFrame), 0.0 ) );
         }
     }
 }
