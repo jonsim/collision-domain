@@ -27,7 +27,8 @@ public:
 
     // Controls are assigned here
     InputState* getInputState();
-    bool isToggleWidget();
+    InputState* getFreeCamInputState();
+    /* bool isToggleWidget();*/
 	bool isToggleChatbox();
 	bool isToggleConsole();
     int getMouseXRel();

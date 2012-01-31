@@ -63,32 +63,66 @@ void Input::capture ()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getInputState()
 {
-    return new InputState(mKeyboard->isKeyDown(OIS::KC_W),
-                          mKeyboard->isKeyDown(OIS::KC_S),
-                          mKeyboard->isKeyDown(OIS::KC_A),
-                          mKeyboard->isKeyDown(OIS::KC_D) );
+	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+	{
+        return new InputState(mKeyboard->isKeyDown(OIS::KC_W),
+                                mKeyboard->isKeyDown(OIS::KC_S),
+                                mKeyboard->isKeyDown(OIS::KC_A),
+                                mKeyboard->isKeyDown(OIS::KC_D) );
+	}
+	else
+	{
+		// Don't want to capture any keys (typing things) or at the select car screen
+		return new InputState( false, false, false, false );
+	}
+}
+
+
+/// @brief  Constructs an InputState object based on the key state (at the time of the last Input::capture()).
+/// @return The InputState object containing movement key information at the time of the previous sample.
+InputState* Input::getFreeCamInputState()
+{
+	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+	{
+        return new InputState(mKeyboard->isKeyDown(OIS::KC_T),
+                              mKeyboard->isKeyDown(OIS::KC_G),
+                              mKeyboard->isKeyDown(OIS::KC_F),
+                              mKeyboard->isKeyDown(OIS::KC_H) );
+    }
+    else
+    {
+        return new InputState( false, false, false, false );
+    }
 }
 
 
 /// @brief  Processes the key bound (here) to toggling widgets on screen.
 /// @return Whether the key bound to toggling widgets on screen is pressed or not.
-bool Input::isToggleWidget()
+/*bool Input::isToggleWidget()
 {
     return mKeyboard->isKeyDown(OIS::KC_G);
-}
+}*/
 
 /// @brief  Processes the key bound (here) to toggling chatbox on screen.
 /// @return Whether the key bound to toggling chatbox on screen is pressed or not.
 bool Input::isToggleChatbox()
 {
-    return mKeyboard->isKeyDown(OIS::KC_T);
+    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+	{
+        return mKeyboard->isKeyDown(OIS::KC_T);
+	}
+    else return false;
 }
 
 /// @brief  Processes the key bound (here) to toggling console on screen.
 /// @return Whether the key bound to toggling console on screen is pressed or not.
 bool Input::isToggleConsole()
 {
-    return mKeyboard->isKeyDown(OIS::KC_C);
+    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+	{
+        return mKeyboard->isKeyDown(OIS::KC_C);
+	}
+    else return false;
 }
 
 /// @brief  Deals with mouse input.

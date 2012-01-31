@@ -41,14 +41,15 @@ void GraphicsApplication::createScene (void)
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
-    ninjaNode->translate(0, 0, 0);
-    Ogre::Entity* ninjaEntity2 = GameCore::mSceneMgr->createEntity("Ninja2", "ninja.mesh");
+    ninjaNode->translate(100, 0, 0);
+    ninjaNode->scale(0.2,0.2,0.2);
+    /*Ogre::Entity* ninjaEntity2 = GameCore::mSceneMgr->createEntity("Ninja2", "ninja.mesh");
     ninjaEntity2->setCastShadows(true);
     Ogre::SceneNode* ninjaNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
     ninjaNode2->attachObject(ninjaEntity2);
     ninjaNode2->pitch(Ogre::Degree(90));
     ninjaNode2->roll(Ogre::Degree(180));
-    ninjaNode2->translate(0, 100, 0);
+    ninjaNode2->translate(0, 100, 0);*/
 
 	// Attach the GUI components
 	GameCore::mGui->displayConnectBox();
@@ -185,30 +186,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     
     // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
 
-	InputState *inputSnapshot;
+	InputState *inputSnapshot = mUserInput.getInputState();
 
-	if( NetworkCore::bConnected )
-	{
-		if( !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
-		{
-			// If we're not typing anywhere, capture the user's control keys
-			inputSnapshot = mUserInput.getInputState();
-
-			if( mUserInput.isToggleConsole() )
-				GameCore::mGui->toggleConsole();
-			else if( mUserInput.isToggleChatbox() )
-				GameCore::mGui->toggleChatbox();
-		}
-		else
-		{
-			// Don't want to capture any keys (typing things)
-			inputSnapshot = new InputState( false, false, false, false );
-		}
-	}
-	else
-	{
-		inputSnapshot = new InputState( false, false, false, false );
-	}
+	if( mUserInput.isToggleConsole() )      GameCore::mGui->toggleConsole();
+	else if( mUserInput.isToggleChatbox() ) GameCore::mGui->toggleChatbox();
     
     // Process the networking. Sends client's input and receives data
     GameCore::mNetworkCore->frameEvent(inputSnapshot);
@@ -224,12 +205,12 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
+            // update speedo
 			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
 			CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/mph" );
 			char szSpeed[64];
 			sprintf( szSpeed, "MPH: %f", speedmph );
 			mph->setText( szSpeed );
-
 			updateSpeedo( speedmph );
 		}
 

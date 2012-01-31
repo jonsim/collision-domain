@@ -96,32 +96,9 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
-	//Update the camera
-	mCarCam->updatePosition();
-	/*
-	std::stringstream ssTmp;
-	ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
-	OutputDebugString(ssTmp.str().c_str());
-	*/
-    // process steering
+    // process steering and apply acceleration
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
-    
-    // apply acceleration 4wd style
     mCar->accelInputTick(userInput->isForward(), userInput->isBack());
-
-    // TELEPORT TESTING
-    /*if (userInput->isLeft() && userInput->isRight())
-    {
-        // teleport to the previously set point!
-        if (mCarSnapshot != NULL) mCar->restoreSnapshot(mCarSnapshot);
-    }
-    
-    if (userInput->isLeft() && !userInput->isRight())
-    {
-        // set the new teleport point
-        if (mCarSnapshot != NULL) delete mCarSnapshot;
-        mCarSnapshot = mCar->getCarSnapshot();
-    }*/
 }
 
 
@@ -130,10 +107,20 @@ void Player::processControlsFrameEvent(
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
 void Player::updateCameraFrameEvent (int XRotation, int YRotation)
 {
-    Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
-    //camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-	//camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * YRotation), Ogre::Node::TS_LOCAL);
+    Ogre::SceneNode *camNode = mCar->attachCamNode();
+    Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
+    
+    camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
+	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
 
+
+	//Update the camera
+	//mCarCam->updatePosition();
+	/*
+	std::stringstream ssTmp;
+	ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
+	OutputDebugString(ssTmp.str().c_str());
+	*/
 }
 
 
