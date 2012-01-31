@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
+#define MESH_SCALING_CONSTANT 0.019f
+
 
 /// @brief  Constructor to create physics stuff
 /// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.
@@ -66,7 +68,7 @@ PhysicsCore::~PhysicsCore(void)
 /// @param n The scenenode to scale.
 void PhysicsCore::auto_scale_scenenode (Ogre::SceneNode* n)
 {
-    n->scale(0.019f, 0.019f, 0.019f);
+    n->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
 }
 
 
