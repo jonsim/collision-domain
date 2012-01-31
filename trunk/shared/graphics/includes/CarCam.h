@@ -13,7 +13,7 @@ class CarCam //: public PhysicsEntity
 {
 public:
 						CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode,Ogre::SceneNode* followedObject);
-	void				updatePosition();
+	void				updatePosition(int XRotation, int YRotation);
 private:
 	Ogre::Camera*		mCam;
 	Ogre::SceneNode*	mFollowedObject;

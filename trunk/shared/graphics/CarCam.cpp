@@ -35,16 +35,23 @@ CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre
 	
 }
 
-void CarCam::updatePosition()
+void CarCam::updatePosition(int XRotation, int YRotation)
 {
+	if (SHIT_CAMERA)
+    {
+    
+	    Ogre::Vector3 pos =  mFollowedObject->getPosition();
+	    Ogre::Quaternion orientation =  mFollowedObject->getOrientation();
 	
-	Ogre::Vector3 pos =  mFollowedObject->getPosition();
-	Ogre::Quaternion orientation =  mFollowedObject->getOrientation();
-	
-	Ogre::Vector3 toMove = (pos-mApproxCamNode->getPosition());
-	mApproxCamNode->translate(toMove);
-	//mApproxCamNode->translate(Ogre::Vector3(0,0.5,0))
-	//mApproxCamNode->translate(0.0,0.05,0);
-	//+Ogre::Vector3(0,0.5,-62));
-	//mApproxCamNode->setPosition(mActualCamNode->getPosition());
+	    Ogre::Vector3 toMove = (pos-mApproxCamNode->getPosition());
+	    mApproxCamNode->translate(toMove);
+	    //mApproxCamNode->translate(Ogre::Vector3(0,0.5,0))
+	    //mApproxCamNode->translate(0.0,0.05,0);
+	    //+Ogre::Vector3(0,0.5,-62));
+	    //mApproxCamNode->setPosition(mActualCamNode->getPosition());
+    }
+    else
+    {
+
+    }
 }

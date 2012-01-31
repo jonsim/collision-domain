@@ -113,9 +113,10 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation)
     camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
 	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
 
+    mCarCam->updatePosition(XRotation, YRotation);
 
 	//Update the camera
-	//mCarCam->updatePosition();
+	//
 	/*
 	std::stringstream ssTmp;
 	ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
