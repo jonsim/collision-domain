@@ -7,6 +7,20 @@
 
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
+using namespace Ogre;
+
+/*  Width:    2490mm (not inc wing mirrors, 2866mm with them)
+    Height:   2816mm (inc wheels, cab alone is 2589mm)
+    Length:   5725mm
+    Wheelbase:    3526mm
+    Weight:    7396kg
+    Engine:    12 litre, 420bhp                               */
+#define TRUCK_WIDTH_NO_WING_MIRRORS 2.490f
+#define TRUCK_HEIGHT_CAB_ONLY       2.589f
+#define TRUCK_HEIGHT_INC_WHEELS     2.816f
+#define TRUCK_LENGTH                5.725f
+#define TRUCK_WHEELBASE             3.526f
+#define TRUCK_LENGTH_SHIFT_Z         -0.5f
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void TruckCar::initTuning()
@@ -52,7 +66,7 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
 
     initTuning();
     initNodes();
-    initGraphics(chassisShift);
+    initGraphics();
     initBody(carPosition, chassisShift);
     initWheels();
 }
@@ -101,7 +115,7 @@ void TruckCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void TruckCar::initGraphics(Ogre::Vector3 chassisShift)
+void TruckCar::initGraphics()
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
     createGeometry("CarBody", "truck_body.mesh", "truck_body_uv", mChassisNode);
@@ -132,7 +146,7 @@ void TruckCar::initGraphics(Ogre::Vector3 chassisShift)
 
     // tidy front left wheel
     createGeometry("CarEntity_FLWheel", "truck_wheel.mesh", "truck_wheel_uv", mFLWheelNode);
-    mFLWheelNode->scale(-1, 1, 1);
+    //mFLWheelNode->scale(-1, 1, 1);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
 
     // delightful front right wheel
@@ -141,7 +155,7 @@ void TruckCar::initGraphics(Ogre::Vector3 chassisShift)
 
     // and now an arousing rear left wheel
     createGeometry("CarEntity_RLWheel", "truck_wheel.mesh", "truck_wheel_uv", mRLWheelNode);
-    mRLWheelNode->scale(-1, 1, 1);
+    //mRLWheelNode->scale(-1, 1, 1);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
 
     // and finally a rear right wheel to seal the deal. beaut.
@@ -157,14 +171,14 @@ void TruckCar::initGraphics(Ogre::Vector3 chassisShift)
 void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
     // shift chassis collisionbox up chassisShift units above origin
-
-    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.33f, 2.6f));
 	
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
-    compoundChassisShape->addChildShape(chassisShape, chassisShift);
+    
+    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(TRUCK_WIDTH_NO_WING_MIRRORS, TRUCK_HEIGHT_CAB_ONLY, 5.72f));
+    compoundChassisShape->addChildShape(chassisShape, Vector3(0, TRUCK_HEIGHT_CAB_ONLY + (TRUCK_HEIGHT_INC_WHEELS - TRUCK_HEIGHT_CAB_ONLY), TRUCK_LENGTH_SHIFT_Z));
 
     OgreBulletCollisions::BoxCollisionShape *chassisShapeTop = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.764775f, 0.33f, 1.06672f));
-    compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 1.3f, -0.25f));
+    compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 2.3f, -0.25f));
 
     OgreBulletCollisions::BoxCollisionShape *chassisShapeAntiRoll = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.01f, 0.15f, 0.01f));
     compoundChassisShape->addChildShape(chassisShapeAntiRoll, Ogre::Vector3(0.0f, 1.63f, 0.0f));
@@ -203,6 +217,14 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 /// @brief  Attaches 4 wheels to the car chassis.
 void TruckCar::initWheels()
 {
+       /* #define TRUCK_WIDTH_NO_WING_MIRRORS 2.490f;
+#define TRUCK_HEIGHT_CAB_ONLY       2.589f;
+#define TRUCK_HEIGHT_INC_WHEELS     2.816f;
+#define TRUCK_LENGTH                5.725f;
+#define TRUCK_WHEELBASE             3.526f;*/
+
+    float wheelBase = 3.526;
+
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
 
@@ -210,10 +232,11 @@ void TruckCar::initWheels()
     bool isFrontWheel = true;
     
     // Wheel 1 - Front Left
-    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
+    //Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
+    Ogre::Vector3 connectionPointCS0 (wheelBase-(mWheelWidth), mConnectionHeight, wheelBase + (-mWheelRadius));
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
-
+    
     // Wheel 2 - Front Right
     connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
