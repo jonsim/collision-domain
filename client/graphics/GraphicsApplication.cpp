@@ -128,7 +128,8 @@ void GraphicsApplication::setupArena (void)
     
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
     arenaNode->attachObject(arenaEntity);
-    arenaNode->scale(0.15f, 0.15f, 0.15f);
+    //arenaNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
+	arenaNode->scale(0.019f, 0.019f, 0.019f);
 
 
 
