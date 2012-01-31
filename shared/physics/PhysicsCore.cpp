@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-#define MESH_SCALING_CONSTANT 0.019f
+#define MESH_SCALING_CONSTANT 0.02f
 
 
 /// @brief  Constructor to create physics stuff

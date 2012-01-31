@@ -166,16 +166,36 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
     // shift chassis collisionbox up chassisShift units above origin
 
-    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.33f, 2.6f));
-	
-    compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
-    compoundChassisShape->addChildShape(chassisShape, chassisShift);
+    CollisionShape* chosenCollisionShape;
 
-    OgreBulletCollisions::BoxCollisionShape *chassisShapeTop = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.764775f, 0.33f, 1.06672f));
-    compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 1.3f, -0.25f));
+    // CREATE THE COLLISION SHAPE OUT OF A MESH
+    {
+        Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "small_car_collision.mesh");
 
-    OgreBulletCollisions::BoxCollisionShape *chassisShapeAntiRoll = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.01f, 0.15f, 0.01f));
-    compoundChassisShape->addChildShape(chassisShapeAntiRoll, Ogre::Vector3(0.0f, 1.63f, 0.0f));
+        //OgreBulletCollisions::StaticMeshToShapeConverter* collisionMeshConverter = new OgreBulletCollisions::StaticMeshToShapeConverter(entity);
+        //OgreBulletCollisions::TriangleMeshCollisionShape* collisionMesh = collisionMeshConverter->createTrimesh();
+
+        chosenCollisionShape = NULL;
+    }
+
+    // CREATE THE COLLISION SHAPE OUT OF BOXES
+    {
+        compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
+
+        chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.33f, 2.6f));
+        compoundChassisShape->addChildShape(chassisShape, chassisShift);
+
+        OgreBulletCollisions::BoxCollisionShape *chassisShapeTop = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.764775f, 0.33f, 1.06672f));
+        compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 1.3f, -0.25f));
+
+        OgreBulletCollisions::BoxCollisionShape *chassisShapeAntiRoll = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.01f, 0.15f, 0.01f));
+        compoundChassisShape->addChildShape(chassisShapeAntiRoll, Ogre::Vector3(0.0f, 1.63f, 0.0f));
+
+        chosenCollisionShape = compoundChassisShape;
+    }
+
+
+
 
 
     
@@ -190,7 +210,7 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
             COL_CAR | COL_ARENA | COL_POWERUP));
     
     // attach physics shell to mBodyNode
-    mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
+    mCarChassis->setShape (mBodyNode, chosenCollisionShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
     mCarChassis->setDamping(0.2f, 0.2f);
 
     mCarChassis->disableDeactivation();

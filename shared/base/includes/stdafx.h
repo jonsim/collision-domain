@@ -32,13 +32,23 @@
 #include <CEGUI.h>
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 
-//#include "OgreBulletDynamicsRigidBody.h"
-#include "OgreBulletDynamics.h"
-#include "OgreBulletDynamicsRigidBody.h"
+
+
+#include "OgreBulletCollisions.h"
+#include "OgreBulletCollisionsShape.h"
+
+#include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
+//#include "Shapes/OgreBulletCollisionsTrimeshShape.h"
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 #include "Shapes/OgreBulletCollisionsCylinderShape.h"
 #include "Shapes/OgreBulletCollisionsCompoundShape.h"
+
+
+#include "OgreBulletDynamics.h"
+#include "OgreBulletDynamicsRigidBody.h"
+
+
 
 // Windows specific include
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

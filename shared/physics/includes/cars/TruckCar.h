@@ -18,7 +18,7 @@ public:
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(Ogre::Vector3 chassisShift);
+    void initGraphics();
     void initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift);
     void initWheels();
     

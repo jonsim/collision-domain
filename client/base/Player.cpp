@@ -73,6 +73,7 @@ void Player::attachCamera (Ogre::Camera* cam)
     // only attach a camera to one of them!! Imagine the carnage if there were more
     camNode = mCar->attachCamNode();
     camArmNode = camNode->getParentSceneNode();
+    camNode->translate(0, 0, -20); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
 	/*
     camArmNode->translate(0, 0.5, 0); // place camera y above car node
     camArmNode->pitch(Ogre::Degree(25));
