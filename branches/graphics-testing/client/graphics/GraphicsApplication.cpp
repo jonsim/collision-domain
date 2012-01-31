@@ -42,7 +42,7 @@ void GraphicsApplication::createScene (void)
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->translate(100, 0, 0);
-    ninjaNode->scale(0.2,0.2,0.2);
+    ninjaNode->scale(0.2f, 0.2f, 0.2f);
     /*Ogre::Entity* ninjaEntity2 = GameCore::mSceneMgr->createEntity("Ninja2", "ninja.mesh");
     ninjaEntity2->setCastShadows(true);
     Ogre::SceneNode* ninjaNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
