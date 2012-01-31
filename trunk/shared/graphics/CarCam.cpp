@@ -3,10 +3,11 @@
  * @brief 	Contains the camera and updates to connect it to the car
  */
 
-/*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
 #include "CarCam.h"
+
+#define SHIT_CAMERA 0
 
 CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre::SceneNode* followedObject)
 {
@@ -28,7 +29,8 @@ CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre
 	
 	//Attach the camera to the node
 	//mApproxCamNode->translate(Ogre::Vector3(0,0,65));
-	mApproxCamNode->attachObject(mCam);
+    if (SHIT_CAMERA) mApproxCamNode->attachObject(mCam);
+    else car->attachCamNode()->attachObject(mCam);
 	//mCam->setFocalLength(4);
 	
 }
