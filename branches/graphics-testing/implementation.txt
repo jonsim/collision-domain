@@ -1,0 +1,28 @@
+Very basic network implementation.
+
+Nothing is done server or client side to smooth out player movements.
+Clients send their input every 20ms, server broadcasts all player positions every 20ms (just for testing)
+Hardcoded as UPDATE_INTERVAL at the moment.
+Client inputs 'stick' when they are sent; it is assumed each key is held until the next input is received.
+Means button taps register as at least UPDATE_INTERVAL long. Might need to change this.
+No implementation client or server side for players quitting.
+
+All players (including local player) are stored and reached through the PlayerPool class.
+Local player info is created once the server is up and running. In clients, local player is 
+created when the client PlayerSpawn RPC is called by server with local ID.
+
+Player IDs aren't conventional ints or an index in the array. It's a 'RakNetGUID' which is 
+maintained automatically and remains consistent. Players array is random order.
+
+In the server, local player is stored in the main player array as well. In the client it isn't.
+
+ORDER OF EVENTS:
+Server - set up networking, create local player, start frame sequence
+Client - set up networking, send connection request, start frame sequence
+Server - accept connection request
+Client - call server PlayerJoin RPC with nickname
+Server - add client to playerpool. Call client's GameJoin RPC and send them all players. Call other clients PlayerJoin RPC.
+Client - add self to playerpool. Add all other players and objects. Call server's PlayerSpawn RPC (request to spawn)
+Server - create player's car object, call other clients PlayerSpawn RPC
+Client - receive spawn call, create local player and attach camera
+Let the game begin.
