@@ -5,9 +5,6 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-using namespace OgreBulletCollisions;
-using namespace OgreBulletDynamics;
-
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SmallCar::initTuning()
@@ -96,6 +93,10 @@ void SmallCar::initNodes()
     mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
+	// setup particles. This needs to be propogated.
+    mExhaustSystem = mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "SmallCar/Exhaust");
+	mBodyNode->attachObject(mExhaustSystem);
+
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;
     mCamNode     = NULL;
@@ -166,13 +167,13 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
     // shift chassis collisionbox up chassisShift units above origin
 
-    CollisionShape* chosenCollisionShape;
+    OgreBulletCollisions::CollisionShape* chosenCollisionShape;
 
     // CREATE THE COLLISION SHAPE OUT OF A MESH
     {
         Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "small_car_collision.mesh");
 
-        //OgreBulletCollisions::StaticMeshToShapeConverter* collisionMeshConverter = new OgreBulletCollisions::StaticMeshToShapeConverter(entity);
+        OgreBulletCollisions::StaticMeshToShapeConverter* collisionMeshConverter = new OgreBulletCollisions::StaticMeshToShapeConverter(entity);
         //OgreBulletCollisions::TriangleMeshCollisionShape* collisionMesh = collisionMeshConverter->createTrimesh();
 
         chosenCollisionShape = NULL;
@@ -211,7 +212,7 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     
     // attach physics shell to mBodyNode
     mCarChassis->setShape (mBodyNode, chosenCollisionShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
-    mCarChassis->setDamping(0.2f, 0.2f);
+    mCarChassis->setDamping(0.2f, 0.2f);	// set chassis damping (linear, angular respectively).
 
     mCarChassis->disableDeactivation();
     mTuning = new OgreBulletDynamics::VehicleTuning(

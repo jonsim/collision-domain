@@ -42,7 +42,7 @@ void GraphicsApplication::createScene (void)
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->translate(100, 0, 0);
-    ninjaNode->scale(0.2,0.2,0.2);
+    ninjaNode->scale(0.2f, 0.2f, 0.2f);
     /*Ogre::Entity* ninjaEntity2 = GameCore::mSceneMgr->createEntity("Ninja2", "ninja.mesh");
     ninjaEntity2->setCastShadows(true);
     Ogre::SceneNode* ninjaNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
@@ -116,6 +116,13 @@ void GraphicsApplication::setupLighting (void)
     
     // Create the skybox
     GameCore::mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+}
+
+
+void GraphicsApplication::setupParticles (void)
+{
+	// set nonvisible timeout
+	Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
 }
 
 
@@ -205,8 +212,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
-            // update speedo
+			// get speed
 			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
+
+            // update speedo
 			CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/mph" );
 			char szSpeed[64];
 			sprintf( szSpeed, "MPH: %f", speedmph );

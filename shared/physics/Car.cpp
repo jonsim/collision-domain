@@ -151,6 +151,15 @@ void Car::accelInputTick(bool isForward, bool isBack)
     mVehicle->applyEngineForce(mEngineForce, 0);
     mVehicle->applyEngineForce(mEngineForce, 1);
 
+	// update exhaust. whee this is the wrong place to do this.
+	float speedmph = getCarMph();
+	float emissionRate = 0;
+	if (isForward && speedmph < 50)
+		emissionRate = (50 - speedmph) * 15;
+	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
+		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
+
+
     //mbtRigidBody->setBrake(1500.0f, 0);
     //mbtRigidBody->setBrake(1500.0f, 1);
     //mbtRigidBody->setBrake(1500.0f, 2);

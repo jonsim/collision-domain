@@ -49,10 +49,11 @@ protected:
     Ogre::SceneNode *mCamArmNode;
     Ogre::SceneNode *mCamNode;
 
-    
-    
-    
+	// Wheel node
     Ogre::SceneNode *mWheelsNode;
+
+	// Exhaust system
+	Ogre::ParticleSystem* mExhaustSystem;
 
     // Data for whole class
     int mUniqueCarID;
