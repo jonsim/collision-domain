@@ -39,6 +39,7 @@ protected:
 private:
 	void setupShadowSystem (void);
     void setupLighting (void);
+	void setupParticles (void);
     void setupArena (void);
     void setupNetworking (void);
 	void createSpeedo (void);

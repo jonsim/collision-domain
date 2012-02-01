@@ -107,6 +107,10 @@ void TruckCar::initNodes()
     mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+	
+	// setup particles. This needs to be propogated.
+    mExhaustSystem = mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "Truck/Exhaust");
+	mBodyNode->attachObject(mExhaustSystem);
 
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;
