@@ -102,16 +102,31 @@ void GraphicsApplication::setupShadowSystem (void)
 /// @brief  Adds and configures lights to the scene.
 void GraphicsApplication::setupLighting (void)
 {
+	float sunAmbience[4]   = {241, 228, 190, 500};
+	float sunBrightness[4] = {223, 225, 201, 701};
+	float sunSpecular[4]   = {223, 225, 201, 400};
+	float sf; // scaling factor
+	
+	sf = (1.0f / 255.0f) * (sunAmbience[3] / 1000.0f);
+	Ogre::ColourValue sunAmbienceColour   = Ogre::ColourValue(sunAmbience[0]   * sf, sunAmbience[1]   * sf, sunAmbience[2]   * sf);
+	sf = (1.0f / 255.0f) * (sunBrightness[3] / 1000.0f);
+	Ogre::ColourValue sunBrightnessColour = Ogre::ColourValue(sunBrightness[0] * sf, sunBrightness[1] * sf, sunBrightness[2] * sf);
+	sf = (1.0f / 255.0f) * (sunSpecular[3] / 1000.0f);
+	Ogre::ColourValue sunSpecularColour   = Ogre::ColourValue(sunSpecular[0]   * sf, sunSpecular[1]   * sf, sunSpecular[2]   * sf);
+
     // Set the ambient light.
-    GameCore::mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
+    GameCore::mSceneMgr->setAmbientLight(sunAmbienceColour);
     
     // Add a directional light
-    Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
+    //Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
+	Ogre::Vector3 directionalLightDir(0.500349f, -0.681998f, 1.13337f);
     directionalLightDir.normalise();
+
     Ogre::Light* directionalLight = GameCore::mSceneMgr->createLight("directionalLight");
     directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
-    directionalLight->setDiffuseColour( Ogre::ColourValue::White);
-    directionalLight->setSpecularColour(Ogre::ColourValue(0.4f, 0.4f, 0.4f));
+	//directionalLight->setDiffuseColour(Ogre::ColourValue::White);
+    directionalLight->setDiffuseColour(sunBrightnessColour);
+    directionalLight->setSpecularColour(sunSpecularColour);
     directionalLight->setDirection(directionalLightDir);
     
     // Create the skybox
