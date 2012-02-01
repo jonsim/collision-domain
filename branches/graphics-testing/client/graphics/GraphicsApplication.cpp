@@ -119,6 +119,13 @@ void GraphicsApplication::setupLighting (void)
 }
 
 
+void GraphicsApplication::setupParticles (void)
+{
+	// set nonvisible timeout
+	Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
+}
+
+
 /// @brief  Builds the initial arena.
 void GraphicsApplication::setupArena (void)
 {
@@ -205,8 +212,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
-            // update speedo
+			// get speed
 			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
+
+            // update speedo
 			CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/mph" );
 			char szSpeed[64];
 			sprintf( szSpeed, "MPH: %f", speedmph );
