@@ -102,10 +102,25 @@ void GraphicsApplication::setupShadowSystem (void)
 /// @brief  Adds and configures lights to the scene.
 void GraphicsApplication::setupLighting (void)
 {
+	float sunAngle[3]      = { 43,  60,   0}; // Pitch, Yaw, Roll
 	float sunAmbience[4]   = {241, 228, 190, 500};
 	float sunBrightness[4] = {223, 225, 201, 701};
 	float sunSpecular[4]   = {223, 225, 201, 400};
 	float sf; // scaling factor
+	
+	Ogre::Vector3 b(1, 1, 1);
+	Ogre::Matrix3 Rx(1.0f, 0.0f,                         0.0f, 
+		             0.0f, Ogre::Math::Cos(sunAngle[2]), -Ogre::Math::Sin(sunAngle[2]), 
+					 0.0f, Ogre::Math::Sin(sunAngle[2]),  Ogre::Math::Cos(sunAngle[2]));
+	Ogre::Matrix3 Ry( Ogre::Math::Cos(sunAngle[0]), 0.0f, Ogre::Math::Sin(sunAngle[0]), 
+		             0.0f,                          1.0f, 0.0f, 
+					 -Ogre::Math::Sin(sunAngle[0]), 0.0f, Ogre::Math::Cos(sunAngle[0]));
+	Ogre::Matrix3 Rz(Ogre::Math::Cos(sunAngle[1]), -Ogre::Math::Sin(sunAngle[1]), 0.0f, 
+		             Ogre::Math::Sin(sunAngle[1]),  Ogre::Math::Cos(sunAngle[1]),  0.0f, 
+					 0.0f,                         0.0f,                          1.0f);
+	Ogre::Matrix3 Rt = Rx * Ry * Rz;
+	b = Rt * b;
+	b.normalise();
 	
 	sf = (1.0f / 255.0f) * (sunAmbience[3] / 1000.0f);
 	Ogre::ColourValue sunAmbienceColour   = Ogre::ColourValue(sunAmbience[0]   * sf, sunAmbience[1]   * sf, sunAmbience[2]   * sf);
@@ -119,15 +134,16 @@ void GraphicsApplication::setupLighting (void)
     
     // Add a directional light
     //Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
-	Ogre::Vector3 directionalLightDir(0.500349f, -0.681998f, 1.13337f);
-    directionalLightDir.normalise();
+	//Ogre::Vector3 directionalLightDir(0.500349f, -0.681998f, 1.13337f);
+    //directionalLightDir.normalise();
 
     Ogre::Light* directionalLight = GameCore::mSceneMgr->createLight("directionalLight");
     directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
 	//directionalLight->setDiffuseColour(Ogre::ColourValue::White);
     directionalLight->setDiffuseColour(sunBrightnessColour);
     directionalLight->setSpecularColour(sunSpecularColour);
-    directionalLight->setDirection(directionalLightDir);
+    //directionalLight->setDirection(directionalLightDir);
+	directionalLight->setDirection(b);
     
     // Create the skybox
     GameCore::mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
