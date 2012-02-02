@@ -33,6 +33,7 @@ public:
 	bool isToggleConsole();
     int getMouseXRel();
     int getMouseYRel();
+	int getMouseZRel();
 
 protected:
     //OIS Input devices
