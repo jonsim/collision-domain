@@ -28,7 +28,7 @@ public:
     virtual ~GraphicsCore (void);
     virtual void go (void);
 	void shutdown() { mShutDown = true; }
-
+	
     Ogre::Camera* mCamera;
     SpawnScreen *mSpawnScreen;
     

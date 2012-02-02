@@ -12,9 +12,12 @@
 class PlayerPool;
 class NetworkCore;
 class GraphicsCore;
+class GraphicsApplication;
 class AudioCore;
 class GameGUI;
 class PowerupPool;
+
+#define MESH_SCALING_CONSTANT 0.019f
 
 
 /**
@@ -27,6 +30,7 @@ public:
     static PlayerPool*  mPlayerPool;
 
     static GraphicsCore* mGraphicsCore;
+	static GraphicsApplication* mGraphicsApplication;
     static NetworkCore* mNetworkCore;
     static PhysicsCore* mPhysicsCore;
     static AudioCore* mAudioCore;

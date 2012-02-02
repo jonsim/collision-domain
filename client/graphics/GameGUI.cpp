@@ -44,7 +44,12 @@ void GameGUI::setupGUI()
 	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
     mph->setVisible( false );
 
+	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
+	createWindow( "Vanilla/StaticText", "root_wnd/fps" );
+	fps->setText( "fps: " );
+	fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
 	CEGUI::System::getSingleton().setGUISheet( mSheet );
+	mSheet->addChildWindow( fps );
 
 	mSheet->addChildWindow( mph );
 }
@@ -198,6 +203,16 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
         {
             if( strTokens.at(0) == "exit" )
                 mWinMgr.getWindow( "/Console" )->hide();
+	else if (!stricmp(szInput, "weather 1"))
+		GameCore::mGraphicsApplication->setWeatherMode(0);
+	else if (!stricmp(szInput, "weather 2"))
+		GameCore::mGraphicsApplication->setWeatherMode(1);
+	else if (!stricmp(szInput, "weather 3"))
+		GameCore::mGraphicsApplication->setWeatherMode(2);
+	else if (!stricmp(szInput, "bloom on"))
+		GameCore::mGraphicsApplication->setBloomMode(true);
+	else if (!stricmp(szInput, "bloom off"))
+		GameCore::mGraphicsApplication->setBloomMode(false);
 
             else if( strTokens.at(0) == "movdbg" )
             {

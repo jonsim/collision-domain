@@ -24,6 +24,9 @@ public:
 
     int clientID; ///< The client ID which is assigned by the server.
     bool firstFrameOccurred;
+	
+	void setWeatherMode (uint8_t mode);
+	void setBloomMode (bool enable);
 
 protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
@@ -35,8 +38,10 @@ protected:
     virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
     virtual bool frameStarted(const Ogre::FrameEvent& evt);
     virtual bool frameEnded(const Ogre::FrameEvent& evt);
+	
 
 private:
+	void setupCompositorChain (void);
 	void setupShadowSystem (void);
     void setupLighting (void);
 	void setupParticles (void);
@@ -47,6 +52,10 @@ private:
 
 	Ogre::OverlayContainer *olcSpeedo;
 	Ogre::OverlayElement *oleNeedle;
+
+	Ogre::Light* worldSun;
+	Ogre::ParticleSystem* weatherSystem;
+	bool weatherSystemAttached;
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H
