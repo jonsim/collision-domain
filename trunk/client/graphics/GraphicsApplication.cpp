@@ -137,7 +137,8 @@ void GraphicsApplication::setupArena (void)
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
     arenaNode->attachObject(arenaEntity);
     //arenaNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
-	arenaNode->scale(0.019f, 0.019f, 0.019f);
+	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+    arenaNode->setDebugDisplayEnabled( true );
 
 
 
@@ -156,7 +157,7 @@ void GraphicsApplication::setupArena (void)
 
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
-    GameCore::mPhysicsCore->createFloorPlane();
+    GameCore::mPhysicsCore->createFloorPlane( arenaNode );
     GameCore::mPhysicsCore->createWallPlanes();
 }
 

@@ -38,7 +38,8 @@
 #include "OgreBulletCollisionsShape.h"
 
 #include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
-//#include "Shapes/OgreBulletCollisionsTrimeshShape.h"
+#include "Debug/OgreBulletCollisionsDebugShape.h"
+#include "Shapes/OgreBulletCollisionsTrimeshShape.h"
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
 #include "Shapes/OgreBulletCollisionsCylinderShape.h"

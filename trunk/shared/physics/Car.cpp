@@ -246,3 +246,32 @@ void Car::createGeometry(
     entity->setCastShadows(true);
     toAttachTo->attachObject(entity);
 }
+
+
+/// @brief  Move the debug chassis outline of the car (does not affect physical location at all)
+/// @param  chassisShift    Ogre::Vector3 containing translation relative to car origin
+
+// THIS DOES NOT WORK SO DO NOT USE IT. SO RETARDID.
+void Car::shiftDebugShape( Ogre::Vector3 chassisShift )
+{
+    Ogre::Matrix4 matShift;
+    matShift.getTrans( chassisShift );
+
+    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+    
+    int numt = dbg->getNumWorldTransforms();
+
+
+    Ogre::Matrix4 *matTest;
+    matTest = (Ogre::Matrix4*)malloc( numt * sizeof( Ogre::Matrix4 ) );
+
+    dbg->getWorldTransforms( matTest );
+
+    
+    for( int i = 0; i < numt; i ++ )
+    {
+        matTest[i].setTrans( matTest[i].getTrans() + chassisShift );
+    }
+
+    dbg->setWorldTransform( matTest[0] );
+}

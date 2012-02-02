@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameGUI.h"
 #include "GraphicsCore.h"
+#include "boost/algorithm/string.hpp"
 
 GameGUI::GameGUI()
 {
@@ -186,10 +187,43 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 
 	consoleBuffer->appendText( inputText->getText() );
 
-	inputText->setText( "" );
+    std::string strInput = inputText->getText().c_str();
 
-	if( !stricmp( szInput, "exit" ) )
-		mWinMgr.getWindow( "/Console" )->hide();
+    if( strInput.length() >= 1 )
+    {
+        std::vector<std::string> strTokens;
+        boost::split( strTokens, strInput, boost::is_any_of( "\t " ) );
+        consoleBuffer->appendText( strTokens.at(0) );
+        if( strTokens.size() >= 1)
+        {
+            if( strTokens.at(0) == "exit" )
+                mWinMgr.getWindow( "/Console" )->hide();
+
+            else if( strTokens.at(0) == "movdbg" )
+            {
+                if( strTokens.size() >= 4 )
+                {
+                    try
+                    {
+                        float fX = boost::lexical_cast<float>(strTokens.at(1));
+                        float fY = boost::lexical_cast<float>(strTokens.at(2));
+                        float fZ = boost::lexical_cast<float>(strTokens.at(3));
+                        Ogre::Vector3 trans( fX, fY, fZ );
+                        GameCore::mPlayerPool->getLocalPlayer()->getCar()->shiftDebugShape( trans );
+                        char szPrint[128];
+                        sprintf( szPrint, "Moved debug shape: [x] %f [y] %f [z] %f", fX, fY, fZ );
+                        consoleBuffer->appendText( szPrint );
+                    }
+                    catch( boost::bad_lexical_cast &) {}
+                }
+            }
+        }
+    }
+
+    inputText->setText( "" );
+
+	//if( !stricmp( szInput, "exit" ) )
+	//	mWinMgr.getWindow( "/Console" )->hide();
 
 	return true;
 }

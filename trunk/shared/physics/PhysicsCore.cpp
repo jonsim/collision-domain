@@ -142,11 +142,24 @@ int PhysicsCore::getUniqueEntityID()
 
 
 /// @brief  Create the floor plane at y = 0 and add it to the physics world.
-void PhysicsCore::createFloorPlane()
+void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
 {
     OgreBulletCollisions::CollisionShape *Shape;
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0); // (normal vector, distance)
+    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), -10); // (normal vector, distance)
+    
+    Ogre::Entity* entity = mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
 
+    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
+    //OgreBulletCollisions::CompoundCollisionShape *tmp = new OgreBulletCollisions::CompoundCollisionShape();
+    
+    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
+        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
+
+    OgreBulletCollisions::TriangleMeshCollisionShape *arenaShape = 
+        trimeshConverter->createTrimesh();
+
+    delete trimeshConverter;
+    
     short collisionGroup = COL_ARENA;
     short collisionMask = COL_CAR;
 
@@ -155,7 +168,8 @@ void PhysicsCore::createFloorPlane()
             mWorld,
             collisionGroup,
             collisionMask);
-    defaultPlaneBody->setStaticShape(Shape, 0.1f, 0.8f); // (shape, restitution, friction)
+
+    defaultPlaneBody->setStaticShape( arenaNode, arenaShape, 0.1f, 0.8f, Ogre::Vector3(0, 0, 0) ); // (shape, restitution, friction)
     
     //defaultPlaneBody->addQueryFlags(btCollisionObject::CF_STATIC_OBJECT);
 

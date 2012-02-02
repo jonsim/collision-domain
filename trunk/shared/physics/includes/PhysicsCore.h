@@ -26,7 +26,7 @@ public:
     virtual ~PhysicsCore(void);
 	static void auto_scale_scenenode (Ogre::SceneNode* n);
     int getUniqueEntityID(void);
-    void createFloorPlane();
+    void createFloorPlane( Ogre::SceneNode *arenaNode );
     void createWallPlanes();
     void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
     OgreBulletDynamics::RaycastVehicle *newCar(Ogre::Vector3 carPosition,
