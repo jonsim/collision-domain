@@ -47,7 +47,7 @@ SmallCar::SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 0.70f, 0.0);
+    Ogre::Vector3 chassisShift(0, 1.1f, 0.0f);
 
     initTuning();
     initNodes();
@@ -165,44 +165,28 @@ void SmallCar::initGraphics(Ogre::Vector3 chassisShift)
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
 void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
-    // shift chassis collisionbox up chassisShift units above origin
-
-    OgreBulletCollisions::CollisionShape* chosenCollisionShape;
-
     // CREATE THE COLLISION SHAPE OUT OF A MESH
-    {
-        Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "small_car_collision.mesh");
+    Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "small_car_collision.mesh");
+    entity->setDebugDisplayEnabled( false );
+ 
+    //OgreBulletCollisions::CompoundCollisionShape *tmp = new OgreBulletCollisions::CompoundCollisionShape();
+    compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 
-        OgreBulletCollisions::StaticMeshToShapeConverter* collisionMeshConverter = new OgreBulletCollisions::StaticMeshToShapeConverter(entity);
-        //OgreBulletCollisions::TriangleMeshCollisionShape* collisionMesh = collisionMeshConverter->createTrimesh();
+    // Transformation matrix to scale the imported mesh
+    Ogre::Matrix4 matScale(0.02, 0, 0, 0, 0, 0.02, 0, 0, 0, 0, 0.02, 0, 0, 0, 0, 1.0);
 
-        chosenCollisionShape = NULL;
-    }
+    // Create a compound shape from the mesh's vertices
+    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
+        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
 
-    // CREATE THE COLLISION SHAPE OUT OF BOXES
-    {
-        compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
+    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition();
 
-        chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(1.0197f, 0.33f, 2.6f));
-        compoundChassisShape->addChildShape(chassisShape, chassisShift);
-
-        OgreBulletCollisions::BoxCollisionShape *chassisShapeTop = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.764775f, 0.33f, 1.06672f));
-        compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 1.3f, -0.25f));
-
-        OgreBulletCollisions::BoxCollisionShape *chassisShapeAntiRoll = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.01f, 0.15f, 0.01f));
-        compoundChassisShape->addChildShape(chassisShapeAntiRoll, Ogre::Vector3(0.0f, 1.63f, 0.0f));
-
-        chosenCollisionShape = compoundChassisShape;
-    }
+    delete trimeshConverter;
 
 
+    // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
+    compoundChassisShape->addChildShape( tmp, chassisShift );
 
-
-
-    
-    // name given here needs to be unique to have more than one in the scene
-    //mCarChassis = new OgreBulletDynamics::WheeledRigidBody("CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID), mWorld);
-    
     mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
         new FuckOgreBulletWheeledRigidBody(
             "CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID),
@@ -211,7 +195,7 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
             COL_CAR | COL_ARENA | COL_POWERUP));
     
     // attach physics shell to mBodyNode
-    mCarChassis->setShape (mBodyNode, chosenCollisionShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
+    mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
     mCarChassis->setDamping(0.2f, 0.2f);	// set chassis damping (linear, angular respectively).
 
     mCarChassis->disableDeactivation();
@@ -226,6 +210,12 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
+
+    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+
+    Ogre::Matrix4 matChassisShift;
+    matChassisShift.makeTrans( chassisShift );
+    dbg->setWorldTransform( matChassisShift );
 }
 
 
@@ -235,7 +225,7 @@ void SmallCar::initWheels()
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
 
-    #define CUBE_HALF_EXTENTS 1
+    #define CUBE_HALF_EXTENTS 1.18
     bool isFrontWheel = true;
     
     // Wheel 1 - Front Left

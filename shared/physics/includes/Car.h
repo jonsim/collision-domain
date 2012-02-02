@@ -31,6 +31,7 @@ public:
     virtual CarSnapshot *getCarSnapshot();
 	virtual float getCarMph();
     void attachCollisionTickCallback(Player* player);
+    void shiftDebugShape( const Ogre::Vector3 chassisShift );
 	Ogre::SceneNode *mBodyNode;
 	// Car related Nodes (initNodes())
     Ogre::SceneNode *mPlayerNode;
