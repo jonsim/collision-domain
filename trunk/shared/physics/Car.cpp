@@ -162,7 +162,7 @@ void Car::accelInputTick(bool isForward, bool isBack)
         // on exact float values but it works!
 
         float fSpeed = this->mVehicle->getBulletVehicle()->getCurrentSpeedKmHour();
-        if( fSpeed < 1 )                                                                // Brake / Reverse threshold between 0 and 1 kph
+        if( fSpeed < 2 )                                                                // Brake / Reverse threshold between 0 and 1 kph
         {
             if( isBack )
                 mVehicle->applyEngineForce( mMaxAccelForce * -0.6, i );                 // Press brake - assume we want to reverse
@@ -171,7 +171,7 @@ void Car::accelInputTick(bool isForward, bool isBack)
 
             if( isForward )
             {
-                if( fSpeed >= 0 )
+                if( fSpeed >= -2 )
                 {
                     mVehicle->applyEngineForce( mEngineForce, i );                      // Press accel & moving forwards - accelerate
                     mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );         // and apply the brake if had been pressed
@@ -184,10 +184,7 @@ void Car::accelInputTick(bool isForward, bool isBack)
             }
             else
             {
-                if( fSpeed >= 0 )
-                    mVehicle->applyEngineForce( 0, i );                                 // Moving forwards but not pressing it - turn off accel
-                else
-                    mVehicle->getBulletVehicle()->setBrake( 0, i );                     // Moving backwards and not pressing accel - turn off brake
+                mVehicle->getBulletVehicle()->setBrake( 0, i );                         // Moving backwards and not pressing accel - turn off brake
             }
 
         }
