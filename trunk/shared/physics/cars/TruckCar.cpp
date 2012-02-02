@@ -22,26 +22,29 @@ using namespace Ogre;
 #define TRUCK_WHEELBASE             3.526f
 #define TRUCK_LENGTH_SHIFT_Z         -0.5f
 
+#define CRITICAL_DAMPING_COEF       0.1f
+
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void TruckCar::initTuning()
 {
     // mTuning related values
     mSteer = 0.0f;
     mEngineForce = 0.0f;
+    mBrakingForce = 0.0f;
     
     // mTuning fixed properties
-    mSuspensionStiffness    =  20.0f;
-    mSuspensionDamping      =   2.3f;
-    mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;
-    mSuspensionRestLength   =   0.6f;
-    mMaxSuspensionTravelCm  = 500.0f;
-    mFrictionSlip           =  10.5f;
+    mSuspensionStiffness    =   200.0f;
+    mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
+    mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
+    mRollInfluence          =   0.2f;
+    mSuspensionRestLength   =   0.4f;
+    mMaxSuspensionTravelCm  =   30.0f;
+    mFrictionSlip           =   3.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
 	mChassisFriction        =   0.6f;
-	mChassisMass            =7396.0f;
+	mChassisMass            =   7396.0f;
 
     mWheelRadius      =  0.361902462f;
     mWheelWidth       =  0.1349448267f;
@@ -53,7 +56,7 @@ void TruckCar::initTuning()
     mSteerClamp = 0.75f;
 
     mMaxAccelForce = 10000.0f;
-    mMaxBrakeForce = 12000.0f;
+    mMaxBrakeForce = 300.0f;
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = true;
@@ -70,7 +73,7 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 0.70f, 0.0f);
+    Ogre::Vector3 chassisShift(0, 1.6f, 3.2f);
 
     initTuning();
     initNodes();
@@ -247,8 +250,8 @@ void TruckCar::initWheels()
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left
-    //Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
-    Ogre::Vector3 connectionPointCS0 (wheelBase-(mWheelWidth), mConnectionHeight, wheelBase + (-mWheelRadius));
+    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
+    //Ogre::Vector3 connectionPointCS0 (wheelBase-(mWheelWidth), mConnectionHeight, wheelBase + (-mWheelRadius));
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
     

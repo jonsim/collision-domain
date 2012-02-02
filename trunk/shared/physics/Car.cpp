@@ -144,20 +144,81 @@ void Car::accelInputTick(bool isForward, bool isBack)
     if (isForward) forwardBack += 1;
     if (isBack)    forwardBack -= 1;
 
-    float f = forwardBack < 0 ? mMaxBrakeForce : mMaxAccelForce;
+    //float f = forwardBack < 0 ? mMaxBrakeForce : mMaxAccelForce;
 
-    mEngineForce = f * forwardBack;
+    //mEngineForce = f * forwardBack;
 
-	if (mFrontWheelDrive)
+    mEngineForce  = ( isForward ) ? mMaxAccelForce : 0;
+    mBrakingForce = ( isBack    ) ? mMaxBrakeForce : 0;
+
+    // Loop through each wheel
+    for( int i = 0; i < 4; i ++ )
+    {
+        // Skip wheels depending on car driving mode
+        if( i < 2 && !mFrontWheelDrive ) continue;
+        if( i > 1 && !mRearWheelDrive  ) continue;
+
+        // This code is a bit of a mess to avoid really tight brake / reverse checks
+        // on exact float values but it works!
+
+        float fSpeed = this->mVehicle->getBulletVehicle()->getCurrentSpeedKmHour();
+        if( fSpeed < 1 )                                                                // Brake / Reverse threshold between 0 and 1 kph
+        {
+            if( isBack )
+                mVehicle->applyEngineForce( mMaxAccelForce * -0.6, i );                 // Press brake - assume we want to reverse
+            else
+                mVehicle->applyEngineForce( 0, i );                                     // Turn off assumed reverse
+
+            if( isForward )
+            {
+                if( fSpeed >= 0 )
+                {
+                    mVehicle->applyEngineForce( mEngineForce, i );                      // Press accel & moving forwards - accelerate
+                    mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );         // and apply the brake if had been pressed
+                }
+                else
+                {
+                    mVehicle->applyEngineForce( 0, i );                                 // Press accell & moving backwards - turn off accel
+                    mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );        // and apply the brake if had been pressed
+                }
+            }
+            else
+            {
+                if( fSpeed >= 0 )
+                    mVehicle->applyEngineForce( 0, i );                                 // Moving forwards but not pressing it - turn off accel
+                else
+                    mVehicle->getBulletVehicle()->setBrake( 0, i );                     // Moving backwards and not pressing accel - turn off brake
+            }
+
+        }
+        else                                                                            // Speed above threshold - driving forwards
+        {
+            if( isBack )
+                mVehicle->applyEngineForce( 0, i );                                     // Turn off accel if you're pressing brake temporarily
+            else
+                mVehicle->applyEngineForce( mEngineForce, i );                          // otherwise normal force (simulate accel & brake together)
+
+            mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );                 // Set brake on if we're pressing it
+        }
+    }
+
+    // OLD DRIVING CODE
+
+	/*if (mFrontWheelDrive)
 	{
-		mVehicle->applyEngineForce(mEngineForce, 0);
-		mVehicle->applyEngineForce(mEngineForce, 1);
+		mVehicle->applyEngineForce( mEngineForce, 0 );
+		mVehicle->applyEngineForce( mEngineForce, 1 );
+
+        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 0 );
+        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 1 );
 	}
 	if (mRearWheelDrive) // not else if to allow 4WD
 	{
-		mVehicle->applyEngineForce(mEngineForce, 2);
-		mVehicle->applyEngineForce(mEngineForce, 3);
-	}
+        mVehicle->applyEngineForce( mEngineForce, 2 );
+		mVehicle->applyEngineForce( mEngineForce, 3 );
+        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 2 );
+        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 3 );
+	}*/
 
 	// update exhaust. whee this is the wrong place to do this.
 	float speedmph = getCarMph();

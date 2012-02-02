@@ -64,6 +64,7 @@ protected:
     // mTuning related values
     float mSteer;
     float mEngineForce;
+    float mBrakingForce;
 
     // mTuning fixed properties
     float mSuspensionStiffness;

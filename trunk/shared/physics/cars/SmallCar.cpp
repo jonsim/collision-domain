@@ -12,6 +12,7 @@ void SmallCar::initTuning()
     // mTuning related values
     mSteer = 0.0f;
     mEngineForce = 0.0f;
+    mBrakingForce = 0.0f;
     
     // mTuning fixed properties
     mSuspensionStiffness    =  20.0f;
@@ -37,7 +38,7 @@ void SmallCar::initTuning()
     mSteerClamp = 0.75f;
 
     mMaxAccelForce = 8000.0f;
-    mMaxBrakeForce = 10000.0f;
+    mMaxBrakeForce = 300.0f;
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = false;

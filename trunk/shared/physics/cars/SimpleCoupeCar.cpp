@@ -15,6 +15,7 @@ void SimpleCoupeCar::initTuning()
     // mTuning related values
     mSteer = 0.0f;
     mEngineForce = 0.0f;
+    mBrakingForce = 0.0f;
     
     // mTuning fixed properties
     mSuspensionStiffness    =  20.0f;
@@ -40,7 +41,7 @@ void SimpleCoupeCar::initTuning()
     mSteerClamp = 0.75f;
 
     mMaxAccelForce = 8000.0f;
-    mMaxBrakeForce = 10000.0f;
+    mMaxBrakeForce = 300.0f;
 	
 	mFrontWheelDrive = false;
 	mRearWheelDrive  = true;
@@ -58,7 +59,7 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 0.70f, 0.0f);
+    Ogre::Vector3 chassisShift(0, 1.0f, 1.0f);
 
     initTuning();
     initNodes();
