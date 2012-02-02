@@ -148,8 +148,16 @@ void Car::accelInputTick(bool isForward, bool isBack)
 
     mEngineForce = f * forwardBack;
 
-    mVehicle->applyEngineForce(mEngineForce, 0);
-    mVehicle->applyEngineForce(mEngineForce, 1);
+	if (mFrontWheelDrive)
+	{
+		mVehicle->applyEngineForce(mEngineForce, 0);
+		mVehicle->applyEngineForce(mEngineForce, 1);
+	}
+	if (mRearWheelDrive) // not else if to allow 4WD
+	{
+		mVehicle->applyEngineForce(mEngineForce, 2);
+		mVehicle->applyEngineForce(mEngineForce, 3);
+	}
 
 	// update exhaust. whee this is the wrong place to do this.
 	float speedmph = getCarMph();
