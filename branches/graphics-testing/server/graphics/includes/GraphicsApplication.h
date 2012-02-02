@@ -40,7 +40,7 @@ protected:
     virtual bool frameEnded(const Ogre::FrameEvent& evt);
 
 private:
-    void setupLighting (void);
+    void setupLighting (uint8_t mode);
     void setupArena (void);
     void setupNetworking (void);
 };

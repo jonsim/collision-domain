@@ -12,11 +12,12 @@ Ogre::SceneManager* GameCore::mSceneMgr;
 PlayerPool*  GameCore::mPlayerPool;
 
 GraphicsCore* GameCore::mGraphicsCore;
-NetworkCore* GameCore::mNetworkCore;
-PhysicsCore* GameCore::mPhysicsCore;
-AudioCore* GameCore::mAudioCore;
-GameGUI* GameCore::mGui;
-PowerupPool* GameCore::mPowerupPool;
+GraphicsApplication* GameCore::mGraphicsApplication;
+NetworkCore*  GameCore::mNetworkCore;
+PhysicsCore*  GameCore::mPhysicsCore;
+AudioCore*    GameCore::mAudioCore;
+GameGUI*      GameCore::mGui;
+PowerupPool*  GameCore::mPowerupPool;
 
 
 void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr)

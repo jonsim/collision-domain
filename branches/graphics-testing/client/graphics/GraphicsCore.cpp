@@ -51,7 +51,7 @@ bool GraphicsCore::configure(void)
     {
         // If returned true, user clicked OK so initialise
         // Here we choose to let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "Collision Domain (First Demo)");
+        mWindow = mRoot->initialise(true, "Collision Domain");
 
         return true;
     }
@@ -142,8 +142,7 @@ void GraphicsCore::createViewports(void)
     vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
 
     // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(
-        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 }
 
 

@@ -29,7 +29,7 @@ void GraphicsApplication::createScene (void)
 	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
 	GameCore::mGui->setupGUI();
 
-    setupLighting();
+    setupLighting(1);
     setupArena();
     setupNetworking();
 
@@ -38,14 +38,7 @@ void GraphicsApplication::createScene (void)
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
-    ninjaNode->translate(0, 0, 0);
-    Ogre::Entity* ninjaEntity2 = GameCore::mSceneMgr->createEntity("Ninja2", "ninja.mesh");
-    ninjaEntity2->setCastShadows(true);
-    Ogre::SceneNode* ninjaNode2 = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode2");
-    ninjaNode2->attachObject(ninjaEntity2);
-    ninjaNode2->pitch(Ogre::Degree(90));
-    ninjaNode2->roll(Ogre::Degree(180));
-    ninjaNode2->translate(0, 100, 0);
+    ninjaNode->scale(0.2f, 0.2f, 0.2f);
 
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
@@ -53,25 +46,112 @@ void GraphicsApplication::createScene (void)
 
 
 /// @brief  Adds and configures lights to the scene.
-void GraphicsApplication::setupLighting (void)
+/// @param  mode	The lighting mode to use. 0 = Morning, 1 = Noon, 2 = Stormy.
+void GraphicsApplication::setupLighting (uint8_t mode)
 {
-    // Set the ambient light.
-    GameCore::mSceneMgr->setAmbientLight(Ogre::ColourValue(0.25f, 0.25f, 0.25f));
-    
-    // Add a directional light
-    Ogre::Vector3 directionalLightDir(0.55f, -0.3f, 0.75f);
-    directionalLightDir.normalise();
-    Ogre::Light* directionalLight = GameCore::mSceneMgr->createLight("directionalLight");
-    directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
-    directionalLight->setDiffuseColour( Ogre::ColourValue::White);
-    directionalLight->setSpecularColour(Ogre::ColourValue(0.4f, 0.4f, 0.4f));
-    directionalLight->setDirection(directionalLightDir);
-    
-    // Create the skybox
-    GameCore::mSceneMgr->setSkyDome(true, "Examples/CloudySky", 5, 8);
+	Ogre::Degree sunRotation;	// rotation horizontally (yaw) from +x axis
+	Ogre::Degree sunPitch;		// rotation downwards (pitch) from horizontal
+	float sunBrightness[4];	// RGBA
+	float   sunSpecular[4];	// RGBA
+	float   sunAmbience[4];	// RGBA
+	std::string skyBoxMap;
+	float sf; // scaling factor
 
-    // Set the shadow renderer
-    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+	// Set lighting constants
+	if (mode < 1)	// Morning
+	{
+		sunRotation = -170;
+		sunPitch = 18;
+		sunBrightness[0] = 251;
+		sunBrightness[1] = 215;
+		sunBrightness[2] = 140;
+		sunBrightness[3] = 800;
+		sunSpecular[0] = 251;
+		sunSpecular[1] = 215;
+		sunSpecular[2] = 140;
+		sunSpecular[3] = 400;
+		sunAmbience[0] = 143;
+		sunAmbience[1] = 176;
+		sunAmbience[2] = 214;
+		sunAmbience[3] = 300;
+		skyBoxMap = "Examples/MorningSkyBox";
+	}
+	else if (mode == 1) // Noon
+	{
+		sunRotation = 43;
+		sunPitch = 57;
+		sunBrightness[0] = 242;
+		sunBrightness[1] = 224;
+		sunBrightness[2] = 183;
+		sunBrightness[3] = 850;
+		sunSpecular[0] = 242;
+		sunSpecular[1] = 224;
+		sunSpecular[2] = 183;
+		sunSpecular[3] = 425;
+		sunAmbience[0] = 105;
+		sunAmbience[1] = 150;
+		sunAmbience[2] = 186;
+		sunAmbience[3] = 800;
+		skyBoxMap = "Examples/CloudyNoonSkyBox";
+	}
+	else // Stormy
+	{
+		sunRotation = -55;
+		sunPitch = 60;
+		sunBrightness[0] = 240;
+		sunBrightness[1] = 252;
+		sunBrightness[2] = 255;
+		sunBrightness[3] = 200;
+		sunSpecular[0] = 240;
+		sunSpecular[1] = 252;
+		sunSpecular[2] = 255;
+		sunSpecular[3] = 100;
+		sunAmbience[0] = 146;
+		sunAmbience[1] = 149;
+		sunAmbience[2] = 155;
+		sunAmbience[3] = 300;
+		skyBoxMap = "Examples/StormySkyBox";
+		
+		// add rain (this could be improved)
+		Ogre::ParticleSystem* rainSystem = GameCore::mSceneMgr->createParticleSystem("Rain", "Examples/RainSmall");
+		GameCore::mSceneMgr->getRootSceneNode()->attachObject(rainSystem);
+	}
+	
+	// Setup the lighting colours
+	sf = (1.0f / 255.0f) * (sunAmbience[3] / 1000.0f);
+	Ogre::ColourValue sunAmbienceColour   = Ogre::ColourValue(sunAmbience[0]   * sf, sunAmbience[1]   * sf, sunAmbience[2]   * sf);
+	sf = (1.0f / 255.0f) * (sunBrightness[3] / 1000.0f);
+	Ogre::ColourValue sunBrightnessColour = Ogre::ColourValue(sunBrightness[0] * sf, sunBrightness[1] * sf, sunBrightness[2] * sf);
+	sf = (1.0f / 255.0f) * (sunSpecular[3] / 1000.0f);
+	Ogre::ColourValue sunSpecularColour   = Ogre::ColourValue(sunSpecular[0]   * sf, sunSpecular[1]   * sf, sunSpecular[2]   * sf);
+
+	// Calculate the sun direction (using rotation matrices).
+	Ogre::Real cos_pitch = Ogre::Math::Cos(sunPitch);
+	Ogre::Real sin_pitch = Ogre::Math::Sin(sunPitch);
+	Ogre::Real cos_yaw   = Ogre::Math::Cos(sunRotation);
+	Ogre::Real sin_yaw   = Ogre::Math::Sin(sunRotation);
+	Ogre::Matrix3 Rz(cos_pitch, -sin_pitch, 0, 
+		             sin_pitch,  cos_pitch, 0, 
+					         0,          0, 1);
+	Ogre::Matrix3 Ry( cos_yaw, 0, sin_yaw, 
+		                    0, 1,       0, 
+					 -sin_yaw, 0, cos_yaw);
+	Ogre::Vector3 sunDirection = Ry * Rz * Ogre::Vector3(-1, 0, 0);
+	sunDirection.normalise();
+	
+    // Set the ambient light.
+    GameCore::mSceneMgr->setAmbientLight(sunAmbienceColour);
+    
+    // Add a directional light (for the sun).
+	Ogre::Light* directionalLight;
+    directionalLight = GameCore::mSceneMgr->createLight("directionalLight");
+    directionalLight->setType(Ogre::Light::LT_DIRECTIONAL);
+    directionalLight->setDiffuseColour(sunBrightnessColour);
+    directionalLight->setSpecularColour(sunSpecularColour);
+	directionalLight->setDirection(sunDirection);
+	
+    // Create the skybox
+	GameCore::mSceneMgr->setSkyBox(true, skyBoxMap);
 }
 
 
