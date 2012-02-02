@@ -33,10 +33,15 @@ void TruckCar::initTuning()
     mSuspensionStiffness    =  20.0f;
     mSuspensionDamping      =   2.3f;
     mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;//1.0f;
+    mRollInfluence          =   0.1f;
     mSuspensionRestLength   =   0.6f;
     mMaxSuspensionTravelCm  = 500.0f;
     mFrictionSlip           =  10.5f;
+	mChassisLinearDamping   =   0.2f;
+	mChassisAngularDamping  =   0.2f;
+	mChassisRestitution		=   0.6f;
+	mChassisFriction        =   0.6f;
+	mChassisMass            = 800.0f;
 
     mWheelRadius      =  0.361902462f;
     mWheelWidth       =  0.1349448267f;
@@ -149,49 +154,46 @@ void TruckCar::initGraphics()
     PhysicsCore::auto_scale_scenenode(mRWingmirrorNode);
 
     // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "truck_wheel.mesh", "truck_wheel_uv", mFLWheelNode);
-    //mFLWheelNode->scale(-1, 1, 1);
+    createGeometry("CarEntity_FLWheel", "truck_lwheel.mesh", "truck_wheel_uv", mFLWheelNode);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
 
     // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "truck_wheel.mesh", "truck_wheel_uv", mFRWheelNode);
+    createGeometry("CarEntity_FRWheel", "truck_rwheel.mesh", "truck_wheel_uv", mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
 
     // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "truck_wheel.mesh", "truck_wheel_uv", mRLWheelNode);
-    //mRLWheelNode->scale(-1, 1, 1);
+    createGeometry("CarEntity_RLWheel", "truck_lwheel.mesh", "truck_wheel_uv", mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
 
     // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "truck_wheel.mesh", "truck_wheel_uv", mRRWheelNode);
+    createGeometry("CarEntity_RRWheel", "truck_rwheel.mesh", "truck_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
-    
-    //Ogre::Entity *entity = mSceneMgr->createEntity("fag","car2_wheel.mesh");
-    //const Ogre::AxisAlignedBox boundingBox = entity->getBoundingBox();
 }
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
 void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
-    // shift chassis collisionbox up chassisShift units above origin
-	
+    // Load the collision mesh and create a collision shape out of it
+    Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "truck_collision.mesh");
+    entity->setDebugDisplayEnabled( false );
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
-    
-    chassisShape = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(TRUCK_WIDTH_NO_WING_MIRRORS, TRUCK_HEIGHT_CAB_ONLY, 5.72f));
-    compoundChassisShape->addChildShape(chassisShape, Vector3(0, TRUCK_HEIGHT_CAB_ONLY + (TRUCK_HEIGHT_INC_WHEELS - TRUCK_HEIGHT_CAB_ONLY), TRUCK_LENGTH_SHIFT_Z));
 
-    OgreBulletCollisions::BoxCollisionShape *chassisShapeTop = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.764775f, 0.33f, 1.06672f));
-    compoundChassisShape->addChildShape(chassisShapeTop, Ogre::Vector3(0.0f, 2.3f, -0.25f));
+    // Transformation matrix to scale the imported mesh
+    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
 
-    OgreBulletCollisions::BoxCollisionShape *chassisShapeAntiRoll = new OgreBulletCollisions::BoxCollisionShape(Ogre::Vector3(0.01f, 0.15f, 0.01f));
-    compoundChassisShape->addChildShape(chassisShapeAntiRoll, Ogre::Vector3(0.0f, 1.63f, 0.0f));
+    // Create a compound shape from the mesh's vertices
+    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
+        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
+
+    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition();
+
+    delete trimeshConverter;
 
 
-    
-    // name given here needs to be unique to have more than one in the scene
-    //mCarChassis = new OgreBulletDynamics::WheeledRigidBody("CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID), mWorld);
-    
+    // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
+    compoundChassisShape->addChildShape( tmp, chassisShift );
+
     mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
         new FuckOgreBulletWheeledRigidBody(
             "CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID),
@@ -200,8 +202,8 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
             COL_CAR | COL_ARENA | COL_POWERUP));
     
     // attach physics shell to mBodyNode
-    mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
-    mCarChassis->setDamping(0.2f, 0.2f);
+    mCarChassis->setShape(mBodyNode, compoundChassisShape, mChassisRestitution, mChassisFriction, mChassisMass, carPosition, Ogre::Quaternion::IDENTITY);
+    mCarChassis->setDamping(mChassisLinearDamping, mChassisAngularDamping);
 
     mCarChassis->disableDeactivation();
     mTuning = new OgreBulletDynamics::VehicleTuning(
@@ -215,6 +217,12 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
+
+    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+
+    Ogre::Matrix4 matChassisShift;
+    matChassisShift.makeTrans( chassisShift );
+    dbg->setWorldTransform( matChassisShift );
 }
 
 
@@ -227,7 +235,7 @@ void TruckCar::initWheels()
 #define TRUCK_LENGTH                5.725f;
 #define TRUCK_WHEELBASE             3.526f;*/
 
-    float wheelBase = 3.526;
+    float wheelBase = 3.526f;
 
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
