@@ -70,14 +70,17 @@ bool GraphicsCore::configure(void)
 void GraphicsCore::createCamera(void)
 {
 	//Create the bigscreen manager
-	vpm = new ViewportManager(8,mWindow);
+	vpm = new ViewportManager(2,mWindow);
 	bigScreen = new BigScreen(vpm);
 
     // Create the camera
     mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
-#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
+
 	mViewCam1 = GameCore::mSceneMgr->createCamera("ViewCam1");
 	mViewCam2 = GameCore::mSceneMgr->createCamera("ViewCam2");
+	bigScreen->addCamera(mViewCam1);
+	bigScreen->addCamera(mViewCam2);
+#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	mViewCam3 = GameCore::mSceneMgr->createCamera("ViewCam3");
 	mViewCam4 = GameCore::mSceneMgr->createCamera("ViewCam4");
 	mViewCam5 = GameCore::mSceneMgr->createCamera("ViewCam5");
@@ -85,9 +88,6 @@ void GraphicsCore::createCamera(void)
 	mViewCam7 = GameCore::mSceneMgr->createCamera("ViewCam7");
 	mViewCam8 = GameCore::mSceneMgr->createCamera("ViewCam8");
 	mViewCamBlank = GameCore::mSceneMgr->createCamera("ViewCamBlank");
-
-	bigScreen->addCamera(mViewCam1);
-	bigScreen->addCamera(mViewCam2);
 	bigScreen->addCamera(mViewCam3);
 	bigScreen->addCamera(mViewCam4);
 	bigScreen->addCamera(mViewCam5);
@@ -104,7 +104,6 @@ void GraphicsCore::createCamera(void)
 
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 
-#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	mViewCam1->setPosition(Ogre::Vector3(0,0,80));
 	mViewCam1->setNearClipDistance(5);
 	mViewCam1->lookAt(Ogre::Vector3(0,0,-300));
@@ -112,7 +111,7 @@ void GraphicsCore::createCamera(void)
 	mViewCam2->setPosition(Ogre::Vector3(0,0,80));
 	mViewCam2->setNearClipDistance(5);
 	mViewCam2->lookAt(Ogre::Vector3(0,0,-300));
-
+#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	mViewCam3->setPosition(Ogre::Vector3(0,0,80));
 	mViewCam3->setNearClipDistance(5);
 	mViewCam3->lookAt(Ogre::Vector3(0,0,-300));
@@ -212,10 +211,9 @@ void GraphicsCore::createViewports(void)
 {
 	//ViewportManager* vpm = new ViewportManager(8,mWindow);
 	vpm->addViewport(mCamera,true);
-
-#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	vpm->addViewport(mViewCam1,false);
 	vpm->addViewport(mViewCam2,false);
+#ifdef ADDITIONAL_SERVER_TRACKING_CAMERAS
 	vpm->addViewport(mViewCam3,false);
 	vpm->addViewport(mViewCam4,false);
 	vpm->addViewport(mViewCam5,false);
