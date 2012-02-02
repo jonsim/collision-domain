@@ -91,6 +91,9 @@ protected:
     float mMaxAccelForce;
     float mMaxBrakeForce;
 
+	bool mFrontWheelDrive;
+	bool mRearWheelDrive;
+
     // Car physics objects
     OgreBulletCollisions::BoxCollisionShape      *chassisShape;
     OgreBulletCollisions::CompoundCollisionShape *compoundChassisShape;

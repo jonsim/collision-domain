@@ -25,7 +25,7 @@ void SmallCar::initTuning()
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
 	mChassisFriction        =   0.6f;
-	mChassisMass            = 800.0f;
+	mChassisMass            = 585.0f;
 
     mWheelRadius      =  0.361902462f;
     mWheelWidth       =  0.1349448267f;
@@ -38,6 +38,9 @@ void SmallCar::initTuning()
 
     mMaxAccelForce = 8000.0f;
     mMaxBrakeForce = 10000.0f;
+
+	mFrontWheelDrive = true;
+	mRearWheelDrive  = false;
 }
 
 
@@ -220,24 +223,24 @@ void SmallCar::initWheels()
     #define CUBE_HALF_EXTENTS 1.18
     bool isFrontWheel = true;
     
-    // Wheel 1 - Front Left
+    // Wheel 0 - Front Left
     Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
-    // Wheel 2 - Front Right
+    // Wheel 1 - Front Right
     connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
                     
     isFrontWheel = false;
 
-    // Wheel 3 - Rear Right
+    // Wheel 2 - Rear Right
     connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
     mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
-    // Wheel 4 - Rear Left
+    // Wheel 3 - Rear Left
     connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);

@@ -41,7 +41,7 @@ void TruckCar::initTuning()
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
 	mChassisFriction        =   0.6f;
-	mChassisMass            = 800.0f;
+	mChassisMass            =7396.0f;
 
     mWheelRadius      =  0.361902462f;
     mWheelWidth       =  0.1349448267f;
@@ -52,8 +52,11 @@ void TruckCar::initTuning()
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
     mSteerClamp = 0.75f;
 
-    mMaxAccelForce = 8000.0f;
-    mMaxBrakeForce = 10000.0f;
+    mMaxAccelForce = 10000.0f;
+    mMaxBrakeForce = 12000.0f;
+
+	mFrontWheelDrive = true;
+	mRearWheelDrive  = true;
 }
 
 /// @brief  Constructor to create a car, add its graphical model to ogre and add its physics model to bullet.
@@ -243,25 +246,25 @@ void TruckCar::initWheels()
     #define CUBE_HALF_EXTENTS 1
     bool isFrontWheel = true;
     
-    // Wheel 1 - Front Left
+    // Wheel 0 - Front Left
     //Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
     Ogre::Vector3 connectionPointCS0 (wheelBase-(mWheelWidth), mConnectionHeight, wheelBase + (-mWheelRadius));
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
     
-    // Wheel 2 - Front Right
+    // Wheel 1 - Front Right
     connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
                     
     isFrontWheel = false;
 
-    // Wheel 3 - Rear Right
+    // Wheel 2 - Rear Right
     connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
     mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
-    // Wheel 4 - Rear Left
+    // Wheel 3 - Rear Left
     connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
