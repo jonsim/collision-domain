@@ -186,7 +186,7 @@ void Gameplay::resetAllHP()
 void Gameplay::positionPlayers()
 {
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
-	int hypo = 500; //The hypotonuse. Increase to spread out
+	int hypo = 50; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
 	Ogre::Real segSize = (2*M_PI)/totalNumberOfPlayers;
 
