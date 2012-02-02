@@ -41,7 +41,7 @@ public:
         InputState *userInput,
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate);
-    void updateCameraFrameEvent (int XRotation, int YRotation);
+    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
     Car* getCar();
     void collisionTickCallback(int damage);
 	

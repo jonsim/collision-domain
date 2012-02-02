@@ -141,6 +141,14 @@ int Input::getMouseYRel()
 }
 
 
+/// @brief  Deals with mouse input.
+/// @return The amount the mouse has moved in the Z direction (via the scroll wheel).
+int Input::getMouseZRel()
+{
+	return mMouse->getMouseState().Z.rel;
+}
+
+
 /// @brief  Called whenever a keyboard key is pressed.
 /// @param  evt  The KeyEvent associated with this call.
 /// @return Whether the event has been serviced.
