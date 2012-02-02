@@ -21,6 +21,11 @@ void SmallCar::initTuning()
     mSuspensionRestLength   =   0.6f;
     mMaxSuspensionTravelCm  = 500.0f;
     mFrictionSlip           =  10.5f;
+	mChassisLinearDamping   =   0.2f;
+	mChassisAngularDamping  =   0.2f;
+	mChassisRestitution		=   0.6f;
+	mChassisFriction        =   0.6f;
+	mChassisMass            = 800.0f;
 
     mWheelRadius      =  0.361902462f;
     mWheelWidth       =  0.1349448267f;
@@ -109,28 +114,22 @@ void SmallCar::initGraphics(Ogre::Vector3 chassisShift)
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
     createGeometry("CarBody", "small_car_body.mesh", "small_car_body_uv", mChassisNode);
     PhysicsCore::auto_scale_scenenode(mChassisNode);
-   // mChassisNode->setPosition(chassisShift); - Doesn't work well with this mesh!!!
 
     // load the left door baby
     createGeometry("CarEntity_LDoor", "small_car_ldoor.mesh", "small_car_door_uv", mLDoorNode);
     PhysicsCore::auto_scale_scenenode(mLDoorNode);
-    //mLDoorNode->translate(43.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
     
     // lets get a tasty right door
     createGeometry("CarEntity_RDoor", "small_car_rdoor.mesh", "small_car_door_uv", mRDoorNode);
     PhysicsCore::auto_scale_scenenode(mRDoorNode);
-    //mRDoorNode->translate(-46.0 * 0.019, 20.0 * 0.019, 22.0 * 0.019);
 
     // and now a sweet sweet front bumper
     createGeometry("CarEntity_FBumper", "small_car_fbumper.mesh", "small_car_bumper", mFBumperNode);
     PhysicsCore::auto_scale_scenenode(mFBumperNode);
-    //mFBumperNode->translate(0, 20.0 * 0.019, 140.0 * 0.019);
 
     // and now a regular rear bumper
     createGeometry("CarEntity_RBumper", "small_car_rbumper.mesh", "small_car_bumper", mRBumperNode);
-    mRBumperNode->scale(-1, 1, 1);
     PhysicsCore::auto_scale_scenenode(mRBumperNode);
-    //mRBumperNode->translate(0, 20.0 * 0.019, -135.0 * 0.019);
 
     // Headlights
     createGeometry("CarEntity_LHeadlight", "small_car_lheadlight.mesh", "small_car_headlight_uv", mLHeadlightNode);
@@ -140,40 +139,33 @@ void SmallCar::initGraphics(Ogre::Vector3 chassisShift)
     PhysicsCore::auto_scale_scenenode(mRHeadlightNode);
 
     // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mFLWheelNode);
-    mFLWheelNode->scale(-1, 1, 1);
+    createGeometry("CarEntity_FLWheel", "small_car_lwheel.mesh", "small_car_wheel_uv", mFLWheelNode);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
 
     // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mFRWheelNode);
+    createGeometry("CarEntity_FRWheel", "small_car_rwheel.mesh", "small_car_wheel_uv", mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
 
     // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mRLWheelNode);
-    mRLWheelNode->scale(-1, 1, 1);
+    createGeometry("CarEntity_RLWheel", "small_car_lwheel.mesh", "small_car_wheel_uv", mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
 
     // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "small_car_wheel.mesh", "small_car_wheel_uv", mRRWheelNode);
+    createGeometry("CarEntity_RRWheel", "small_car_rwheel.mesh", "small_car_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
-    
-    //Ogre::Entity *entity = mSceneMgr->createEntity("fag","car2_wheel.mesh");
-    //const Ogre::AxisAlignedBox boundingBox = entity->getBoundingBox();
 }
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
 void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
-    // CREATE THE COLLISION SHAPE OUT OF A MESH
+    // Load the collision mesh and create a collision shape out of it
     Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "small_car_collision.mesh");
     entity->setDebugDisplayEnabled( false );
- 
-    //OgreBulletCollisions::CompoundCollisionShape *tmp = new OgreBulletCollisions::CompoundCollisionShape();
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 
     // Transformation matrix to scale the imported mesh
-    Ogre::Matrix4 matScale(0.02, 0, 0, 0, 0, 0.02, 0, 0, 0, 0, 0.02, 0, 0, 0, 0, 1.0);
+    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
 
     // Create a compound shape from the mesh's vertices
     OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
@@ -195,8 +187,8 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
             COL_CAR | COL_ARENA | COL_POWERUP));
     
     // attach physics shell to mBodyNode
-    mCarChassis->setShape (mBodyNode, compoundChassisShape, 0.6f, 0.6f, 800, carPosition, Ogre::Quaternion::IDENTITY);
-    mCarChassis->setDamping(0.2f, 0.2f);	// set chassis damping (linear, angular respectively).
+    mCarChassis->setShape(mBodyNode, compoundChassisShape, mChassisRestitution, mChassisFriction, mChassisMass, carPosition, Ogre::Quaternion::IDENTITY);
+    mCarChassis->setDamping(mChassisLinearDamping, mChassisAngularDamping);
 
     mCarChassis->disableDeactivation();
     mTuning = new OgreBulletDynamics::VehicleTuning(

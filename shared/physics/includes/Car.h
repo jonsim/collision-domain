@@ -73,6 +73,11 @@ protected:
     float mSuspensionRestLength;
     float mMaxSuspensionTravelCm;
     float mFrictionSlip;
+	float mChassisLinearDamping;
+	float mChassisAngularDamping;
+	float mChassisRestitution;
+	float mChassisFriction;
+	float mChassisMass;
 
     float mWheelRadius;
     float mWheelWidth;
