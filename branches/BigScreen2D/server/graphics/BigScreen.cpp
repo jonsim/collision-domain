@@ -20,7 +20,7 @@ BigScreen::BigScreen(ViewportManager* vpm_P)
 bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
 	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
-	
+	/*
 	ViewCamera* bestCanidateVC = NULL;
 	std::vector<ViewCamera*>::iterator itr;
 	for(itr = viewCameraVector.begin(); itr<viewCameraVector.end(); ++itr)
@@ -48,7 +48,9 @@ bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )
 		OutputDebugString("Attached Camera to new player\n");
 		bestCanidateVC->setLastUpdateTime();
 	}
-	
+	*/
+	//Manage new player for bigscreen view
+	this->manageNewPlayer(tmpPlayer);
 	return mViewportManager->declareNewPlayer(tmpPlayer);
 }
 
@@ -78,6 +80,7 @@ void BigScreen::setupMapView()
 	olMap->add2D(olcMap);
 
 	//Start thinking about the cars
+	/*
 	oleCar = 
 		Ogre::OverlayManager::getSingleton().createOverlayElement( 
 			"Panel", 
@@ -87,25 +90,57 @@ void BigScreen::setupMapView()
 	oleCar->setMaterialName( "map_top_1" );
 	oleCar->setPosition(0.5,0.5);
 	olcMap->addChild(oleCar);
-	
+	*/
+}
+
+void BigScreen::manageNewPlayer(Player* player)
+{
+	//TODO - Note this will all go wrong if two players with the same name join
+	Ogre::OverlayElement* tmpOLE = 
+		Ogre::OverlayManager::getSingleton().createOverlayElement(
+		"Panel",
+		"Player" );
+	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
+	tmpOLE->setDimensions(0.2f,0.2f);
+	tmpOLE->setMaterialName( "map_top_1" );
+	tmpOLE->setPosition(0.5,0.5);
+	olcMap->addChild(tmpOLE);
+
+	player->setOverlayElement(tmpOLE);
 }
 
 void BigScreen::updateMapView()
 {
-	Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-	btVector3 localPlayerPos = localPlayer->getCar()->getCarSnapshot()->mPosition;
+	//Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+	//updatePlayer(localPlayer,oleCar);
+
+	//Loop through all possible players
+	for(int i=0;i<MAX_PLAYERS;i++)
+	{
+		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+		//Check to see if there is an actual player in this section
+		if(tmpPlayer != NULL)
+		{
+			updatePlayer(tmpPlayer,tmpPlayer->getOverlayElement());
+		}
+	}
+}
+
+void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
+{
+	btVector3 localPlayerPos = player->getCar()->getCarSnapshot()->mPosition;
 	float xPos = localPlayerPos.getX(); 
 	float yPos = localPlayerPos.getZ(); //Z as we're doing a 2D projection
 	
 	//Correct the position to be relative of top left corner.
-	xPos -= mapCorner.x;
-	yPos -= mapCorner.z;
+	xPos += mapCorner.x;
+	yPos += mapCorner.z;
 	//Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
 	//Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
 	
 	//Correct to make percentage
-	xPos = xPos/mapSize.x;
-	yPos = yPos/mapSize.z;
+	xPos = xPos/(mapSize.x/2);
+	yPos = yPos/(mapSize.z/2);
 	
 	/*
 	std::stringstream tmpDebugString;
@@ -114,13 +149,14 @@ void BigScreen::updateMapView()
 	tmpDebugString << "\n";
 	OutputDebugString(tmpDebugString.str().c_str());
 	*/
+
 	//This is not really needed if the above code is working
 	if(xPos > 1)
 		xPos = 1.0f;
 	if(yPos > 1)
 		yPos = 1.0f;
 
-	oleCar->setPosition(xPos,yPos);
+	carOverlay->setPosition(xPos,yPos);
 }
 
 void BigScreen::setMapCorner(Ogre::Vector3 corner)

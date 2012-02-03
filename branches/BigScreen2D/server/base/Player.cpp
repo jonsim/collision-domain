@@ -16,6 +16,7 @@ Player::Player (void) : cameraRotationConstant(0.08f)
     mCarSnapshot = NULL;
 	newInput = NULL;
 	mCar = NULL;
+	//mOLE = NULL;
 }
 
 
@@ -142,4 +143,15 @@ Car* Player::getCar()
 int Player::getHP()
 {
 	return hp;
+}
+
+
+void Player::setOverlayElement(Ogre::OverlayElement* ole)
+{
+	mOLE = ole;
+}
+
+Ogre::OverlayElement* Player::getOverlayElement()
+{
+	return mOLE;
 }

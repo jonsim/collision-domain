@@ -33,6 +33,9 @@ private:
 	Ogre::OverlayElement*		oleCar;
 	Ogre::Vector3				mapCorner;
 	Ogre::Vector3				mapSize;
+
+	void						updatePlayer(Player* player, Ogre::OverlayElement* carOverlay);
+	void						manageNewPlayer(Player* player);
 };
 
 #endif // #ifndef BIGSCREENH

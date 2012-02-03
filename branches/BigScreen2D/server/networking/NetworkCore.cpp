@@ -48,7 +48,7 @@ void NetworkCore::init( char *szPass )
 	bConnected = true;
 	// Add the local player
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "SERVER" );	
-
+	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
 }
 
 /// @brief Get the interface to RakNet (shouldn't be needed if this class is thorough)

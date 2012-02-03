@@ -53,6 +53,9 @@ public:
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
 	int	getHP();
+
+	void setOverlayElement(Ogre::OverlayElement* ole);
+	Ogre::OverlayElement* getOverlayElement();
 private:
     const float cameraRotationConstant;
 	int		hp;
@@ -62,6 +65,8 @@ private:
     int mCarType;
 
     char *mNickname;
+
+	Ogre::OverlayElement* mOLE;
 };
 
 #endif // #ifndef PLAYER_H
