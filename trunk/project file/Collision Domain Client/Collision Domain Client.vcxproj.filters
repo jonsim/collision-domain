@@ -76,9 +76,6 @@
     <ClInclude Include="..\..\shared\physics\includes\PhysicsCore.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h">
-      <Filter>shared\physics\cars</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\physics\includes\cars\SimpleCoupeCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
@@ -608,9 +605,6 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\base\stdafx.cpp">
       <Filter>shared\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp">
-      <Filter>shared\physics\cars</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp">
       <Filter>shared\physics\cars</Filter>
