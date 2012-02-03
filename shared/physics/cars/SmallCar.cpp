@@ -18,6 +18,8 @@ using namespace Ogre;
     Tyre Width: 153mm (bit that touches ground, not bounding box)
 */
 
+#define CRITICAL_DAMPING_COEF       0.1f
+
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SmallCar::initTuning()
 {
@@ -27,33 +29,35 @@ void SmallCar::initTuning()
     mBrakingForce = 0.0f;
     
     // mTuning fixed properties
-    mSuspensionStiffness    =  20.0f;
-    mSuspensionDamping      =   2.3f;
-    mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;
-    mSuspensionRestLength   =   0.6f;
-    mMaxSuspensionTravelCm  = 500.0f;
-    mFrictionSlip           =  10.5f;
+    mSuspensionStiffness    =  180.0f;
+    mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
+    mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
+    mRollInfluence          =   0.2f;
+    mSuspensionRestLength   =   0.2f;
+    mMaxSuspensionTravelCm  =   6.0f;
+    mFrictionSlip           =   10000.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
 	mChassisFriction        =   0.6f;
 	mChassisMass            = 585.0f;
 
-    mWheelRadius      =  0.555f; // this is actually diameter!!
-    mWheelWidth       =  0.153f;
-    mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f; // this connection point lies at the very bottom of the suspension travel
+    mWheelRadius            =  0.555f; // this is actually diameter!!
+    mWheelWidth             =  0.153f;
+    mWheelFriction          =  6.0f;//1000;//1e30f;
+    mConnectionHeight       =  0.7f; // this connection point lies at the very bottom of the suspension travel
     
-    mSteerIncrement = 0.015f;
-    mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
-    mSteerClamp = 0.75f;
+    mSteerIncrement         =  0.015f;
+    mSteerToZeroIncrement   =  0.05f; // when no input is given steer back to 0
+    mSteerClamp             =  0.75f;
 
     mMaxAccelForce = 8000.0f;
     mMaxBrakeForce = 300.0f;
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = false;
+
+    readTuning( "spec_smallcar.txt" );
 }
 
 
@@ -230,6 +234,8 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     Ogre::Matrix4 matChassisShift;
     matChassisShift.makeTrans( chassisShift );
     dbg->setWorldTransform( matChassisShift );
+
+    mCarChassis->showDebugShape( false );
 }
 
 

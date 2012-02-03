@@ -30,18 +30,19 @@ void TruckCar::initTuning()
     mBrakingForce = 0.0f;
     
     // mTuning fixed properties
-    mSuspensionStiffness    =   200.0f;
+    mSuspensionStiffness    =   50.0f;
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
+    mMaxSuspensionForce     =   70000.0f;
     mRollInfluence          =   0.1f;
-    mSuspensionRestLength   =   0.4f;
-    mMaxSuspensionTravelCm  =   26.0f;
+    mSuspensionRestLength   =   0.5f;
+    mMaxSuspensionTravelCm  =   15.0f;
     mFrictionSlip           =   3.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
 	mChassisFriction        =   0.6f;
-	mChassisMass            =   7396.0f;
+	mChassisMass            =   7000.0f;
 
     mWheelRadius      =  1.046f; // this is actually diameter!!
     mWheelWidth       =  0.243f;
@@ -57,6 +58,8 @@ void TruckCar::initTuning()
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = true;
+
+    readTuning( "spec_truck.txt" );
 }
 
 /// @brief  Constructor to create a car, add its graphical model to ogre and add its physics model to bullet.
@@ -70,7 +73,7 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 1.6f, 3.2f);
+    Ogre::Vector3 chassisShift(0, 1.62f, 3.5f);
 
     initTuning();
     initNodes();
@@ -206,8 +209,8 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     // Create a compound shape from the mesh's vertices
     OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
         new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
-
-    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition();
+  
+    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
 
     delete trimeshConverter;
 
@@ -230,6 +233,9 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     mTuning = new OgreBulletDynamics::VehicleTuning(
         mSuspensionStiffness, mSuspensionCompression, mSuspensionDamping, mMaxSuspensionTravelCm, mFrictionSlip);
 
+    // OGREBULLET Y U NOT TAKE THIS IN CONSTRUCTOR?!!!?!
+    mTuning->getBulletTuning()->m_maxSuspensionForce = mMaxSuspensionForce;
+
     mVehicleRayCaster = new OgreBulletDynamics::VehicleRayCaster(mWorld);
     
     mVehicle = new OgreBulletDynamics::RaycastVehicle(mCarChassis, mTuning, mVehicleRayCaster);
@@ -244,6 +250,8 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     Ogre::Matrix4 matChassisShift;
     matChassisShift.makeTrans( chassisShift );
     dbg->setWorldTransform( matChassisShift );
+
+    mCarChassis->showDebugShape( false );
 }
 
 
