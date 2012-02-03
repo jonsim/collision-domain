@@ -14,6 +14,7 @@ class TruckCar : Car
 public:
     TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
     virtual ~TruckCar(void);
+    void playCarHorn();
 
 private:
     void initTuning();

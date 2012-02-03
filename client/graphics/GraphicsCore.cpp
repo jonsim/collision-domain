@@ -22,7 +22,8 @@ GraphicsCore::GraphicsCore(void)
     mPluginsCfg(Ogre::StringUtil::BLANK),
     mCameraMan(0),
     mCursorWasVisible(false),
-    mShutDown(false)
+    mShutDown(false),
+    mSpawnScreen(0)
 {
 }
 

@@ -10,12 +10,15 @@
 #include "SharedIncludes.h"
 #include "OgreOggSound.h"
 
-//class Powerup;
-//class PowerupRandom;
-
 using namespace OgreOggSound;
 
-/*-------------------- CLASS DEFINITIONS --------------------*/
+enum HornType : int
+{
+    HORN_LOW = 0,
+    HORN_MID = 1,
+    HORN_HIGH = 2
+};
+
 /**
  *  @brief 	An uneditable snapshot of the player's input state 
  */
@@ -26,7 +29,7 @@ public:
     ~AudioCore();
     void playEngineIdle();
     void playCarCrash();
-    void playCarHorn();
+    void playCarHorn(HornType h);
     void playHealthPowerup();
     void playSpeedPowerup();
 

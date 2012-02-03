@@ -166,9 +166,8 @@ void GraphicsApplication::setupArena (void)
     
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
     arenaNode->attachObject(arenaEntity);
-    //arenaNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
 	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-    arenaNode->setDebugDisplayEnabled( true );
+    arenaNode->setDebugDisplayEnabled( false );
 
 
     // ground plane, visible on the top down view only (unless something bad happens!!)
