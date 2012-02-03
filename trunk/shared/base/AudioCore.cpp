@@ -16,9 +16,11 @@ AudioCore::AudioCore()
 
     // sounds which need to load immediately
     mEngineIdleSound = mSoundManager->createSound("engine-idle-1", "engine-idle-1.wav", false, true, true, GameCore::mSceneMgr, true);
-    mCarHornLow = mCarCrashSound;//= mSoundManager->createSound("car-horn-low", "car-horn-low.wav", false, false, true, GameCore::mSceneMgr, false);
-    mCarHornMid = mSoundManager->createSound("car-horn-mid", "car-horn-mid.wav", false, false, true, GameCore::mSceneMgr, true);
-    mCarHornHigh = mCarCrashSound; //= mSoundManager->createSound("car-horn-high", "car-horn-high.wav", false, false, true, GameCore::mSceneMgr, false);
+
+    // Horn sounds
+    mCarHornLow  = mSoundManager->createSound("car-horn-low",  "car-horn-low.wav",  false, false, true, GameCore::mSceneMgr, true);
+    mCarHornMid  = mSoundManager->createSound("car-horn-mid",  "car-horn-mid.wav",  false, false, true, GameCore::mSceneMgr, true);
+    mCarHornHigh = mSoundManager->createSound("car-horn-high", "car-horn-high.wav", false, false, true, GameCore::mSceneMgr, true);
 
     // sounds which don't need to load immediately (background thread them)
     mCarCrashSound = mSoundManager->createSound("car-crash-1", "car-crash-1.wav", false, false, true, GameCore::mSceneMgr, false);
@@ -53,15 +55,25 @@ void AudioCore::playCarCrash()
 
 /// plays a car horn (I didn't commit all the horn sounds so they will be a surprise ;)
 /// eventually this will be attached to cars and networked
-void AudioCore::playCarHorn()
+void AudioCore::playCarHorn(HornType h)
 {
-    int horn = 1;
+    OgreOggISound *hornSound;
 
-    OgreOggISound *hornSound =
-        (horn == 0 ? mCarHornLow :
-        (horn == 1 ? mCarHornMid :
-        (horn == 2 ? mCarHornHigh : 0)));
-    if (!hornSound) return;
+    switch (h)
+    {
+    case HORN_LOW:
+        hornSound = mCarHornLow;
+        break;
+    case HORN_MID:
+        hornSound = mCarHornMid;
+        break;
+    case HORN_HIGH:
+        hornSound = mCarHornHigh;
+        break;
+    default:
+        return;
+        break;
+    }
 
     if (hornSound->isPlaying()) hornSound->setPlayPosition(0);
     else hornSound->play();

@@ -94,6 +94,12 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
 }
 
 
+void SimpleCoupeCar::playCarHorn()
+{
+    GameCore::mAudioCore->playCarHorn(HORN_MID);
+}
+
+
 /// @brief  Initialises the node tree for this car.
 void SimpleCoupeCar::initNodes()
 {
@@ -232,8 +238,8 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
 /// @brief  Attaches 4 wheels to the car chassis.
 void SimpleCoupeCar::initWheels()
 {
-    float wheelBaseLength = 2.939;
-    float wheelBaseHalfWidth  = 1.7;
+    float wheelBaseLength = 2.939f;
+    float wheelBaseHalfWidth  = 1.7f;
 
     // anything you add onto wheelbase, adjust this to take care of it
     float wheelBaseShiftZ = 0.20f;
@@ -241,7 +247,6 @@ void SimpleCoupeCar::initWheels()
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
 
-    #define CUBE_HALF_EXTENTS 1
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
-PlayerPool::PlayerPool()
+PlayerPool::PlayerPool() : mLocalPlayer(0)
 {
 	// Initialize the pool
 	for( int i = 0; i < MAX_PLAYERS; i ++ )

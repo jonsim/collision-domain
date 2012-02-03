@@ -95,6 +95,12 @@ TruckCar::~TruckCar(void)
 }
 
 
+void TruckCar::playCarHorn()
+{
+    GameCore::mAudioCore->playCarHorn(HORN_LOW);
+}
+
+
 /// @brief  Initialises the node tree for this car.
 void TruckCar::initNodes()
 {
@@ -244,8 +250,8 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 /// @brief  Attaches 4 wheels to the car chassis.
 void TruckCar::initWheels()
 {
-    float wheelBaseLength = 3.576;
-    float wheelBaseHalfWidth  = 2.1;
+    float wheelBaseLength = 3.576f;
+    float wheelBaseHalfWidth  = 2.1f;
 
     // anything you add onto wheelbase, adjust this to take care of it
     float wheelBaseShiftZ = -1.15f;
@@ -253,7 +259,6 @@ void TruckCar::initWheels()
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
 
-    #define CUBE_HALF_EXTENTS 1
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left

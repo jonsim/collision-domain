@@ -78,3 +78,8 @@ void SpawnScreen::selectCar()
         bSpawned = true;
     }
 }
+
+Car *SpawnScreen::getCar()
+{
+    return mViewCar[mCurrentCar];
+}

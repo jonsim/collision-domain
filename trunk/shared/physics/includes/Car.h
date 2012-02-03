@@ -17,6 +17,7 @@ class Car
 {
 public:
     // = 0 methods not implemented by Car yet!
+    virtual void playCarHorn() = 0;
 
     // Overrideable methods, but you can use the generic Car method with all cars
     virtual Ogre::SceneNode *attachCamNode();
@@ -32,9 +33,11 @@ public:
 	virtual float getCarMph();
     void attachCollisionTickCallback(Player* player);
     void shiftDebugShape( const Ogre::Vector3 chassisShift );
+
 	Ogre::SceneNode *mBodyNode;
 	// Car related Nodes (initNodes())
     Ogre::SceneNode *mPlayerNode;
+
 protected:
     void createGeometry(
         const std::string &entityName,

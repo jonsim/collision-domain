@@ -14,6 +14,7 @@ class SmallCar : Car
 public:
     SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
     virtual ~SmallCar(void);
+    void playCarHorn();
 
 private:
     void initTuning();
