@@ -7,7 +7,17 @@
 
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
+using namespace Ogre;
 
+/*  Width:    1886mm (car not modelled with wing mirrors)
+    Height:    1514mm (inc wheels, body alone is 1286mm)
+    Length:    5110mm
+    Wheelbase:    2939mm
+    Weight:    1451kg
+    Engine:    5.9 litre, 315bhp
+    Tyre Diameter: 690mm
+    Tyre Width: 176mm (bit that touches ground, not bounding box)
+*/
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SimpleCoupeCar::initTuning()
@@ -18,23 +28,23 @@ void SimpleCoupeCar::initTuning()
     mBrakingForce = 0.0f;
     
     // mTuning fixed properties
-    mSuspensionStiffness    =  20.0f;
-    mSuspensionDamping      =   2.3f;
-    mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;//1.0f;
-    mSuspensionRestLength   =   0.6f;
-    mMaxSuspensionTravelCm  = 500.0f;
-    mFrictionSlip           =  10.5f;
-	mChassisLinearDamping   =   0.2f;
-	mChassisAngularDamping  =   0.2f;
-	mChassisRestitution		=   0.6f;
-	mChassisFriction        =   0.6f;
-	mChassisMass            =1451.0f;
+    mSuspensionStiffness    =   20.0f;
+    mSuspensionDamping      =    2.3f;
+    mSuspensionCompression  =    4.4f;
+    mRollInfluence          =    0.1f;
+    mSuspensionRestLength   =    0.6f;
+    mMaxSuspensionTravelCm  =  500.0f;
+    mFrictionSlip           =   10.5f;
+	mChassisLinearDamping   =    0.2f;
+	mChassisAngularDamping  =    0.2f;
+	mChassisRestitution		=    0.6f;
+	mChassisFriction        =    0.6f;
+	mChassisMass            = 1451.0f;
 
-    mWheelRadius      =  0.361902462f;
-    mWheelWidth       =  0.1349448267f;
+    mWheelRadius      =  0.690f; // this is actually diameter!!
+    mWheelWidth       =  0.176f;
     mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f;
+    mConnectionHeight =  0.7f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
@@ -120,8 +130,7 @@ void SimpleCoupeCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
     createGeometry("CarBody", "banger_body.mesh", "banger_body_uv", mChassisNode);
-    mChassisNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
-   // mChassisNode->setPosition(chassisShift); - Doesn't work well with this mesh!!!
+    PhysicsCore::auto_scale_scenenode(mChassisNode);
 
     // load the left door baby
     createGeometry("CarEntity_LDoor", "banger_fldoor.mesh", "banger_fdoor_uv", mFLDoorNode);
@@ -223,6 +232,12 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
 /// @brief  Attaches 4 wheels to the car chassis.
 void SimpleCoupeCar::initWheels()
 {
+    float wheelBaseLength = 2.939;
+    float wheelBaseHalfWidth  = 1.7;
+
+    // anything you add onto wheelbase, adjust this to take care of it
+    float wheelBaseShiftZ = 0.20f;
+
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
 
@@ -230,24 +245,24 @@ void SimpleCoupeCar::initWheels()
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left
-    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
+    Ogre::Vector3 connectionPointCS0 (wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 1 - Front Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
+    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
     
     isFrontWheel = false;
 
     // Wheel 2 - Rear Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
+    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 3 - Rear Left
-    connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
+    connectionPointCS0 = Ogre::Vector3(wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 }
