@@ -5,6 +5,18 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
+using namespace Ogre;
+
+/*
+    Width:    1369mm (car not modelled with wing mirrors)
+    Height:    1405mm (inc wheels, body alone is 1171mm)
+    Length:    3215mm
+    Wheelbase:    2049mm
+    Weight:    585kg
+    Engine:    767 cc, 29bhp
+    Tyre Diameter: 555mm
+    Tyre Width: 153mm (bit that touches ground, not bounding box)
+*/
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SmallCar::initTuning()
@@ -18,7 +30,7 @@ void SmallCar::initTuning()
     mSuspensionStiffness    =  20.0f;
     mSuspensionDamping      =   2.3f;
     mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;//1.0f;
+    mRollInfluence          =   0.1f;
     mSuspensionRestLength   =   0.6f;
     mMaxSuspensionTravelCm  = 500.0f;
     mFrictionSlip           =  10.5f;
@@ -28,10 +40,10 @@ void SmallCar::initTuning()
 	mChassisFriction        =   0.6f;
 	mChassisMass            = 585.0f;
 
-    mWheelRadius      =  0.361902462f;
-    mWheelWidth       =  0.1349448267f;
+    mWheelRadius      =  0.555f; // this is actually diameter!!
+    mWheelWidth       =  0.153f;
     mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f;
+    mConnectionHeight =  0.7f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0

@@ -12,9 +12,12 @@ using namespace Ogre;
 /*  Width:    2490mm (not inc wing mirrors, 2866mm with them)
     Height:   2816mm (inc wheels, cab alone is 2589mm)
     Length:   5725mm
-    Wheelbase:    3526mm
+    Wheelbase:    3526mm (this class uses 3575 as its 5cm off)
     Weight:    7396kg
-    Engine:    12 litre, 420bhp                               */
+    Engine:    12 litre, 420bhp
+    Tyre Diameter: 1046mm
+    Tyre Width: 243mm (bit that touches ground, not bounding box)
+*/
 
 #define CRITICAL_DAMPING_COEF       0.1f
 
@@ -40,10 +43,10 @@ void TruckCar::initTuning()
 	mChassisFriction        =   0.6f;
 	mChassisMass            =   7396.0f;
 
-    mWheelRadius      =  0.95f; // this is actually diameter!!
-    mWheelWidth       =  0.3f;
+    mWheelRadius      =  1.046f; // this is actually diameter!!
+    mWheelWidth       =  0.243f;
     mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  1.2f;
+    mConnectionHeight =  1.2f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
@@ -143,7 +146,6 @@ void TruckCar::initGraphics()
 
     // and now a regular rear bumper
     createGeometry("CarEntity_RBumper", "truck_rbumper.mesh", "truck_bumper_uv", mRBumperNode);
-    mRBumperNode->scale(-1, 1, 1);
     PhysicsCore::auto_scale_scenenode(mRBumperNode);
    // mRBumperNode->translate(0, 20.0 * 0.019, -135.0 * 0.019);
 
@@ -153,7 +155,7 @@ void TruckCar::initGraphics()
     createGeometry("CarEntity_RWingmirror", "truck_rwingmirror.mesh", "truck_wingmirror_mirror", mRWingmirrorNode);
     PhysicsCore::auto_scale_scenenode(mRWingmirrorNode);
 
-    /*
+    
     // tidy front left wheel
     createGeometry("CarEntity_FLWheel", "truck_lwheel.mesh", "truck_wheel_uv", mFLWheelNode);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
@@ -169,10 +171,10 @@ void TruckCar::initGraphics()
     // and finally a rear right wheel to seal the deal. beaut.
     createGeometry("CarEntity_RRWheel", "truck_rwheel.mesh", "truck_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
-    */
+    
 
     // ONLY WHILE USING WHEEL.MESH, UNTIL OUR WHEEL MESHES ARE FIXED
-    createGeometry("CarEntity_FLWheel", "wheel.mesh", mFLWheelNode);
+    /*createGeometry("CarEntity_FLWheel", "wheel.mesh", mFLWheelNode);
     createGeometry("CarEntity_FRWheel", "wheel.mesh", mFRWheelNode);
     createGeometry("CarEntity_RLWheel", "wheel.mesh", mRLWheelNode);
     createGeometry("CarEntity_RRWheel", "wheel.mesh", mRRWheelNode);
@@ -180,7 +182,7 @@ void TruckCar::initGraphics()
     mFLWheelNode->scale(scale, scale, scale);
     mFRWheelNode->scale(scale, scale, scale);
     mRLWheelNode->scale(scale, scale, scale);
-    mRRWheelNode->scale(scale, scale, scale);
+    mRRWheelNode->scale(scale, scale, scale);*/
 }
 
 
@@ -242,15 +244,8 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 /// @brief  Attaches 4 wheels to the car chassis.
 void TruckCar::initWheels()
 {
-    /*  Width:    2490mm (not inc wing mirrors, 2866mm with them)
-    Height:   2816mm (inc wheels, cab alone is 2589mm)
-    Length:   5725mm
-    Wheelbase:    3526mm
-    Weight:    7396kg
-    Engine:    12 litre, 420bhp                               */
-
-    float wheelBaseLength = 3.576; // 3.526
-    float wheelBaseHalfWidth  = 2.1; // 2.3
+    float wheelBaseLength = 3.576;
+    float wheelBaseHalfWidth  = 2.1;
 
     // anything you add onto wheelbase, adjust this to take care of it
     float wheelBaseShiftZ = -1.15f;
