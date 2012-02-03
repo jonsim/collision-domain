@@ -38,6 +38,8 @@ public:
 	// Car related Nodes (initNodes())
     Ogre::SceneNode *mPlayerNode;
 
+    void readTuning( char *szFile );
+
 protected:
     void createGeometry(
         const std::string &entityName,
@@ -73,6 +75,7 @@ protected:
     float mSuspensionStiffness;
     float mSuspensionDamping;
     float mSuspensionCompression;
+    float mMaxSuspensionForce;
     float mRollInfluence;
     float mSuspensionRestLength;
     float mMaxSuspensionTravelCm;

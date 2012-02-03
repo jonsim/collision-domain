@@ -7,7 +7,7 @@
  */
 #include "stdafx.h"
 #include "SharedIncludes.h"
-
+#include "boost/algorithm/string.hpp"
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
@@ -340,4 +340,78 @@ void Car::shiftDebugShape( Ogre::Vector3 chassisShift )
     }
 
     dbg->setWorldTransform( matTest[0] );
+}
+
+void Car::readTuning( char *szFile )
+{
+    std::ifstream ifs( szFile );
+    if( !ifs )
+        return;
+
+    std::ostringstream oss;
+    oss << ifs.rdbuf();
+
+    if( !ifs && ifs.eof() )
+        return;
+
+    std::string strContent( oss.str() );
+
+    std::vector<std::string> vecLines;
+    boost::split( vecLines, strContent, boost::is_any_of( "\n" ) );
+
+    for( int i = 0; i < vecLines.size(); i ++ )
+    {
+        std::vector<std::string> tokens;
+        boost::split( tokens, vecLines.at(i), boost::is_any_of( "\t " ) );
+
+        log( "line is %s and numtok is %i", vecLines.at(i).c_str(), tokens.size() );
+
+        if( tokens.size() < 2 )
+            continue;
+
+        if( tokens.at(0) == "mSuspensionStiffness" )
+            mSuspensionStiffness = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSuspensionDamping" )
+            mSuspensionDamping = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSuspensionCompression" )
+            mSuspensionCompression = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxSuspensionForce" )
+            mMaxSuspensionForce = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mRollInfluence" )
+            mRollInfluence = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSuspensionRestLength" )
+            mSuspensionRestLength = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxSuspensionTravelCm" )
+            mMaxSuspensionTravelCm = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mFrictionSlip" )
+            mFrictionSlip = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisLinearDamping" )
+            mChassisLinearDamping = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisAngularDamping" )
+            mChassisAngularDamping = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisRestitution" )
+            mChassisRestitution = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisFriction" )
+            mChassisFriction = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisMass" )
+            mChassisMass = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mWheelRadius" )
+            mWheelRadius = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mWheelWidth" )
+            mWheelWidth = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mWheelFriction" )
+            mWheelFriction = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mConnectionHeight" )
+            mConnectionHeight = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSteerIncrement" )
+            mSteerIncrement = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSteerToZeroIncrement" )
+            mSteerToZeroIncrement = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSteerClamp" )
+            mSteerClamp = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxAccelForce" )
+            mMaxAccelForce = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxBrakeForce" )
+            mMaxBrakeForce = boost::lexical_cast<float>( tokens.at(1) );
+    }
 }

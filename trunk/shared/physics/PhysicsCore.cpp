@@ -168,6 +168,7 @@ void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
             collisionMask);
 
     defaultPlaneBody->setStaticShape( arenaNode, arenaShape, 0.1f, 0.8f, Ogre::Vector3(0, 0, 0) ); // (shape, restitution, friction)
+    defaultPlaneBody->showDebugShape( false );
     
     //defaultPlaneBody->addQueryFlags(btCollisionObject::CF_STATIC_OBJECT);
 
