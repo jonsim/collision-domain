@@ -97,9 +97,6 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h">
-      <Filter>shared\physics\cars</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\raknet\AutopatcherPatchContext.h">
       <Filter>shared\raknet</Filter>
     </ClInclude>
@@ -643,9 +640,6 @@
       <Filter>shared\physics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp">
-      <Filter>shared\physics\cars</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp">
       <Filter>shared\physics\cars</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\raknet\BitStream.cpp">
