@@ -39,6 +39,7 @@ void GraphicsApplication::createScene (void)
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->scale(0.2f, 0.2f, 0.2f);
+    ninjaNode->translate(100.0f,0,0);
 
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();

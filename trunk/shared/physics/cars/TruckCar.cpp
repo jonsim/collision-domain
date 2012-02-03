@@ -15,12 +15,6 @@ using namespace Ogre;
     Wheelbase:    3526mm
     Weight:    7396kg
     Engine:    12 litre, 420bhp                               */
-#define TRUCK_WIDTH_NO_WING_MIRRORS 2.490f
-#define TRUCK_HEIGHT_CAB_ONLY       2.589f
-#define TRUCK_HEIGHT_INC_WHEELS     2.816f
-#define TRUCK_LENGTH                5.725f
-#define TRUCK_WHEELBASE             3.526f
-#define TRUCK_LENGTH_SHIFT_Z         -0.5f
 
 #define CRITICAL_DAMPING_COEF       0.1f
 
@@ -36,9 +30,9 @@ void TruckCar::initTuning()
     mSuspensionStiffness    =   200.0f;
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
-    mRollInfluence          =   0.2f;
+    mRollInfluence          =   0.1f;
     mSuspensionRestLength   =   0.4f;
-    mMaxSuspensionTravelCm  =   30.0f;
+    mMaxSuspensionTravelCm  =   26.0f;
     mFrictionSlip           =   3.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
@@ -46,10 +40,10 @@ void TruckCar::initTuning()
 	mChassisFriction        =   0.6f;
 	mChassisMass            =   7396.0f;
 
-    mWheelRadius      =  0.361902462f;
-    mWheelWidth       =  0.1349448267f;
+    mWheelRadius      =  0.95f; // this is actually diameter!!
+    mWheelWidth       =  0.3f;
     mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f;
+    mConnectionHeight =  1.2f;
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
@@ -159,6 +153,7 @@ void TruckCar::initGraphics()
     createGeometry("CarEntity_RWingmirror", "truck_rwingmirror.mesh", "truck_wingmirror_mirror", mRWingmirrorNode);
     PhysicsCore::auto_scale_scenenode(mRWingmirrorNode);
 
+    /*
     // tidy front left wheel
     createGeometry("CarEntity_FLWheel", "truck_lwheel.mesh", "truck_wheel_uv", mFLWheelNode);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
@@ -174,6 +169,18 @@ void TruckCar::initGraphics()
     // and finally a rear right wheel to seal the deal. beaut.
     createGeometry("CarEntity_RRWheel", "truck_rwheel.mesh", "truck_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+    */
+
+    // ONLY WHILE USING WHEEL.MESH, UNTIL OUR WHEEL MESHES ARE FIXED
+    createGeometry("CarEntity_FLWheel", "wheel.mesh", mFLWheelNode);
+    createGeometry("CarEntity_FRWheel", "wheel.mesh", mFRWheelNode);
+    createGeometry("CarEntity_RLWheel", "wheel.mesh", mRLWheelNode);
+    createGeometry("CarEntity_RRWheel", "wheel.mesh", mRRWheelNode);
+    float scale = 2.1;
+    mFLWheelNode->scale(scale, scale, scale);
+    mFRWheelNode->scale(scale, scale, scale);
+    mRLWheelNode->scale(scale, scale, scale);
+    mRRWheelNode->scale(scale, scale, scale);
 }
 
 
@@ -235,13 +242,18 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 /// @brief  Attaches 4 wheels to the car chassis.
 void TruckCar::initWheels()
 {
-       /* #define TRUCK_WIDTH_NO_WING_MIRRORS 2.490f;
-#define TRUCK_HEIGHT_CAB_ONLY       2.589f;
-#define TRUCK_HEIGHT_INC_WHEELS     2.816f;
-#define TRUCK_LENGTH                5.725f;
-#define TRUCK_WHEELBASE             3.526f;*/
+    /*  Width:    2490mm (not inc wing mirrors, 2866mm with them)
+    Height:   2816mm (inc wheels, cab alone is 2589mm)
+    Length:   5725mm
+    Wheelbase:    3526mm
+    Weight:    7396kg
+    Engine:    12 litre, 420bhp                               */
 
-    float wheelBase = 3.526f;
+    float wheelBaseLength = 3.576; // 3.526
+    float wheelBaseHalfWidth  = 2.1; // 2.3
+
+    // anything you add onto wheelbase, adjust this to take care of it
+    float wheelBaseShiftZ = -1.15f;
 
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
@@ -250,25 +262,24 @@ void TruckCar::initWheels()
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left
-    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
-    //Ogre::Vector3 connectionPointCS0 (wheelBase-(mWheelWidth), mConnectionHeight, wheelBase + (-mWheelRadius));
+    Ogre::Vector3 connectionPointCS0 (wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength );
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
     
     // Wheel 1 - Front Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
+    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength );
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
-                    
+    
     isFrontWheel = false;
 
     // Wheel 2 - Rear Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
+    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 3 - Rear Left
-    connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
+    connectionPointCS0 = Ogre::Vector3(wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 }
