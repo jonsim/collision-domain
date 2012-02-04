@@ -52,6 +52,7 @@ struct PLAYER_INPUT_DATA
     bool backPressed;
     bool leftPressed;
     bool rghtPressed;
+    bool hndbPressed;
 };
 
 struct PLAYER_SYNC_DATA

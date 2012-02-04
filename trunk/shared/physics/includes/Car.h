@@ -26,7 +26,7 @@ public:
         bool isRight,
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate);
-    virtual void accelInputTick(bool isForward, bool isBack);
+    virtual void accelInputTick(bool isForward, bool isBack, bool isHand);
     virtual void moveTo(const btVector3 &position);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();

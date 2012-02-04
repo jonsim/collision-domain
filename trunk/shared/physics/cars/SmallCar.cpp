@@ -18,7 +18,7 @@ using namespace Ogre;
     Tyre Width: 153mm (bit that touches ground, not bounding box)
 */
 
-#define CRITICAL_DAMPING_COEF       0.1f
+#define CRITICAL_DAMPING_COEF       0.6f
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SmallCar::initTuning()
@@ -35,7 +35,7 @@ void SmallCar::initTuning()
     mRollInfluence          =   0.2f;
     mSuspensionRestLength   =   0.2f;
     mMaxSuspensionTravelCm  =   6.0f;
-    mFrictionSlip           =   10000.0f;
+    mFrictionSlip           =   10.5;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
@@ -44,7 +44,7 @@ void SmallCar::initTuning()
 
     mWheelRadius            =  0.555f; // this is actually diameter!!
     mWheelWidth             =  0.153f;
-    mWheelFriction          =  6.0f;//1000;//1e30f;
+    mWheelFriction          =  4.0f;//1000;//1e30f;
     mConnectionHeight       =  0.7f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement         =  0.015f;

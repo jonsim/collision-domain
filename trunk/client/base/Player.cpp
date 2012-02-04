@@ -99,7 +99,7 @@ void Player::processControlsFrameEvent(
 {
     // process steering and apply acceleration
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
-    mCar->accelInputTick(userInput->isForward(), userInput->isBack());
+    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake());
 }
 
 

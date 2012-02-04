@@ -240,7 +240,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	else
 	{
 		// Don't want to capture any keys (typing things)
-		inputSnapshot = new InputState( false, false, false, false );
+		inputSnapshot = new InputState( false, false, false, false, false );
 	}
     
     // Process the networking. Sends client's input and receives data

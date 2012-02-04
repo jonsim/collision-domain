@@ -68,12 +68,13 @@ InputState* Input::getInputState()
         return new InputState(mKeyboard->isKeyDown(OIS::KC_W),
                                 mKeyboard->isKeyDown(OIS::KC_S),
                                 mKeyboard->isKeyDown(OIS::KC_A),
-                                mKeyboard->isKeyDown(OIS::KC_D) );
+                                mKeyboard->isKeyDown(OIS::KC_D),
+                                mKeyboard->isKeyDown(OIS::KC_SPACE) );
 	}
 	else
 	{
 		// Don't want to capture any keys (typing things) or at the select car screen
-		return new InputState( false, false, false, false );
+		return new InputState( false, false, false, false, false );
 	}
 }
 
@@ -87,11 +88,12 @@ InputState* Input::getFreeCamInputState()
         return new InputState(mKeyboard->isKeyDown(OIS::KC_T),
                               mKeyboard->isKeyDown(OIS::KC_G),
                               mKeyboard->isKeyDown(OIS::KC_F),
-                              mKeyboard->isKeyDown(OIS::KC_H) );
+                              mKeyboard->isKeyDown(OIS::KC_H),
+                              mMouse->getMouseState().buttonDown( OIS::MouseButtonID::MB_Right ) );
     }
     else
     {
-        return new InputState( false, false, false, false );
+        return new InputState( false, false, false, false, false );
     }
 }
 
@@ -166,6 +168,10 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
         //GameCore::mAudioCore->playEngineIdle();
     }
 
+    if (evt.key == OIS::KC_P) {
+        GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
+    }
+
     // Had to put this in here for now, and the define.. well fuck you shared includes.
     
 #ifdef COLLISION_DOMAIN_CLIENT
@@ -235,8 +241,8 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
         if (localCar) localCar->playCarHorn();
     }
 
-    if (id == OIS::MB_Right)
-        GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
+    //if (id == OIS::MB_Right)
+    //    GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
         //new PowerupRandom(); // just for testing, you see.
     
 

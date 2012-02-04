@@ -74,6 +74,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 			playerInput.frwdPressed = inputSnapshot->isForward();
 			playerInput.leftPressed = inputSnapshot->isLeft();
 			playerInput.rghtPressed = inputSnapshot->isRight();
+            playerInput.hndbPressed = inputSnapshot->isHandbrake();
 
 			// Push the data onto a bitstream
 			RakNet::BitStream bitSend;

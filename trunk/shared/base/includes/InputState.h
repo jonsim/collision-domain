@@ -18,15 +18,16 @@
 class InputState
 {
 public:
-    InputState (bool frwdPressed, bool backPressed, bool leftPressed, bool rghtPressed);
+    InputState (bool frwdPressed, bool backPressed, bool leftPressed, bool rghtPressed, bool hndbPressed);
     ~InputState ();
     bool isForward ();
     bool isBack ();
     bool isLeft ();
     bool isRight ();
+    bool isHandbrake ();
 
 private:
-    bool mForward, mBack, mLeft, mRight;
+    bool mForward, mBack, mLeft, mRight, mHandbrake;
 };
 
 #endif // #ifndef INPUTSTATE_H
