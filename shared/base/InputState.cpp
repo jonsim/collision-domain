@@ -15,12 +15,13 @@
 /// @param  backPressed  Whether the back key is pressed.
 /// @param  leftPressed  Whether the left key is pressed.
 /// @param  rghtPressed  Whether the right key is pressed.
-InputState::InputState (bool frwdPressed, bool backPressed, bool leftPressed, bool rghtPressed)
+InputState::InputState (bool frwdPressed, bool backPressed, bool leftPressed, bool rghtPressed, bool hndbPressed )
 {
     mForward = frwdPressed;
     mBack = backPressed;
     mLeft = leftPressed;
     mRight = rghtPressed;
+    mHandbrake = hndbPressed;
 }
 
 
@@ -59,4 +60,11 @@ bool InputState::isLeft ()
 bool InputState::isRight ()
 {
     return mRight;
+}
+
+/// @brief  Returns the state of the handbrake key.
+/// @return The handbrake key state.
+bool InputState::isHandbrake ()
+{
+    return mHandbrake;
 }

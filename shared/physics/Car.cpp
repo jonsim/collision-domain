@@ -138,7 +138,7 @@ void Car::applySteeringValue()
 /// @brief  Called once every frame with new user input and updates forward/back engine forces from this.
 /// @param  isForward  User input specifying if the forward control is pressed.
 /// @param  isBack     User input specifying if the back control is pressed.
-void Car::accelInputTick(bool isForward, bool isBack)
+void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 {
     int forwardBack = 0;
     if (isForward) forwardBack += 1;
@@ -151,12 +151,62 @@ void Car::accelInputTick(bool isForward, bool isBack)
     mEngineForce  = ( isForward ) ? mMaxAccelForce : 0;
     mBrakingForce = ( isBack    ) ? mMaxBrakeForce : 0;
 
+    int doBrake = 0;
+
+    if( isHand )
+    {
+        // Turn off front two wheel brakes
+        mVehicle->getBulletVehicle()->setBrake( 0, 0 );
+        mVehicle->getBulletVehicle()->setBrake( 0, 1 );
+
+        // Set the brake on rear 2 wheels (twice normal brake power)
+        mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce * 2, 2 );
+        mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce * 2, 3 );
+        // Ramp up the friction on front 2 wheels (constraint)
+
+        // Gradually reduce front wheel friction
+        btScalar fric;
+        fric = mVehicle->getBulletVehicle()->getWheelInfo(0).m_frictionSlip;
+        //mVehicle->getBulletVehicle()->getWheelInfo(0).m_frictionSlip -= ( fric - (mWheelFriction/1.2) * 0.9 );
+        //mVehicle->getBulletVehicle()->getWheelInfo(1).m_frictionSlip -= ( fric - (mWheelFriction/1.2) * 0.9 );
+
+        // Cut out back wheel friction (they've locked)
+        mVehicle->getBulletVehicle()->getWheelInfo(2).m_frictionSlip = 0.25;
+        mVehicle->getBulletVehicle()->getWheelInfo(3).m_frictionSlip = 0.25;
+
+    }
+    else
+    {
+        // Reset brakes to 0
+        for( int i = 0; i < 4; i ++ )
+        {
+            mVehicle->getBulletVehicle()->setBrake( 0 , i );
+
+            // Gradually re-increase friction on wheels
+            btScalar fric = mVehicle->getBulletVehicle()->getWheelInfo(i).m_frictionSlip ;
+            if( (fric + 0.05) < mWheelFriction )
+                mVehicle->getBulletVehicle()->getWheelInfo(i).m_frictionSlip += ((mWheelFriction - fric) * 0.1);
+            else
+                mVehicle->getBulletVehicle()->getWheelInfo(i).m_frictionSlip = mWheelFriction;
+        }
+    }
+
+        
+
+        /*// Ensure our friction values are correct
+        mVehicle->getBulletVehicle()->getWheelInfo(0).m_frictionSlip = mWheelFriction;
+        mVehicle->getBulletVehicle()->getWheelInfo(1).m_frictionSlip = mWheelFriction;
+        mVehicle->getBulletVehicle()->getWheelInfo(2).m_frictionSlip = mWheelFriction;
+        mVehicle->getBulletVehicle()->getWheelInfo(3).m_frictionSlip = mWheelFriction;*/
+
     // Loop through each wheel
     for( int i = 0; i < 4; i ++ )
     {
         // Skip wheels depending on car driving mode
         if( i < 2 && !mFrontWheelDrive ) continue;
         if( i > 1 && !mRearWheelDrive  ) continue;
+
+        //if( isHand ) continue;
 
         // This code is a bit of a mess to avoid really tight brake / reverse checks
         // on exact float values but it works!
@@ -174,12 +224,14 @@ void Car::accelInputTick(bool isForward, bool isBack)
                 if( fSpeed >= -2 )
                 {
                     mVehicle->applyEngineForce( mEngineForce, i );                      // Press accel & moving forwards - accelerate
-                    mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );         // and apply the brake if had been pressed
+                    doBrake = 1;
+                    //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );       // and apply the brake if had been pressed
                 }
                 else
                 {
                     mVehicle->applyEngineForce( 0, i );                                 // Press accell & moving backwards - turn off accel
-                    mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );        // and apply the brake if had been pressed
+                    //mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );      // and apply the brake if had been pressed
+                    doBrake = 2;
                 }
             }
             else
@@ -195,8 +247,21 @@ void Car::accelInputTick(bool isForward, bool isBack)
             else
                 mVehicle->applyEngineForce( mEngineForce, i );                          // otherwise normal force (simulate accel & brake together)
 
-            mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );                 // Set brake on if we're pressing it
+            //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );               // Set brake on if we're pressing it
+            doBrake = 1;
         }
+    }
+
+    if( doBrake > 0 )
+    {
+        for( int i = 0; i < 4; i ++ )
+            mVehicle->getBulletVehicle()->setBrake( doBrake == 1 ? mBrakingForce : mMaxBrakeForce , i );
+    }
+    else
+    {
+        // Reset brakes to 0
+        for( int i = 0; i < 4; i ++ )
+            mVehicle->getBulletVehicle()->setBrake( 0 , i );
     }
 
     // OLD DRIVING CODE
