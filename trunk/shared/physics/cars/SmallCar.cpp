@@ -35,7 +35,7 @@ void SmallCar::initTuning()
     mRollInfluence          =   0.2f;
     mSuspensionRestLength   =   0.2f;
     mMaxSuspensionTravelCm  =   10.0f;
-    mFrictionSlip           =   8.0f;
+    mFrictionSlip           =   4.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
@@ -44,11 +44,11 @@ void SmallCar::initTuning()
 
     mWheelRadius            =  0.2775f; // this is actually diameter!!
     mWheelWidth             =  0.153f;
-    mWheelFriction          =  4.0f;//1000;//1e30f;
-    mConnectionHeight       =  0.3f; // this connection point lies at the very bottom of the suspension travel
+    mWheelFriction          =  1.8f;    //1000;//1e30f;
+    mConnectionHeight       =  0.3f;    // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement         =  0.015f;
-    mSteerToZeroIncrement   =  0.05f; // when no input is given steer back to 0
+    mSteerToZeroIncrement   =  0.05f;   // when no input is given steer back to 0
     mSteerClamp             =  0.75f;
 
     mMaxAccelForce = 4000.0f;
@@ -99,8 +99,8 @@ SmallCar::SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     initBody(carPosition, chassisShift);
     initWheels();
 
-    //WheelFrictionConstraint *lol = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
-    //GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( lol );
+    WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
 }
 
 

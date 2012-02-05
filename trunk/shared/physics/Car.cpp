@@ -9,7 +9,7 @@
 #include "SharedIncludes.h"
 #include "boost/algorithm/string.hpp"
 
-#define WHEEL_FRICTION_CFM 0.8
+#define WHEEL_FRICTION_CFM 0.05
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
@@ -156,45 +156,20 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 
     if( isHand )
     {
-        // Turn off front two wheel brakes
-        mVehicle->getBulletVehicle()->setBrake( 0, 0 );
-        mVehicle->getBulletVehicle()->setBrake( 0, 1 );
+        mVehicle->applyEngineForce( 0, 0 );
+        mVehicle->applyEngineForce( 0, 1 );
+        mVehicle->applyEngineForce( 0, 2 );
+        mVehicle->applyEngineForce( 0, 3 );
 
-        // Set the brake on rear 2 wheels (twice normal brake power)
-        mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce * 2, 2 );
-        mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce * 2, 3 );
-        // Ramp up the friction on front 2 wheels (constraint)
-
-        // Gradually reduce front wheel friction
-        btScalar fric;
-        fric = mVehicle->getBulletVehicle()->getWheelInfo(0).m_frictionSlip;
-        mVehicle->getBulletVehicle()->getWheelInfo(2).m_frictionSlip -= ( fric - (mWheelFriction*0.7) * 0.01 );
-
-        fric = mVehicle->getBulletVehicle()->getWheelInfo(1).m_frictionSlip;     
-        mVehicle->getBulletVehicle()->getWheelInfo(3).m_frictionSlip -= ( fric - (mWheelFriction*0.7) * 0.01 );
-
-        // Cut out back wheel friction (they've locked)
-        fric = mVehicle->getBulletVehicle()->getWheelInfo(2).m_frictionSlip;
-        mVehicle->getBulletVehicle()->getWheelInfo(2).m_frictionSlip -= ( fric - (0.25) * 0.01 );
-
-        fric = mVehicle->getBulletVehicle()->getWheelInfo(3).m_frictionSlip;     
-        mVehicle->getBulletVehicle()->getWheelInfo(3).m_frictionSlip -= ( fric - (0.25) * 0.01 );
+        mVehicle->getBulletVehicle()->setBrake( mMaxAccelForce * 2, 2 );
+        mVehicle->getBulletVehicle()->setBrake( mMaxAccelForce * 2, 3 );
 
     }
     else
     {
         // Reset brakes to 0
         for( int i = 0; i < 4; i ++ )
-        {
             mVehicle->getBulletVehicle()->setBrake( 0 , i );
-
-            // Gradually re-increase friction on wheels
-            btScalar fric = mVehicle->getBulletVehicle()->getWheelInfo(i).m_frictionSlip ;
-            if( (fric + 0.05) < mWheelFriction )
-                mVehicle->getBulletVehicle()->getWheelInfo(i).m_frictionSlip += ((mWheelFriction - fric) * 0.5);
-            else
-                mVehicle->getBulletVehicle()->getWheelInfo(i).m_frictionSlip = mWheelFriction;
-        }
     }
 
     // Loop through each wheel
@@ -204,7 +179,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
         if( i < 2 && !mFrontWheelDrive ) continue;
         if( i > 1 && !mRearWheelDrive  ) continue;
 
-        //if( isHand ) continue;
+        if( isHand ) continue;
 
         // This code is a bit of a mess to avoid really tight brake / reverse checks
         // on exact float values but it works!
@@ -257,12 +232,12 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
         }
     }
 
-    if( doBrake > 0 )
+    if( doBrake > 0 && !isHand )
     {
         for( int i = 0; i < 4; i ++ )
             mVehicle->getBulletVehicle()->setBrake( doBrake == 1 ? mBrakingForce : mMaxBrakeForce , i );
     }
-    else
+    else if( !isHand )
     {
         // Reset brakes to 0
         for( int i = 0; i < 4; i ++ )
@@ -478,7 +453,7 @@ void WheelFrictionConstraint::getInfo1( btTypedConstraint::btConstraintInfo1* in
     for (int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i)
     {
         const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
-        info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_groundObject != NULL );
+        info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact != 0 );
     }
 }
 
@@ -493,7 +468,7 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
 
         // Only if the wheel is on the ground:
-        if( !wheel_info.m_raycastInfo.m_groundObject )
+        if( !wheel_info.m_raycastInfo.m_isInContact )
             continue;
 
         int row_index = row++ * info->rowskip;
@@ -517,7 +492,7 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
 
         // Set maximum friction force according to Coulomb's law
         // Substitute Pacejka here
-        btScalar max_friction = wheel_info.m_maxSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+        btScalar max_friction = wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
 
         // Set friction limits.
         info->m_lowerLimit[row_index] = -max_friction;
@@ -530,7 +505,7 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
 
         // Only if the wheel is on the ground:
-        if (!wheel_info.m_raycastInfo.m_groundObject)
+        if (!wheel_info.m_raycastInfo.m_isInContact)
             continue;
 
         int row_index = row++ * info->rowskip;
@@ -553,6 +528,7 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
 
         // Estimate the wheel's angular velocity = m_deltaRotation
         btScalar wheel_velocity = wheel_info.m_deltaRotation * wheel_info.m_wheelsRadius;
+        //btScalar wheel_velocity = wheel_info.m_rotation * wheel_info.m_wheelsRadius;
 
         // Set constraint error (target relative velocity = 0.0)
         info->m_constraintError[row_index] = wheel_velocity;
@@ -561,7 +537,7 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         info->cfm[row_index] = WHEEL_FRICTION_CFM; 
 
         // Set maximum friction force
-        btScalar max_friction = wheel_info.m_maxSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+        btScalar max_friction = wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
 
         // Set friction limits.
         info->m_lowerLimit[row_index] = -max_friction;

@@ -46,7 +46,7 @@ void SimpleCoupeCar::initTuning()
 
     mWheelRadius      =  0.345f; // this is actually diameter!!
     mWheelWidth       =  0.176f;
-    mWheelFriction    =  4.0f;//1000;//1e30f;
+    mWheelFriction    =  1.8f;//1000;//1e30f;
     mConnectionHeight =  0.6f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
@@ -100,6 +100,9 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     initGraphics(chassisShift);
     initBody(carPosition, chassisShift);
     initWheels();
+
+    WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
 }
 
 
