@@ -577,6 +577,9 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\PostFilterLogic.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -941,6 +944,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp">
       <Filter>shared\physics\cars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\PostFilterLogic.cpp">
+      <Filter>client\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

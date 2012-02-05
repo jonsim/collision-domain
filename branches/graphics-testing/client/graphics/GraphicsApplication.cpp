@@ -116,8 +116,13 @@ void GraphicsApplication::setupLighting (void)
 void GraphicsApplication::setupCompositorChain (void)
 {
 	// Add the bloom post filter
-	Ogre::CompositorManager::getSingleton().addCompositor(mCamera->getViewport(), "Bloom");
-	setBloomMode(true);
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+	
+	BloomLogic* bloomLogic = new BloomLogic;
+	cm.registerCompositorLogic("Bloom", bloomLogic);
+	cm.addCompositor(vp, "Bloom");
+	cm.setCompositorEnabled(vp, "Bloom", true);
 }
 
 
