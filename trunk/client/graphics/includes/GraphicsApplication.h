@@ -48,10 +48,12 @@ private:
     void setupArena (void);
     void setupNetworking (void);
 	void createSpeedo (void);
-	void updateSpeedo (float fSpeed);
+    void createGearDisplay (void);
+	void updateSpeedo (float fSpeed, int iGear);
 
 	Ogre::OverlayContainer *olcSpeedo;
 	Ogre::OverlayElement *oleNeedle;
+    Ogre::OverlayElement *oleGear;
 
 	Ogre::Light* worldSun;
 	Ogre::ParticleSystem* weatherSystem;

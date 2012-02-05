@@ -34,9 +34,9 @@ void SimpleCoupeCar::initTuning()
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
     mMaxSuspensionForce     =   14000.0f;
-    mRollInfluence          =    0.7f;
-    mSuspensionRestLength   =    0.6f;
-    mMaxSuspensionTravelCm  =  30.0f;
+    mRollInfluence          =    0.35f;
+    mSuspensionRestLength   =    0.3f;
+    mMaxSuspensionTravelCm  =   15.0f;
     mFrictionSlip           =   10.5f;
 	mChassisLinearDamping   =    0.2f;
 	mChassisAngularDamping  =    0.2f;
@@ -44,10 +44,10 @@ void SimpleCoupeCar::initTuning()
 	mChassisFriction        =    0.6f;
 	mChassisMass            = 1451.0f;
 
-    mWheelRadius      =  0.690f; // this is actually diameter!!
+    mWheelRadius      =  0.345f; // this is actually diameter!!
     mWheelWidth       =  0.176f;
-    mWheelFriction    = 4.0f;//1000;//1e30f;
-    mConnectionHeight =  0.8f; // this connection point lies at the very bottom of the suspension travel
+    mWheelFriction    =  4.0f;//1000;//1e30f;
+    mConnectionHeight =  0.6f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
@@ -58,6 +58,25 @@ void SimpleCoupeCar::initTuning()
 	
 	mFrontWheelDrive = false;
 	mRearWheelDrive  = true;
+
+    mGearCount = 5;
+    mCurrentGear = 1;
+    mGearRatio[0] = 3.20f;
+    mGearRatio[1] = 2.19f;
+    mGearRatio[2] = 1.41f;
+    mGearRatio[3] = 1.00f;
+    mGearRatio[4] = 0.83f;
+    mGearRatio[5] = 0.0f;
+    mGearRatio[6] = 0.0f;
+    mGearRatio[7] = 0.0f;
+    mGearRatio[8] = 0.0f;
+    mReverseRatio = 3.16f;
+    mFinalDriveRatio = 3.06f;
+
+    // http://www.allpar.com/cars/dodge/challenger/specifications.html
+
+    mRevTick  = 1800;
+    mRevLimit = 6000;
 
     readTuning( "spec_banger.txt" );
 }
@@ -74,7 +93,7 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 1.0f, 1.0f);
+    Ogre::Vector3 chassisShift(0, 0.5f, 0.5f);
 
     initTuning();
     initNodes();
@@ -247,11 +266,11 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
 /// @brief  Attaches 4 wheels to the car chassis.
 void SimpleCoupeCar::initWheels()
 {
-    float wheelBaseLength = 2.939f;
-    float wheelBaseHalfWidth  = 1.7f;
+    float wheelBaseLength = 1.4695f;
+    float wheelBaseHalfWidth  = 0.85f;
 
     // anything you add onto wheelbase, adjust this to take care of it
-    float wheelBaseShiftZ = 0.20f;
+    float wheelBaseShiftZ = 0.10f;
 
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);

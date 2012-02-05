@@ -51,6 +51,8 @@
 #include "OgreBulletDynamics.h"
 #include "OgreBulletDynamicsRigidBody.h"
 
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 
 // Windows specific include

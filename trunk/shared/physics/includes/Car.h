@@ -10,6 +10,7 @@
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
+#include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
 
 class Player;
 
@@ -30,7 +31,8 @@ public:
     virtual void moveTo(const btVector3 &position);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();
-	virtual float getCarMph();
+	float getCarMph();
+    float getGear() { return mCurrentGear; }
     void attachCollisionTickCallback(Player* player);
     void shiftDebugShape( const Ogre::Vector3 chassisShift );
 
@@ -98,8 +100,19 @@ protected:
     float mMaxAccelForce;
     float mMaxBrakeForce;
 
-	bool mFrontWheelDrive;
-	bool mRearWheelDrive;
+	bool  mFrontWheelDrive;
+	bool  mRearWheelDrive;
+
+    int   mGearCount;
+    int   mCurrentGear;
+    float mGearRatio[9];
+    float mReverseRatio;
+    float mFinalDriveRatio;
+
+    float mEngineRPM;
+    float mRevTick;
+    float mRevLimit;
+
 
     // Car physics objects
     OgreBulletCollisions::BoxCollisionShape      *chassisShape;
@@ -110,6 +123,7 @@ protected:
     OgreBulletDynamics::RaycastVehicle           *mVehicle;
     btRigidBody                                  *mbtRigidBody;
 
+
 private:
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
@@ -119,6 +133,29 @@ private:
         bool applyMaterial,
         const std::string &materialName,
         Ogre::SceneNode *toAttachTo);
+
+    void updateRPM();
+
+    inline float rpm2rads(float f){ return f * 0.1047197f; }
+    inline float rads2rpm(float f){ return f * 9.5492966f; }
+};
+
+class WheelFrictionConstraint : public btTypedConstraint
+{
+public:
+    WheelFrictionConstraint( OgreBulletDynamics::RaycastVehicle *v, btRigidBody *r );
+    virtual void getInfo1( btTypedConstraint::btConstraintInfo1* info );
+    virtual void getInfo2( btTypedConstraint::btConstraintInfo2* info );
+
+	///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
+	///If no axis is provided, it uses the default axis for this constraint.
+    virtual	void	setParam(int num, btScalar value, int axis = -1);
+	///return the local value of parameter
+    virtual	btScalar getParam(int num, int axis = -1) const;
+
+    OgreBulletDynamics::RaycastVehicle *mVehicle;
+    btRigidBody *mbtRigidBody;
+    
 };
 
 #endif // #ifndef __Car_h_
