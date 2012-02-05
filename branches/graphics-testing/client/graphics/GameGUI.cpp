@@ -203,16 +203,12 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
         {
             if( strTokens.at(0) == "exit" )
                 mWinMgr.getWindow( "/Console" )->hide();
-	else if (!stricmp(szInput, "weather 1"))
-		GameCore::mGraphicsApplication->setWeatherMode(0);
-	else if (!stricmp(szInput, "weather 2"))
-		GameCore::mGraphicsApplication->setWeatherMode(1);
-	else if (!stricmp(szInput, "weather 3"))
-		GameCore::mGraphicsApplication->setWeatherMode(2);
-	else if (!stricmp(szInput, "bloom on"))
-		GameCore::mGraphicsApplication->setBloomMode(true);
-	else if (!stricmp(szInput, "bloom off"))
-		GameCore::mGraphicsApplication->setBloomMode(false);
+			else if (!strnicmp(szInput, "weather ", 8))
+				GameCore::mGraphicsApplication->setWeatherMode(atoi(&szInput[8]) - 1);
+			else if (!strnicmp(szInput, "bloom1 ", 7))
+				GameCore::mGraphicsApplication->bloomLogic->setBlurWeight(atof(&szInput[7]));
+			else if (!strnicmp(szInput, "bloom2 ", 7))
+				GameCore::mGraphicsApplication->bloomLogic->setOriginalWeight(atof(&szInput[7]));
 
             else if( strTokens.at(0) == "movdbg" )
             {

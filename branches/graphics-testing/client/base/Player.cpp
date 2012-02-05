@@ -130,6 +130,13 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 	*/
 }
 
+/// @brief Returns the camera current yawing around the player.
+/// @return The yawing, in degrees, around the player. 0 is directly in front of the player, +/-180 is behind.
+float Player::getCameraYaw ()
+{
+	return camArmNode->getOrientation().getYaw().valueDegrees();
+}
+
 
 /// @brief  Supplies the Car object which contains player position and methods on that. 
 /// @return The Car object which allows forcing a player to a given CarSnapshot or getting a CarSnapshot.

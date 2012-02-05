@@ -42,6 +42,7 @@ public:
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
+	float getCameraYaw ();
     Car* getCar();
     void collisionTickCallback(int damage);
 	

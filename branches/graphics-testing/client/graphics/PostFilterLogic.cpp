@@ -76,13 +76,29 @@ void RadialBlurLogic::setBlurStrength (float n)
 }
 
 
+/*-------------------- MOTION BLUR LOGIC --------------------*/
+/// @copydoc ListenerFactoryLogic::createListener
+Ogre::CompositorInstance::Listener* MotionBlurLogic::createListener(Ogre::CompositorInstance* instance)
+{
+	mListener = new MotionBlurListener;
+	return mListener;
+}
+
+/// @brief Sets the blur parameter of the Motion Blur compositor.
+/// @param n	The new blur strength.
+void MotionBlurLogic::setBlurStrength (float n)
+{
+	((MotionBlurListener*) mListener)->blurStrength = n;
+}
+
+
 
 /*-------------------- COMPOSITOR LISTENERS --------------------*/
 /*-------------------- BLOOM LISTENER --------------------*/
 /// @brief Constructor.
 BloomListener::BloomListener()
 {
-	blurWeight = 1.0f;
+	blurWeight = 0.15f;
 	originalWeight = 1.0f;
 }
 
@@ -112,7 +128,7 @@ void BloomListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr
 /// @brief Constructor.
 RadialBlurListener::RadialBlurListener()
 {
-	blurDistance = 1.0f;
+	blurDistance = 0.2f;
 	blurStrength = 1.0f;
 }
 
@@ -134,5 +150,34 @@ void RadialBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::Materi
 	{
 		fpParams->setNamedConstant("sampleDist", blurDistance);
 		fpParams->setNamedConstant("sampleStrength", blurStrength);
+	}
+}
+
+
+/*-------------------- MOTION BLUR LISTENER --------------------*/
+/// @brief Constructor.
+MotionBlurListener::MotionBlurListener()
+{
+	blurStrength = 1.8f;
+}
+
+/// @brief Deconstructor.
+MotionBlurListener::~MotionBlurListener()
+{
+}
+
+/// @copydoc CompositorInstance::Listener::notifyMaterialSetup
+void MotionBlurListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
+{
+	fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+}
+
+/// @copydoc CompositorInstance::Listener::notifyMaterialRender
+void MotionBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
+{
+	OutputDebugString("yoohoo\n");
+	if (pass_id == 700)
+	{
+		fpParams->setNamedConstant("blur", blurStrength);
 	}
 }

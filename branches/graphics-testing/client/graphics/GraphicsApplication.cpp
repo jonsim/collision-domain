@@ -14,6 +14,9 @@
 /// @brief  Constructor.
 GraphicsApplication::GraphicsApplication (void)
 {
+	gfxSettingBloom      = 0.0f;
+	gfxSettingRadialBlur = 0.0f;
+	gfxSettingMotionBlur = 1.0f;
 }
 
 
@@ -46,7 +49,7 @@ void GraphicsApplication::createScene (void)
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->scale(0.2f, 0.2f, 0.2f);
-    ninjaNode->translate(100.0f,0,0);
+    ninjaNode->translate(50.0f, -3.0f, 0);
 
 	// Attach the GUI components
 	GameCore::mGui->displayConnectBox();
@@ -123,28 +126,82 @@ void GraphicsApplication::setupCompositorChain (void)
 	// This is done by first setting up the logic for them and adding this logic as a listener so it
 	// to fire every time the compositor completes a pass allowing injection of values into the GPU
 	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
-	BloomLogic* bloomLogic = new BloomLogic;
+	// Finally add the compositor to the chain.
+	bloomLogic = new BloomLogic;
 	cm.registerCompositorLogic("Bloom", bloomLogic);
-
-	RadialBlurLogic* radialBlurLogic = new RadialBlurLogic;
-	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
-
-	// Add the compositor to the compositor chain and enable it.
 	cm.addCompositor(vp, "Bloom");
-	cm.setCompositorEnabled(vp, "Bloom", true);
-	
-	cm.addCompositor(vp, "RadialBlur");
-	cm.setCompositorEnabled(vp, "RadialBlur", true);
 
-	bloomLogic->setBlurWeight(0.1f);
+	radialBlurLogic = new RadialBlurLogic;
+	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
+	cm.addCompositor(vp, "RadialBlur");
+
+	//motionBlurLogic = new MotionBlurLogic;
+	//cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
+	//cm.addCompositor(vp, "MotionBlur");
+	//cm.setCompositorEnabled(vp, "MotionBlur", true);
+	
+	// Enable and configure compositors (radial blur is controlled by the players speed).
+	setBloomMode(0.15f);
 }
 
-
-/// @brief Whether or not the bloom filter is enabled.
-/// enabled	The new setting for the bloom filter (on or off).
-void GraphicsApplication::setBloomMode (bool enabled)
+void GraphicsApplication::setBloomMode (float bloom)
 {
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "Bloom", enabled);
+	static bool enabled = false;
+
+	bloom *= gfxSettingBloom;
+
+	if (enabled)
+	{
+		if (bloom < 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "Bloom", false);
+			enabled = false;
+		}
+		else
+		{
+			bloomLogic->setBlurWeight(bloom);
+		}
+	}
+	else
+	{
+		if (bloom > 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "Bloom", true);
+			bloomLogic->setBlurWeight(bloom);
+			enabled = true;
+		}
+	}
+}
+
+void GraphicsApplication::setRadialBlurMode (float blur)
+{
+	static bool enabled = false;
+
+	// Scale the blur amount by the blur graphical setting. This defaults to 1.
+	blur *= gfxSettingRadialBlur;
+
+	if (enabled)
+	{
+		if (blur < 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "RadialBlur", false);
+			enabled = false;
+		}
+		else
+		{
+			radialBlurLogic->setBlurStrength(blur);
+		}
+	}
+	else
+	{
+		if (blur > 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "RadialBlur", true);
+			radialBlurLogic->setBlurStrength(blur);
+			enabled = true;
+		}
+	}
+		
 }
 
 

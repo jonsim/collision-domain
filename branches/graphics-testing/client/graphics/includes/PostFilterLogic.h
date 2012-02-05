@@ -54,6 +54,16 @@ public:
 	void setBlurStrength (float n);
 };
 
+class MotionBlurLogic : public ListenerFactoryLogic
+{
+private:
+	Ogre::CompositorInstance::Listener* mListener;
+protected:
+	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance);
+public:
+	void setBlurStrength (float n);
+};
+
 
 
 /*-------------------- COMPOSITOR LISTENERS --------------------*/
@@ -81,6 +91,19 @@ private:
 public:
 	RadialBlurListener();
 	~RadialBlurListener();
+	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
+	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
+};
+
+class MotionBlurListener : public Ogre::CompositorInstance::Listener
+{
+friend MotionBlurLogic;
+private:
+	float blurStrength;
+	Ogre::GpuProgramParametersSharedPtr fpParams;
+public:
+	MotionBlurListener();
+	~MotionBlurListener();
 	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 };

@@ -26,7 +26,14 @@ public:
     bool firstFrameOccurred;
 	
 	void setWeatherMode (uint8_t mode);
-	void setBloomMode (bool enable);
+	void setBloomMode (float bloom);
+	void setRadialBlurMode (float blur);
+	BloomLogic* bloomLogic;
+	
+	// Graphics settings. Set these to 0 to disable the effect. Defaults are all 1.
+	float gfxSettingBloom;			// Strength of the bloom lighting artifact.
+	float gfxSettingRadialBlur;		// Amount of blurring encountered at high speeds.
+	float gfxSettingMotionBlur;		// Amount of blurring of relatively moving objects.
 
 protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
@@ -56,6 +63,10 @@ private:
 	Ogre::Light* worldSun;
 	Ogre::ParticleSystem* weatherSystem;
 	bool weatherSystemAttached;
+
+	// Compositor logic modules
+	RadialBlurLogic* radialBlurLogic;
+	MotionBlurLogic* motionBlurLogic;
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H
