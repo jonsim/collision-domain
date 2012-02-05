@@ -13,21 +13,21 @@
  */
 class Powerup
 {
-    friend class PowerupPool;
-
 public:
     virtual void playerCollision(Player* player) = 0;
+    virtual void frameEvent( const Ogre::FrameEvent& evt ) = 0;
+    virtual bool isPendingDelete() = 0;
 
-    int getPowerupType() { return mType; }
-    void setPowerupType( int iType ) { mType = iType; }
+    //int getPowerupType(); if you have to check this, its probably bad oo design
+    //void setPowerupType( int iType ); http://stackoverflow.com/questions/500493/c-equivalent-of-instanceof
+    void hide();
 
-    void hide() { mNode->setDebugDisplayEnabled( false ); mNode->setVisible(false); }
-
-    bool mHasBeenCollected;
 protected:
-    int mType;  
+    //int mType;  
     OgreBulletDynamics::RigidBody* mRigidBody;
     Ogre::SceneNode *mNode;
+
+    bool mHasBeenCollected;
 };
 
 #endif // #ifndef POWERUP_H

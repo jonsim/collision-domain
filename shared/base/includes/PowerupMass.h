@@ -17,9 +17,11 @@ class GameCore;
 class PowerupMass : public Powerup
 {
 public:
-    PowerupMass();
+    PowerupMass(Ogre::Vector3 createAboveAt);
     ~PowerupMass();
     void playerCollision(Player* player);
+    void frameEvent( const Ogre::FrameEvent& evt );
+    bool isPendingDelete();
 
 private:
 };

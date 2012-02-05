@@ -44,14 +44,15 @@ public:
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
     Car* getCar();
     void collisionTickCallback(int damage);
-	
-	CarSnapshot *mSnapshots;
+    void applyHealthBonus();
     
     const char *getNickname() { return mNickname; }
     int getCarType() { return mCarType; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
+
+	CarSnapshot *mSnapshots;
 
 private:
     const float cameraRotationConstant;
