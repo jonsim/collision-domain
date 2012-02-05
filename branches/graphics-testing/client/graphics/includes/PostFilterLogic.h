@@ -1,13 +1,19 @@
+/**
+ * @file    PostFilterLogic.h
+ * @brief   Handles the logic and associated listeners attached to the post filter compositors.
+ */
+
 #ifndef POSTFILTERLOGIC_H
 #define POSTFILTERLOGIC_H
+
 
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
 
-//The simple types of compositor logics will all do the same thing -
-//Attach a listener to the created compositor
+// The basic compositor logics will all do the same thing: attach a listener to the created
+// compositor. Define a shared definition to keep things minimal.
 class ListenerFactoryLogic : public Ogre::CompositorLogic
 {
 public:
@@ -15,7 +21,7 @@ public:
 	virtual void compositorInstanceDestroyed(Ogre::CompositorInstance* destroyedInstance);
 
 protected:
-	//This is the method that implementations will need to override
+	// This is the method that implementations will need to override.
 	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance) = 0;
 
 private:
@@ -25,51 +31,56 @@ private:
 
 
 
-//The compositor logic for the bloom compositor
+/*-------------------- COMPOSITOR LOGICS --------------------*/
 class BloomLogic : public ListenerFactoryLogic
 {
-protected:
+private:
 	Ogre::CompositorInstance::Listener* mListener;
-	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance);
-};
-
-//The compositor logic for the gaussian blur compositor
-class GaussianBlurLogic : public ListenerFactoryLogic
-{
 protected:
 	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance);
+public:
+	void setBlurWeight (float n);
+	void setOriginalWeight (float n);
+};
+
+class RadialBlurLogic : public ListenerFactoryLogic
+{
+private:
+	Ogre::CompositorInstance::Listener* mListener;
+protected:
+	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance);
+public:
+	void setBlurDistance (float n);
+	void setBlurStrength (float n);
 };
 
 
 
-
-// listeners
+/*-------------------- COMPOSITOR LISTENERS --------------------*/
 class BloomListener : public Ogre::CompositorInstance::Listener
 {
-protected:
+friend BloomLogic;
+private:
 	float blurWeight;
 	float originalWeight;
 	Ogre::GpuProgramParametersSharedPtr fpParams;
 public:
 	BloomListener();
-	virtual ~BloomListener();
+	~BloomListener();
 	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 };
 
-class GaussianListener : public Ogre::CompositorInstance::Listener
+class RadialBlurListener : public Ogre::CompositorInstance::Listener
 {
-protected:
-	int mVpWidth, mVpHeight;
-	// Array params - have to pack in groups of 4 since this is how Cg generates them
-	// also prevents dependent texture read problems if ops don't require swizzle
-	float mBloomTexWeights[15][4];
-	float mBloomTexOffsetsHorz[15][4];
-	float mBloomTexOffsetsVert[15][4];
+friend RadialBlurLogic;
+private:
+	float blurDistance;
+	float blurStrength;
+	Ogre::GpuProgramParametersSharedPtr fpParams;
 public:
-	GaussianListener();
-	virtual ~GaussianListener();
-	void notifyViewportSize(int width, int height);
+	RadialBlurListener();
+	~RadialBlurListener();
 	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 };

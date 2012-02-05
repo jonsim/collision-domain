@@ -115,14 +115,28 @@ void GraphicsApplication::setupLighting (void)
 /// @brief Builds the compositor chain which adds post filters to the rendered image before being displayed.
 void GraphicsApplication::setupCompositorChain (void)
 {
-	// Add the bloom post filter
+	// Collect required information
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
 	Ogre::Viewport* vp = mCamera->getViewport();
-	
+
+	// Create the compositors.
+	// This is done by first setting up the logic for them and adding this logic as a listener so it
+	// to fire every time the compositor completes a pass allowing injection of values into the GPU
+	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
 	BloomLogic* bloomLogic = new BloomLogic;
 	cm.registerCompositorLogic("Bloom", bloomLogic);
+
+	RadialBlurLogic* radialBlurLogic = new RadialBlurLogic;
+	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
+
+	// Add the compositor to the compositor chain and enable it.
 	cm.addCompositor(vp, "Bloom");
 	cm.setCompositorEnabled(vp, "Bloom", true);
+	
+	cm.addCompositor(vp, "RadialBlur");
+	cm.setCompositorEnabled(vp, "RadialBlur", true);
+
+	bloomLogic->setBlurWeight(0.1f);
 }
 
 

@@ -1,10 +1,17 @@
+/**
+ * @file    PostFilterLogic.h
+ * @brief   Handles the logic and associated listeners attached to the post filter compositors.
+ */
+
+
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
 
 
-// Listener Factory Logic shit
+
+/*-------------------- LISTENER FACTORY LOGIC --------------------*/
 /// @copydoc CompositorLogic::compositorInstanceCreated
 void ListenerFactoryLogic::compositorInstanceCreated(Ogre::CompositorInstance* newInstance) 
 {
@@ -22,52 +29,75 @@ void ListenerFactoryLogic::compositorInstanceDestroyed(Ogre::CompositorInstance*
 
 
 
-// Specific logic implementations
-/// @copydoc ListenerFactoryLogic::createListener
-Ogre::CompositorInstance::Listener* GaussianBlurLogic::createListener(Ogre::CompositorInstance* instance)
-{
-	GaussianListener* listener = new GaussianListener;
-	Ogre::Viewport* vp = instance->getChain()->getViewport();
-	listener->notifyViewportSize(vp->getActualWidth(), vp->getActualHeight());
-	return listener;
-}
-
-// Specific logic implementations
+/*-------------------- COMPOSITOR LOGICS --------------------*/
+/*-------------------- BLOOM LOGIC --------------------*/
 /// @copydoc ListenerFactoryLogic::createListener
 Ogre::CompositorInstance::Listener* BloomLogic::createListener(Ogre::CompositorInstance* instance)
 {
-	OutputDebugString("Created new BloomLogic\n");
 	mListener = new BloomListener;
 	return mListener;
-	
-	/*BloomListener* listener = new BloomListener;
-	Ogre::Viewport* vp = instance->getChain()->getViewport();
-	listener->notifyViewportSize(vp->getActualWidth(), vp->getActualHeight());
-	return listener;*/
+}
+
+/// @brief Sets the BlurWeight parameter of the Bloom compositor.
+/// @param n	The new blur weight.
+void BloomLogic::setBlurWeight (float n)
+{
+	((BloomListener*) mListener)->blurWeight = n;
+}
+
+/// @brief Sets the OriginalImageWeight of the Bloom compositor.
+/// @param n	The new original image weighting.
+void BloomLogic::setOriginalWeight (float n)
+{
+	((BloomListener*) mListener)->originalWeight = n;
 }
 
 
-/*************************************************************************
-BloomListner Methods
-*************************************************************************/
-//---------------------------------------------------------------------------
+/*-------------------- RADIAL BLUR LOGIC --------------------*/
+/// @copydoc ListenerFactoryLogic::createListener
+Ogre::CompositorInstance::Listener* RadialBlurLogic::createListener(Ogre::CompositorInstance* instance)
+{
+	mListener = new RadialBlurListener;
+	return mListener;
+}
+
+/// @brief Sets the sampleDist parameter of the Radial Blur compositor.
+/// @param n	The new blur distance.
+void RadialBlurLogic::setBlurDistance (float n)
+{
+	((RadialBlurListener*) mListener)->blurDistance = n;
+}
+
+/// @brief Sets the sampleStrength parameter of the Radial Blur compositor.
+/// @param n	The new blur strength.
+void RadialBlurLogic::setBlurStrength (float n)
+{
+	((RadialBlurListener*) mListener)->blurStrength = n;
+}
+
+
+
+/*-------------------- COMPOSITOR LISTENERS --------------------*/
+/*-------------------- BLOOM LISTENER --------------------*/
+/// @brief Constructor.
 BloomListener::BloomListener()
 {
 	blurWeight = 1.0f;
 	originalWeight = 1.0f;
-	OutputDebugString("Created new BloomListener\n");
 }
-//---------------------------------------------------------------------------
+
+/// @brief Deconstructor.
 BloomListener::~BloomListener()
 {
 }
-//---------------------------------------------------------------------------
+
+/// @copydoc CompositorInstance::Listener::notifyMaterialSetup
 void BloomListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
-	// Prepare the fragment params offsets
 	fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 }
 
+/// @copydoc CompositorInstance::Listener::notifyMaterialRender
 void BloomListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
 	if (pass_id == 700)
@@ -78,89 +108,31 @@ void BloomListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr
 }
 
 
-
-/*************************************************************************
-GaussianListener Methods
-*************************************************************************/
-//---------------------------------------------------------------------------
-GaussianListener::GaussianListener()
+/*-------------------- RADIAL BLUR LISTENER --------------------*/
+/// @brief Constructor.
+RadialBlurListener::RadialBlurListener()
 {
-
+	blurDistance = 1.0f;
+	blurStrength = 1.0f;
 }
-//---------------------------------------------------------------------------
-GaussianListener::~GaussianListener()
+
+/// @brief Deconstructor.
+RadialBlurListener::~RadialBlurListener()
 {
 }
-//---------------------------------------------------------------------------
-void GaussianListener::notifyViewportSize(int width, int height)
+
+/// @copydoc CompositorInstance::Listener::notifyMaterialSetup
+void RadialBlurListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
-	mVpWidth = width;
-	mVpHeight = height;
-	// Calculate gaussian texture offsets & weights
-	float deviation = 3.0f;
-	float texelSize = 1.0f / (float)std::min(mVpWidth, mVpHeight);
+	fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+}
 
-	// central sample, no offset
-	mBloomTexWeights[0][0] = mBloomTexWeights[0][1] = mBloomTexWeights[0][2] = Ogre::Math::gaussianDistribution(0, 0, deviation);
-	mBloomTexWeights[0][3] = 1.0f;
-	mBloomTexOffsetsHorz[0][0] = 0.0f;
-	mBloomTexOffsetsHorz[0][1] = 0.0f;
-	mBloomTexOffsetsVert[0][0] = 0.0f;
-	mBloomTexOffsetsVert[0][1] = 0.0f;
-
-	// 'pre' samples
-	for(int i = 1; i < 8; ++i)
+/// @copydoc CompositorInstance::Listener::notifyMaterialRender
+void RadialBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
+{
+	if (pass_id == 700)
 	{
-		mBloomTexWeights[i][0] = mBloomTexWeights[i][1] = mBloomTexWeights[i][2] = Ogre::Math::gaussianDistribution(i, 0, deviation);
-		mBloomTexWeights[i][3] = 1.0f;
-		mBloomTexOffsetsHorz[i][0] = i * texelSize;
-		mBloomTexOffsetsHorz[i][1] = 0.0f;
-		mBloomTexOffsetsVert[i][0] = 0.0f;
-		mBloomTexOffsetsVert[i][1] = i * texelSize;
-	}
-	// 'post' samples
-	for(int i = 8; i < 15; ++i)
-	{
-		mBloomTexWeights[i][0] = mBloomTexWeights[i][1] = mBloomTexWeights[i][2] = mBloomTexWeights[i - 7][0];
-		mBloomTexWeights[i][3] = 1.0f;
-		mBloomTexOffsetsHorz[i][0] = -mBloomTexOffsetsHorz[i - 7][0];
-		mBloomTexOffsetsHorz[i][1] = 0.0f;
-		mBloomTexOffsetsVert[i][0] = 0.0f;
-		mBloomTexOffsetsVert[i][1] = -mBloomTexOffsetsVert[i - 7][1];
+		fpParams->setNamedConstant("sampleDist", blurDistance);
+		fpParams->setNamedConstant("sampleStrength", blurStrength);
 	}
 }
-//---------------------------------------------------------------------------
-void GaussianListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
-{
-	// Prepare the fragment params offsets
-	switch(pass_id)
-	{
-	case 701: // blur horz
-		{
-			// horizontal bloom
-			mat->load();
-			Ogre::GpuProgramParametersSharedPtr fparams =
-				mat->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
-			fparams->setNamedConstant("sampleOffsets", mBloomTexOffsetsHorz[0], 15);
-			fparams->setNamedConstant("sampleWeights", mBloomTexWeights[0], 15);
-
-			break;
-		}
-	case 700: // blur vert
-		{
-			// vertical bloom
-			mat->load();
-			Ogre::GpuProgramParametersSharedPtr fparams =
-				mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
-			fparams->setNamedConstant("sampleOffsets", mBloomTexOffsetsVert[0], 15);
-			fparams->setNamedConstant("sampleWeights", mBloomTexWeights[0], 15);
-
-			break;
-		}
-	}
-}
-
-void GaussianListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
-{
-}
-
