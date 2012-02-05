@@ -83,9 +83,32 @@ void GraphicsApplication::createSpeedo (void)
 
 	olcSpeedo->addChild( oleNeedle );
 
-	updateSpeedo( 0 );
+    createGearDisplay();
+
+	updateSpeedo( 0, 0 );
 }
 
+/// @brief Draws the gear display
+void GraphicsApplication::createGearDisplay (void)
+{
+    // Create our speedometer overlays
+	/*Ogre::Overlay *olGear = Ogre::OverlayManager::getSingleton().create( "OVERLAY_GEAR" );
+	olGear->setZOrder( 500 );
+	olGear->show();*/
+
+	oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
+
+	oleGear->setMetricsMode( Ogre::GMM_PIXELS );
+	oleGear->setHorizontalAlignment( Ogre::GHA_LEFT );
+	oleGear->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	oleGear->setDimensions( 32, 57 );
+	oleGear->setMaterialName( "gearoff" );
+	oleGear->setPosition( 109, -73 );
+
+	olcSpeedo->addChild( oleGear );
+
+	updateSpeedo( 0, -1 );
+}
 
 /// @brief Configure the shadow system. This should be the *FIRST* thing in the scene setup, because the shadow technique can alter the way meshes are loaded.
 void GraphicsApplication::setupShadowSystem (void)
@@ -340,6 +363,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
             // update GUI
 			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
+            int   curGear  = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getGear();
 			float avgfps   = mWindow->getAverageFPS();
 
 			CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/mph" );
@@ -350,7 +374,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 			sprintf( szFPS,   "FPS: %f", avgfps);
 			mph->setText( szSpeed );
 			fps->setText( szFPS );
-			updateSpeedo( speedmph );
+			updateSpeedo( speedmph, curGear );
 
 			// 
 		}
@@ -398,7 +422,8 @@ bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 
 /// @brief	Update the rotation of the speedo needle
 /// @param	fSpeed	Float containing speed of car in mph
-void GraphicsApplication::updateSpeedo (float fSpeed)
+/// @param  iGear   Current car gear
+void GraphicsApplication::updateSpeedo (float fSpeed, int iGear)
 {
 	if( fSpeed < 0 )
 		fSpeed *= -1;
@@ -416,6 +441,19 @@ void GraphicsApplication::updateSpeedo (float fSpeed)
 	Ogre::TextureUnitState *texNeedle = 
 		matNeedle->getTechnique( 0 )->getPass( 0 )->getTextureUnitState( 0 );
 	texNeedle->setTextureRotate( Ogre::Degree( iDegree ) );
+
+    if( iGear >= 0 )
+    {
+        char cnum[2];
+        itoa( iGear, cnum, 10 );
+        cnum[1] = '\0';
+
+        char matname[32];
+        sprintf( matname, "gear%s", cnum );
+        oleGear->setMaterialName( matname );
+    }
+    else
+        oleGear->setMaterialName( "gearoff" );
 }
 
 

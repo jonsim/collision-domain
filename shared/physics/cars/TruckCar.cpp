@@ -35,8 +35,8 @@ void TruckCar::initTuning()
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
     mMaxSuspensionForce     =   70000.0f;
     mRollInfluence          =   0.1f;
-    mSuspensionRestLength   =   0.5f;
-    mMaxSuspensionTravelCm  =   15.0f;
+    mSuspensionRestLength   =   0.25f;
+    mMaxSuspensionTravelCm  =   7.5f;
     mFrictionSlip           =   3.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
@@ -44,20 +44,37 @@ void TruckCar::initTuning()
 	mChassisFriction        =   0.6f;
 	mChassisMass            =   7000.0f;
 
-    mWheelRadius      =  1.046f; // this is actually diameter!!
+    mWheelRadius      =  0.523f; // this is actually diameter!!
     mWheelWidth       =  0.243f;
-    mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  1.2f; // this connection point lies at the very bottom of the suspension travel
+    mWheelFriction    =  5.0f;//1000;//1e30f;
+    mConnectionHeight =  0.8f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
     mSteerClamp = 0.75f;
 
-    mMaxAccelForce = 10000.0f;
+    mMaxAccelForce = 15000.0f;
     mMaxBrakeForce = 300.0f;
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = true;
+    
+    mGearCount = 9;
+    mCurrentGear = 1;
+    mGearRatio[0] = 14.00f;
+    mGearRatio[1] = 12.00f;
+    mGearRatio[2] = 10.00f;
+    mGearRatio[3] = 07.00f;
+    mGearRatio[4] = 05.60f;
+    mGearRatio[5] = 04.20f;
+    mGearRatio[6] = 02.25f;
+    mGearRatio[7] = 01.20f;
+    mGearRatio[8] = 00.80f;
+    mReverseRatio = 03.00f;
+    mFinalDriveRatio = 1.5f;
+
+    mRevTick  = 500;
+    mRevLimit = 3500;
 
     readTuning( "spec_truck.txt" );
 }
@@ -73,7 +90,7 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 1.62f, 3.5f);
+    Ogre::Vector3 chassisShift(0, 0.81f, 1.75f);
 
     initTuning();
     initNodes();
@@ -180,18 +197,6 @@ void TruckCar::initGraphics()
     // and finally a rear right wheel to seal the deal. beaut.
     createGeometry("CarEntity_RRWheel", "truck_rwheel.mesh", "truck_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
-    
-
-    // ONLY WHILE USING WHEEL.MESH, UNTIL OUR WHEEL MESHES ARE FIXED
-    /*createGeometry("CarEntity_FLWheel", "wheel.mesh", mFLWheelNode);
-    createGeometry("CarEntity_FRWheel", "wheel.mesh", mFRWheelNode);
-    createGeometry("CarEntity_RLWheel", "wheel.mesh", mRLWheelNode);
-    createGeometry("CarEntity_RRWheel", "wheel.mesh", mRRWheelNode);
-    float scale = 2.1;
-    mFLWheelNode->scale(scale, scale, scale);
-    mFRWheelNode->scale(scale, scale, scale);
-    mRLWheelNode->scale(scale, scale, scale);
-    mRRWheelNode->scale(scale, scale, scale);*/
 }
 
 
@@ -251,18 +256,18 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     matChassisShift.makeTrans( chassisShift );
     dbg->setWorldTransform( matChassisShift );
 
-    mCarChassis->showDebugShape( false );
+    mCarChassis->showDebugShape( true );
 }
 
 
 /// @brief  Attaches 4 wheels to the car chassis.
 void TruckCar::initWheels()
 {
-    float wheelBaseLength = 3.576f;
-    float wheelBaseHalfWidth  = 2.1f;
+    float wheelBaseLength = 1.788;
+    float wheelBaseHalfWidth  = 1.05f;
 
     // anything you add onto wheelbase, adjust this to take care of it
-    float wheelBaseShiftZ = -1.15f;
+    float wheelBaseShiftZ = -0.575f;
 
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
