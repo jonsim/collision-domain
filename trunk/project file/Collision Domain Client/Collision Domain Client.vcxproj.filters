@@ -942,6 +942,9 @@
     <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp">
       <Filter>shared\physics\cars</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\shared\base\Powerup.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain Client.rc" />

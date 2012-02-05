@@ -225,7 +225,6 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     // Play the car horn on left or right button press
     {
         Car* localCar;
-
     #ifdef COLLISION_DOMAIN_CLIENT
         Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
         SpawnScreen* spawnScreen = GameCore::mGraphicsCore->mSpawnScreen;
@@ -237,7 +236,6 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
         Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
         localCar = localPlayer ? localPlayer->getCar() : NULL;
     #endif
-
         if (localCar) localCar->playCarHorn();
     }
 
@@ -245,6 +243,9 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     //    GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
         //new PowerupRandom(); // just for testing, you see.
     
+    // create powerups, just for testing
+    if (id == OIS::MB_Right)
+        GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM, Ogre::Vector3(0,-4.0,0) );
 
 	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
 

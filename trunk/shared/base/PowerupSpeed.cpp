@@ -9,15 +9,13 @@
 using namespace OgreBulletCollisions;
 
 /// @brief  Constructor.
-PowerupSpeed::PowerupSpeed()
+PowerupSpeed::PowerupSpeed(Ogre::Vector3 createAboveAt)
 {
     mHasBeenCollected = false;
 
     int uniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "SpeedPowerupNode" + boost::lexical_cast<std::string>(uniqueID),
-            Ogre::Vector3(0,0.5,0),
-            Ogre::Quaternion::IDENTITY);
+            "SpeedPowerupNode" + boost::lexical_cast<std::string>(uniqueID));
 
     {
         Ogre::Entity *entity = GameCore::mSceneMgr->createEntity("SpeedPowerupMesh" + boost::lexical_cast<std::string>(uniqueID) , "powerup_speed.mesh");
@@ -30,17 +28,18 @@ PowerupSpeed::PowerupSpeed()
         entity->setNormaliseNormals(true);
     #endif // only applicable before shoggoth (1.5.0)
 
-        entity->setCastShadows(true);
+        entity->setCastShadows(false);
         mNode->attachObject(entity);
 
         mNode->scale(0.2f, 0.2f, 0.2f);
-
-        // this doesn't seem to do anything either? I give up until monday.
-        mNode->translate(Ogre::Vector3(0, -0.5f, 0));
     }
 
     {
-        BoxCollisionShape* collisionShape = new BoxCollisionShape( Ogre::Vector3( 1.6f, 0.6f, 1.25f ) );
+        CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
+        compoundShape->addChildShape(
+            new BoxCollisionShape( Ogre::Vector3( 1.70f, 0.5f, 1.35f ) ),
+            Ogre::Vector3(0.0, 0.5, 0.07));
+
         
         mRigidBody = new RigidBody(
                 "SpeedPowerup" + boost::lexical_cast<std::string>(uniqueID),
@@ -52,26 +51,23 @@ PowerupSpeed::PowerupSpeed()
         float bodyFriction = 0;
         float bodyMass = 0;
 
-        // changing this won't actually do anything, annoying I know.
-        Ogre::Vector3 position(0,0,0);
-
         mRigidBody->setShape(
             mNode,
-            collisionShape,
+            compoundShape,
             bodyRestitution,
             bodyFriction,
             bodyMass,
-            position,
+            Ogre::Vector3::ZERO,
             Ogre::Quaternion::IDENTITY);
-        
-        //mRigidBody->getBulletRigidBody()->translate(btVector3(0,3,0));
-        
 
         // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
         mRigidBody->getBulletRigidBody()->setUserPointer(this);
         mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
         mRigidBody->disableDeactivation();
+        mRigidBody->showDebugShape(false);
     }
+    
+    mNode->translate(createAboveAt);
 }
 
 
@@ -87,6 +83,7 @@ void PowerupSpeed::playerCollision(Player* player)
     // this collision callback could potentially be called multiple times before
     // the collision object is removed, so give it to the first person who grabbed it
     if (mHasBeenCollected) return;
+    mHasBeenCollected = true;
 
     // play powerup reward sound
     GameCore::mAudioCore->playSpeedPowerup();
@@ -94,13 +91,23 @@ void PowerupSpeed::playerCollision(Player* player)
     // apply powerup to player
 
     // remove powerup from map
-    mHasBeenCollected = true;
-    mNode->setDebugDisplayEnabled(false);
-    mNode->setVisible(false);
     // these two lines don't seem to work, I'll finish it on monday.
     //mRigidBody->setVisible(false);
     //GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->removeRigidBody(mRigidBody->getBulletRigidBody());
 
     // potentially spawn another
 
+}
+
+
+void PowerupSpeed::frameEvent(const Ogre::FrameEvent& evt)
+{
+    // no need to rotate the speed powerup
+}
+
+
+bool PowerupSpeed::isPendingDelete()
+{
+    // the speed powerup can be picked up by multiple players
+    return false;
 }

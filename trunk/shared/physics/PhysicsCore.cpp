@@ -91,7 +91,7 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 
 	// This function is called *within* stepSimulation. Let's build a list of the cars which collided so
     // that once the stepSim finishes all its substeps (this multiple times) that list can be read off
-
+    
 	int numManifolds = world->getDispatcher()->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{

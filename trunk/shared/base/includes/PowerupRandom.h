@@ -10,6 +10,7 @@
 
 class Player;
 class GameCore;
+enum PowerupType;
 
 /**
  *  @brief 	Random powerup
@@ -17,11 +18,15 @@ class GameCore;
 class PowerupRandom : public Powerup
 {
 public:
-    PowerupRandom();
+    PowerupRandom(Ogre::Vector3 createAboveAt);
     ~PowerupRandom();
     void playerCollision(Player* player);
+    void frameEvent( const Ogre::FrameEvent& evt );
+    bool isPendingDelete();
 
 private:
+    Ogre::Entity *entity;
+    void removeFromWorlds();
 };
 
 #endif // #ifndef POWERUPRANDOM_H

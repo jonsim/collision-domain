@@ -191,6 +191,8 @@ void GraphicsCore::loadResources(void)
 /// @brief  Starts the graphics.
 void GraphicsCore::go(void)
 {
+    srand ( time(NULL) );
+
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";

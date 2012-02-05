@@ -139,7 +139,14 @@ Car* Player::getCar()
     return mCar;
 }
 
+
 int Player::getHP()
 {
 	return hp;
+}
+
+
+void Player::applyHealthBonus()
+{
+
 }

@@ -12,11 +12,11 @@
 
 using namespace OgreOggSound;
 
-enum HornType : int
+enum HornType
 {
-    HORN_LOW = 0,
-    HORN_MID = 1,
-    HORN_HIGH = 2
+    HORN_LOW,
+    HORN_MID,
+    HORN_HIGH
 };
 
 /**

@@ -213,6 +213,7 @@
     <ClCompile Include="..\..\shared\base\GameCore.cpp" />
     <ClCompile Include="..\..\shared\base\Input.cpp" />
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
+    <ClCompile Include="..\..\shared\base\Powerup.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupHealth.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupMass.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupPool.cpp" />
