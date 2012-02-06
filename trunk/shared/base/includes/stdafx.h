@@ -46,6 +46,7 @@
 #include "Shapes/OgreBulletCollisionsCylinderShape.h"
 #include "Shapes/OgreBulletCollisionsCompoundShape.h"
 #include "Shapes/OgreBulletCollisionsConeShape.h"
+#include "Shapes/OgreBulletCollisionsConvexHullShape.h"
 
 
 #include "OgreBulletDynamics.h"

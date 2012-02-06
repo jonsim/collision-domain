@@ -21,6 +21,40 @@ using namespace Ogre;
 
 #define CRITICAL_DAMPING_COEF       0.5f
 
+#define BANGER_VTX_COUNT 29
+
+static btScalar BangerVtx[] = {
+    85.8457f, -6.20191f, 182.692f,
+    85.8457f, -5.46665f, -305.179f,
+    83.076f, 45.5736f, 183.587f,
+    83.076f, 47.7641f, -306.054f,
+    -83.076f, 45.5736f, 183.587f,
+    -83.076f, 47.7641f, -306.054f,
+    -85.8457f, -6.20191f, 182.692f,
+    -85.8457f, -5.46665f, -305.179f,
+    83.076f, 52.7043f, 27.6737f,
+    -83.076f, 52.7043f, 27.6737f,
+    81.3123f, 56.7436f, -216.481f,
+    -81.3123f, 56.7436f, -216.481f,
+    60.2266f, 101.369f, -165.804f,
+    -60.2266f, 101.369f, -165.804f,
+    -60.2266f, 100.685f, -40.2496f,
+    -60.2266f, 100.685f, -40.2496f,
+    60.2266f, 100.685f, -40.2496f,
+    85.8457f, -23.8549f, 61.4045f,
+    -85.8457f, -23.8549f, 61.4045f,
+    85.8457f, -20.1567f, -207.338f,
+    -85.8457f, -20.1567f, -207.338f,
+    92.9599f, 31.761f, 183.139f,
+    94.6668f, 26.4999f, 44.5391f,
+    94.1102f, 30.3687f, -211.909f,
+    94.6668f, 33.2239f, -305.617f,
+    -94.6668f, 26.4999f, 44.5391f,
+    -94.1102f, 30.3687f, -211.909f,
+    -92.9599f, 31.761f, 183.139f,
+    -94.6668f, 33.2239f, -305.617f,
+};
+
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SimpleCoupeCar::initTuning()
 {
@@ -30,7 +64,7 @@ void SimpleCoupeCar::initTuning()
     mBrakingForce = 0.0f;
     
     // mTuning fixed properties
-    mSuspensionStiffness    =   60.0f;
+    mSuspensionStiffness    =   30.0f;
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
     mMaxSuspensionForce     =   14000.0f;
@@ -216,19 +250,21 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 
     // Transformation matrix to scale the imported mesh
-    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
+    //Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
 
     // Create a compound shape from the mesh's vertices
-    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
+    //OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
+    //    new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
 
-    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
+    //OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
 
-    delete trimeshConverter;
+    //delete trimeshConverter;
 
+    OgreBulletCollisions::ConvexHullCollisionShape *convexHull = new OgreBulletCollisions::ConvexHullCollisionShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
 
     // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( tmp, chassisShift );
+    compoundChassisShape->addChildShape( convexHull, chassisShift );
 
     mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
         new FuckOgreBulletWheeledRigidBody(
@@ -256,13 +292,13 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
 
-    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+    //OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
 
-    Ogre::Matrix4 matChassisShift;
-    matChassisShift.makeTrans( chassisShift );
-    dbg->setWorldTransform( matChassisShift );
+    //Ogre::Matrix4 matChassisShift;
+    //matChassisShift.makeTrans( chassisShift );
+    //dbg->setWorldTransform( matChassisShift );
 
-    mCarChassis->showDebugShape( false );
+    //mCarChassis->showDebugShape( false );
 }
 
 
