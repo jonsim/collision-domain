@@ -10,12 +10,16 @@
 #include "SharedIncludes.h"
 #include "OgreOggSound.h"
 
-//class Powerup;
-//class PowerupRandom;
-
 using namespace OgreOggSound;
 
-/*-------------------- CLASS DEFINITIONS --------------------*/
+enum PowerupType; // from PowerupPool
+enum HornType
+{
+    HORN_LOW,
+    HORN_MID,
+    HORN_HIGH
+};
+
 /**
  *  @brief 	An uneditable snapshot of the player's input state 
  */
@@ -24,11 +28,9 @@ class AudioCore
 public:
     AudioCore();
     ~AudioCore();
-    void playEngineIdle();
-    void playCarCrash();
-    void playCarHorn();
-    void playHealthPowerup();
-    void playSpeedPowerup();
+    void            playSoundOrRestart(OgreOggISound *sound);
+    OgreOggISound*  getSoundInstance(HornType h,    int uniqueID);
+    OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID);
 
 private:
     OgreOggSoundManager* mSoundManager;

@@ -26,7 +26,16 @@ public:
     bool firstFrameOccurred;
 	
 	void setWeatherMode (uint8_t mode);
-	void setBloomMode (bool enable);
+	void hdrLoader (uint8_t mode);
+	void bloomLoader (uint8_t mode, float blurWeight, float originalWeight);
+	void motionBlurLoader (uint8_t mode, float blur);
+	void setRadialBlur (float blur);
+	
+	// Graphics settings. Set these to 0 to disable the effect. Defaults are all 1.
+	float gfxSettingHDR;			// Strength of the High Dynamic Range lighting.
+	float gfxSettingBloom;			// Strength of the bloom lighting artifact.
+	float gfxSettingMotionBlur;		// Amount of blurring of relatively moving objects.
+	float gfxSettingRadialBlur;		// Amount of blurring encountered at high speeds.
 
 protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
@@ -48,14 +57,23 @@ private:
     void setupArena (void);
     void setupNetworking (void);
 	void createSpeedo (void);
-	void updateSpeedo (float fSpeed);
+    void createGearDisplay (void);
+	void updateSpeedo (float fSpeed, int iGear);
+	void createMotionBlurCompositor (void);
 
 	Ogre::OverlayContainer *olcSpeedo;
 	Ogre::OverlayElement *oleNeedle;
+    Ogre::OverlayElement *oleGear;
 
 	Ogre::Light* worldSun;
 	Ogre::ParticleSystem* weatherSystem;
 	bool weatherSystemAttached;
+
+	// Compositor logic modules
+	HDRLogic*		 hdrLogic;
+	BloomLogic* bloomLogic;
+	MotionBlurLogic* motionBlurLogic;
+	RadialBlurLogic* radialBlurLogic;
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

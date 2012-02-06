@@ -29,7 +29,7 @@ enum CarType : int
 /**
  *  @brief 	Contains the Player nodes and the related data.
  */
-class Player //: public PhysicsEntity
+class Player
 {
  
 public:
@@ -44,8 +44,7 @@ public:
     void updateCameraFrameEvent (int XRotation, int YRotation);
     Car* getCar();
     void collisionTickCallback(int damage);
-	
-	InputState *newInput;
+    void applyHealthBonus();
         
     const char *getNickname() { return mNickname; }
     int getCarType() { return mCarType; }
@@ -54,6 +53,7 @@ public:
     void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
 	int	getHP();
 
+	InputState *newInput;
 	void setOverlayElement(Ogre::OverlayElement* ole);
 	Ogre::OverlayElement* getOverlayElement();
 	void setSpawned(); //Marks the car as spawned

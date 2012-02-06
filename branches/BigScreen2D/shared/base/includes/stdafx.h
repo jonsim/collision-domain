@@ -25,6 +25,9 @@
 #include <OISMouse.h>
 
 // Additional includes
+#include "OgrePrerequisites.h"
+#include "OgreCompositorLogic.h"
+#include "OgreCompositorInstance.h"
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
@@ -42,13 +45,18 @@
 #include "Shapes/OgreBulletCollisionsTrimeshShape.h"
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Shapes/OgreBulletCollisionsBoxShape.h"
+#include "Shapes/OgreBulletCollisionsSphereShape.h"
 #include "Shapes/OgreBulletCollisionsCylinderShape.h"
 #include "Shapes/OgreBulletCollisionsCompoundShape.h"
+#include "Shapes/OgreBulletCollisionsConeShape.h"
+#include "Shapes/OgreBulletCollisionsConvexHullShape.h"
 
 
 #include "OgreBulletDynamics.h"
 #include "OgreBulletDynamicsRigidBody.h"
 
+#include "btBulletCollisionCommon.h"
+#include "btBulletDynamicsCommon.h"
 
 
 // Windows specific include

@@ -8,16 +8,16 @@
 #include "SharedIncludes.h"
 
 
-Ogre::SceneManager* GameCore::mSceneMgr;
-PlayerPool*  GameCore::mPlayerPool;
+Ogre::SceneManager* GameCore::mSceneMgr = NULL;
+PlayerPool*  GameCore::mPlayerPool = NULL;
 
-GraphicsCore* GameCore::mGraphicsCore;
-GraphicsApplication* GameCore::mGraphicsApplication;
-NetworkCore*  GameCore::mNetworkCore;
-PhysicsCore*  GameCore::mPhysicsCore;
-AudioCore*    GameCore::mAudioCore;
-GameGUI*      GameCore::mGui;
-PowerupPool*  GameCore::mPowerupPool;
+GraphicsCore* GameCore::mGraphicsCore = NULL;
+GraphicsApplication* GameCore::mGraphicsApplication = NULL;
+NetworkCore*  GameCore::mNetworkCore = NULL;
+PhysicsCore*  GameCore::mPhysicsCore = NULL;
+AudioCore*    GameCore::mAudioCore = NULL;
+GameGUI*      GameCore::mGui = NULL;
+PowerupPool*  GameCore::mPowerupPool = NULL;
 
 
 void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr)

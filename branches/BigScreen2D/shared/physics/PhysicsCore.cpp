@@ -91,7 +91,7 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 
 	// This function is called *within* stepSimulation. Let's build a list of the cars which collided so
     // that once the stepSim finishes all its substeps (this multiple times) that list can be read off
-
+    
 	int numManifolds = world->getDispatcher()->getNumManifolds();
 	for (int i = 0; i < numManifolds; i++)
 	{
@@ -99,13 +99,12 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 
 		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-	    
+
         short groupA = obA->getBroadphaseHandle()->m_collisionFilterGroup;
         short groupB = obB->getBroadphaseHandle()->m_collisionFilterGroup;
 
         // group of the wheels is the chassis group (I think ...)
         // mask of the wheels is always 00000001 (COL_CAR)
-        
         // Car to Car collision
         if (groupA & COL_CAR && groupB & COL_CAR)
         {
@@ -125,6 +124,10 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         {
             //Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
             //player->collisionTickCallback(1);
+        }
+        else
+        {
+            continue;
         }
 	}
 }
@@ -168,6 +171,7 @@ void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
             collisionMask);
 
     defaultPlaneBody->setStaticShape( arenaNode, arenaShape, 0.1f, 0.8f, Ogre::Vector3(0, 0, 0) ); // (shape, restitution, friction)
+    defaultPlaneBody->showDebugShape( false );
     
     //defaultPlaneBody->addQueryFlags(btCollisionObject::CF_STATIC_OBJECT);
 

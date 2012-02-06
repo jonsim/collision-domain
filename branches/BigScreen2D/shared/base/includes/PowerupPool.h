@@ -16,30 +16,32 @@
 
 #define MAX_POWERUPS 20
 
-enum
+enum PowerupType
 {
     POWERUP_HEALTH,
     POWERUP_MASS,
     POWERUP_RANDOM,
-    POWERUP_SPEED,
-
-    POWERUP_COUNT, // Num of powerup types
+    POWERUP_SPEED
 };
 
 class PowerupPool
 {
-private:
-    Powerup *mPowerups[MAX_POWERUPS];
-
 public:
     PowerupPool();
     ~PowerupPool();
-
-    Powerup *createPowerup( int iType );
-    void deletePowerup( int index );
-    Powerup *getPowerup();
-
+    Powerup *createPowerup( PowerupType type );
+    Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt );
+    Powerup *getPowerup( int id );
     void frameEvent( const Ogre::FrameEvent& evt );
+    void spawnSomething();
+    
+private:
+    Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, bool spawn );
+    void deletePowerup( int index );
+    Ogre::Vector3* randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge);
+
+    Powerup *mPowerups[MAX_POWERUPS];
+    PowerupType mPowerupTypes[MAX_POWERUPS];
 };
 
 #endif // #ifndef POWERUPPOOL_H

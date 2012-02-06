@@ -39,6 +39,7 @@ void GraphicsApplication::createScene (void)
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->scale(0.2f, 0.2f, 0.2f);
+    ninjaNode->translate(100.0f,0,0);
 
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
@@ -176,9 +177,8 @@ void GraphicsApplication::setupArena (void)
 	*/
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
     arenaNode->attachObject(arenaEntity);	
-    //arenaNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
 	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-    arenaNode->setDebugDisplayEnabled( true );
+    arenaNode->setDebugDisplayEnabled( false );
 
 	// ground plane, visible on the top down view only (unless something bad happens!!)
     /*Ogre::Plane groundPlane(Ogre::Vector3::UNIT_Y, 0);
@@ -259,7 +259,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	else
 	{
 		// Don't want to capture any keys (typing things)
-		inputSnapshot = new InputState( false, false, false, false );
+		inputSnapshot = new InputState( false, false, false, false, false );
 	}
     
     // Process the networking. Sends client's input and receives data

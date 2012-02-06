@@ -23,6 +23,7 @@ public:
     void hideCar();
     void switchCar( int direction );
     void selectCar();
+    Car *getCar();
 };
 
 #endif // ifndef SPAWNSCREEN_H

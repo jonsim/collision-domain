@@ -17,7 +17,7 @@ class AudioCore;
 class GameGUI;
 class PowerupPool;
 
-#define MESH_SCALING_CONSTANT 0.019f
+#define MESH_SCALING_CONSTANT 0.01f
 
 
 /**

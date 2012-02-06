@@ -143,7 +143,7 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 
 	// Create a new InputState object from received data
 	InputState *inputState = new InputState( playerInput.frwdPressed, 
-		playerInput.backPressed, playerInput.leftPressed, playerInput.rghtPressed );
+		playerInput.backPressed, playerInput.leftPressed, playerInput.rghtPressed, playerInput.hndbPressed );
 
 	// Delete any old unused input state
 	if( GameCore::mPlayerPool->getPlayer( pkt->guid )->newInput != NULL )

@@ -38,7 +38,6 @@
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
     <ClInclude Include="..\..\shared\physics\includes\Car.h" />
     <ClInclude Include="..\..\shared\physics\includes\CarSnapshot.h" />
-    <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\SimpleCoupeCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\SmallCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h" />
@@ -214,6 +213,7 @@
     <ClCompile Include="..\..\shared\base\GameCore.cpp" />
     <ClCompile Include="..\..\shared\base\Input.cpp" />
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
+    <ClCompile Include="..\..\shared\base\Powerup.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupHealth.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupMass.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupPool.cpp" />
@@ -223,7 +223,6 @@
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
     <ClCompile Include="..\..\shared\physics\Car.cpp" />
-    <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\SmallCar.cpp" />
     <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp" />

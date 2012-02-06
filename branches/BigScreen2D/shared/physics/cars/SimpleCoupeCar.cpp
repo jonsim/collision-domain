@@ -7,7 +7,53 @@
 
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
+using namespace Ogre;
 
+/*  Width:    1886mm (car not modelled with wing mirrors)
+    Height:    1514mm (inc wheels, body alone is 1286mm)
+    Length:    5110mm
+    Wheelbase:    2939mm
+    Weight:    1451kg
+    Engine:    5.9 litre, 315bhp
+    Tyre Diameter: 690mm
+    Tyre Width: 176mm (bit that touches ground, not bounding box)
+*/
+
+#define CRITICAL_DAMPING_COEF       0.5f
+
+#define BANGER_VTX_COUNT 29
+
+static btScalar BangerVtx[] = {
+    85.8457f, -6.20191f, 182.692f,
+    85.8457f, -5.46665f, -305.179f,
+    83.076f, 45.5736f, 183.587f,
+    83.076f, 47.7641f, -306.054f,
+    -83.076f, 45.5736f, 183.587f,
+    -83.076f, 47.7641f, -306.054f,
+    -85.8457f, -6.20191f, 182.692f,
+    -85.8457f, -5.46665f, -305.179f,
+    83.076f, 52.7043f, 27.6737f,
+    -83.076f, 52.7043f, 27.6737f,
+    81.3123f, 56.7436f, -216.481f,
+    -81.3123f, 56.7436f, -216.481f,
+    60.2266f, 101.369f, -165.804f,
+    -60.2266f, 101.369f, -165.804f,
+    -60.2266f, 100.685f, -40.2496f,
+    -60.2266f, 100.685f, -40.2496f,
+    60.2266f, 100.685f, -40.2496f,
+    85.8457f, -23.8549f, 61.4045f,
+    -85.8457f, -23.8549f, 61.4045f,
+    85.8457f, -20.1567f, -207.338f,
+    -85.8457f, -20.1567f, -207.338f,
+    92.9599f, 31.761f, 183.139f,
+    94.6668f, 26.4999f, 44.5391f,
+    94.1102f, 30.3687f, -211.909f,
+    94.6668f, 33.2239f, -305.617f,
+    -94.6668f, 26.4999f, 44.5391f,
+    -94.1102f, 30.3687f, -211.909f,
+    -92.9599f, 31.761f, 183.139f,
+    -94.6668f, 33.2239f, -305.617f,
+};
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SimpleCoupeCar::initTuning()
@@ -18,33 +64,55 @@ void SimpleCoupeCar::initTuning()
     mBrakingForce = 0.0f;
     
     // mTuning fixed properties
-    mSuspensionStiffness    =  20.0f;
-    mSuspensionDamping      =   2.3f;
-    mSuspensionCompression  =   4.4f;
-    mRollInfluence          =   0.1f;//1.0f;
-    mSuspensionRestLength   =   0.6f;
-    mMaxSuspensionTravelCm  = 500.0f;
-    mFrictionSlip           =  10.5f;
-	mChassisLinearDamping   =   0.2f;
-	mChassisAngularDamping  =   0.2f;
-	mChassisRestitution		=   0.6f;
-	mChassisFriction        =   0.6f;
-	mChassisMass            =1451.0f;
+    mSuspensionStiffness    =   30.0f;
+    mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
+    mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
+    mMaxSuspensionForce     =   14000.0f;
+    mRollInfluence          =    0.35f;
+    mSuspensionRestLength   =    0.3f;
+    mMaxSuspensionTravelCm  =   15.0f;
+    mFrictionSlip           =   10.5f;
+	mChassisLinearDamping   =    0.2f;
+	mChassisAngularDamping  =    0.2f;
+	mChassisRestitution		=    0.6f;
+	mChassisFriction        =    0.6f;
+	mChassisMass            = 1451.0f;
 
-    mWheelRadius      =  0.361902462f;
-    mWheelWidth       =  0.1349448267f;
-    mWheelFriction    = 1e30f;//1000;//1e30f;
-    mConnectionHeight =  0.7f;
+    mWheelRadius      =  0.345f; // this is actually diameter!!
+    mWheelWidth       =  0.176f;
+    mWheelFriction    =  1.8f;//1000;//1e30f;
+    mConnectionHeight =  0.6f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
     mSteerClamp = 0.75f;
 
     mMaxAccelForce = 8000.0f;
-    mMaxBrakeForce = 300.0f;
+    mMaxBrakeForce = 100.0f;
 	
 	mFrontWheelDrive = false;
 	mRearWheelDrive  = true;
+
+    mGearCount = 5;
+    mCurrentGear = 1;
+    mGearRatio[0] = 3.20f;
+    mGearRatio[1] = 2.19f;
+    mGearRatio[2] = 1.41f;
+    mGearRatio[3] = 1.00f;
+    mGearRatio[4] = 0.83f;
+    mGearRatio[5] = 0.0f;
+    mGearRatio[6] = 0.0f;
+    mGearRatio[7] = 0.0f;
+    mGearRatio[8] = 0.0f;
+    mReverseRatio = 3.16f;
+    mFinalDriveRatio = 3.06f;
+
+    // http://www.allpar.com/cars/dodge/challenger/specifications.html
+
+    mRevTick  = 1800;
+    mRevLimit = 6000;
+
+    readTuning( "spec_banger.txt" );
 }
 
 
@@ -59,13 +127,16 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 1.0f, 1.0f);
+    Ogre::Vector3 chassisShift(0, 0.5f, 0.5f);
 
     initTuning();
     initNodes();
     initGraphics(chassisShift);
     initBody(carPosition, chassisShift);
     initWheels();
+
+    WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
 }
 
 
@@ -81,6 +152,12 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     // Cleanup Shapes:
     delete compoundChassisShape;
     delete chassisShape;
+}
+
+
+void SimpleCoupeCar::playCarHorn()
+{
+    //GameCore::mAudioCore->playCarHorn(HORN_MID);
 }
 
 
@@ -120,8 +197,7 @@ void SimpleCoupeCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
     createGeometry("CarBody", "banger_body.mesh", "banger_body_uv", mChassisNode);
-    mChassisNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
-   // mChassisNode->setPosition(chassisShift); - Doesn't work well with this mesh!!!
+    PhysicsCore::auto_scale_scenenode(mChassisNode);
 
     // load the left door baby
     createGeometry("CarEntity_LDoor", "banger_fldoor.mesh", "banger_fdoor_uv", mFLDoorNode);
@@ -174,19 +250,21 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 
     // Transformation matrix to scale the imported mesh
-    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
+    //Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
 
     // Create a compound shape from the mesh's vertices
-    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
+    //OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
+    //    new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
 
-    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition();
+    //OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
 
-    delete trimeshConverter;
+    //delete trimeshConverter;
 
+    OgreBulletCollisions::ConvexHullCollisionShape *convexHull = new OgreBulletCollisions::ConvexHullCollisionShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
 
     // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( tmp, chassisShift );
+    compoundChassisShape->addChildShape( convexHull, chassisShift );
 
     mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
         new FuckOgreBulletWheeledRigidBody(
@@ -203,6 +281,8 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     mTuning = new OgreBulletDynamics::VehicleTuning(
         mSuspensionStiffness, mSuspensionCompression, mSuspensionDamping, mMaxSuspensionTravelCm, mFrictionSlip);
 
+    mTuning->getBulletTuning()->m_maxSuspensionForce = mMaxSuspensionForce;
+
     mVehicleRayCaster = new OgreBulletDynamics::VehicleRayCaster(mWorld);
     
     mVehicle = new OgreBulletDynamics::RaycastVehicle(mCarChassis, mTuning, mVehicleRayCaster);
@@ -212,42 +292,49 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisSh
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
 
-    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+    //OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
 
-    Ogre::Matrix4 matChassisShift;
-    matChassisShift.makeTrans( chassisShift );
-    dbg->setWorldTransform( matChassisShift );
+    //Ogre::Matrix4 matChassisShift;
+    //matChassisShift.makeTrans( chassisShift );
+    //dbg->setWorldTransform( matChassisShift );
+
+    //mCarChassis->showDebugShape( false );
 }
 
 
 /// @brief  Attaches 4 wheels to the car chassis.
 void SimpleCoupeCar::initWheels()
 {
+    float wheelBaseLength = 1.4695f;
+    float wheelBaseHalfWidth  = 0.85f;
+
+    // anything you add onto wheelbase, adjust this to take care of it
+    float wheelBaseShiftZ = 0.10f;
+
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);
 
-    #define CUBE_HALF_EXTENTS 1
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left
-    Ogre::Vector3 connectionPointCS0 (CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) +0.2);
+    Ogre::Vector3 connectionPointCS0 (wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
     mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 1 - Front Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (2*CUBE_HALF_EXTENTS-mWheelRadius) + 0.2);
+    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
     mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
     
     isFrontWheel = false;
 
     // Wheel 2 - Rear Right
-    connectionPointCS0 = Ogre::Vector3(-CUBE_HALF_EXTENTS+(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
+    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 
     // Wheel 3 - Rear Left
-    connectionPointCS0 = Ogre::Vector3(CUBE_HALF_EXTENTS-(0.3*mWheelWidth), mConnectionHeight, (-2*CUBE_HALF_EXTENTS+mWheelRadius) +0.2);
+    connectionPointCS0 = Ogre::Vector3(wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
         isFrontWheel, mWheelFriction, mRollInfluence);
 }

@@ -52,6 +52,7 @@ struct PLAYER_INPUT_DATA
     bool backPressed;
     bool leftPressed;
     bool rghtPressed;
+    bool hndbPressed;
 };
 
 struct PLAYER_SYNC_DATA
@@ -95,6 +96,8 @@ public:
     static void PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 
     static bool bConnected;
 

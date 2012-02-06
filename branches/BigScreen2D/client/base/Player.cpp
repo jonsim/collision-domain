@@ -99,7 +99,7 @@ void Player::processControlsFrameEvent(
 {
     // process steering and apply acceleration
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
-    mCar->accelInputTick(userInput->isForward(), userInput->isBack());
+    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake());
 }
 
 
@@ -130,10 +130,22 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 	*/
 }
 
+/// @brief Returns the camera current yawing around the player.
+/// @return The yawing, in degrees, around the player. 0 is directly in front of the player, +/-180 is behind.
+float Player::getCameraYaw ()
+{
+	return camArmNode->getOrientation().getYaw().valueDegrees();
+}
+
 
 /// @brief  Supplies the Car object which contains player position and methods on that. 
 /// @return The Car object which allows forcing a player to a given CarSnapshot or getting a CarSnapshot.
 Car* Player::getCar()
 {
     return mCar;
+}
+
+void Player::applyHealthBonus()
+{
+
 }

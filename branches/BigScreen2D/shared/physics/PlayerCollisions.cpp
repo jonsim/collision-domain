@@ -27,7 +27,7 @@ PlayerCollisions::~PlayerCollisions()
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
 {
     // the sound will only be played per group of collisions i.e. p1+p2+p4+p99 etc.
-    GameCore::mAudioCore->playCarCrash();
+    //GameCore::mAudioCore->playCarCrash();
 
     // Very very crude damage analysis doing no damage to the faster player in the collision
     bool damageP2 = p1->getCar()->getCarMph() > p2->getCar()->getCarMph() ? true : false;

@@ -25,7 +25,8 @@ GraphicsCore::GraphicsCore(void)
     mCameraMan(0),
     mDetailsPanel(0),
     mCursorWasVisible(false),
-    mShutDown(false)
+    mShutDown(false),
+    mSpawnScreen(0)
 {
 }
 
@@ -269,6 +270,8 @@ void GraphicsCore::loadResources(void)
 /// @brief  Starts the graphics.
 void GraphicsCore::go(void)
 {
+    srand ( time(NULL) );
+
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";

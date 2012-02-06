@@ -94,12 +94,6 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\SimpleCoupeCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h">
-      <Filter>shared\physics\cars</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\shared\physics\includes\cars\BulletBuggyCar.h">
-      <Filter>shared\physics\cars</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\raknet\AutopatcherPatchContext.h">
       <Filter>shared\raknet</Filter>
     </ClInclude>
@@ -645,9 +639,6 @@
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp">
       <Filter>shared\physics\cars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\physics\cars\BulletBuggyCar.cpp">
-      <Filter>shared\physics\cars</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\raknet\BitStream.cpp">
       <Filter>shared\raknet</Filter>
     </ClCompile>
@@ -971,6 +962,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp">
       <Filter>shared\physics\cars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\base\Powerup.cpp">
+      <Filter>shared\base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

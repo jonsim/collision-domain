@@ -105,7 +105,7 @@ void Player::processControlsFrameEvent(
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
     // apply acceleration 4wd style
-    mCar->accelInputTick(userInput->isForward(), userInput->isBack());
+    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake());
 
     // TELEPORT TESTING
     /*if (userInput->isLeft() && userInput->isRight())
@@ -141,11 +141,17 @@ Car* Player::getCar()
     return mCar;
 }
 
+
 int Player::getHP()
 {
 	return hp;
 }
 
+
+void Player::applyHealthBonus()
+{
+
+}
 
 void Player::setOverlayElement(Ogre::OverlayElement* ole)
 {

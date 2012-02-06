@@ -7,7 +7,9 @@
  */
 #include "stdafx.h"
 #include "SharedIncludes.h"
+#include "boost/algorithm/string.hpp"
 
+#define WHEEL_FRICTION_CFM 0.05
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
@@ -138,18 +140,37 @@ void Car::applySteeringValue()
 /// @brief  Called once every frame with new user input and updates forward/back engine forces from this.
 /// @param  isForward  User input specifying if the forward control is pressed.
 /// @param  isBack     User input specifying if the back control is pressed.
-void Car::accelInputTick(bool isForward, bool isBack)
+void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 {
     int forwardBack = 0;
     if (isForward) forwardBack += 1;
     if (isBack)    forwardBack -= 1;
 
     //float f = forwardBack < 0 ? mMaxBrakeForce : mMaxAccelForce;
-
     //mEngineForce = f * forwardBack;
 
     mEngineForce  = ( isForward ) ? mMaxAccelForce : 0;
     mBrakingForce = ( isBack    ) ? mMaxBrakeForce : 0;
+
+    int doBrake = 0;
+
+    if( isHand )
+    {
+        mVehicle->applyEngineForce( 0, 0 );
+        mVehicle->applyEngineForce( 0, 1 );
+        mVehicle->applyEngineForce( 0, 2 );
+        mVehicle->applyEngineForce( 0, 3 );
+
+        mVehicle->getBulletVehicle()->setBrake( mMaxAccelForce * 2, 2 );
+        mVehicle->getBulletVehicle()->setBrake( mMaxAccelForce * 2, 3 );
+
+    }
+    else
+    {
+        // Reset brakes to 0
+        for( int i = 0; i < 4; i ++ )
+            mVehicle->getBulletVehicle()->setBrake( 0 , i );
+    }
 
     // Loop through each wheel
     for( int i = 0; i < 4; i ++ )
@@ -158,6 +179,8 @@ void Car::accelInputTick(bool isForward, bool isBack)
         if( i < 2 && !mFrontWheelDrive ) continue;
         if( i > 1 && !mRearWheelDrive  ) continue;
 
+        if( isHand ) continue;
+
         // This code is a bit of a mess to avoid really tight brake / reverse checks
         // on exact float values but it works!
 
@@ -165,21 +188,30 @@ void Car::accelInputTick(bool isForward, bool isBack)
         if( fSpeed < 2 )                                                                // Brake / Reverse threshold between 0 and 1 kph
         {
             if( isBack )
+            {
                 mVehicle->applyEngineForce( mMaxAccelForce * -0.6, i );                 // Press brake - assume we want to reverse
+                mCurrentGear = -1;
+            }
             else
+            {
                 mVehicle->applyEngineForce( 0, i );                                     // Turn off assumed reverse
+                if( mCurrentGear == -1 )
+                    mCurrentGear = 1;
+            }
 
             if( isForward )
             {
                 if( fSpeed >= -2 )
                 {
                     mVehicle->applyEngineForce( mEngineForce, i );                      // Press accel & moving forwards - accelerate
-                    mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );         // and apply the brake if had been pressed
+                    doBrake = 1;
+                    //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );       // and apply the brake if had been pressed
                 }
                 else
                 {
                     mVehicle->applyEngineForce( 0, i );                                 // Press accell & moving backwards - turn off accel
-                    mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );        // and apply the brake if had been pressed
+                    //mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );      // and apply the brake if had been pressed
+                    doBrake = 2;
                 }
             }
             else
@@ -195,41 +227,123 @@ void Car::accelInputTick(bool isForward, bool isBack)
             else
                 mVehicle->applyEngineForce( mEngineForce, i );                          // otherwise normal force (simulate accel & brake together)
 
-            mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );                 // Set brake on if we're pressing it
+            //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );               // Set brake on if we're pressing it
+            doBrake = 1;
         }
     }
 
-    // OLD DRIVING CODE
-
-	/*if (mFrontWheelDrive)
-	{
-		mVehicle->applyEngineForce( mEngineForce, 0 );
-		mVehicle->applyEngineForce( mEngineForce, 1 );
-
-        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 0 );
-        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 1 );
-	}
-	if (mRearWheelDrive) // not else if to allow 4WD
-	{
-        mVehicle->applyEngineForce( mEngineForce, 2 );
-		mVehicle->applyEngineForce( mEngineForce, 3 );
-        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 2 );
-        mVehicle->getBulletVehicle()->setBrake( mBrakingForce, 3 );
-	}*/
+    if( doBrake > 0 && !isHand )
+    {
+        for( int i = 0; i < 4; i ++ )
+            mVehicle->getBulletVehicle()->setBrake( doBrake == 1 ? mBrakingForce : mMaxBrakeForce , i );
+    }
+    else if( !isHand )
+    {
+        // Reset brakes to 0
+        for( int i = 0; i < 4; i ++ )
+            mVehicle->getBulletVehicle()->setBrake( 0 , i );
+    }
 
 	// update exhaust. whee this is the wrong place to do this.
 	float speedmph = getCarMph();
 	float emissionRate = 0;
-	if (isForward && speedmph < 50)
-		emissionRate = (50 - speedmph) * 15;
+	if (isForward)
+	{
+		if (speedmph < 50.0f)
+			emissionRate = (50 - speedmph) * 15;
+	}
 	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
 		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
+	
+#ifdef COLLISION_DOMAIN_CLIENT
+	float blurAmount = 0;
+	if (speedmph > 40.0f)
+	{
+		// calculate blurring as a function of speed, then scale it back depending on where you
+		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
+		// +/-180 and 0, hence the double abs() reduction)).
+		blurAmount = (speedmph - 40) / 30;
+		blurAmount *= abs((abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90)) / 90;
+	}
+	GameCore::mGraphicsApplication->setRadialBlur(blurAmount);
+#endif
 
+    updateRPM();
+}
 
-    //mbtRigidBody->setBrake(1500.0f, 0);
-    //mbtRigidBody->setBrake(1500.0f, 1);
-    //mbtRigidBody->setBrake(1500.0f, 2);
-    //mbtRigidBody->setBrake(1500.0f, 3);
+/*
+mph = (rpm * cir) / (gear * final * 88)
+where rpm = engine rpm
+cir = tire cicumference, in feet
+gear = gear ratio of your car
+final = final drive ratio of your car
+88 = combines several conversion factors
+*/
+
+void Car::updateRPM()
+{
+    // Check if we're in neutral (revving at start of race)
+    if( mCurrentGear == 0 )
+    {
+        // Linearly increase engine RPM
+        mEngineRPM += mMaxAccelForce / mRevLimit;
+
+        // Fluctuate around the rev limiter value
+        if( mEngineRPM > mRevLimit )
+            mEngineRPM -= 500;
+    }
+    else if( mCurrentGear == -1 )
+    {
+        // Calculate MPH -> RPM for current gear
+        float fRPMCir = 
+            getCarMph() * ( mReverseRatio * mFinalDriveRatio * 88 );
+
+        // Previous calcs give RPM * WheelCircumference in feet, so get RPM
+        mEngineRPM = fRPMCir / (Ogre::Math::PI * (2 * mWheelRadius*3.2808399));
+
+        if( mEngineRPM < mRevTick  ) mEngineRPM = ( mRevTick  - 200 ) + ( rand() % 400 );
+        if( mEngineRPM > mRevLimit ) mEngineRPM = ( mRevLimit - 200 ) + ( rand() % 400 );
+    }
+    else
+    {
+        // Calculate MPH -> RPM for current gear
+        float fRPMCir = 
+            getCarMph() * ( mGearRatio[mCurrentGear-1] * mFinalDriveRatio * 88 );
+
+        // Calculate MPH -> RPM for current gear (for shift-down check)
+        float fPrevGear = mCurrentGear <= 1 ? fRPMCir :
+            getCarMph() * ( mGearRatio[mCurrentGear-2] * mFinalDriveRatio * 88 );
+
+        // Previous calcs give RPM * WheelCircumference in feet, so get RPM
+        mEngineRPM = fRPMCir / (Ogre::Math::PI * (2 * mWheelRadius*3.2808399));
+        fPrevGear /= (Ogre::Math::PI * (2 * mWheelRadius*3.2808399));
+
+        // Check for shift-up
+        if( mEngineRPM > mRevLimit -1500 )
+        {
+            mEngineRPM = ( mRevLimit - 200 ) + ( rand() % 400 );
+            if( mCurrentGear < mGearCount )
+                mCurrentGear ++;
+        }
+        
+        // Check for shift-down
+        if( fPrevGear < mRevLimit -1500 && mCurrentGear > 1 )
+        {
+            mCurrentGear --;
+        }
+    }
+
+    // Fluctuate about the engin rest level if RPM is lower
+    if( mEngineRPM < mRevTick )
+        mEngineRPM = ( mRevTick - 200 ) + ( rand() % 400 );
+
+#ifdef DEBUG_SHOW_REVS
+    CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+    char szFPS[64];
+    sprintf( szFPS,   "RPM: %f    Gear: %i", mEngineRPM, mCurrentGear );
+    fps->setText( szFPS );
+#endif
+
 }
 
 
@@ -340,4 +454,190 @@ void Car::shiftDebugShape( Ogre::Vector3 chassisShift )
     }
 
     dbg->setWorldTransform( matTest[0] );
+}
+
+WheelFrictionConstraint::WheelFrictionConstraint( OgreBulletDynamics::RaycastVehicle *v, btRigidBody *r )
+    : btTypedConstraint( btTypedConstraintType::POINT2POINT_CONSTRAINT_TYPE, *v->getBulletVehicle()->getRigidBody() )
+{
+    mVehicle = v; mbtRigidBody = r;
+}
+
+void WheelFrictionConstraint::getInfo1( btTypedConstraint::btConstraintInfo1* info )
+{
+    // Add two constraint rows for each wheel on the ground
+    info->m_numConstraintRows = 0;
+    for (int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i)
+    {
+        const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+        info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact != 0 );
+    }
+}
+
+void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* info )
+{
+    int row = 0;
+
+    // Setup sideways friction.
+
+    for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
+    {
+        const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+
+        // Only if the wheel is on the ground:
+        if( !wheel_info.m_raycastInfo.m_isInContact )
+            continue;
+
+        int row_index = row++ * info->rowskip;
+
+        // Set axis to be the direction of motion:
+        const btVector3& axis = wheel_info.m_raycastInfo.m_wheelAxleWS;
+        info->m_J1linearAxis[row_index]   = axis[0];
+        info->m_J1linearAxis[row_index+1] = axis[1];
+        info->m_J1linearAxis[row_index+2] = axis[2];
+
+        // Set angular axis.
+        btVector3 rel_pos = wheel_info.m_raycastInfo.m_contactPointWS - mbtRigidBody->getCenterOfMassPosition();
+        info->m_J1angularAxis[row_index]   = rel_pos.cross(axis)[0];
+        info->m_J1angularAxis[row_index+1] = rel_pos.cross(axis)[1];
+        info->m_J1angularAxis[row_index+2] = rel_pos.cross(axis)[2];
+
+        // Set constraint error (target relative velocity = 0.0)
+        info->m_constraintError[row_index] = 0.0f;
+
+        info->cfm[row_index] = WHEEL_FRICTION_CFM; // Set constraint force mixing
+
+        // Set maximum friction force according to Coulomb's law
+        // Substitute Pacejka here
+        btScalar max_friction = wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+
+        // Set friction limits.
+        info->m_lowerLimit[row_index] = -max_friction;
+        info->m_upperLimit[row_index] =  max_friction;
+    }
+
+    // Setup forward friction.
+    for (int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i)
+    {
+        const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+
+        // Only if the wheel is on the ground:
+        if (!wheel_info.m_raycastInfo.m_isInContact)
+            continue;
+
+        int row_index = row++ * info->rowskip;
+
+        // Set axis to be the direction of motion:
+        btVector3 axis = wheel_info.m_raycastInfo.m_wheelAxleWS.cross( wheel_info.m_raycastInfo.m_wheelDirectionWS );
+
+        info->m_J1linearAxis[row_index]   = axis[0];
+        info->m_J1linearAxis[row_index+1] = axis[1];
+        info->m_J1linearAxis[row_index+2] = axis[2];
+
+        // Set angular axis.
+        btVector3 rel_pos = wheel_info.m_raycastInfo.m_contactPointWS - mbtRigidBody->getCenterOfMassPosition();
+
+        info->m_J1angularAxis[row_index]   = rel_pos.cross(axis)[0];
+        info->m_J1angularAxis[row_index+1] = rel_pos.cross(axis)[1];
+        info->m_J1angularAxis[row_index+2] = rel_pos.cross(axis)[2];
+
+        // FIXME: Calculate the speed of the contact point on the wheel spinning.
+
+        // Estimate the wheel's angular velocity = m_deltaRotation
+        btScalar wheel_velocity = wheel_info.m_deltaRotation * wheel_info.m_wheelsRadius;
+        //btScalar wheel_velocity = wheel_info.m_rotation * wheel_info.m_wheelsRadius;
+
+        // Set constraint error (target relative velocity = 0.0)
+        info->m_constraintError[row_index] = wheel_velocity;
+
+        // Set constraint force mixing
+        info->cfm[row_index] = WHEEL_FRICTION_CFM; 
+
+        // Set maximum friction force
+        btScalar max_friction = wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+
+        // Set friction limits.
+        info->m_lowerLimit[row_index] = -max_friction;
+        info->m_upperLimit[row_index] =  max_friction;
+    }
+}
+
+void	WheelFrictionConstraint::setParam(int num, btScalar value, int axis) { return; }
+///return the local value of parameter
+btScalar WheelFrictionConstraint::getParam(int num, int axis) const { return 0.0; }
+
+
+
+
+void Car::readTuning( char *szFile )
+{
+    std::ifstream ifs( szFile );
+    if( !ifs )
+        return;
+
+    std::ostringstream oss;
+    oss << ifs.rdbuf();
+
+    if( !ifs && ifs.eof() )
+        return;
+
+    std::string strContent( oss.str() );
+
+    std::vector<std::string> vecLines;
+    boost::split( vecLines, strContent, boost::is_any_of( "\n" ) );
+
+    for( uint32_t i = 0; i < vecLines.size(); i ++ )
+    {
+        std::vector<std::string> tokens;
+        boost::split( tokens, vecLines.at(i), boost::is_any_of( "\t " ) );
+
+        log( "line is %s and numtok is %i", vecLines.at(i).c_str(), tokens.size() );
+
+        if( tokens.size() < 2 )
+            continue;
+
+        if( tokens.at(0) == "mSuspensionStiffness" )
+            mSuspensionStiffness = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSuspensionDamping" )
+            mSuspensionDamping = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSuspensionCompression" )
+            mSuspensionCompression = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxSuspensionForce" )
+            mMaxSuspensionForce = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mRollInfluence" )
+            mRollInfluence = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSuspensionRestLength" )
+            mSuspensionRestLength = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxSuspensionTravelCm" )
+            mMaxSuspensionTravelCm = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mFrictionSlip" )
+            mFrictionSlip = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisLinearDamping" )
+            mChassisLinearDamping = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisAngularDamping" )
+            mChassisAngularDamping = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisRestitution" )
+            mChassisRestitution = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisFriction" )
+            mChassisFriction = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mChassisMass" )
+            mChassisMass = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mWheelRadius" )
+            mWheelRadius = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mWheelWidth" )
+            mWheelWidth = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mWheelFriction" )
+            mWheelFriction = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mConnectionHeight" )
+            mConnectionHeight = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSteerIncrement" )
+            mSteerIncrement = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSteerToZeroIncrement" )
+            mSteerToZeroIncrement = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mSteerClamp" )
+            mSteerClamp = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxAccelForce" )
+            mMaxAccelForce = boost::lexical_cast<float>( tokens.at(1) );
+        if( tokens.at(0) == "mMaxBrakeForce" )
+            mMaxBrakeForce = boost::lexical_cast<float>( tokens.at(1) );
+    }
 }
