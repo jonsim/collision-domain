@@ -21,6 +21,31 @@ using namespace Ogre;
 
 #define CRITICAL_DAMPING_COEF       0.1f
 
+#define TRUCK_VTX_COUNT 20
+
+static btScalar TruckVtx[] = {
+    -124.954f, -56.6976f, 76.8711f,
+    -124.954f, 24.5182f, 79.2062f,
+    130.475f, 24.5182f, 79.2062f,
+    130.475f, -56.6976f, 76.8711f,
+    -124.954f, -25.7872f, -478.201f,
+    -124.954f, 24.5182f, -478.201f,
+    130.475f, 24.5182f, -478.201f,
+    130.475f, -25.7872f, -478.201f,
+    130.475f, -42.6501f, -133.55f,
+    130.475f, 24.5182f, -133.55f,
+    -124.954f, 24.5182f, -133.55f,
+    -124.954f, -42.6501f, -133.55f,
+    114.383f, 197.797f, -133.55f,
+    -108.862f, 197.797f, -133.55f,
+    -108.862f, 188.796f, 44.8438f,
+    114.383f, 188.796f, 44.8438f,
+    121.33f, 86.4506f, 79.3882f,
+    -115.809f, 86.4506f, 79.3882f,
+    -115.809f, 86.4506f, -133.55f,
+    121.33f, 86.4506f, -133.55f,
+};
+
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void TruckCar::initTuning()
 {
@@ -47,7 +72,7 @@ void TruckCar::initTuning()
     mWheelRadius      =  0.523f; // this is actually diameter!!
     mWheelWidth       =  0.243f;
     mWheelFriction    =  5.0f;//1000;//1e30f;
-    mConnectionHeight =  0.8f; // this connection point lies at the very bottom of the suspension travel
+    mConnectionHeight =  0.7f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
@@ -212,19 +237,21 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 
     // Transformation matrix to scale the imported mesh
-    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
+    //Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
 
     // Create a compound shape from the mesh's vertices
-    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
+    //OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
+    //    new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
   
-    OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
+    //OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
 
-    delete trimeshConverter;
+    //delete trimeshConverter;
 
+     OgreBulletCollisions::ConvexHullCollisionShape *convexHull = new OgreBulletCollisions::ConvexHullCollisionShape( TruckVtx, TRUCK_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
 
     // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( tmp, chassisShift );
+    compoundChassisShape->addChildShape( convexHull, chassisShift );
 
     mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
         new FuckOgreBulletWheeledRigidBody(
@@ -253,13 +280,13 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
 
-    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+    //OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
 
-    Ogre::Matrix4 matChassisShift;
-    matChassisShift.makeTrans( chassisShift );
-    dbg->setWorldTransform( matChassisShift );
+    //Ogre::Matrix4 matChassisShift;
+    //matChassisShift.makeTrans( chassisShift );
+    //dbg->setWorldTransform( matChassisShift );
 
-    mCarChassis->showDebugShape( true );
+    //mCarChassis->showDebugShape( true );
 }
 
 
