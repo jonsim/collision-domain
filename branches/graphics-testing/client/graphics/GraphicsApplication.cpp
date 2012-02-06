@@ -149,11 +149,23 @@ void GraphicsApplication::setupCompositorChain (void)
 	
 	// Enable and configure compositors (radial blur is controlled by the players speed).
 	bloomLoader(0, 0.15f, 1.0f);
-	setMotionBlurMode(0.10f);
+	motionBlurLoader(0, 0.10f);
 }
 
-void GraphicsApplication::setMotionBlurMode (float blur)
+void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
 {
+	// reload bloom
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+
+	if (blur > 0.0f)
+		motionBlurLogic->setBlurStrength(blur);
+	if (mode > 0)
+		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "MotionBlur", false);
+	if (mode < 2)
+		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "MotionBlur", true);
+
+	/*
 	static bool enabled = false;
 
 	// Scale the blur amount by the blur graphical setting. This defaults to 1.
@@ -179,7 +191,7 @@ void GraphicsApplication::setMotionBlurMode (float blur)
 			motionBlurLogic->setBlurStrength(blur);
 			enabled = true;
 		}
-	}
+	}*/
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.

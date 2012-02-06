@@ -214,10 +214,6 @@ void HDRListener::notifyMaterialSetup (Ogre::uint32 pass_id, Ogre::MaterialPtr &
 	}
 }
 
-void HDRListener::notifyMaterialRender (Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
-{
-}
-
 
 /*-------------------- BLOOM LISTENER --------------------*/
 /// @brief Constructor.
@@ -235,12 +231,11 @@ BloomListener::~BloomListener()
 /// @copydoc CompositorInstance::Listener::notifyMaterialSetup
 void BloomListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
-	OutputDebugString("ooglyboogly\n");
 	if (pass_id == 700)
 	{
-		Ogre::GpuProgramParametersSharedPtr fparams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
-		fparams->setNamedConstant("BlurWeight", blurWeight);
-		fparams->setNamedConstant("OriginalImageWeight", originalWeight);
+		Ogre::GpuProgramParametersSharedPtr fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+		fpParams->setNamedConstant("BlurWeight", blurWeight);
+		fpParams->setNamedConstant("OriginalImageWeight", originalWeight);
 	}
 }
 
@@ -295,15 +290,7 @@ void MotionBlurListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::Materia
 {
 	if (pass_id == 700)
 	{
-		fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
-	}
-}
-
-/// @copydoc CompositorInstance::Listener::notifyMaterialRender
-void MotionBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
-{
-	if (pass_id == 700)
-	{
+		Ogre::GpuProgramParametersSharedPtr fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
 		fpParams->setNamedConstant("blur", blurStrength);
 	}
 }

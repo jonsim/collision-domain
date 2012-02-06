@@ -93,7 +93,6 @@ public:
 	void notifyViewportSize(int width, int height);
 	void notifyCompositor(Ogre::CompositorInstance* instance);
 	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
-	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 };
 
 class BloomListener : public Ogre::CompositorInstance::Listener
@@ -127,12 +126,10 @@ class MotionBlurListener : public Ogre::CompositorInstance::Listener
 friend MotionBlurLogic;
 private:
 	float blurStrength;
-	Ogre::GpuProgramParametersSharedPtr fpParams;
 public:
 	MotionBlurListener();
 	~MotionBlurListener();
 	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
-	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 };
 
 #endif

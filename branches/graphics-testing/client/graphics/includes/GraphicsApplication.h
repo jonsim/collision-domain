@@ -26,9 +26,9 @@ public:
     bool firstFrameOccurred;
 	
 	void setWeatherMode (uint8_t mode);
+	void motionBlurLoader (uint8_t mode, float blur);
 	void bloomLoader (uint8_t mode, float blurWeight, float originalWeight);
 	void setRadialBlurMode (float blur);
-	void setMotionBlurMode (float blur);
 	BloomLogic* bloomLogic;
 	
 	// Graphics settings. Set these to 0 to disable the effect. Defaults are all 1.
