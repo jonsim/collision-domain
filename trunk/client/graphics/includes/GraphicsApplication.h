@@ -71,7 +71,7 @@ private:
 
 	// Compositor logic modules
 	HDRLogic*		 hdrLogic;
-	BloomLogic* bloomLogic;
+	BloomLogic*		 bloomLogic;
 	MotionBlurLogic* motionBlurLogic;
 	RadialBlurLogic* radialBlurLogic;
 };

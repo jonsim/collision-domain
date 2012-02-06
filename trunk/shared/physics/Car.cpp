@@ -243,19 +243,22 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
         for( int i = 0; i < 4; i ++ )
             mVehicle->getBulletVehicle()->setBrake( 0 , i );
     }
+	
+    updateRPM();
 
-	// update exhaust. whee this is the wrong place to do this.
-	float speedmph = getCarMph();
+	// Update exhaust (from engine RPM).
 	float emissionRate = 0;
 	if (isForward)
 	{
-		if (speedmph < 50.0f)
-			emissionRate = (50 - speedmph) * 15;
+		if (mEngineRPM < (mRevLimit / 1.9f))
+			emissionRate = (mEngineRPM / mRevLimit) * 1000;
 	}
 	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
 		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
 	
+	// Update radial blur (from vehicle speed).
 #ifdef COLLISION_DOMAIN_CLIENT
+	float speedmph = getCarMph();
 	float blurAmount = 0;
 	if (speedmph > 40.0f)
 	{
@@ -263,12 +266,10 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
 		// +/-180 and 0, hence the double abs() reduction)).
 		blurAmount = (speedmph - 40) / 30;
-		blurAmount *= abs((abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90)) / 90;
+		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
 	}
 	GameCore::mGraphicsApplication->setRadialBlur(blurAmount);
 #endif
-
-    updateRPM();
 }
 
 /*
