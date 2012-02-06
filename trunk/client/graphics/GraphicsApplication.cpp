@@ -164,57 +164,27 @@ void GraphicsApplication::setupCompositorChain (void)
 	cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
 
 	// Add the compositors to the compositor chain.
-	cm.addCompositor(vp, "HDR", 0);
-	cm.setCompositorEnabled(vp, "HDR", true);
+	cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
 	cm.addCompositor(vp, "Bloom");
 	cm.addCompositor(vp, "MotionBlur");
 	cm.addCompositor(vp, "RadialBlur");
 	
 	// Enable and configure compositors (radial blur is controlled by the players speed).
+	hdrLoader(0);
 	bloomLoader(0, 0.15f, 1.0f);
 	motionBlurLoader(0, 0.10f);
 }
 
-void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
+/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+void GraphicsApplication::hdrLoader (uint8_t mode)
 {
-	// reload bloom
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
 	Ogre::Viewport* vp = mCamera->getViewport();
 
-	if (blur > 0.0f)
-		motionBlurLogic->setBlurStrength(blur);
 	if (mode > 0)
-		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "MotionBlur", false);
+		cm.setCompositorEnabled(vp, "HDR", false);
 	if (mode < 2)
-		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "MotionBlur", true);
-
-	/*
-	static bool enabled = false;
-
-	// Scale the blur amount by the blur graphical setting. This defaults to 1.
-	blur *= gfxSettingMotionBlur;
-
-	if (enabled)
-	{
-		if (blur < 0.001f)
-		{
-			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "MotionBlur", false);
-			enabled = false;
-		}
-		else
-		{
-			motionBlurLogic->setBlurStrength(blur);
-		}
-	}
-	else
-	{
-		if (blur > 0.001f)
-		{
-			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "MotionBlur", true);
-			motionBlurLogic->setBlurStrength(blur);
-			enabled = true;
-		}
-	}*/
+		cm.setCompositorEnabled(vp, "HDR", true);
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
@@ -229,12 +199,27 @@ void GraphicsApplication::bloomLoader (uint8_t mode, float blurWeight, float ori
 	if (originalWeight > 0.0f)
 		bloomLogic->setOriginalWeight(originalWeight);
 	if (mode > 0)
-		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "Bloom", false);
+		cm.setCompositorEnabled(vp, "Bloom", false);
 	if (mode < 2)
-		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "Bloom", true);
+		cm.setCompositorEnabled(vp, "Bloom", true);
 }
 
-void GraphicsApplication::setRadialBlurMode (float blur)
+/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
+{
+	// reload bloom
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+
+	if (blur > 0.0f)
+		motionBlurLogic->setBlurStrength(blur);
+	if (mode > 0)
+		cm.setCompositorEnabled(vp, "MotionBlur", false);
+	if (mode < 2)
+		cm.setCompositorEnabled(vp, "MotionBlur", true);
+}
+
+void GraphicsApplication::setRadialBlur (float blur)
 {
 	static bool enabled = false;
 

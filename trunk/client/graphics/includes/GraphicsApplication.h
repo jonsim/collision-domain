@@ -26,16 +26,16 @@ public:
     bool firstFrameOccurred;
 	
 	void setWeatherMode (uint8_t mode);
-	void motionBlurLoader (uint8_t mode, float blur);
+	void hdrLoader (uint8_t mode);
 	void bloomLoader (uint8_t mode, float blurWeight, float originalWeight);
-	void setRadialBlurMode (float blur);
-	BloomLogic* bloomLogic;
+	void motionBlurLoader (uint8_t mode, float blur);
+	void setRadialBlur (float blur);
 	
 	// Graphics settings. Set these to 0 to disable the effect. Defaults are all 1.
 	float gfxSettingHDR;			// Strength of the High Dynamic Range lighting.
 	float gfxSettingBloom;			// Strength of the bloom lighting artifact.
-	float gfxSettingRadialBlur;		// Amount of blurring encountered at high speeds.
 	float gfxSettingMotionBlur;		// Amount of blurring of relatively moving objects.
+	float gfxSettingRadialBlur;		// Amount of blurring encountered at high speeds.
 
 protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
@@ -71,8 +71,9 @@ private:
 
 	// Compositor logic modules
 	HDRLogic*		 hdrLogic;
-	RadialBlurLogic* radialBlurLogic;
+	BloomLogic* bloomLogic;
 	MotionBlurLogic* motionBlurLogic;
+	RadialBlurLogic* radialBlurLogic;
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H
