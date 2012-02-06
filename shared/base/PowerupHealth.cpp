@@ -43,25 +43,17 @@ void PowerupHealth::playerCollision(Player* player)
     // this collision callback could potentially be called multiple times before
     // the collision object is removed, so give it to the first person who grabbed it
     if (mHasBeenCollected) return;
-    mHasBeenCollected = true;
-
+        mHasBeenCollected = true;
 
     // play powerup reward sound
-    GameCore::mAudioCore->playHealthPowerup();
-
+    //OgreOggISound* sound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID);
+    //GameCore::mAudioCore->playSoundOrRestart(sound);
 
     if (mHasSpawned)
     {
         removeCollideable();
         removeGraphic();
     }
-    else
-    {
-        // create it, to attach it to the player car
-        //createGraphic();
-    }
-    
-    // moveGraphicTo(player->attachBonusNode());
 
     // apply extra health
     player->applyHealthBonus();
@@ -90,8 +82,9 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
 
     createGraphic();
     createCollideable();
-
-    mNode->translate(createAboveAt);
+    
+    mNode->translate( createAboveAt );
+    mRigidBody->getBulletRigidBody()->translate(btVector3(createAboveAt.x,createAboveAt.y,createAboveAt.z));
 }
 
 
@@ -156,6 +149,8 @@ void PowerupHealth::createCollideable()
     mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
     mRigidBody->disableDeactivation();
     mRigidBody->showDebugShape(false);
+
+    
 }
 
 

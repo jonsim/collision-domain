@@ -12,6 +12,7 @@
 
 using namespace OgreOggSound;
 
+enum PowerupType; // from PowerupPool
 enum HornType
 {
     HORN_LOW,
@@ -27,11 +28,9 @@ class AudioCore
 public:
     AudioCore();
     ~AudioCore();
-    void playEngineIdle();
-    void playCarCrash();
-    void playCarHorn(HornType h);
-    void playHealthPowerup();
-    void playSpeedPowerup();
+    void            playSoundOrRestart(OgreOggISound *sound);
+    OgreOggISound*  getSoundInstance(HornType h,    int uniqueID);
+    OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID);
 
 private:
     OgreOggSoundManager* mSoundManager;

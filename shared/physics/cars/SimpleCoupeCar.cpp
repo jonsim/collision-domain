@@ -123,7 +123,7 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
 
 void SimpleCoupeCar::playCarHorn()
 {
-    GameCore::mAudioCore->playCarHorn(HORN_MID);
+    //GameCore::mAudioCore->playCarHorn(HORN_MID);
 }
 
 
