@@ -14,6 +14,10 @@
 /// @brief  Constructor.
 GraphicsApplication::GraphicsApplication (void)
 {
+	gfxSettingHDR        = 1.0f;
+	gfxSettingBloom      = 1.0f;
+	gfxSettingRadialBlur = 1.0f;
+	gfxSettingMotionBlur = 1.0f;
 }
 
 
@@ -46,7 +50,7 @@ void GraphicsApplication::createScene (void)
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
     ninjaNode->scale(0.2f, 0.2f, 0.2f);
-    ninjaNode->translate(100.0f,0,0);
+    ninjaNode->translate(50.0f, -3.0f, 0);
 
 	// Attach the GUI components
 	GameCore::mGui->displayConnectBox();
@@ -138,17 +142,126 @@ void GraphicsApplication::setupLighting (void)
 /// @brief Builds the compositor chain which adds post filters to the rendered image before being displayed.
 void GraphicsApplication::setupCompositorChain (void)
 {
-	// Add the bloom post filter
-	Ogre::CompositorManager::getSingleton().addCompositor(mCamera->getViewport(), "Bloom");
-	setBloomMode(true);
+	// Collect required information.
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+	
+	// Create compositors. Where possible these are coded in the Examples.compositor script, but some need
+	// access to certain features not available when this script is compiled.
+	createMotionBlurCompositor();
+
+	// Rehister the compositors.
+	// This is done by first setting up the logic module for them and adding this as a listener so it
+	// fires every time the compositor completes a pass allowing injection of values into the GPU
+	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
+	hdrLogic        = new HDRLogic;
+	bloomLogic      = new BloomLogic;
+	radialBlurLogic = new RadialBlurLogic;
+	motionBlurLogic = new MotionBlurLogic;
+	cm.registerCompositorLogic("HDR",        hdrLogic);
+	cm.registerCompositorLogic("Bloom",      bloomLogic);
+	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
+	cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
+
+	// Add the compositors to the compositor chain.
+	cm.addCompositor(vp, "HDR", 0);
+	cm.setCompositorEnabled(vp, "HDR", true);
+	cm.addCompositor(vp, "Bloom");
+	cm.addCompositor(vp, "MotionBlur");
+	cm.addCompositor(vp, "RadialBlur");
+	
+	// Enable and configure compositors (radial blur is controlled by the players speed).
+	bloomLoader(0, 0.15f, 1.0f);
+	motionBlurLoader(0, 0.10f);
 }
 
-
-/// @brief Whether or not the bloom filter is enabled.
-/// enabled	The new setting for the bloom filter (on or off).
-void GraphicsApplication::setBloomMode (bool enabled)
+void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
 {
-	Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "Bloom", enabled);
+	// reload bloom
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+
+	if (blur > 0.0f)
+		motionBlurLogic->setBlurStrength(blur);
+	if (mode > 0)
+		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "MotionBlur", false);
+	if (mode < 2)
+		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "MotionBlur", true);
+
+	/*
+	static bool enabled = false;
+
+	// Scale the blur amount by the blur graphical setting. This defaults to 1.
+	blur *= gfxSettingMotionBlur;
+
+	if (enabled)
+	{
+		if (blur < 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "MotionBlur", false);
+			enabled = false;
+		}
+		else
+		{
+			motionBlurLogic->setBlurStrength(blur);
+		}
+	}
+	else
+	{
+		if (blur > 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "MotionBlur", true);
+			motionBlurLogic->setBlurStrength(blur);
+			enabled = true;
+		}
+	}*/
+}
+
+/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+void GraphicsApplication::bloomLoader (uint8_t mode, float blurWeight, float originalWeight)
+{
+	// reload bloom
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+
+	if (blurWeight > 0.0f)
+		bloomLogic->setBlurWeight(blurWeight);
+	if (originalWeight > 0.0f)
+		bloomLogic->setOriginalWeight(originalWeight);
+	if (mode > 0)
+		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "Bloom", false);
+	if (mode < 2)
+		Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "Bloom", true);
+}
+
+void GraphicsApplication::setRadialBlurMode (float blur)
+{
+	static bool enabled = false;
+
+	// Scale the blur amount by the blur graphical setting. This defaults to 1.
+	blur *= gfxSettingRadialBlur;
+
+	if (enabled)
+	{
+		if (blur < 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "RadialBlur", false);
+			enabled = false;
+		}
+		else
+		{
+			radialBlurLogic->setBlurStrength(blur);
+		}
+	}
+	else
+	{
+		if (blur > 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "RadialBlur", true);
+			radialBlurLogic->setBlurStrength(blur);
+			enabled = true;
+		}
+	}
 }
 
 
@@ -457,7 +570,85 @@ void GraphicsApplication::updateSpeedo (float fSpeed, int iGear)
 }
 
 
-// The following code is not understood. Does something for Win32: unknown. Best just leave it alone.
+void GraphicsApplication::createMotionBlurCompositor()
+{
+	// Motion blur effect
+	Ogre::CompositorPtr comp3 = Ogre::CompositorManager::getSingleton().create(
+			"MotionBlur", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME
+		);
+	{
+		Ogre::CompositionTechnique *t = comp3->createTechnique();
+		t->setCompositorLogicName("MotionBlur");
+		{
+			Ogre::CompositionTechnique::TextureDefinition *def = t->createTextureDefinition("scene");
+			def->width = 0;
+			def->height = 0;
+			def->formatList.push_back(Ogre::PF_R8G8B8);
+		}
+		{
+			Ogre::CompositionTechnique::TextureDefinition *def = t->createTextureDefinition("sum");
+			def->width = 0;
+			def->height = 0;
+			def->formatList.push_back(Ogre::PF_R8G8B8);
+		}
+		{
+			Ogre::CompositionTechnique::TextureDefinition *def = t->createTextureDefinition("temp");
+			def->width = 0;
+			def->height = 0;
+			def->formatList.push_back(Ogre::PF_R8G8B8);
+		}
+		// Render scene texture
+		{
+			Ogre::CompositionTargetPass *tp = t->createTargetPass();
+			tp->setInputMode(Ogre::CompositionTargetPass::IM_PREVIOUS);
+			tp->setOutputName("scene");
+		}
+		// Initialisation pass for sum texture
+		{
+			Ogre::CompositionTargetPass *tp = t->createTargetPass();
+			tp->setInputMode(Ogre::CompositionTargetPass::IM_PREVIOUS);
+			tp->setOutputName("sum");
+			tp->setOnlyInitial(true);
+		}
+		// Do the motion blur, accepting listener injection
+		{
+			Ogre::CompositionTargetPass *tp = t->createTargetPass();
+			tp->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+			tp->setOutputName("temp");
+			{ Ogre::CompositionPass *pass = tp->createPass();
+			pass->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+			pass->setMaterialName("Ogre/Compositor/Combine");
+			pass->setInput(0, "scene");
+			pass->setInput(1, "sum");
+			pass->setIdentifier(700);
+			}
+		}
+		// Copy back sum texture
+		{
+			Ogre::CompositionTargetPass *tp = t->createTargetPass();
+			tp->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+			tp->setOutputName("sum");
+			{ Ogre::CompositionPass *pass = tp->createPass();
+			pass->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+			pass->setMaterialName("Ogre/Compositor/Copyback");
+			pass->setInput(0, "temp");
+			}
+		}
+		// Display result
+		{
+			Ogre::CompositionTargetPass *tp = t->getOutputTargetPass();
+			tp->setInputMode(Ogre::CompositionTargetPass::IM_NONE);
+			{ Ogre::CompositionPass *pass = tp->createPass();
+			pass->setType(Ogre::CompositionPass::PT_RENDERQUAD);
+			pass->setMaterialName("Ogre/Compositor/MotionBlur");
+			pass->setInput(0, "sum");
+			}
+		}
+	}
+}
+
+
+// Main function. Bootstraps the application.
 #ifdef __cplusplus
 extern "C" {
 #endif

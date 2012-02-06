@@ -25,6 +25,9 @@
 #include <OISMouse.h>
 
 // Additional includes
+#include "OgrePrerequisites.h"
+#include "OgreCompositorLogic.h"
+#include "OgreCompositorInstance.h"
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
