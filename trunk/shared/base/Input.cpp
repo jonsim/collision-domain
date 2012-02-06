@@ -100,10 +100,10 @@ InputState* Input::getFreeCamInputState()
 
 /// @brief  Processes the key bound (here) to toggling widgets on screen.
 /// @return Whether the key bound to toggling widgets on screen is pressed or not.
-/*bool Input::isToggleWidget()
-{
-    return mKeyboard->isKeyDown(OIS::KC_G);
-}*/
+//bool Input::isToggleWidget()
+//{
+//    return mKeyboard->isKeyDown(OIS::KC_G);
+//}
 
 /// @brief  Processes the key bound (here) to toggling chatbox on screen.
 /// @return Whether the key bound to toggling chatbox on screen is pressed or not.
@@ -164,12 +164,8 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 	sys.injectChar(evt.text);
 
     if (evt.key == OIS::KC_K) {
-        GameCore::mAudioCore->playCarCrash();
+        //GameCore::mAudioCore->playCarCrash();
         //GameCore::mAudioCore->playEngineIdle();
-    }
-
-    if (evt.key == OIS::KC_P) {
-        GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
     }
 
     // Had to put this in here for now, and the define.. well fuck you shared includes.
@@ -240,12 +236,9 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     }
 
     //if (id == OIS::MB_Right)
-    //    GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM );
-        //new PowerupRandom(); // just for testing, you see.
-    
-    // create powerups, just for testing
-    if (id == OIS::MB_Right)
-        GameCore::mPowerupPool->createPowerup( POWERUP_RANDOM, Ogre::Vector3(0,-4.0,0) );
+    //{
+    //    GameCore::mPowerupPool->spawnSomething();
+    //}
 
 	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
 

@@ -120,7 +120,7 @@ TruckCar::~TruckCar(void)
 
 void TruckCar::playCarHorn()
 {
-    GameCore::mAudioCore->playCarHorn(HORN_LOW);
+    //GameCore::mAudioCore->playCarHorn(HORN_LOW);
 }
 
 

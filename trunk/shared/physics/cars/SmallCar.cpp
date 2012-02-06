@@ -121,7 +121,7 @@ SmallCar::~SmallCar(void)
 
 void SmallCar::playCarHorn()
 {
-    GameCore::mAudioCore->playCarHorn(HORN_HIGH);
+    //GameCore::mAudioCore->playCarHorn(HORN_HIGH);
 }
 
 

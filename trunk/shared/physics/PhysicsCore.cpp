@@ -99,13 +99,12 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
 
 		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
 		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-	    
+
         short groupA = obA->getBroadphaseHandle()->m_collisionFilterGroup;
         short groupB = obB->getBroadphaseHandle()->m_collisionFilterGroup;
 
         // group of the wheels is the chassis group (I think ...)
         // mask of the wheels is always 00000001 (COL_CAR)
-        
         // Car to Car collision
         if (groupA & COL_CAR && groupB & COL_CAR)
         {
@@ -125,6 +124,10 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         {
             //Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
             //player->collisionTickCallback(1);
+        }
+        else
+        {
+            continue;
         }
 	}
 }

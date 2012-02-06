@@ -8,7 +8,7 @@ PowerupPool::PowerupPool()
         mPowerups[i] = NULL;
 
     // Random seed
-    srand( (unsigned int) RakNet::GetTimeMS() );
+    srand( time(NULL));//(unsigned int) RakNet::GetTimeMS() );
 
     createPowerup(POWERUP_SPEED);
 }
@@ -52,8 +52,9 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
         break;
 
     case POWERUP_MASS:
-        if (!spawn) return NULL; // doesn't support invisible creation
-        mPowerups[iNew] = new PowerupMass(createAboveAt);
+        //if (!spawn) return NULL; // doesn't support invisible creation
+        mPowerups[iNew] = new PowerupMass();
+        if (spawn) ((PowerupMass*) mPowerups[iNew])->spawn(createAboveAt);
         break;
 
     case POWERUP_RANDOM:
@@ -62,8 +63,9 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
         break;
 
     case POWERUP_SPEED:
-        if (!spawn) return NULL; // doesn't support invisible creation
-        mPowerups[iNew] = new PowerupSpeed(createAboveAt);
+        //if (!spawn) return NULL; // doesn't support invisible creation
+        mPowerups[iNew] = new PowerupSpeed();
+        if (spawn) ((PowerupSpeed*) mPowerups[iNew])->spawn(createAboveAt);
         break;
     }
 
@@ -80,6 +82,8 @@ void PowerupPool::deletePowerup( int index )
 
     Powerup* p = mPowerups[index];
 
+    mPowerups[index] = NULL;
+
     // You have to cast to the superclass to make cpp call that destructor!
     switch(mPowerupTypes[index])
     {
@@ -88,8 +92,21 @@ void PowerupPool::deletePowerup( int index )
     case POWERUP_RANDOM: delete (PowerupRandom*) p; break;
     case POWERUP_SPEED:  delete (PowerupSpeed*)  p; break;
     }
+}
 
-    mPowerups[index] = NULL;
+void PowerupPool::spawnSomething()
+{
+    // spawn a random bunch for testing!!
+    PowerupType type;
+    switch(rand() % 4)
+    {
+    case 0: type = POWERUP_MASS; break;
+    case 1: type = POWERUP_HEALTH;   break;
+    case 2: type = POWERUP_SPEED; break;
+    case 3: type = POWERUP_RANDOM;  break;
+    }
+    
+    createPowerup( type, *randomPointInArena(75, 50, 2) );
 }
 
 /// @brief  Process state changes for powerups and delete collected ones
@@ -97,20 +114,10 @@ void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
 {
 	for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
-        if( ! mPowerups[i] ) 
+        if( ! mPowerups[i] )
         {
-            // spawn another!!
-            PowerupType type;
-            switch(rand() % 4)
-            {
-            case 0: type = POWERUP_HEALTH; break;
-            case 1: type = POWERUP_MASS;   break;
-            case 2: type = POWERUP_RANDOM; break;
-            case 3: type = POWERUP_SPEED;  break;
-            }
-            
-            createPowerup( type, *randomPointInArena(75, 50, 2) );
-
+            // this will fill this null index with a powerup.
+            spawnSomething();
             continue;
         }
 
@@ -130,7 +137,7 @@ void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
 Ogre::Vector3* PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge)
 {
     float x;
-    float y = 0;
+    float y = -0.5;
     float z;
 
     arenaZRadius -= safeZoneFromEdge;

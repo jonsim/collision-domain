@@ -25,7 +25,8 @@ GraphicsCore::GraphicsCore(void)
     mCameraMan(0),
     mDetailsPanel(0),
     mCursorWasVisible(false),
-    mShutDown(false)
+    mShutDown(false),
+    mSpawnScreen(0)
 {
 }
 

@@ -94,7 +94,7 @@ void PowerupRandom::playerCollision(Player* player)
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
 
-    Powerup* powerup;
+    Powerup* powerup = NULL;
     {
         // only a few of the powerup types fit as "random" rewards so here they are:
         PowerupType mPotentialPowerups[3] = {POWERUP_HEALTH, POWERUP_MASS, POWERUP_SPEED};
@@ -107,6 +107,9 @@ void PowerupRandom::playerCollision(Player* player)
     if (powerup) powerup->playerCollision(player);
 
     removeFromWorlds();
+
+    // IF THE POWERUP LINGERS LONGER THAN THIS METHOD,
+    // isPendingDelete() NEEDS TO RETURN SOMETHING ELSE
 }
 
 
