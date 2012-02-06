@@ -17,6 +17,7 @@ Player::Player (void) : cameraRotationConstant(0.08f)
 	newInput = NULL;
 	mCar = NULL;
 	//mOLE = NULL;
+	mSpawned = false;
 }
 
 
@@ -154,4 +155,9 @@ void Player::setOverlayElement(Ogre::OverlayElement* ole)
 Ogre::OverlayElement* Player::getOverlayElement()
 {
 	return mOLE;
+}
+
+void Player::setSpawned()
+{
+	mSpawned = true;
 }

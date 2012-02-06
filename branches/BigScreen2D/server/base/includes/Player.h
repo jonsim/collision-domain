@@ -56,6 +56,7 @@ public:
 
 	void setOverlayElement(Ogre::OverlayElement* ole);
 	Ogre::OverlayElement* getOverlayElement();
+	void setSpawned(); //Marks the car as spawned
 private:
     const float cameraRotationConstant;
 	int		hp;
@@ -67,6 +68,7 @@ private:
     char *mNickname;
 
 	Ogre::OverlayElement* mOLE;
+	bool mSpawned;
 };
 
 #endif // #ifndef PLAYER_H

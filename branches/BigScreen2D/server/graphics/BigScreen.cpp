@@ -96,10 +96,17 @@ void BigScreen::setupMapView()
 void BigScreen::manageNewPlayer(Player* player)
 {
 	//TODO - Note this will all go wrong if two players with the same name join
+	std::stringstream overlayNameSS;
+	overlayNameSS << "PlayerOverlay" << player->getNickname();
+
+
+
 	Ogre::OverlayElement* tmpOLE = 
 		Ogre::OverlayManager::getSingleton().createOverlayElement(
 		"Panel",
-		"Player" );
+		overlayNameSS.str());
+
+
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
 	tmpOLE->setDimensions(0.2f,0.2f);
 	tmpOLE->setMaterialName( "map_top_1" );
@@ -128,35 +135,39 @@ void BigScreen::updateMapView()
 
 void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 {
-	btVector3 localPlayerPos = player->getCar()->getCarSnapshot()->mPosition;
-	float xPos = localPlayerPos.getX(); 
-	float yPos = localPlayerPos.getZ(); //Z as we're doing a 2D projection
 	
-	//Correct the position to be relative of top left corner.
-	xPos += mapCorner.x;
-	yPos += mapCorner.z;
-	//Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
-	//Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
+	if(player->getCar() != NULL && player->getCar()->getCarSnapshot() != NULL)
+	{
+		btVector3 localPlayerPos = player->getCar()->getCarSnapshot()->mPosition;
+		float xPos = localPlayerPos.getX(); 
+		float yPos = localPlayerPos.getZ(); //Z as we're doing a 2D projection
 	
-	//Correct to make percentage
-	xPos = xPos/(mapSize.x/2);
-	yPos = yPos/(mapSize.z/2);
+		//Correct the position to be relative of top left corner.
+		xPos += mapCorner.x;
+		yPos += mapCorner.z;
+		//Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
+		//Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
 	
-	/*
-	std::stringstream tmpDebugString;
-	tmpDebugString << "XPos: " << xPos;
-	tmpDebugString << " yPos: " << yPos;
-	tmpDebugString << "\n";
-	OutputDebugString(tmpDebugString.str().c_str());
-	*/
+		//Correct to make percentage
+		xPos = xPos/(mapSize.x/2);
+		yPos = yPos/(mapSize.z/2);
+	
+		/*
+		std::stringstream tmpDebugString;
+		tmpDebugString << "XPos: " << xPos;
+		tmpDebugString << " yPos: " << yPos;
+		tmpDebugString << "\n";
+		OutputDebugString(tmpDebugString.str().c_str());
+		*/
 
-	//This is not really needed if the above code is working
-	if(xPos > 1)
-		xPos = 1.0f;
-	if(yPos > 1)
-		yPos = 1.0f;
+		//This is not really needed if the above code is working
+		if(xPos > 1)
+			xPos = 1.0f;
+		if(yPos > 1)
+			yPos = 1.0f;
 
-	carOverlay->setPosition(xPos,yPos);
+		carOverlay->setPosition(xPos,yPos);
+	}
 }
 
 void BigScreen::setMapCorner(Ogre::Vector3 corner)
