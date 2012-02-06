@@ -74,6 +74,12 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
     return mPowerups[iNew];
 }
 
+Powerup *PowerupPool::getPowerup( int index )
+{
+    if( index < 0 || index >= MAX_POWERUPS ) return NULL;
+    return mPowerups[index];
+}
+
 /// @brief  Delete a powerup 
 /// @param  index   Index in the powerup array of which one to be deleted
 void PowerupPool::deletePowerup( int index )

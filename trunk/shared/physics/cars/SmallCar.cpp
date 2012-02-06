@@ -20,9 +20,28 @@ using namespace Ogre;
 
 #define CRITICAL_DAMPING_COEF       0.3f
 
-#define SMALLCAR_VTX_COUNT 20
+#define SMALLCAR_VTX_COUNT 14
 
 static btScalar SmallCarVtx[] = {
+    -0.46733353f, 	-0.50000006f, 	0.47412637f,
+	0.46733356f, 	-0.50000006f, 	0.47412637f,
+	-0.46733353f, 	0.31162921f, 	0.47412637f,
+	0.46733356f, 	0.31162921f, 	0.47412637f,
+	-0.5f, 			0.46859881f, 	0.19854486f,
+	0.5f, 			0.46859881f, 	0.19854486f,
+	-0.47566596f, 	-0.50000006f, 	-0.69251001f,
+	0.47566596f, 	-0.50000006f, 	-0.69251001f,
+	0.0f, 			-0.50000006f, 	0.50817901f,
+	0.0f, 			0.26104462f, 	0.5016675f,
+	0.0f, 			0.61385989f, 	0.19854486f,
+	0.0f, 			0.46093348f, 	0.43777251f,
+	0.47566596f, 	0.16506362f, 	-0.68763894f,
+	-0.47566596f, 	0.16506362f, 	-0.68763894f,
+};
+
+
+
+/*= {
     -62.4181f, -32.3895f, 125.804f,
     62.3984f, -32.3895f, 125.804f,
     -62.4181f, 20.187f, 125.804f,
@@ -43,7 +62,7 @@ static btScalar SmallCarVtx[] = {
     51.076f, 71.9659f, -110.318f,
     -51.0957f, 71.9659f, -110.318f,
     -0.00985f, 78.5039f, -110.318f,
-};
+};*/
 
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SmallCar::initTuning()
@@ -249,7 +268,8 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     //btConvexHullShape shape( SmallCarVtx, SMALLCAR_VTX_COUNT, 3*sizeof(btScalar) );
     //shape.setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
     OgreBulletCollisions::ConvexHullCollisionShape *convexHull = new OgreBulletCollisions::ConvexHullCollisionShape( SmallCarVtx, SMALLCAR_VTX_COUNT, 3*sizeof(btScalar) );
-    convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    //convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    convexHull->getBulletShape()->setLocalScaling( btVector3( 1.33f, 0.65f, 2.65f ) );
 
     //delete trimeshConverter;
 
@@ -282,13 +302,13 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
 
-    //OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
 
-    //Ogre::Matrix4 matChassisShift;
-    //matChassisShift.makeTrans( chassisShift );
+    Ogre::Matrix4 matChassisShift;
+    //matChassisShift.makeTrans( Ogre::Vector3( 1, 0, 0 ) );
     //dbg->setWorldTransform( matChassisShift );
 
-    //mCarChassis->showDebugShape( false );
+   // mCarChassis->showDebugShape( false );
 }
 
 
