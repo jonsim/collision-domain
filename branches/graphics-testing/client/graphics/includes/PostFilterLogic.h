@@ -32,6 +32,16 @@ private:
 
 
 /*-------------------- COMPOSITOR LOGICS --------------------*/
+class HDRLogic : public ListenerFactoryLogic
+{
+private:
+	Ogre::CompositorInstance::Listener* mListener;
+protected:
+	virtual Ogre::CompositorInstance::Listener* createListener(Ogre::CompositorInstance* instance);
+public:
+	void setBloomSize (float n);
+};
+
 class BloomLogic : public ListenerFactoryLogic
 {
 private:
@@ -67,18 +77,35 @@ public:
 
 
 /*-------------------- COMPOSITOR LISTENERS --------------------*/
+class HDRListener : public Ogre::CompositorInstance::Listener
+{
+friend HDRLogic;
+private:
+	int mVpWidth, mVpHeight;
+	int bloomSize;
+	float textureWeights[15][4];
+	float textureHOffsets[15][4];
+	float textureVOffsets[15][4];
+	Ogre::GpuProgramParametersSharedPtr fpParams;
+public:
+	HDRListener();
+	~HDRListener();
+	void notifyViewportSize(int width, int height);
+	void notifyCompositor(Ogre::CompositorInstance* instance);
+	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
+	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
+};
+
 class BloomListener : public Ogre::CompositorInstance::Listener
 {
 friend BloomLogic;
 private:
 	float blurWeight;
 	float originalWeight;
-	Ogre::GpuProgramParametersSharedPtr fpParams;
 public:
 	BloomListener();
 	~BloomListener();
 	virtual void notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
-	virtual void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat);
 };
 
 class RadialBlurListener : public Ogre::CompositorInstance::Listener

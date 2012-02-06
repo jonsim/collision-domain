@@ -30,6 +30,22 @@ void ListenerFactoryLogic::compositorInstanceDestroyed(Ogre::CompositorInstance*
 
 
 /*-------------------- COMPOSITOR LOGICS --------------------*/
+/*-------------------- HDR LOGIC --------------------*/
+/// @copydoc ListenerFactoryLogic::createListener
+Ogre::CompositorInstance::Listener* HDRLogic::createListener(Ogre::CompositorInstance* instance)
+{
+	mListener = new HDRListener;
+	return mListener;
+}
+
+/// @brief Sets the BlurWeight parameter of the Bloom compositor.
+/// @param n	The new blur weight.
+void HDRLogic::setBloomSize (float n)
+{
+	((HDRListener*) mListener)->bloomSize = n;
+}
+
+
 /*-------------------- BLOOM LOGIC --------------------*/
 /// @copydoc ListenerFactoryLogic::createListener
 Ogre::CompositorInstance::Listener* BloomLogic::createListener(Ogre::CompositorInstance* instance)
@@ -94,6 +110,115 @@ void MotionBlurLogic::setBlurStrength (float n)
 
 
 /*-------------------- COMPOSITOR LISTENERS --------------------*/
+/*-------------------- HDR LISTENER --------------------*/
+/// @brief Constructor.
+HDRListener::HDRListener()
+{
+	//bloomSize = 0.15f;
+}
+
+/// @brief Deconstructor.
+HDRListener::~HDRListener()
+{
+}
+
+void HDRListener::notifyViewportSize (int width, int height)
+{
+	mVpWidth = width;
+	mVpHeight = height;
+}
+
+void HDRListener::notifyCompositor (Ogre::CompositorInstance* instance)
+{
+	// Get some RTT dimensions for later calculations
+	Ogre::CompositionTechnique::TextureDefinitionIterator defIter =	instance->getTechnique()->getTextureDefinitionIterator();
+	while (defIter.hasMoreElements())
+	{
+		Ogre::CompositionTechnique::TextureDefinition* def =
+			defIter.getNext();
+		if(def->name == "rt_bloom0")
+		{
+			bloomSize = (int)def->width; // should be square
+			// Calculate gaussian texture offsets & weights
+			float deviation = 3.0f;
+			float texelSize = 1.0f / (float) bloomSize;
+
+			// central sample, no offset
+			textureWeights[0][0]  = textureWeights[0][1] = textureWeights[0][2] = Ogre::Math::gaussianDistribution(0, 0, deviation);
+			textureWeights[0][3]  = 1.0f;
+			textureHOffsets[0][0] = 0.0f;
+			textureHOffsets[0][1] = 0.0f;
+			textureVOffsets[0][0] = 0.0f;
+			textureVOffsets[0][1] = 0.0f;
+
+			// 'pre' samples
+			for (int i = 1; i < 8; ++i)
+			{
+				textureWeights[i][0]  = textureWeights[i][1] = textureWeights[i][2] = 1.25f * Ogre::Math::gaussianDistribution(i, 0, deviation);
+				textureWeights[i][3]  = 1.0f;
+				textureHOffsets[i][0] = i * texelSize;
+				textureHOffsets[i][1] = 0.0f;
+				textureVOffsets[i][0] = 0.0f;
+				textureVOffsets[i][1] = i * texelSize;
+			}
+			// 'post' samples
+			for (int i = 8; i < 15; ++i)
+			{
+				textureWeights[i][0]  = textureWeights[i][1] = textureWeights[i][2] = textureWeights[i - 7][0];
+				textureWeights[i][3]  = 1.0f;
+				textureHOffsets[i][0] = -textureHOffsets[i - 7][0];
+				textureHOffsets[i][1] = 0.0f;
+				textureVOffsets[i][0] = 0.0f;
+				textureVOffsets[i][1] = -textureVOffsets[i - 7][1];
+			}
+
+		}
+	}
+}
+
+void HDRListener::notifyMaterialSetup (Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
+{
+	// Prepare the fragment params offsets
+	switch(pass_id)
+	{
+	//case 994: // rt_lum4
+	case 993: // rt_lum3
+	case 992: // rt_lum2
+	case 991: // rt_lum1
+	case 990: // rt_lum0
+		break;
+	case 800: // rt_brightpass
+		break;
+	case 701: // rt_bloom1
+		{
+			// horizontal bloom
+			mat->load();
+			Ogre::GpuProgramParametersSharedPtr fparams =
+				mat->getBestTechnique()->getPass(0)->getFragmentProgramParameters();
+			fparams->setNamedConstant("sampleOffsets", textureHOffsets[0], 15);
+			fparams->setNamedConstant("sampleWeights", textureWeights[0], 15);
+
+			break;
+		}
+	case 700: // rt_bloom0
+		{
+			// vertical bloom
+			mat->load();
+			Ogre::GpuProgramParametersSharedPtr fparams =
+				mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+			fparams->setNamedConstant("sampleOffsets", textureVOffsets[0], 15);
+			fparams->setNamedConstant("sampleWeights", textureWeights[0], 15);
+
+			break;
+		}
+	}
+}
+
+void HDRListener::notifyMaterialRender (Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
+{
+}
+
+
 /*-------------------- BLOOM LISTENER --------------------*/
 /// @brief Constructor.
 BloomListener::BloomListener()
@@ -110,16 +235,12 @@ BloomListener::~BloomListener()
 /// @copydoc CompositorInstance::Listener::notifyMaterialSetup
 void BloomListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
-	fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
-}
-
-/// @copydoc CompositorInstance::Listener::notifyMaterialRender
-void BloomListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
-{
+	OutputDebugString("ooglyboogly\n");
 	if (pass_id == 700)
 	{
-		fpParams->setNamedConstant("BlurWeight", blurWeight);
-		fpParams->setNamedConstant("OriginalImageWeight", originalWeight);
+		Ogre::GpuProgramParametersSharedPtr fparams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+		fparams->setNamedConstant("BlurWeight", blurWeight);
+		fparams->setNamedConstant("OriginalImageWeight", originalWeight);
 	}
 }
 
@@ -148,6 +269,9 @@ void RadialBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::Materi
 {
 	if (pass_id == 700)
 	{
+		char s[20];
+		sprintf(s, "d = %.2f, s = %.2f\n", blurDistance, blurStrength);
+		OutputDebugString(s);
 		fpParams->setNamedConstant("sampleDist", blurDistance);
 		fpParams->setNamedConstant("sampleStrength", blurStrength);
 	}
@@ -158,7 +282,7 @@ void RadialBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::Materi
 /// @brief Constructor.
 MotionBlurListener::MotionBlurListener()
 {
-	blurStrength = 1.8f;
+	blurStrength = 0.8f;
 }
 
 /// @brief Deconstructor.
@@ -169,13 +293,15 @@ MotionBlurListener::~MotionBlurListener()
 /// @copydoc CompositorInstance::Listener::notifyMaterialSetup
 void MotionBlurListener::notifyMaterialSetup(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
-	fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+	if (pass_id == 700)
+	{
+		fpParams = mat->getTechnique(0)->getPass(0)->getFragmentProgramParameters();
+	}
 }
 
 /// @copydoc CompositorInstance::Listener::notifyMaterialRender
 void MotionBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr &mat)
 {
-	OutputDebugString("yoohoo\n");
 	if (pass_id == 700)
 	{
 		fpParams->setNamedConstant("blur", blurStrength);

@@ -206,9 +206,11 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 			else if (!strnicmp(szInput, "weather ", 8))
 				GameCore::mGraphicsApplication->setWeatherMode(atoi(&szInput[8]) - 1);
 			else if (!strnicmp(szInput, "bloom1 ", 7))
-				GameCore::mGraphicsApplication->bloomLogic->setBlurWeight(atof(&szInput[7]));
+				GameCore::mGraphicsApplication->bloomLoader(1, atof(&szInput[7]), -1.0f);
 			else if (!strnicmp(szInput, "bloom2 ", 7))
-				GameCore::mGraphicsApplication->bloomLogic->setOriginalWeight(atof(&szInput[7]));
+				GameCore::mGraphicsApplication->bloomLoader(1, -1.0f, atof(&szInput[7]));
+			else if (!strnicmp(szInput, "mb ", 3))
+				GameCore::mGraphicsApplication->setMotionBlurMode(atof(&szInput[3]));
 
             else if( strTokens.at(0) == "movdbg" )
             {
