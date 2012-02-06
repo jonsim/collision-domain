@@ -298,17 +298,74 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 }
 
+void NetworkCore::PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{	  
+    PowerupType pwrType;
+    Ogre::Vector3 pwrLoc;
+
+    bitStream->Read( pwrType );
+    bitStream->Read( pwrLoc );
+
+    GameCore::mPowerupPool->createPowerup( pwrType, pwrLoc );
+}
+
+void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    int pwrID;
+    bitStream->Read( pwrID );
+
+    Powerup *pwrObject = GameCore::mPowerupPool->getPowerup( pwrID );
+
+    bool bPlayer;
+    bitStream->Read( bPlayer );
+
+    if( !bPlayer )
+    {
+        // Remove a powerup, nobody collected it
+        
+    }
+    else
+    {
+        RakNet::RakNetGUID playerid;
+        bitStream->Read( playerid );
+
+        Player *pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
+
+        if( pPlayer == NULL )
+            return;
+
+        // Check if powerup was random
+        if( pwrID == POWERUP_RANDOM )
+        {
+            PowerupType pwrType;
+            bitStream->Read( pwrType );
+
+            // TODO: call collect powerup with pwrType & playerid
+            // TODO: delete original powerup
+        }
+        else
+        {
+            // TODO: check if powerup is removable
+
+            // TODO: get the original powerup type
+            // TODO: delete powerup
+        }
+    }
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
     m_RPC = RakNet::RPC4::GetInstance();
 	m_pRak->AttachPlugin( m_RPC );
 
-	m_RPC->RegisterSlot( "GameJoin",			GameJoin, 0 );
-	m_RPC->RegisterSlot( "PlayerJoin",		PlayerJoin, 0 );
-	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
-	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
-	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
+	m_RPC->RegisterSlot( "GameJoin",		GameJoin,       0 );
+	m_RPC->RegisterSlot( "PlayerJoin",		PlayerJoin,     0 );
+	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit,     0 );
+	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat,     0 );
+	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn,    0 );
+    m_RPC->RegisterSlot( "PowerupCreate",   PowerupCreate,  0 );
+    m_RPC->RegisterSlot( "PowerupCollect",  PowerupCollect, 0 );
 }
 
 

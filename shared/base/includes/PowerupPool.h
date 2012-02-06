@@ -31,6 +31,7 @@ public:
     ~PowerupPool();
     Powerup *createPowerup( PowerupType type );
     Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt );
+    Powerup *getPowerup( int id );
     void frameEvent( const Ogre::FrameEvent& evt );
     void spawnSomething();
     
