@@ -17,6 +17,7 @@
     <ClInclude Include="..\..\client\graphics\includes\GameGUI.h" />
     <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h" />
     <ClInclude Include="..\..\client\graphics\includes\GraphicsCore.h" />
+    <ClInclude Include="..\..\client\graphics\includes\PostFilterLogic.h" />
     <ClInclude Include="..\..\client\networking\includes\Config.h" />
     <ClInclude Include="..\..\client\networking\includes\NetworkCore.h" />
     <ClInclude Include="..\..\client\networking\includes\PlayerPool.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="..\..\client\graphics\GameGUI.cpp" />
     <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp" />
     <ClCompile Include="..\..\client\graphics\GraphicsCore.cpp" />
+    <ClCompile Include="..\..\client\graphics\PostFilterLogic.cpp" />
     <ClCompile Include="..\..\client\networking\NetworkCore.cpp" />
     <ClCompile Include="..\..\client\networking\PlayerPool.cpp" />
     <ClCompile Include="..\..\shared\base\AudioCore.cpp" />

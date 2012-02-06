@@ -230,8 +230,7 @@ material Ogre/Compositor/BloomBlend2
 		fragment_program_ref Bloom2_ps
 		{
 			param_named OriginalImageWeight float 1.0
-			// default weight = 0.65
-			param_named BlurWeight float 0.15
+			param_named BlurWeight float 0.65
 		}
 		//vertex_program_ref Blur_vs
 		//	{

@@ -577,6 +577,9 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\PostFilterLogic.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">

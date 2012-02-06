@@ -247,10 +247,26 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 	// update exhaust. whee this is the wrong place to do this.
 	float speedmph = getCarMph();
 	float emissionRate = 0;
-	if (isForward && speedmph < 50)
-		emissionRate = (50 - speedmph) * 15;
+	if (isForward)
+	{
+		if (speedmph < 50.0f)
+			emissionRate = (50 - speedmph) * 15;
+	}
 	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
 		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
+	
+#ifdef COLLISION_DOMAIN_CLIENT
+	float blurAmount = 0;
+	if (speedmph > 40.0f)
+	{
+		// calculate blurring as a function of speed, then scale it back depending on where you
+		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
+		// +/-180 and 0, hence the double abs() reduction)).
+		blurAmount = (speedmph - 40) / 30;
+		blurAmount *= abs((abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90)) / 90;
+	}
+	GameCore::mGraphicsApplication->setRadialBlurMode(blurAmount);
+#endif
 
     updateRPM();
 }
@@ -569,7 +585,7 @@ void Car::readTuning( char *szFile )
     std::vector<std::string> vecLines;
     boost::split( vecLines, strContent, boost::is_any_of( "\n" ) );
 
-    for( int i = 0; i < vecLines.size(); i ++ )
+    for( uint32_t i = 0; i < vecLines.size(); i ++ )
     {
         std::vector<std::string> tokens;
         boost::split( tokens, vecLines.at(i), boost::is_any_of( "\t " ) );
