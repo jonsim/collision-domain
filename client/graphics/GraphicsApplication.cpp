@@ -164,13 +164,13 @@ void GraphicsApplication::setupCompositorChain (void)
 	cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
 
 	// Add the compositors to the compositor chain.
-	cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
+	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
 	cm.addCompositor(vp, "Bloom");
 	cm.addCompositor(vp, "MotionBlur");
 	cm.addCompositor(vp, "RadialBlur");
 	
 	// Enable and configure compositors (radial blur is controlled by the players speed).
-	hdrLoader(0);
+	//hdrLoader(0);
 	bloomLoader(0, 0.15f, 1.0f);
 	motionBlurLoader(0, 0.10f);
 }
@@ -193,6 +193,10 @@ void GraphicsApplication::bloomLoader (uint8_t mode, float blurWeight, float ori
 	// reload bloom
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
 	Ogre::Viewport* vp = mCamera->getViewport();
+	
+	// Scale the bloom values by the bloom graphical setting. This defaults to 1.
+	blurWeight     *= gfxSettingBloom;
+	originalWeight *= gfxSettingBloom;
 
 	if (blurWeight > 0.0f)
 		bloomLogic->setBlurWeight(blurWeight);
@@ -210,6 +214,9 @@ void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
 	// reload bloom
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
 	Ogre::Viewport* vp = mCamera->getViewport();
+	
+	// Scale the blur amount by the blur graphical setting. This defaults to 1.
+	blur *= gfxSettingMotionBlur;
 
 	if (blur > 0.0f)
 		motionBlurLogic->setBlurStrength(blur);
