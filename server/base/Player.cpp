@@ -66,7 +66,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, 
 void Player::collisionTickCallback(int damage)
 {
     // p1 and p2 might not be the only two players who collided this physics step.
-    OutputDebugString("Server: Player collision\n");
+    //OutputDebugString("Server: Player collision\n");
 	hp-=damage*10; //Apply damage to player
 	GameCore::mGraphicsCore->mGameplay->notifyDamage(this);\
 }

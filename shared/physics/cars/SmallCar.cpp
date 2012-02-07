@@ -319,7 +319,7 @@ void SmallCar::initWheels()
     float wheelBaseHalfWidth  = 0.5625f;
 
     // anything you add onto wheelbase, adjust this to take care of it
-    float wheelBaseShiftZ = -0.17;
+    float wheelBaseShiftZ = -0.17f;
 
     Ogre::Vector3 wheelDirectionCS0(0,-1,0);
     Ogre::Vector3 wheelAxleCS(-1,0,0);

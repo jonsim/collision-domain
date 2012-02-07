@@ -10,6 +10,13 @@
 #include "GameIncludes.h"
 
 
+/*-------------------- DEFINITIONS --------------------*/
+#define GFX_EFFECT_HDR
+#define GFX_EFFECT_BLOOM
+#define GFX_EFFECT_RADIAL_BLUR
+#define GFX_EFFECT_MOTION_BLUR
+
+
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
  *  @brief  Adds objects to the graphics interface.
@@ -30,6 +37,7 @@ public:
 	void bloomLoader (uint8_t mode, float blurWeight, float originalWeight);
 	void motionBlurLoader (uint8_t mode, float blur);
 	void setRadialBlur (float blur);
+	void startBenchmark (uint8_t stage);
 	
 	// Graphics settings. Set these to 0 to disable the effect. Defaults are all 1.
 	float gfxSettingHDR;			// Strength of the High Dynamic Range lighting.
@@ -60,6 +68,7 @@ private:
     void createGearDisplay (void);
 	void updateSpeedo (float fSpeed, int iGear);
 	void createMotionBlurCompositor (void);
+	void finishBenchmark (uint8_t stage, float averageTriangles);
 
 	Ogre::OverlayContainer *olcSpeedo;
 	Ogre::OverlayElement *oleNeedle;
@@ -67,7 +76,8 @@ private:
 
 	Ogre::Light* worldSun;
 	Ogre::ParticleSystem* weatherSystem;
-	bool weatherSystemAttached;
+	bool benchmarkRunning;
+	uint8_t benchmarkStage;
 
 	// Compositor logic modules
 	HDRLogic*		 hdrLogic;

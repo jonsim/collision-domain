@@ -62,7 +62,7 @@ void Player::createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, 
 /// @param  damage   Currently hardcoded to 1
 void Player::collisionTickCallback(int damage)
 {
-    OutputDebugString("Client: Player collision\n");
+    //OutputDebugString("Client: Player collision\n");
 }
 
 

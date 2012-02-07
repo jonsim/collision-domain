@@ -111,7 +111,7 @@ void PowerupSpeed::createCollideable()
     CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
     compoundShape->addChildShape(
         new BoxCollisionShape( Ogre::Vector3( 1.70f, 0.5f, 1.35f ) ),
-        Ogre::Vector3(0.0, 0.5, 0.07));
+        Ogre::Vector3(0.0, 0.5f, 0.07f));
 
         
     mRigidBody = new RigidBody(

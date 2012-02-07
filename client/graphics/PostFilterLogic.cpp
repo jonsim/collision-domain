@@ -264,9 +264,6 @@ void RadialBlurListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::Materi
 {
 	if (pass_id == 700)
 	{
-		char s[20];
-		sprintf(s, "d = %.2f, s = %.2f\n", blurDistance, blurStrength);
-		OutputDebugString(s);
 		fpParams->setNamedConstant("sampleDist", blurDistance);
 		fpParams->setNamedConstant("sampleStrength", blurStrength);
 	}

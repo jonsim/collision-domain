@@ -7,6 +7,8 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
+#include <iostream>
+#include <fstream>
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -14,10 +16,20 @@
 /// @brief  Constructor.
 GraphicsApplication::GraphicsApplication (void)
 {
+#ifdef GFX_EFFECT_HDR
 	gfxSettingHDR        = 1.0f;
+#endif
+#ifdef GFX_EFFECT_BLOOM
 	gfxSettingBloom      = 1.0f;
+#endif
+#ifdef GFX_EFFECT_RADIAL_BLUR
 	gfxSettingRadialBlur = 1.0f;
+#endif
+#ifdef GFX_EFFECT_MOTION_BLUR
 	gfxSettingMotionBlur = 1.0f;
+#endif
+
+	benchmarkRunning = false;
 }
 
 
@@ -132,7 +144,6 @@ void GraphicsApplication::setupLighting (void)
 
 	// initialise (but don't attach) the weather system
 	weatherSystem = GameCore::mSceneMgr->createParticleSystem("WeatherSystem", "Examples/RainSmall");
-	weatherSystemAttached = false;
 
 	// setup the lighting and weather system
 	setWeatherMode(1);
@@ -148,31 +159,39 @@ void GraphicsApplication::setupCompositorChain (void)
 	
 	// Create compositors. Where possible these are coded in the Examples.compositor script, but some need
 	// access to certain features not available when this script is compiled.
+#ifdef GFX_EFFECT_MOTION_BLUR
 	createMotionBlurCompositor();
+#endif
 
-	// Rehister the compositors.
+	// Register the compositors.
 	// This is done by first setting up the logic module for them and adding this as a listener so it
 	// fires every time the compositor completes a pass allowing injection of values into the GPU
 	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
-	hdrLogic        = new HDRLogic;
-	bloomLogic      = new BloomLogic;
-	radialBlurLogic = new RadialBlurLogic;
-	motionBlurLogic = new MotionBlurLogic;
-	cm.registerCompositorLogic("HDR",        hdrLogic);
-	cm.registerCompositorLogic("Bloom",      bloomLogic);
-	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
-	cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
-
-	// Add the compositors to the compositor chain.
-	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
-	cm.addCompositor(vp, "Bloom");
-	cm.addCompositor(vp, "MotionBlur");
-	cm.addCompositor(vp, "RadialBlur");
-	
-	// Enable and configure compositors (radial blur is controlled by the players speed).
+	// Finally add the compositors to the compositor chain and configure, then enable them.
+#ifdef GFX_EFFECT_HDR
+	hdrLogic = new HDRLogic;
+	cm.registerCompositorLogic("HDR", hdrLogic);
+	cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
 	//hdrLoader(0);
+#endif
+#ifdef GFX_EFFECT_BLOOM
+	bloomLogic = new BloomLogic;
+	cm.registerCompositorLogic("Bloom", bloomLogic);
+	cm.addCompositor(vp, "Bloom");
 	bloomLoader(0, 0.15f, 1.0f);
+#endif
+#ifdef GFX_EFFECT_MOTION_BLUR
+	motionBlurLogic = new MotionBlurLogic;
+	cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
+	cm.addCompositor(vp, "MotionBlur");
 	motionBlurLoader(0, 0.10f);
+#endif
+#ifdef GFX_EFFECT_RADIAL_BLUR
+	radialBlurLogic = new RadialBlurLogic;
+	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
+	cm.addCompositor(vp, "RadialBlur");
+	// radial blur has no loader as it is controlled by the players speed (Car.cpp).
+#endif
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
@@ -261,6 +280,8 @@ void GraphicsApplication::setRadialBlur (float blur)
 /// @param  mode	The lighting mode to use. 0 = Morning, 1 = Noon, 2 = Stormy.
 void GraphicsApplication::setWeatherMode (uint8_t mode)
 {
+	static bool weatherSystemAttached = false;
+
 	Ogre::Degree sunRotation;	// rotation horizontally (yaw) from +x axis
 	Ogre::Degree sunPitch;		// rotation downwards (pitch) from horizontal
 	float sunBrightness[4];	// RGBA
@@ -430,6 +451,87 @@ void GraphicsApplication::createFrameListener (void)
 }
 
 
+void GraphicsApplication::startBenchmark (uint8_t stage)
+{
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	Ogre::Viewport* vp = mCamera->getViewport();
+	switch (stage)
+	{
+		case 0:	// all off
+			OutputDebugString("Starting benchmark...\n");
+			cm.removeCompositor(vp, "HDR");
+			cm.removeCompositor(vp, "Bloom");
+			cm.removeCompositor(vp, "MotionBlur");
+			cm.removeCompositor(vp, "RadialBlur");
+			break;
+		case 1: // just hdr on
+			cm.addCompositor(vp, "HDR");
+			hdrLoader(0);
+			break;
+		case 2: // just bloom on
+			cm.removeCompositor(vp, "HDR");
+			cm.addCompositor(vp, "Bloom");
+			bloomLoader(0, 0.15f, 1.0f);
+			break;
+		case 3: // just MotionBlur on
+			cm.removeCompositor(vp, "Bloom");
+			cm.addCompositor(vp, "MotionBlur");
+			motionBlurLoader(0, 0.1f);
+			break;
+		case 4: // just RadialBlur on
+			cm.removeCompositor(vp, "MotionBlur");
+			cm.addCompositor(vp, "RadialBlur");
+			cm.setCompositorEnabled(vp, "RadialBlur", true);
+			break;
+		case 5: // all on
+			cm.addCompositor(vp, "HDR");
+			hdrLoader(0);
+			cm.addCompositor(vp, "Bloom");
+			bloomLoader(0, 0.15f, 1.0f);
+			cm.addCompositor(vp, "MotionBlur");
+			motionBlurLoader(0, 0.1f);
+			break;
+	}
+	
+	mWindow->resetStatistics();
+	benchmarkStage = stage;
+	benchmarkRunning = true;
+}
+
+void GraphicsApplication::finishBenchmark (uint8_t stage, float averageTriangles)
+{
+	static float r[6];
+	static float triangles;
+	r[stage] = mWindow->getAverageFPS();
+	if (stage == 0)
+		triangles = averageTriangles;
+
+	if (stage == 5)
+	{
+		std::ofstream rFile;
+		rFile.open("BenchmarkResults.txt", std::ios::out | std::ios::trunc);
+		rFile << "              BENCHMARKING RESULTS\n";
+		rFile << " Average triangles per frame = " << triangles << "\n\n";
+		rFile << "+-----+-------+------------+------------+-------+-------+\n";
+		rFile << "| HDR | Bloom | MotionBlur | RadialBlur |  FPS  |  DIFF |\n";
+		rFile << "+-----+-------+------------+------------+-------+-------+\n";
+		rFile << "| off |  off  |    off     |    off     | " << std::setprecision(4) << r[0] << " |  0.00 |\n";
+		rFile << "|  on |  off  |    off     |    off     | " << std::setprecision(4) << r[1] << " | " << r[1] - r[0] << "\n";
+		rFile << "| off |   on  |    off     |    off     | " << std::setprecision(4) << r[2] << " | " << r[2] - r[0] << "\n";
+		rFile << "| off |  off  |     on     |    off     | " << std::setprecision(4) << r[3] << " | " << r[3] - r[0] << "\n";
+		rFile << "| off |  off  |    off     |     on     | " << std::setprecision(4) << r[4] << " | " << r[4] - r[0] << "\n";
+		rFile << "|  on |   on  |     on     |     on     | " << std::setprecision(4) << r[5] << " | " << r[5] - r[0] << "\n";
+		rFile << "+-----+-------+------------+------------+-------+\n";
+		rFile.close();
+		OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
+		hdrLoader(2);
+	}
+	else
+	{
+		startBenchmark(stage+1);
+	}
+}
+
 /// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.
 /// @param  evt  The FrameEvent associated with this frame's rendering.
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
@@ -445,10 +547,40 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         mDetailsPanel->show();
     }*/
     
+	if (benchmarkRunning)
+	{
+		static float benchmarkProgress = 0;
+		static float CATriangles = 0;
+		static uint16_t CAi = 0;
+		float benchmarkIncrement = 500 * evt.timeSinceLastFrame;
+		benchmarkProgress += benchmarkIncrement;
+		CATriangles += ((float) (mWindow->getTriangleCount() - CATriangles)) / ((float) (++CAi));
+
+		// stop the benchmark after 8 seconds
+		if (benchmarkProgress > 4000)
+		{
+			CAi = 0;
+			benchmarkProgress = 0;
+			benchmarkRunning = false;
+			finishBenchmark(benchmarkStage, CATriangles);
+		}
+
+		// rotate the camera
+		GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(benchmarkIncrement, 0.0f, 0.0f);
+
+		// update fps counter
+		float avgfps   = mWindow->getAverageFPS(); // update fps
+		CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+		char szFPS[16];
+		sprintf(szFPS,   "FPS: %.2f", avgfps);
+		fps->setText(szFPS);
+
+		// dont do any of the non-graphics bullshit
+		return true;
+	}
+
     // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
-
 	InputState *inputSnapshot = mUserInput.getInputState();
-
 	if( mUserInput.isToggleConsole() )      GameCore::mGui->toggleConsole();
 	else if( mUserInput.isToggleChatbox() ) GameCore::mGui->toggleChatbox();
     
@@ -476,7 +608,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 			char szSpeed[64];
 			char szFPS[64];
 			sprintf( szSpeed, "MPH: %f", speedmph );
-			sprintf( szFPS,   "FPS: %f", avgfps);
+			sprintf( szFPS,   "FPS: %.2f", avgfps);
 			mph->setText( szSpeed );
 			fps->setText( szFPS );
 			updateSpeedo( speedmph, curGear );

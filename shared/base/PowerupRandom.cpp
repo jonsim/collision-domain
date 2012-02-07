@@ -41,7 +41,7 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
         CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
         compoundShape->addChildShape(
             new SphereCollisionShape(Ogre::Real(1.0)),
-            Ogre::Vector3(0, 0.90, 0));
+            Ogre::Vector3(0, 0.90f, 0));
         
         mRigidBody = new RigidBody(
                 "RandomPowerup" + boost::lexical_cast<std::string>(uniqueID),
