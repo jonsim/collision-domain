@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
+#define MAP_WIDTH	1.0f
+#define MAP_HEIGHT	0.8f
+
+#define MARKER_WIDTH 0.05f
+#define MARKER_HEIGHT 0.05f
 /*
 BigScreen::BigScreen(ViewportManager* vpm_P, NetworkCore* networkCore)
 {
@@ -75,7 +80,7 @@ void BigScreen::setupMapView()
 	olcMap->setVerticalAlignment(Ogre::GVA_TOP);
 	
 	//Set the map
-	olcMap->setDimensions(1.0f,0.8f);
+	olcMap->setDimensions(MAP_WIDTH,MAP_HEIGHT);
 	olcMap->setMaterialName( "map_top_1" );
 	olMap->add2D(olcMap);
 
@@ -106,8 +111,8 @@ void BigScreen::manageNewPlayer(Player* player)
 
 
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
-	tmpOLE->setDimensions(0.2f,0.2f);
-	tmpOLE->setMaterialName( "map_top_1" );
+	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
+	tmpOLE->setMaterialName( "Arrow_Black" );
 	tmpOLE->setPosition(0.5,0.5);
 	olcMap->addChild(tmpOLE);
 
@@ -147,12 +152,29 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		//Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
 	
 		//Correct to make percentage
-		xPos = xPos/(mapSize.x/2);
-		yPos = yPos/(mapSize.z/2);
+		xPos = xPos/(mapSize.x);
+		yPos = yPos/(mapSize.z);
 	
-		xPos += 0.5;
-		yPos += 0.4;
+		xPos += MAP_WIDTH/2;
+		yPos += MAP_HEIGHT/2;
 
+		//Corrects it for aspect ratio of drawn map
+		xPos *= MAP_WIDTH;
+		yPos *= MAP_HEIGHT;
+
+		//Correct for the size of the marker
+		xPos -= MARKER_WIDTH;
+		yPos -= MARKER_HEIGHT;
+		
+		//Sort out the rotation
+		btQuaternion rotationQuat = player->getCar()->getCarSnapshot()->mRotation; 
+		btScalar rot = rotationQuat.getAngle();
+		Ogre::Material* matMarker = carOverlay->getMaterial().get();
+		Ogre::TextureUnitState* texMarker = 
+			matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+		//texMarker->setTextureRotate(Ogre::Radian(rotationQuat.getY()));
+		texMarker->setTextureRotate(Ogre::Radian(rot));
+				
 		/*
 		std::stringstream tmpDebugString;
 		tmpDebugString << "XPos: " << xPos;
