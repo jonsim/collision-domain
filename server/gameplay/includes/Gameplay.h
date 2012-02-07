@@ -8,6 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
+#include "InfoItem.h"
 
 #include <math.h>
 #include <string>
@@ -26,34 +27,39 @@ enum
 class Gameplay
 {
 public:
-	Gameplay();
-	void					setNumberOfTeams(int num);
-	Ogre::Real				getScorePercentage(std::string identifier);
-	int						getScoreValue(std::string identifier);
-	Team*					createTeam(std::string teamName);
-	void					addPlayerToTeam(Team* team, Player* player);
-	bool					gameOver();
-	bool					hasWon(Team* team);
-	Team*					checkIfGameOver();
-	void					setGameplayMode(int gameplayMode);
-	Player*					setNewVIP(Team* team);
-	void					setAllNewVIP();
-	Team*					declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
-	void					notifyDamage(Player* player);
-	void					preparePlayers(); //Place the palyers in the correct place
-	void					resetAllHP();
-	void					positionPlayers();
+								Gameplay();
+	void						setNumberOfTeams(int num);
+	Ogre::Real					getScorePercentage(std::string identifier);
+	int							getScoreValue(std::string identifier);
+	Team*						createTeam(std::string teamName);
+	void						addPlayerToTeam(Team* team, Player* player);
+	bool						gameOver();
+	bool						hasWon(Team* team);
+	Team*						checkIfGameOver();
+	void						setGameplayMode(int gameplayMode);
+	Player*						setNewVIP(Team* team);
+	void						setAllNewVIP();
+	Team*						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
+	void						notifyDamage(Player* player);
+	void						preparePlayers(); //Place the palyers in the correct place
+	void						resetAllHP();
+	void						positionPlayers();
+	void						startGame();
+	void						drawInfo(); //Draws any info that we require
+	void						setupOverlay();
 private:
 	//Methods
-	bool					vipModeGameWon();
-	Team*					getTeamToJoin();
-	void					printTeamStats();
-
+	bool						vipModeGameWon();
+	Team*						getTeamToJoin();
+	void						printTeamStats();
+	void						scheduleCountDown();
 	//Variabels
-	int						numberOfTeams;
-	std::vector<Team*>		teams;
-	int						mGameplayMode;
-	
+	int							numberOfTeams;
+	std::vector<Team*>			teams;
+	int							mGameplayMode;
+	std::vector<InfoItem*>		mInfoItems;
+	Ogre::OverlayContainer* olContainer;
+	void						handleInfoItem(InfoItem* item, bool show);
 };
 
 

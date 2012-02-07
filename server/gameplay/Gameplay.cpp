@@ -234,3 +234,97 @@ void Gameplay::positionPlayers()
 		}
 	}	
 }
+
+void Gameplay::startGame()
+{
+	OutputDebugString("Starting Game\n");
+	this->positionPlayers();
+	this->setAllNewVIP(); //TODO - Change this once we have multiple game modes
+	this->scheduleCountDown();
+}
+
+void Gameplay::drawInfo()
+{
+	std::vector<InfoItem*>::iterator itr;
+	for(itr = mInfoItems.begin(); itr<mInfoItems.end(); ++itr)
+	{
+		InfoItem* tmpInfoItem = *itr;
+		if(RakNet::LessThan(tmpInfoItem->getStartTime(),RakNet::GetTime()))
+		{
+			OutputDebugString("DrawingInfo\n");
+			//if(tmpInfoItem->getDrawn())
+			//{
+				//if(RakNet::LessThan(tmpInfoItem->getEndTime(),RakNet::GetTime()))
+				//{
+					//handleInfoItem(tmpInfoItem,false);
+					//mInfoItems.erase(itr);
+				//}
+			//}
+			//else
+			//{
+				handleInfoItem(tmpInfoItem,true);
+				mInfoItems.erase(itr);
+			//}
+			break;
+		}
+	}
+}
+
+void Gameplay::handleInfoItem(InfoItem* item, bool show)
+{
+	switch(item->getOverlayType())
+	{
+		case ONE_OT:
+			//if(show)
+			//{
+				Ogre::OverlayElement* tmpOLE = 
+					Ogre::OverlayManager::getSingleton().createOverlayElement(
+					"Panel",
+					"ONE_OT");
+			
+				tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
+				tmpOLE->setDimensions(0.2f,0.1f);
+				tmpOLE->setMaterialName( "gear1" );
+				tmpOLE->setPosition(0.4,0.1);
+			
+				Ogre::OverlayContainer* olContainer = static_cast<Ogre::OverlayContainer*> ( 
+					Ogre::OverlayManager::getSingleton().getOverlayElement("INFOCONT",false));
+				olContainer->addChild(tmpOLE);
+			//}
+			//else
+			//{
+				//Ogre::OverlayManager::getSingleton().destroy("INFOCONT");
+			//}
+			break;
+	}
+}
+
+void Gameplay::scheduleCountDown()
+{
+	mInfoItems.push_back(new InfoItem(THREE_OT,1000,1000));
+	mInfoItems.push_back(new InfoItem(TWO_OT,2000,1000));
+	mInfoItems.push_back(new InfoItem(ONE_OT,3000,1000));
+
+}
+
+void Gameplay::setupOverlay()
+{
+	Ogre::Overlay *olInfo = 
+		Ogre::OverlayManager::getSingleton().create( "OVERLAY_INFO" );
+	olInfo->setZOrder(600);
+	olInfo->show();
+	
+	
+	Ogre::OverlayContainer* olContainer = static_cast<Ogre::OverlayContainer*> ( 
+		Ogre::OverlayManager::getSingleton().
+			createOverlayElement( "Panel", "INFOCONT" ) );
+	//olContainer = olContainerTmp;
+
+	olContainer->setMetricsMode( Ogre::GMM_RELATIVE );
+	olContainer->setHorizontalAlignment( Ogre::GHA_LEFT);
+	olContainer->setVerticalAlignment(Ogre::GVA_TOP);
+	//Set the map
+	olContainer->setDimensions(1.0f,1.0f);
+	olInfo->add2D(olContainer);
+	
+}

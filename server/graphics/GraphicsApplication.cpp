@@ -44,6 +44,7 @@ void GraphicsApplication::createScene (void)
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
 	GameCore::mGraphicsCore->bigScreen->setupMapView();
+	GameCore::mGraphicsCore->mGameplay->setupOverlay();
 }
 
 
@@ -265,6 +266,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     GameCore::mPowerupPool->frameEvent( evt );
 
     GameCore::mAudioCore->frameEvent();
+
+	GameCore::mGraphicsCore->mGameplay->drawInfo();
 
 	// LOCAL
 	// get new snapshpot from control press - don't move the car though
