@@ -13,7 +13,7 @@ using namespace OgreOggSound;
 #define FILE_HORN_HIGH      "car-horn-high.wav"
 
 #define FILE_1_ENGINE_IDLE  "engine-idle-1.wav"
-#define FILE_1_CRASH        "car-crash-1.wav"
+#define FILE_CAR_CRASH      "car-crash-1.wav"
 
 #define FILE_POWERUP_HEALTH "powerup-health.wav"
 #define FILE_POWERUP_SPEED  "powerup-speed.wav"
@@ -46,7 +46,7 @@ AudioCore::AudioCore()
             if (i == 6) preload = mSoundManager->createSound(tempName, FILE_HORN_HIGH,      false, false, true, GameCore::mSceneMgr, true);
 
             if (i == 7) preload = mSoundManager->createSound(tempName, FILE_1_ENGINE_IDLE,  false, true,  true, GameCore::mSceneMgr, true);
-            if (i == 8) preload = mSoundManager->createSound(tempName, FILE_1_CRASH,        false, false, true, GameCore::mSceneMgr, false);
+            if (i == 8) preload = mSoundManager->createSound(tempName, FILE_CAR_CRASH,        false, false, true, GameCore::mSceneMgr, false);
 
             mSoundManager->destroySound(preload);
         }
@@ -80,7 +80,7 @@ void AudioCore::playSoundOrRestart(OgreOggISound *sound)
 }*/
 
 /// the ID needs to be unique to the sound type (can be same for different sounds)
-OgreOggISound* AudioCore::getSoundInstance(HornType h, int uniqueID)
+OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID)
 {
     if (!mInitOK) return NULL;
 
@@ -98,6 +98,10 @@ OgreOggISound* AudioCore::getSoundInstance(HornType h, int uniqueID)
 
         case HORN_HIGH:
             file = FILE_HORN_HIGH;
+            break;
+
+        case CAR_CRASH:
+            file = FILE_CAR_CRASH;
             break;
 
         default:
