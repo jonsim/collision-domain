@@ -251,7 +251,7 @@ void Gameplay::drawInfo()
 		InfoItem* tmpInfoItem = *itr;
 		if(RakNet::LessThan(tmpInfoItem->getStartTime(),RakNet::GetTime()))
 		{
-			OutputDebugString("DrawingInfo\n");
+			
 			//if(tmpInfoItem->getDrawn())
 			//{
 				//if(RakNet::LessThan(tmpInfoItem->getEndTime(),RakNet::GetTime()))
@@ -261,10 +261,22 @@ void Gameplay::drawInfo()
 				//}
 			//}
 			//else
-			//{
+			if(!tmpInfoItem->getDrawn())
+			{
+				OutputDebugString("DrawingInfo\n");
 				handleInfoItem(tmpInfoItem,true);
-				mInfoItems.erase(itr);
-			//}
+				tmpInfoItem->setDrawn();
+				//mInfoItems.erase(itr);
+			}
+			else
+			{
+				if(RakNet::GreaterThan(RakNet::GetTime(),tmpInfoItem->getEndTime()))
+				{
+					OutputDebugString("Clearing Info\n");
+					handleInfoItem(tmpInfoItem,false);
+					mInfoItems.erase(itr);
+				}
+			}
 			break;
 		}
 	}
@@ -275,26 +287,29 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 	switch(item->getOverlayType())
 	{
 		case ONE_OT:
-			//if(show)
-			//{
+			if(show)
+			{
 				Ogre::OverlayElement* tmpOLE = 
 					Ogre::OverlayManager::getSingleton().createOverlayElement(
 					"Panel",
 					"ONE_OT");
 			
 				tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
-				tmpOLE->setDimensions(0.2f,0.1f);
+				tmpOLE->setDimensions(0.1f,0.1f);
 				tmpOLE->setMaterialName( "gear1" );
-				tmpOLE->setPosition(0.4,0.1);
+				tmpOLE->setPosition(0.45,0.1);
 			
 				Ogre::OverlayContainer* olContainer = static_cast<Ogre::OverlayContainer*> ( 
 					Ogre::OverlayManager::getSingleton().getOverlayElement("INFOCONT",false));
 				olContainer->addChild(tmpOLE);
-			//}
-			//else
-			//{
-				//Ogre::OverlayManager::getSingleton().destroy("INFOCONT");
-			//}
+			}
+			else
+			{
+				Ogre::OverlayContainer* olContainer = static_cast<Ogre::OverlayContainer*> ( 
+					Ogre::OverlayManager::getSingleton().getOverlayElement("INFOCONT",false));
+				olContainer->removeChild("ONE_OT");
+				//Ogre::OverlayManager::getSingleton().destroy("ONE_OT");
+			}
 			break;
 	}
 }
