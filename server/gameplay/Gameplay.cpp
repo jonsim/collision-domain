@@ -284,33 +284,36 @@ void Gameplay::drawInfo()
 
 void Gameplay::handleInfoItem(InfoItem* item, bool show)
 {
-	switch(item->getOverlayType())
+	Ogre::OverlayElement* tmpOLE = 
+		Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
+
+	if(show)
 	{
-		case ONE_OT:
-			if(show)
-			{
-				Ogre::OverlayElement* tmpOLE = 
-					Ogre::OverlayManager::getSingleton().createOverlayElement(
-					"Panel",
-					"ONE_OT");
-			
-				tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
+		switch(item->getOverlayType())
+		{
+			case ONE_OT:
 				tmpOLE->setDimensions(0.1f,0.1f);
 				tmpOLE->setMaterialName( "gear1" );
 				tmpOLE->setPosition(0.45,0.1);
-			
-				Ogre::OverlayContainer* olContainer = static_cast<Ogre::OverlayContainer*> ( 
-					Ogre::OverlayManager::getSingleton().getOverlayElement("INFOCONT",false));
-				olContainer->addChild(tmpOLE);
-			}
-			else
-			{
-				Ogre::OverlayContainer* olContainer = static_cast<Ogre::OverlayContainer*> ( 
-					Ogre::OverlayManager::getSingleton().getOverlayElement("INFOCONT",false));
-				olContainer->removeChild("ONE_OT");
-				//Ogre::OverlayManager::getSingleton().destroy("ONE_OT");
-			}
-			break;
+				tmpOLE->show();
+				break;
+			case TWO_OT:
+				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setMaterialName( "gear2" );
+				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->show();
+				break;
+			case THREE_OT:
+				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setMaterialName( "gear3" );
+				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->show();
+				break;
+		}
+	}
+	else
+	{
+		tmpOLE->hide();
 	}
 }
 
@@ -342,4 +345,15 @@ void Gameplay::setupOverlay()
 	olContainer->setDimensions(1.0f,1.0f);
 	olInfo->add2D(olContainer);
 	
+	Ogre::OverlayElement* tmpOLE = 
+					Ogre::OverlayManager::getSingleton().createOverlayElement(
+					"Panel",
+					"ONE_OT");
+			
+	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
+	tmpOLE->setDimensions(0.1f,0.1f);
+	tmpOLE->setMaterialName( "gear3" );
+	tmpOLE->setPosition(0.45,0.1);
+	tmpOLE->hide();
+	olContainer->addChild(tmpOLE);
 }
