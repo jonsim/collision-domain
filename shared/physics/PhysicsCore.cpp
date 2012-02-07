@@ -72,7 +72,6 @@ void PhysicsCore::auto_scale_scenenode (Ogre::SceneNode* n)
 
 void PhysicsCore::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep)
 {
-    mPlayerCollisions->frameEventStart();
     mWorld->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
     mPlayerCollisions->frameEventEnd();
 }
