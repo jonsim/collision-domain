@@ -98,9 +98,9 @@ void GraphicsCore::createCamera(void)
 #endif
 
     // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,550,-100));
+    mCamera->setPosition(Ogre::Vector3(0,10,0));
     // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,0,0));
+    mCamera->lookAt(Ogre::Vector3(0,100,0));
     mCamera->setNearClipDistance(5);
 
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
