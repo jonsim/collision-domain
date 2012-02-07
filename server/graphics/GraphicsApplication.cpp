@@ -43,6 +43,7 @@ void GraphicsApplication::createScene (void)
 
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
+	GameCore::mGraphicsCore->bigScreen->setupMapView();
 }
 
 
@@ -182,6 +183,14 @@ void GraphicsApplication::setupArena (void)
     Ogre::SceneNode* groundNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, -5, 0));
     groundNode->attachObject(groundEntity);*/
 
+	//Pass the arena info the the bigscreen so it can do calcualtions to draw
+	//2D MAP VIEW
+	Ogre::Vector3 arenaSize = arenaEntity->getBoundingBox().getSize();
+	arenaSize = arenaSize*arenaNode->getScale();//Scale the size
+	Ogre::Vector3 arenaLocation = arenaNode->getPosition();
+	
+	GameCore::mGraphicsCore->bigScreen->setMapCorner(arenaLocation);
+	GameCore::mGraphicsCore->bigScreen->setMapSize(arenaSize);
 
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
@@ -322,6 +331,11 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
     return true;
+}
+
+Ogre::Entity* GraphicsApplication::getArenaEntity()
+{
+	return arenaEntity;
 }
 
 

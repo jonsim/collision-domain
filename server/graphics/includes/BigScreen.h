@@ -17,13 +17,23 @@
 class BigScreen
 {
 public:
-	BigScreen (ViewportManager* vpm_P);
-	bool declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
-	void addCamera(Ogre::Camera* cam);
-	
+								BigScreen(ViewportManager* vpm_P);
+	bool						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
+	void						addCamera(Ogre::Camera* cam);
+	void						setupMapView();
+	void						updateMapView();
+	void						setMapCorner(Ogre::Vector3 corner);
+	void						setMapSize(Ogre::Vector3 size);
 private:
-	ViewportManager* mViewportManager;
-	std::vector<ViewCamera*> viewCameraVector;
+	ViewportManager*			mViewportManager;
+	std::vector<ViewCamera*>	viewCameraVector;
+	Ogre::OverlayContainer*		olcMap;
+	Ogre::OverlayElement*		oleCar;
+	Ogre::Vector3				mapCorner;
+	Ogre::Vector3				mapSize;
+
+	void						updatePlayer(Player* player, Ogre::OverlayElement* carOverlay);
+	void						manageNewPlayer(Player* player);
 };
 
 #endif // #ifndef BIGSCREENH

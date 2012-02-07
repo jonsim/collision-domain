@@ -47,8 +47,9 @@ int PlayerPool::getNumberOfPlayers()
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
 	mLocalPlayer = new Player();
+	mLocalPlayer->setNickname(szNickname);
 	mLocalGUID = playerid;
-
+	
 	mPlayers[0] = mLocalPlayer;
 	mGUID[0] = playerid;
 }

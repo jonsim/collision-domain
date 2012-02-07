@@ -1,0 +1,15 @@
+material map_top_1
+{
+	technique
+	{
+		pass
+		{
+			scene_blend alpha_blend
+			
+			texture_unit
+			{
+				texture map_top_1.png
+			}
+		}
+	}
+}
