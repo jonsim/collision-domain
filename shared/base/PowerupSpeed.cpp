@@ -17,6 +17,8 @@ PowerupSpeed::PowerupSpeed()
     mHasBeenCollected = false;
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "SpeedPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_SPEED, mUniqueID);
 }
 
 
@@ -32,6 +34,8 @@ PowerupSpeed::~PowerupSpeed()
         delete mRigidBody;
         delete collisionShape;
     }
+
+    GameCore::mAudioCore->deleteSoundInstance(mSound);
 }
 
 
@@ -43,11 +47,8 @@ void PowerupSpeed::playerCollision(Player* player)
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
 
-
-
     // play powerup reward sound
-    //OgreOggISound* sound = GameCore::mAudioCore->getSoundInstance(POWERUP_SPEED, mUniqueID);
-    //GameCore::mAudioCore->playSoundOrRestart(sound);
+    GameCore::mAudioCore->playSoundOrRestart(mSound);
 
     if (mHasSpawned)
     {

@@ -125,6 +125,8 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
 
     WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
+
+    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID);
 }
 
 
@@ -140,12 +142,14 @@ TruckCar::~TruckCar(void)
     // Cleanup Shapes:
     delete compoundChassisShape;
     delete chassisShape;
+
+    GameCore::mAudioCore->deleteSoundInstance(mHornSound);
 }
 
 
 void TruckCar::playCarHorn()
 {
-    //GameCore::mAudioCore->playCarHorn(HORN_LOW);
+    GameCore::mAudioCore->playSoundOrRestart(mHornSound);
 }
 
 

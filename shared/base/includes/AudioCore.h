@@ -31,10 +31,14 @@ public:
     void            playSoundOrRestart(OgreOggISound *sound);
     OgreOggISound*  getSoundInstance(HornType h,    int uniqueID);
     OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID);
+    void            deleteSoundInstance(OgreOggISound* sound);
+    void            frameEvent();
 
 private:
+    void processSoundDeletesPending();
+
     OgreOggSoundManager* mSoundManager;
-    OgreOggISound *mEngineIdleSound, *mCarCrashSound, *mCarHornLow, *mCarHornMid, *mCarHornHigh, *mPowerupHealth, *mPowerupSpeed;
+    std::list<OgreOggISound*> *mSoundDeletesPending;
     bool mInitOK;
 };
 

@@ -145,6 +145,8 @@ SmallCar::SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
 
     WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
+
+    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID);
 }
 
 
@@ -160,12 +162,14 @@ SmallCar::~SmallCar(void)
     // Cleanup Shapes:
     delete compoundChassisShape;
     delete chassisShape;
+
+    GameCore::mAudioCore->deleteSoundInstance(mHornSound);
 }
 
 
 void SmallCar::playCarHorn()
 {
-    //GameCore::mAudioCore->playCarHorn(HORN_HIGH);
+    GameCore::mAudioCore->playSoundOrRestart(mHornSound);
 }
 
 

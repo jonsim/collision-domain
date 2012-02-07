@@ -53,6 +53,8 @@ protected:
         const std::string &materialName,
         Ogre::SceneNode *toAttachTo);
     
+    OgreOggISound *mHornSound;
+
     // Camera node (if not null its attached to bodyNode) (attachCamNode())
     Ogre::SceneNode *mCamArmNode;
     Ogre::SceneNode *mCamNode;
