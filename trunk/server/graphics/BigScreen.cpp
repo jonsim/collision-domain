@@ -95,12 +95,10 @@ void BigScreen::setupMapView()
 
 void BigScreen::manageNewPlayer(Player* player)
 {
-	//TODO - Note this will all go wrong if two players with the same name join
+	//Timestamp used to fix duplicate named overlays.
 	std::stringstream overlayNameSS;
-	overlayNameSS << "PlayerOverlay" << player->getNickname();
-
-
-
+	overlayNameSS << "PlayerOverlay" << RakNet::GetTime();	
+	
 	Ogre::OverlayElement* tmpOLE = 
 		Ogre::OverlayManager::getSingleton().createOverlayElement(
 		"Panel",
@@ -143,8 +141,8 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		float yPos = localPlayerPos.getZ(); //Z as we're doing a 2D projection
 	
 		//Correct the position to be relative of top left corner.
-		xPos += mapCorner.x;
-		yPos += mapCorner.z;
+		//xPos -= mapCorner.x;
+		//yPos -= mapCorner.z;
 		//Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
 		//Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
 	
@@ -152,6 +150,9 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		xPos = xPos/(mapSize.x/2);
 		yPos = yPos/(mapSize.z/2);
 	
+		xPos += 0.5;
+		yPos += 0.4;
+
 		/*
 		std::stringstream tmpDebugString;
 		tmpDebugString << "XPos: " << xPos;
