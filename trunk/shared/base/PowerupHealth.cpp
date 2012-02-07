@@ -19,6 +19,8 @@ PowerupHealth::PowerupHealth()
     mHasBeenCollected = false;
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "HealthPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID);
 }
 
 
@@ -26,7 +28,7 @@ PowerupHealth::PowerupHealth()
 PowerupHealth::~PowerupHealth()
 {
    mNode->getParentSceneNode()->removeChild(mNode);
-    
+
     // delete the shape last
     if (mHasSpawned) {
         CollisionShape* collisionShape = mRigidBody->getShape();
@@ -34,6 +36,8 @@ PowerupHealth::~PowerupHealth()
         delete mRigidBody;
         delete collisionShape;
     }
+
+    GameCore::mAudioCore->deleteSoundInstance(mSound);
 }
 
 
@@ -46,8 +50,7 @@ void PowerupHealth::playerCollision(Player* player)
         mHasBeenCollected = true;
 
     // play powerup reward sound
-    //OgreOggISound* sound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID);
-    //GameCore::mAudioCore->playSoundOrRestart(sound);
+    GameCore::mAudioCore->playSoundOrRestart(mSound);
 
     if (mHasSpawned)
     {

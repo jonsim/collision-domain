@@ -20,7 +20,6 @@ public:
 
     //int getPowerupType(); if you have to check this, its probably bad oo design
     //void setPowerupType( int iType ); http://stackoverflow.com/questions/500493/c-equivalent-of-instanceof
-    void hide();
 
 protected:
     //int mType;  
@@ -28,6 +27,7 @@ protected:
     Ogre::SceneNode *mNode;
 
     bool mHasBeenCollected;
+    OgreOggISound* mSound;
 };
 
 #endif // #ifndef POWERUP_H

@@ -625,6 +625,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     */
     GameCore::mPowerupPool->frameEvent( evt );
 
+    GameCore::mAudioCore->frameEvent();
+
     // FUTURE
     // game will run x ticks behind the server
     // when a new snapshot is received, it should be in the client's future

@@ -5,9 +5,3 @@
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
-
-void Powerup::hide()
-{
-    mNode->setDebugDisplayEnabled( false );
-    mNode->setVisible(false);
-}

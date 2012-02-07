@@ -264,6 +264,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     GameCore::mPowerupPool->frameEvent( evt );
 
+    GameCore::mAudioCore->frameEvent();
+
 	// LOCAL
 	// get new snapshpot from control press - don't move the car though
 	// get old snapshot received from server

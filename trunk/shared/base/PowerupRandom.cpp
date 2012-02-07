@@ -70,6 +70,8 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
     }
     
     mNode->translate(createAboveAt);
+
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_RANDOM, uniqueID);
 }
 
 
@@ -83,6 +85,8 @@ PowerupRandom::~PowerupRandom()
 
     delete mRigidBody;
     delete collisionShape;
+
+    GameCore::mAudioCore->deleteSoundInstance(mSound);
 }
 
 
@@ -93,6 +97,8 @@ void PowerupRandom::playerCollision(Player* player)
     // the collision object is removed, so give it to the first person who grabbed it
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
+
+    GameCore::mAudioCore->playSoundOrRestart(mSound);
 
     Powerup* powerup = NULL;
     {

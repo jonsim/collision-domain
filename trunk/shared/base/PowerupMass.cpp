@@ -17,6 +17,8 @@ PowerupMass::PowerupMass()
     mHasBeenCollected = false;
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "MassPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_MASS, mUniqueID);
 }
 
 
@@ -32,6 +34,8 @@ PowerupMass::~PowerupMass()
         delete mRigidBody;
         delete collisionShape;
     }
+
+    GameCore::mAudioCore->deleteSoundInstance(mSound);
 }
 
 
@@ -42,8 +46,8 @@ void PowerupMass::playerCollision(Player* player)
     // the collision object is removed, so give it to the first person who grabbed it
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
-
-    //GameCore::mAudioCore->playHealthPowerup();
+    
+    GameCore::mAudioCore->playSoundOrRestart(mSound);
     
     if (mHasSpawned)
     {
