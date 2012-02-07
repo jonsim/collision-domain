@@ -27,7 +27,7 @@ public:
     //Player players[1]; ///< An array of all players in the game to keep track of.
     btClock *mClock;
     bool firstFrameOccurred;
-
+	Ogre::Entity* getArenaEntity();
 protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
 
@@ -43,6 +43,7 @@ private:
     void setupLighting (uint8_t mode);
     void setupArena (void);
     void setupNetworking (void);
+	Ogre::Entity* arenaEntity; //Needed to do calculations on arena size
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

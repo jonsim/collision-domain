@@ -8,7 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
-
+#include <sstream>
 //#define ADDITIONAL_SERVER_TRACKING_CAMERAS
 
 
@@ -341,6 +341,8 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
     if(mShutDown)
         return false;
     
+	bigScreen->updateMapView();
+
     //Need to capture/update each device
     mUserInput.capture();
 
@@ -351,6 +353,22 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 	{
 		mGameplay->setAllNewVIP();
 	}
+
+	//Print out local player current position
+	if (mUserInput.mKeyboard->isKeyDown(OIS::KC_I))
+	{
+		Player* tmpLocalPlayer = GameCore::mPlayerPool->getLocalPlayer();
+		btVector3 tmpLocalPlayerVector = tmpLocalPlayer->getCar()->getCarSnapshot()->mPosition;
+		std::stringstream curPosDebugString;
+		curPosDebugString << "X: " << tmpLocalPlayerVector.getX();
+		curPosDebugString << " Y: " << tmpLocalPlayerVector.getY();
+		curPosDebugString << " Z: " << tmpLocalPlayerVector.getZ();
+		curPosDebugString << "\n";
+
+
+		//OutputDebugString(curPosDebugString.str().c_str());
+	}
+
 
     mTrayMgr->frameRenderingQueued(evt);
 

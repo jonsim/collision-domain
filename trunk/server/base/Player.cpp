@@ -16,6 +16,7 @@ Player::Player (void) : cameraRotationConstant(0.08f)
     mCarSnapshot = NULL;
 	newInput = NULL;
 	mCar = NULL;
+	mSpawned = false;
 }
 
 
@@ -149,4 +150,19 @@ int Player::getHP()
 void Player::applyHealthBonus()
 {
 
+}
+
+void Player::setOverlayElement(Ogre::OverlayElement* ole)
+{
+        mOLE = ole;
+}
+
+Ogre::OverlayElement* Player::getOverlayElement()
+{
+        return mOLE;
+}
+
+void Player::setSpawned()
+{
+        mSpawned = true;
 }
