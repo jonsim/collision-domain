@@ -90,13 +90,13 @@ void PowerupMass::createGraphic()
 void PowerupMass::createCollideable()
 {
     Ogre::Vector3 axis = Ogre::Vector3::UNIT_Y;
-    Ogre::Vector3 halfExtents(1.28, 0.70, 1.28);
+    Ogre::Vector3 halfExtents(1.28f, 0.70f, 1.28f);
     CylinderCollisionShape* cylinderCollisionShape = new CylinderCollisionShape(halfExtents, axis);
 
     CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
     compoundShape->addChildShape(
         cylinderCollisionShape,
-        Ogre::Vector3(0, 0.69, 0));
+        Ogre::Vector3(0, 0.69f, 0));
         
     mRigidBody = new RigidBody(
             "MassPowerup" + boost::lexical_cast<std::string>(mUniqueID),

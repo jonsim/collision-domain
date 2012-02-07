@@ -257,7 +257,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
 	
 	// Update radial blur (from vehicle speed).
-#ifdef COLLISION_DOMAIN_CLIENT
+#ifdef GFX_EFFECT_RADIAL_BLUR
 	float speedmph = getCarMph();
 	float blurAmount = 0;
 	if (speedmph > 40.0f)

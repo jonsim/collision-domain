@@ -293,7 +293,7 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 /// @brief  Attaches 4 wheels to the car chassis.
 void TruckCar::initWheels()
 {
-    float wheelBaseLength = 1.788;
+    float wheelBaseLength = 1.788f;
     float wheelBaseHalfWidth  = 1.05f;
 
     // anything you add onto wheelbase, adjust this to take care of it

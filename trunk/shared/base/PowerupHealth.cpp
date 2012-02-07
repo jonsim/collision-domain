@@ -109,8 +109,8 @@ void PowerupHealth::createGraphic()
 
 void PowerupHealth::createCollideable()
 {
-    Ogre::Real radius(0.91);
-    Ogre::Real height(1.0);
+    Ogre::Real radius(0.91f);
+    Ogre::Real height(1.0f);
     ConeCollisionShape* coneCollisionShape = new ConeCollisionShape(radius, height, Ogre::Vector3::UNIT_Y);
 
     Ogre::Vector3 extents(0.95f,0.45f,0.95f);
@@ -119,11 +119,11 @@ void PowerupHealth::createCollideable()
     CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
     compoundShape->addChildShape(
         coneCollisionShape,
-        Ogre::Vector3(0, 0.48, 0),
+        Ogre::Vector3(0, 0.48f, 0),
         Ogre::Quaternion(Ogre::Radian(Ogre::Degree(180)), Ogre::Vector3(0,0,1)));
     compoundShape->addChildShape(
         cylinderCollisionShape,
-        Ogre::Vector3(0, 1.425, 0));
+        Ogre::Vector3(0, 1.425f, 0));
 
     mRigidBody = new RigidBody(
             "HealthPowerup" + boost::lexical_cast<std::string>(mUniqueID),
