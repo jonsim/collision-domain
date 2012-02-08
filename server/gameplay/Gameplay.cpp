@@ -309,6 +309,24 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				tmpOLE->setPosition(0.45,0.1);
 				tmpOLE->show();
 				break;
+			case FOUR_OT:
+				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setMaterialName( "gear4" );
+				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->show();
+				break;
+			case FIVE_OT:
+				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setMaterialName( "gear5" );
+				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->show();
+				break;
+			case GAME_OVER_OT:
+				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setMaterialName( "map_top_1" );
+				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->show();
+				break;
 		}
 	}
 	else
@@ -323,6 +341,15 @@ void Gameplay::scheduleCountDown()
 	mInfoItems.push_back(new InfoItem(TWO_OT,2000,1000));
 	mInfoItems.push_back(new InfoItem(ONE_OT,3000,1000));
 
+	//Countdown Timer
+	mInfoItems.push_back(new InfoItem(FIVE_OT,115000,1000));
+	mInfoItems.push_back(new InfoItem(FOUR_OT,116000,1000));
+	mInfoItems.push_back(new InfoItem(THREE_OT,117000,1000));
+	mInfoItems.push_back(new InfoItem(TWO_OT,118000,1000));
+	mInfoItems.push_back(new InfoItem(ONE_OT,119000,1000));
+
+	//GAME OVER
+	mInfoItems.push_back(new InfoItem(GAME_OVER_OT,120000,3000));
 }
 
 void Gameplay::setupOverlay()

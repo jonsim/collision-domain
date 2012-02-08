@@ -331,6 +331,18 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
     m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 }
 
+void NetworkCore::InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+	char szMessage[128];
+    RakNet::BitStream bsSend;
+	RakNet::StringCompressor().DecodeString( szMessage, 128, bitStream );
+    bsSend.Write( pkt->guid );
+    RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
+
+    m_RPC->Signal( "InfoItemTransmit", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+}
+
+	
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	// Do some checking here to make sure the player is allowed to spawn before sending the RPC back
@@ -383,6 +395,8 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
 	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
 	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
+	m_RPC->RegisterSlot( "InfoItemTransmit",InfoItemTransmit, 0);
+
 }
 
 

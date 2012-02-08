@@ -96,6 +96,7 @@ public:
 	static void GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+	static void InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 
