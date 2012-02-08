@@ -14,6 +14,7 @@
     <ClInclude Include="..\..\server\base\includes\Player.h" />
     <ClInclude Include="..\..\server\GameIncludes.h" />
     <ClInclude Include="..\..\server\gameplay\includes\Gameplay.h" />
+    <ClInclude Include="..\..\server\gameplay\includes\InfoItem.h" />
     <ClInclude Include="..\..\server\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\server\graphics\includes\BigScreen.h" />
     <ClInclude Include="..\..\server\graphics\includes\GameGUI.h" />
@@ -200,6 +201,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\server\base\Player.cpp" />
     <ClCompile Include="..\..\server\gameplay\Gameplay.cpp" />
+    <ClCompile Include="..\..\server\gameplay\InfoItem.cpp" />
     <ClCompile Include="..\..\server\gameplay\Team.cpp" />
     <ClCompile Include="..\..\server\graphics\BigScreen.cpp" />
     <ClCompile Include="..\..\server\graphics\GameGUI.cpp" />
