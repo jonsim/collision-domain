@@ -22,12 +22,8 @@ public:
 
     // Overrideable methods, but you can use the generic Car method with all cars
     virtual Ogre::SceneNode *attachCamNode();
-    virtual void steerInputTick(
-        bool isLeft,
-        bool isRight,
-        Ogre::Real secondsSinceLastFrame,
-        float targetPhysicsFrameRate);
-    virtual void accelInputTick(bool isForward, bool isBack, bool isHand);
+    virtual void steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
+    virtual void accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real secondsSinceLastFrame);
     virtual void moveTo(const btVector3 &position);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();

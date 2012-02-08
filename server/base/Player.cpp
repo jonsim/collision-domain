@@ -104,7 +104,7 @@ void Player::processControlsFrameEvent(
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
     // apply acceleration 4wd style
-    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake());
+    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
 
     // TELEPORT TESTING
     /*if (userInput->isLeft() && userInput->isRight())
