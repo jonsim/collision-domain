@@ -19,7 +19,12 @@ enum OverlayType
 {
 	ONE_OT,
 	TWO_OT,
-	THREE_OT
+	THREE_OT,
+	FOUR_OT,
+	FIVE_OT,
+	GO_OT,
+	ONE_MINUTE_OT,
+	GAME_OVER_OT
 };
 
 class InfoItem
