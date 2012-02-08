@@ -171,7 +171,7 @@ void GraphicsApplication::setupCompositorChain (void)
 #ifdef GFX_EFFECT_HDR
 	hdrLogic = new HDRLogic;
 	cm.registerCompositorLogic("HDR", hdrLogic);
-	cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
+	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
 	//hdrLoader(0);
 #endif
 #ifdef GFX_EFFECT_BLOOM
@@ -371,12 +371,12 @@ void GraphicsApplication::setWeatherMode (uint8_t mode)
 	Ogre::Real sin_pitch = Ogre::Math::Sin(sunPitch);
 	Ogre::Real cos_yaw   = Ogre::Math::Cos(sunRotation);
 	Ogre::Real sin_yaw   = Ogre::Math::Sin(sunRotation);
-	Ogre::Matrix3 Rz(cos_pitch, -sin_pitch, 0, 
-		             sin_pitch,  cos_pitch, 0, 
-					         0,          0, 1);
-	Ogre::Matrix3 Ry( cos_yaw, 0, sin_yaw, 
-		                    0, 1,       0, 
-					 -sin_yaw, 0, cos_yaw);
+	Ogre::Matrix3 Rz(cos_pitch, -sin_pitch,       0, 
+		             sin_pitch,  cos_pitch,       0, 
+					         0,          0,       1);
+	Ogre::Matrix3 Ry(  cos_yaw,          0, sin_yaw, 
+		                     0,          1,       0, 
+					  -sin_yaw,          0, cos_yaw);
 	Ogre::Vector3 sunDirection = Ry * Rz * Ogre::Vector3(-1, 0, 0);
 	sunDirection.normalise();
 	
@@ -510,21 +510,23 @@ void GraphicsApplication::finishBenchmark (uint8_t stage, float averageTriangles
 	{
 		std::ofstream rFile;
 		rFile.open("BenchmarkResults.txt", std::ios::out | std::ios::trunc);
+		rFile << std::fixed;
 		rFile << "              BENCHMARKING RESULTS\n";
-		rFile << " Average triangles per frame = " << triangles << "\n\n";
-		rFile << "+-----+-------+------------+------------+-------+-------+\n";
-		rFile << "| HDR | Bloom | MotionBlur | RadialBlur |  FPS  |  DIFF |\n";
-		rFile << "+-----+-------+------------+------------+-------+-------+\n";
-		rFile << "| off |  off  |    off     |    off     | " << std::setprecision(4) << r[0] << " |  0.00 |\n";
-		rFile << "|  on |  off  |    off     |    off     | " << std::setprecision(4) << r[1] << " | " << r[1] - r[0] << "\n";
-		rFile << "| off |   on  |    off     |    off     | " << std::setprecision(4) << r[2] << " | " << r[2] - r[0] << "\n";
-		rFile << "| off |  off  |     on     |    off     | " << std::setprecision(4) << r[3] << " | " << r[3] - r[0] << "\n";
-		rFile << "| off |  off  |    off     |     on     | " << std::setprecision(4) << r[4] << " | " << r[4] - r[0] << "\n";
-		rFile << "|  on |   on  |     on     |     on     | " << std::setprecision(4) << r[5] << " | " << r[5] - r[0] << "\n";
-		rFile << "+-----+-------+------------+------------+-------+\n";
+		rFile << " Average triangles per frame = " << std::setprecision(0) << triangles << "\n\n";
+		rFile << "+-----+-------+-----+-----+-------+-------+\n";
+		rFile << "| HDR | Bloom | MoB | RaB |  FPS  |  DIF  |\n";
+		rFile << "+-----+-------+-----+-----+-------+-------+\n";
+		rFile.precision(2);
+		rFile << "|  0  |   0   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[0] << " | 00.00 |\n";
+		rFile << "|  1  |   0   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[1] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[1] << " |\n";
+		rFile << "|  0  |   1   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[2] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[2] << " |\n";
+		rFile << "|  0  |   0   |  1  |  0  | " << std::setw(5) << std::setfill(' ') << r[3] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[3] << " |\n";
+		rFile << "|  0  |   0   |  0  |  1  | " << std::setw(5) << std::setfill(' ') << r[4] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[4] << " |\n";
+		rFile << "|  1  |   1   |  1  |  1  | " << std::setw(5) << std::setfill(' ') << r[5] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[5] << " |\n";
+		rFile << "+-----+-------+-----+-----+-------+-------+\n";
 		rFile.close();
 		OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
-		hdrLoader(2);
+		Ogre::CompositorManager::getSingleton().removeCompositor(mCamera->getViewport(), "HDR");
 	}
 	else
 	{

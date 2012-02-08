@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
+//#define DEBUG_FRAMES
+
 
 /// @brief  Constructor to create physics stuff
 /// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.
@@ -23,12 +25,14 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
     mWorld = new OgreBulletDynamics::DynamicsWorld(mSceneMgr, mBulletAlignedBox, mBulletGravity);
 
     // add Debug info display tool
+#ifdef DEBUG_FRAMES
     debugDrawer = new OgreBulletCollisions::DebugDrawer();
     debugDrawer->setDrawWireframe(false);   // we want to see the Bullet containers
     mWorld->setDebugDrawer(debugDrawer);
     mWorld->setShowDebugShapes(true);      // enable it if you want to see the Bullet containers
     Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
     node->attachObject(static_cast <Ogre::SimpleRenderable *> (debugDrawer));
+#endif
 
     // lets get the callback for collisions every substep
     mPlayerCollisions = new PlayerCollisions();

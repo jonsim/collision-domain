@@ -140,7 +140,8 @@ void Car::applySteeringValue()
 /// @brief  Called once every frame with new user input and updates forward/back engine forces from this.
 /// @param  isForward  User input specifying if the forward control is pressed.
 /// @param  isBack     User input specifying if the back control is pressed.
-void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
+/// @param  isHand     User input specifying if the handbrake is on.
+void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real secondsSinceLastFrame)
 {
     int forwardBack = 0;
     if (isForward) forwardBack += 1;
@@ -248,13 +249,16 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand)
 
 	// Update exhaust (from engine RPM).
 	float emissionRate = 0;
+	static float oldRPM = 0;
 	if (isForward)
 	{
-		if (mEngineRPM < (mRevLimit / 1.9f))
+		float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
+		if (dRdT > 1300)
 			emissionRate = (mEngineRPM / mRevLimit) * 1000;
 	}
 	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
 		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
+	oldRPM = mEngineRPM;
 	
 	// Update radial blur (from vehicle speed).
 #ifdef GFX_EFFECT_RADIAL_BLUR
