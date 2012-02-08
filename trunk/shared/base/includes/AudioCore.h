@@ -33,7 +33,7 @@ public:
     OgreOggISound*  getSoundInstance(SoundType h,    int uniqueID);
     OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID);
     void            deleteSoundInstance(OgreOggISound* sound);
-    void            frameEvent();
+    void            frameEvent(float rpm);
 
 private:
     void processSoundDeletesPending();
@@ -41,6 +41,8 @@ private:
     OgreOggSoundManager* mSoundManager;
     std::list<OgreOggISound*> *mSoundDeletesPending;
     bool mInitOK;
+
+    OgreOggISound *mEngineLow, *mEngineHigh;
 };
 
 #endif // #ifndef AUDIOCORE_H

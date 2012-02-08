@@ -8,17 +8,20 @@
 
 using namespace OgreOggSound;
 
-#define FILE_HORN_LOW       "car-horn-low.wav"
-#define FILE_HORN_MID       "car-horn-mid.wav"
-#define FILE_HORN_HIGH      "car-horn-high.wav"
+#define FILE_HORN_LOW          "car-horn-low.wav"
+#define FILE_HORN_MID          "car-horn-mid.wav"
+#define FILE_HORN_HIGH         "car-horn-high.wav"
 
-#define FILE_1_ENGINE_IDLE  "engine-idle-1.wav"
-#define FILE_CAR_CRASH      "car-crash-1.wav"
+#define FILE_1_ENGINE_IDLE     "engine-idle-1.wav"
+#define FILE_CAR_CRASH         "car-crash-1.wav"
 
-#define FILE_POWERUP_HEALTH "powerup-health.wav"
-#define FILE_POWERUP_SPEED  "powerup-speed.wav"
-#define FILE_POWERUP_HEAVY  "powerup-heavy.wav"
-#define FILE_POWERUP_RANDOM "powerup-random.wav"
+#define FILE_TRUCK_ENGINE_LOW  "truck-engine-low.ogg"
+#define FILE_TRUCK_ENGINE_HIGH "truck-engine-high.ogg"
+
+#define FILE_POWERUP_HEALTH    "powerup-health.wav"
+#define FILE_POWERUP_SPEED     "powerup-speed.wav"
+#define FILE_POWERUP_HEAVY     "powerup-heavy.wav"
+#define FILE_POWERUP_RANDOM    "powerup-random.wav"
 
 AudioCore::AudioCore()
 {
@@ -46,13 +49,28 @@ AudioCore::AudioCore()
             if (i == 6) preload = mSoundManager->createSound(tempName, FILE_HORN_HIGH,      false, false, true, GameCore::mSceneMgr, true);
 
             if (i == 7) preload = mSoundManager->createSound(tempName, FILE_1_ENGINE_IDLE,  false, true,  true, GameCore::mSceneMgr, true);
-            if (i == 8) preload = mSoundManager->createSound(tempName, FILE_CAR_CRASH,        false, false, true, GameCore::mSceneMgr, false);
+            if (i == 8) preload = mSoundManager->createSound(tempName, FILE_CAR_CRASH,      false, false, true, GameCore::mSceneMgr, false);
 
             mSoundManager->destroySound(preload);
         }
 
         // init some more stuff here (don't do it unless we have openAL)
     }
+
+    mEngineLow = mSoundManager->createSound("enginelow", FILE_TRUCK_ENGINE_LOW,  false, true, true, GameCore::mSceneMgr, false);
+    mEngineHigh = mSoundManager->createSound("enginehigh", FILE_TRUCK_ENGINE_HIGH,  false, true, true, GameCore::mSceneMgr, false);
+
+    mEngineLow->setVolume(0.5f);
+    mEngineHigh->setVolume(0.6f);
+
+    // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
+    mEngineHigh->setPitch(2.0f);
+
+    //mEngineLow->play();
+#ifdef COLLISION_DOMAIN_CLIENT
+    mEngineHigh->play();
+#endif
+
 }
 
 /// @brief  Deconstructor.
@@ -156,9 +174,15 @@ void AudioCore::deleteSoundInstance(OgreOggISound* sound)
     mSoundDeletesPending->insert(mSoundDeletesPending->end(), sound);
 }
 
-void AudioCore::frameEvent()
+void AudioCore::frameEvent(float rpm)
 {
     processSoundDeletesPending();
+
+    float pitch = (rpm / 3200.0f) * 2.7;
+
+    if (pitch < 1.0f) pitch = 1.0f;
+
+    mEngineHigh->setPitch(pitch);
 }
 
 void AudioCore::processSoundDeletesPending()

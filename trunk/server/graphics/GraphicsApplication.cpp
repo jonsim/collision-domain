@@ -265,7 +265,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     GameCore::mPowerupPool->frameEvent( evt );
 
-    GameCore::mAudioCore->frameEvent();
+    GameCore::mAudioCore->frameEvent(200);
 
 	GameCore::mGraphicsCore->mGameplay->drawInfo();
 
