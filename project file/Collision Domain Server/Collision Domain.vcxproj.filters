@@ -586,6 +586,9 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\server\gameplay\includes\InfoItem.h">
+      <Filter>server\gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -965,6 +968,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\base\Powerup.cpp">
       <Filter>shared\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\server\gameplay\InfoItem.cpp">
+      <Filter>server\gameplay</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
