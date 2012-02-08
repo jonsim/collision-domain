@@ -276,6 +276,11 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
 #endif
 }
 
+float Car::getRPM()
+{
+    return mEngineRPM;
+}
+
 /*
 mph = (rpm * cir) / (gear * final * 88)
 where rpm = engine rpm
@@ -284,7 +289,6 @@ gear = gear ratio of your car
 final = final drive ratio of your car
 88 = combines several conversion factors
 */
-
 void Car::updateRPM()
 {
     // Check if we're in neutral (revving at start of race)

@@ -31,12 +31,14 @@ public:
     float getGear() { return mCurrentGear; }
     void attachCollisionTickCallback(Player* player);
     void shiftDebugShape( const Ogre::Vector3 chassisShift );
+    
+    void readTuning( char *szFile );
+    float getRPM();
 
 	Ogre::SceneNode *mBodyNode;
 	// Car related Nodes (initNodes())
     Ogre::SceneNode *mPlayerNode;
 
-    void readTuning( char *szFile );
 
 protected:
     void createGeometry(

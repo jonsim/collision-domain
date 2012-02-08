@@ -627,7 +627,16 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     */
     GameCore::mPowerupPool->frameEvent( evt );
 
-    GameCore::mAudioCore->frameEvent();
+    if( NetworkCore::bConnected && GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
+    {
+        float rpm = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM();
+
+        GameCore::mAudioCore->frameEvent(rpm);
+    }
+    else
+    {
+        GameCore::mAudioCore->frameEvent(800);
+    }
 
     // FUTURE
     // game will run x ticks behind the server
