@@ -292,7 +292,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 		switch(item->getOverlayType())
 		{
 			case ONE_OT:
-				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setDimensions(0.1f, 0.1f);
 				tmpOLE->setMaterialName( "gear1" );
 				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
@@ -304,27 +304,27 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				tmpOLE->show();
 				break;
 			case THREE_OT:
-				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setDimensions(0.1f, 0.1f);
 				tmpOLE->setMaterialName( "gear3" );
 				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 			case FOUR_OT:
-				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setDimensions(0.1f, 0.1f);
 				tmpOLE->setMaterialName( "gear4" );
-				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 			case FIVE_OT:
-				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setDimensions(0.1f, 0.1f);
 				tmpOLE->setMaterialName( "gear5" );
-				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 			case GAME_OVER_OT:
-				tmpOLE->setDimensions(0.1f,0.1f);
+				tmpOLE->setDimensions(0.1f, 0.1f);
 				tmpOLE->setMaterialName( "map_top_1" );
-				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 		}
