@@ -89,7 +89,7 @@ InputState* Input::getFreeCamInputState()
                               mKeyboard->isKeyDown(OIS::KC_G),
                               mKeyboard->isKeyDown(OIS::KC_F),
                               mKeyboard->isKeyDown(OIS::KC_H),
-                              mMouse->getMouseState().buttonDown( OIS::MouseButtonID::MB_Right ) );
+                              mMouse->getMouseState().buttonDown( OIS::MB_Right ) );
     }
     else
     {

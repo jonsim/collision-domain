@@ -9,7 +9,7 @@
 #include "SharedIncludes.h"
 #include "boost/algorithm/string.hpp"
 
-#define WHEEL_FRICTION_CFM 0.05
+#define WHEEL_FRICTION_CFM 0.05f
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
@@ -466,7 +466,7 @@ void Car::shiftDebugShape( Ogre::Vector3 chassisShift )
 }
 
 WheelFrictionConstraint::WheelFrictionConstraint( OgreBulletDynamics::RaycastVehicle *v, btRigidBody *r )
-    : btTypedConstraint( btTypedConstraintType::POINT2POINT_CONSTRAINT_TYPE, *v->getBulletVehicle()->getRigidBody() )
+    : btTypedConstraint( POINT2POINT_CONSTRAINT_TYPE, *v->getBulletVehicle()->getRigidBody() )
 {
     mVehicle = v; mbtRigidBody = r;
 }

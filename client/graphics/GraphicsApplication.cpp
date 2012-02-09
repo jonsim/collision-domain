@@ -54,7 +54,6 @@ void GraphicsApplication::createScene (void)
 	setupCompositorChain();
     setupLighting();
     setupArena();
-    setupNetworking();
 
     // Load the ninjas into the scene. This is for testing purposes only and can be removed later.
     Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");
@@ -107,11 +106,6 @@ void GraphicsApplication::createSpeedo (void)
 /// @brief Draws the gear display
 void GraphicsApplication::createGearDisplay (void)
 {
-    // Create our speedometer overlays
-	/*Ogre::Overlay *olGear = Ogre::OverlayManager::getSingleton().create( "OVERLAY_GEAR" );
-	olGear->setZOrder( 500 );
-	olGear->show();*/
-
 	oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
 
 	oleGear->setMetricsMode( Ogre::GMM_PIXELS );
@@ -132,21 +126,6 @@ void GraphicsApplication::setupShadowSystem (void)
     // Set the shadow renderer
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
 	// THIS NEEDS TO BE SET, DEFAULTS TO ZERO. GameCore::mSceneMgr->setShadowFarDistance();
-}
-
-
-/// @brief Configures the lighting for the scene, initialising all the lights.
-void GraphicsApplication::setupLighting (void)
-{
-	// initialise the sun
-    worldSun = GameCore::mSceneMgr->createLight("directionalLight");
-    worldSun->setType(Ogre::Light::LT_DIRECTIONAL);
-
-	// initialise (but don't attach) the weather system
-	weatherSystem = GameCore::mSceneMgr->createParticleSystem("WeatherSystem", "Examples/RainSmall");
-
-	// setup the lighting and weather system
-	setWeatherMode(1);
 }
 
 
@@ -276,17 +255,32 @@ void GraphicsApplication::setRadialBlur (float blur)
 }
 
 
+/// @brief Configures the lighting for the scene, initialising all the lights.
+void GraphicsApplication::setupLighting (void)
+{
+	// initialise the sun
+    worldSun = GameCore::mSceneMgr->createLight("directionalLight");
+    worldSun->setType(Ogre::Light::LT_DIRECTIONAL);
+
+	// initialise (but don't attach) the weather system
+	weatherSystem = GameCore::mSceneMgr->createParticleSystem("WeatherSystem", "Examples/RainSmall");
+
+	// setup the lighting and weather system
+	setWeatherMode(1);
+}
+
+
 /// @brief  Sets the weather and lighting mode for the scene. Without setting this no lights will be turned on.
 /// @param  mode	The lighting mode to use. 0 = Morning, 1 = Noon, 2 = Stormy.
 void GraphicsApplication::setWeatherMode (uint8_t mode)
 {
 	static bool weatherSystemAttached = false;
 
-	Ogre::Degree sunRotation;	// rotation horizontally (yaw) from +x axis
-	Ogre::Degree sunPitch;		// rotation downwards (pitch) from horizontal
-	float sunBrightness[4];	// RGBA
-	float   sunSpecular[4];	// RGBA
-	float   sunAmbience[4];	// RGBA
+	Ogre::Degree sunRotation; // rotation horizontally (yaw) from +x axis
+	Ogre::Degree sunPitch;	  // rotation downwards (pitch) from horizontal
+	float sunBrightness[4];   // RGBA
+	float   sunSpecular[4];   // RGBA
+	float   sunAmbience[4];   // RGBA
 	std::string skyBoxMap;
 	float sf; // scaling factor
 
@@ -331,9 +325,12 @@ void GraphicsApplication::setWeatherMode (uint8_t mode)
 		sunAmbience[3] = 800;
 		skyBoxMap = "Examples/CloudyNoonSkyBox";
 		
-		if (weatherSystemAttached)
-			GameCore::mSceneMgr->getRootSceneNode()->detachObject("WeatherSystem");
-		weatherSystemAttached = false;
+		//if (weatherSystemAttached)
+		//	GameCore::mSceneMgr->getRootSceneNode()->detachObject("WeatherSystem");
+		//weatherSystemAttached = false;
+		if (!weatherSystemAttached)
+			GameCore::mSceneMgr->getRootSceneNode()->attachObject(weatherSystem);
+		weatherSystemAttached = true;
 	}
 	else // Stormy
 	{
@@ -381,7 +378,7 @@ void GraphicsApplication::setWeatherMode (uint8_t mode)
 	sunDirection.normalise();
 	
     // Set the ambient light.
-    GameCore::mSceneMgr->setAmbientLight(sunAmbienceColour);
+	GameCore::mSceneMgr->setAmbientLight(sunAmbienceColour);
     
     // Add a directional light (for the sun).
     worldSun->setDiffuseColour(sunBrightnessColour);
@@ -414,31 +411,9 @@ void GraphicsApplication::setupArena (void)
 	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
     arenaNode->setDebugDisplayEnabled( false );
 
-
-
-    // ground plane, visible on the top down view only (unless something bad happens!!)
-    /*Ogre::Plane groundPlane(Ogre::Vector3::UNIT_Y, 0);
-    Ogre::MeshManager::getSingleton().createPlane("GroundPlaneMesh", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, groundPlane, 5000, 5000, 20, 20, true, 1, 20, 20, Ogre::Vector3::UNIT_Z);
-
-    Ogre::Entity* groundEntity = GameCore::mSceneMgr->createEntity("Ground", "GroundPlaneMesh");
-    groundEntity->setMaterialName("Examples/GrassFloor");
-    groundEntity->setCastShadows(false);
-    
-    // Create ground plane at -5 (below lowest arena point) to avoid z-index flickering/showing the plane through arena floor.
-    Ogre::SceneNode* groundNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("GroundNode", Ogre::Vector3(0, -5, 0));
-    groundNode->attachObject(groundEntity);*/
-
-
-
     // create collideable floor so shit doesn't freefall. It will hit the floor.
     GameCore::mPhysicsCore->createFloorPlane( arenaNode );
     GameCore::mPhysicsCore->createWallPlanes();
-}
-
-
-/// @brief  Configures the networking, retreiving the required data from the server.
-void GraphicsApplication::setupNetworking (void)
-{
 }
 
 
@@ -446,7 +421,6 @@ void GraphicsApplication::setupNetworking (void)
 void GraphicsApplication::createFrameListener (void)
 {
     firstFrameOccurred = false;
-    //mClock = new btClock();
     GraphicsCore::createFrameListener();
 }
 
@@ -648,7 +622,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
     GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, (1.0f / 60.0f));
-
+	
     return true;
 }
 
