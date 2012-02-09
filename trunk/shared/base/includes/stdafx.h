@@ -51,6 +51,8 @@
 #include "Shapes/OgreBulletCollisionsConeShape.h"
 #include "Shapes/OgreBulletCollisionsConvexHullShape.h"
 
+#include "Constraints/OgreBulletDynamicsPoint2pointConstraint.h"
+
 
 #include "OgreBulletDynamics.h"
 #include "OgreBulletDynamicsRigidBody.h"

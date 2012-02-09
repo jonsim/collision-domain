@@ -5,6 +5,9 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
+#include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
+#include "BulletDynamics/ConstraintSolver/btHingeConstraint.h"
+
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
 using namespace Ogre;
@@ -19,7 +22,7 @@ using namespace Ogre;
     Tyre Width: 243mm (bit that touches ground, not bounding box)
 */
 
-#define CRITICAL_DAMPING_COEF       0.1f
+#define CRITICAL_DAMPING_COEF       0.3f
 
 #define TRUCK_VTX_COUNT 20
 
@@ -72,7 +75,7 @@ void TruckCar::initTuning()
     mWheelRadius      =  0.523f; // this is actually diameter!!
     mWheelWidth       =  0.243f;
     mWheelFriction    =  5.0f;//1000;//1e30f;
-    mConnectionHeight =  0.7f; // this connection point lies at the very bottom of the suspension travel
+    mConnectionHeight =  0.6f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
     mSteerToZeroIncrement = 0.05f; // when no input is given steer back to 0
@@ -125,8 +128,16 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
 
     WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
-
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID);
+    testCar = NULL; /*new SmallCar( sceneMgr, world, GameCore::mPhysicsCore->getUniqueEntityID() );
+
+    btPoint2PointConstraint *constr = new btPoint2PointConstraint( 
+        *getVehicle()->getBulletVehicle()->getRigidBody(), 
+        *testCar->getVehicle()->getBulletVehicle()->getRigidBody(), 
+        btVector3(0,0.2,-2.9), btVector3(0,0.2,1.7) );
+
+    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( constr, true );*/
+
 }
 
 
@@ -162,8 +173,11 @@ void TruckCar::initNodes()
     mWheelsNode  = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
     mChassisNode = mBodyNode->createChildSceneNode("ChassisNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mLDoorNode   = mBodyNode->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRDoorNode   = mBodyNode->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    //mLDoorNode   = mBodyNode->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mLDoorNode   = mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    //mRDoorNode   = mBodyNode->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRDoorNode   = mSceneMgr->getRootSceneNode()->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+
     mFBumperNode = mBodyNode->createChildSceneNode("FBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode = mBodyNode->createChildSceneNode("RBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mLWingmirrorNode = mBodyNode->createChildSceneNode("LWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -240,17 +254,6 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     entity->setDebugDisplayEnabled( false );
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 
-    // Transformation matrix to scale the imported mesh
-    //Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
-
-    // Create a compound shape from the mesh's vertices
-    //OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-    //    new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
-  
-    //OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
-
-    //delete trimeshConverter;
-
      OgreBulletCollisions::ConvexHullCollisionShape *convexHull = new OgreBulletCollisions::ConvexHullCollisionShape( TruckVtx, TRUCK_VTX_COUNT, 3*sizeof(btScalar) );
     convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
 
@@ -284,13 +287,72 @@ void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
     
     mbtRigidBody = mCarChassis->getBulletRigidBody();
 
-    //OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
+    initDoors( chassisShift );
 
-    //Ogre::Matrix4 matChassisShift;
-    //matChassisShift.makeTrans( chassisShift );
-    //dbg->setWorldTransform( matChassisShift );
+    mCarChassis->showDebugShape( false );
+}
 
-    //mCarChassis->showDebugShape( true );
+void TruckCar::initDoors( Ogre::Vector3 chassisShift )
+{
+    BoxCollisionShape *doorShape = new BoxCollisionShape( Ogre::Vector3( 0.005f, 0.82f, 0.55f ) );
+
+    CompoundCollisionShape *leftDoor  = new CompoundCollisionShape();
+    CompoundCollisionShape *rightDoor = new CompoundCollisionShape();
+
+    leftDoor->addChildShape ( doorShape, Ogre::Vector3(  1.118f, 1.714f , 1.75f ) );
+    rightDoor->addChildShape( doorShape, Ogre::Vector3( -1.062f, 1.714f , 1.75f ) );
+
+    mLeftDoorBody = new RigidBody(
+        "CarLeftDoor" + boost::lexical_cast<std::string>(mUniqueCarID),
+        GameCore::mPhysicsCore->mWorld,
+        COL_CAR, COL_CAR );
+
+    mRightDoorBody = new RigidBody(
+        "CarRightDoor" + boost::lexical_cast<std::string>(mUniqueCarID),
+        GameCore::mPhysicsCore->mWorld,
+        COL_CAR,
+        COL_CAR | COL_ARENA );
+
+    mLeftDoorBody->setShape ( mLDoorNode,  leftDoor, 1.0f, 0.6f, 10.0f, mChassisNode->getPosition() );
+    mLeftDoorBody->setDamping( 0.2, 0.5 );
+    mLeftDoorBody->disableDeactivation();
+
+    mRightDoorBody->setShape( mRDoorNode, rightDoor, 0.6f, 0.6f, 5.0f, mChassisNode->getPosition() );
+    mRightDoorBody->setDamping( 0.2, 0.5 );
+    mRightDoorBody->disableDeactivation();
+
+    btContactSolverInfo& solverInfo = 
+        GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->getSolverInfo();
+
+    solverInfo.m_numIterations = 160;
+    solverInfo.m_restingContactRestitutionThreshold = 1e30;
+
+    btHingeConstraint *leftConstraint = new btHingeConstraint( 
+        *mbtRigidBody,
+        *mLeftDoorBody->getBulletRigidBody(),
+        btVector3( 1.118f, 1.714f, 2.315f ),
+        btVector3( 1.118f, 1.714f, 2.315f ),
+        btVector3( 0.000f, 1.000f, 0.000f ),
+        btVector3( 0.000f, 1.000f, 0.000f ) );
+
+
+    btHingeConstraint *rightConstraint = new btHingeConstraint( 
+        *mbtRigidBody,
+        *mRightDoorBody->getBulletRigidBody(),
+        btVector3( -1.062f, 1.714f, 2.315f ),
+        btVector3( -1.062f, 1.714f, 2.315f ),
+        btVector3( 0.0f, 1.0f, 0.0f ),
+        btVector3( 0.0f, 1.0f, 0.0f ) );
+
+    leftConstraint->setLimit( 0.0f, (Ogre::Math::PI * 0.25f), 0.9f, 0.01f, 0.0f );
+
+    rightConstraint->setLimit( -(Ogre::Math::PI * 0.25f), 0.0f, 0.9f, 0.01f, 0.0f );
+
+    GameCore::mPhysicsCore->mWorld->
+        getBulletDynamicsWorld()->addConstraint( leftConstraint, true );
+
+    GameCore::mPhysicsCore->mWorld->
+        getBulletDynamicsWorld()->addConstraint( rightConstraint, true );
 }
 
 

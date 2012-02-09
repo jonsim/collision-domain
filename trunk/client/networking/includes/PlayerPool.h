@@ -26,12 +26,14 @@ public:
 	void addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void delPlayer( RakNet::RakNetGUID playerid );
 
+
 	Player* getPlayer( RakNet::RakNetGUID playerid );
 	Player* getLocalPlayer();
 	RakNet::RakNetGUID getLocalPlayerID();
 
-
 	void frameEvent();
+
+    void processPlayer( Player *pPlayer );
 	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
 };
 

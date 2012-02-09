@@ -84,7 +84,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 			bitSend.Write( (char*)&playerInput, sizeof( PLAYER_INPUT_DATA ) );
 
 			// Send to server
-			m_pRak->Send( &bitSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false );
+			m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, serverGUID, false );
 		}
 			// Update the time the last update was performed
 			timeLastUpdate = RakNet::GetTimeMS();

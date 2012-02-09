@@ -197,7 +197,7 @@ void NetworkCore::BroadcastUpdates()
 
 		bitSend.Write( (char*)&playerState, sizeof( PLAYER_SYNC_DATA ) );
 
-		m_pRak->Send( &bitSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true );
+		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true );
 
 		delete( playerSnap );
 	}
@@ -239,7 +239,7 @@ void NetworkCore::GamestateUpdatePlayer( RakNet::RakNetGUID playerid )
 
 		bitSend.Write( (char*)&playerState, sizeof( PLAYER_SYNC_DATA ) );
 
-		m_pRak->Send( &bitSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false );
+		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, playerid, false );
 
 		delete( playerSnap );
 	}

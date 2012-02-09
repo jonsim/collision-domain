@@ -16,6 +16,11 @@ class Player;
 
 class Car
 {
+
+#ifdef COLLISON_DOMAIN_CLIENT
+    friend class SpawnScreen;
+#endif
+
 public:
     // = 0 methods not implemented by Car yet!
     virtual void playCarHorn() = 0;
@@ -29,6 +34,7 @@ public:
     virtual CarSnapshot *getCarSnapshot();
 	float getCarMph();
     float getGear() { return mCurrentGear; }
+    OgreBulletDynamics::RaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
     void shiftDebugShape( const Ogre::Vector3 chassisShift );
     
@@ -118,10 +124,15 @@ protected:
     OgreBulletCollisions::BoxCollisionShape      *chassisShape;
     OgreBulletCollisions::CompoundCollisionShape *compoundChassisShape;
     OgreBulletDynamics::WheeledRigidBody         *mCarChassis;
+    OgreBulletDynamics::RigidBody                *mLeftDoorBody;
+    OgreBulletDynamics::RigidBody                *mRightDoorBody;
     OgreBulletDynamics::VehicleTuning            *mTuning;
     OgreBulletDynamics::VehicleRayCaster         *mVehicleRayCaster;
     OgreBulletDynamics::RaycastVehicle           *mVehicle;
     btRigidBody                                  *mbtRigidBody;
+
+
+    Car *testCar; 
 
 
 private:

@@ -135,6 +135,10 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     initBody(carPosition, chassisShift);
     initWheels();
 
+    mLeftDoorBody = NULL;
+    mRightDoorBody = NULL;
+    testCar = NULL;
+
     WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
 

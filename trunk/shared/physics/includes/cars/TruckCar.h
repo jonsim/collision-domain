@@ -9,7 +9,7 @@
 #include "SharedIncludes.h"
 #include "boost\lexical_cast.hpp"
 
-class TruckCar : Car
+class TruckCar : public Car
 {
 public:
     TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
@@ -21,6 +21,7 @@ private:
     void initNodes();
     void initGraphics();
     void initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift);
+    void initDoors( Ogre::Vector3 chassisShift );
     void initWheels();
     
     // Car related Nodes (initNodes())
