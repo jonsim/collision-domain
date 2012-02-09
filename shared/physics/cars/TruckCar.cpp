@@ -314,18 +314,17 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
         COL_CAR | COL_ARENA );
 
     mLeftDoorBody->setShape ( mLDoorNode,  leftDoor, 1.0f, 0.6f, 10.0f, mChassisNode->getPosition() );
-    mLeftDoorBody->setDamping( 0.2, 0.5 );
+    mLeftDoorBody->setDamping( 0.2f, 0.5f );
     mLeftDoorBody->disableDeactivation();
 
     mRightDoorBody->setShape( mRDoorNode, rightDoor, 0.6f, 0.6f, 5.0f, mChassisNode->getPosition() );
-    mRightDoorBody->setDamping( 0.2, 0.5 );
+    mRightDoorBody->setDamping( 0.2f, 0.5f );
     mRightDoorBody->disableDeactivation();
 
     btContactSolverInfo& solverInfo = 
         GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->getSolverInfo();
 
     solverInfo.m_numIterations = 160;
-    solverInfo.m_restingContactRestitutionThreshold = 1e30;
 
     btHingeConstraint *leftConstraint = new btHingeConstraint( 
         *mbtRigidBody,
