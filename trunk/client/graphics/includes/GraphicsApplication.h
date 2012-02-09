@@ -63,7 +63,6 @@ private:
     void setupLighting (void);
 	void setupParticles (void);
     void setupArena (void);
-    void setupNetworking (void);
 	void createSpeedo (void);
     void createGearDisplay (void);
 	void updateSpeedo (float fSpeed, int iGear);

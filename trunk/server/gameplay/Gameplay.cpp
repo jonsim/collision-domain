@@ -294,19 +294,19 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 			case ONE_OT:
 				tmpOLE->setDimensions(0.1f,0.1f);
 				tmpOLE->setMaterialName( "gear1" );
-				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 			case TWO_OT:
 				tmpOLE->setDimensions(0.1f,0.1f);
 				tmpOLE->setMaterialName( "gear2" );
-				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 			case THREE_OT:
 				tmpOLE->setDimensions(0.1f,0.1f);
 				tmpOLE->setMaterialName( "gear3" );
-				tmpOLE->setPosition(0.45,0.1);
+				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				break;
 			case FOUR_OT:
@@ -378,9 +378,9 @@ void Gameplay::setupOverlay()
 					"ONE_OT");
 			
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
-	tmpOLE->setDimensions(0.1f,0.1f);
+	tmpOLE->setDimensions(0.1f, 0.1f);
 	tmpOLE->setMaterialName( "gear3" );
-	tmpOLE->setPosition(0.45,0.1);
+	tmpOLE->setPosition(0.45f, 0.1f);
 	tmpOLE->hide();
 	olContainer->addChild(tmpOLE);
 }

@@ -38,8 +38,8 @@ public:
 protected:
     //OIS Input devices
     OIS::InputManager* mInputManager;
-    OIS::Keyboard* mKeyboard;
     OIS::Mouse*    mMouse;
+    OIS::Keyboard* mKeyboard;
     // OIS::KeyListener
     virtual bool keyPressed (const OIS::KeyEvent &evt);
     virtual bool keyReleased (const OIS::KeyEvent &evt);
