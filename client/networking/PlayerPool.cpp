@@ -2,6 +2,8 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
+#define BASIC_INTERP 1
+
 PlayerPool::PlayerPool() : mLocalPlayer(0)
 {
 	// Initialize the pool
@@ -82,32 +84,104 @@ void PlayerPool::frameEvent()
 
 	for( i = 0; i < MAX_PLAYERS; i ++ )
 	{
-		// Skip over the local player for now
-		if( mGUID[i] == mLocalGUID )
-			continue;
-
-		pPlayer = mPlayers[i];
-		if( pPlayer == NULL )
-			continue;
-
-		if( pPlayer->mSnapshots != NULL && pPlayer->getCar() != NULL )
-		{
-			pPlayer->getCar()->restoreSnapshot( pPlayer->mSnapshots );
-			delete( pPlayer->mSnapshots );
-			pPlayer->mSnapshots = NULL;
-		}
+		processPlayer( mPlayers[i] );
 		// TODO: add timestamps to snapshots
 	}
 
-	// Perform local client update
+    processPlayer( getLocalPlayer() );
+
+/*	// Perform local client update
 	if( mLocalPlayer != NULL )
 	{
+        // Check if we've received an update from the server
 		if( mLocalPlayer->getCar() != NULL && mLocalPlayer->mSnapshots != NULL )
 		{
-			mLocalPlayer->getCar()->restoreSnapshot( mLocalPlayer->mSnapshots );
-			delete( mLocalPlayer->mSnapshots );
-			mLocalPlayer->mSnapshots = NULL;
-		}
-	}
+#if BASIC_INTERP
+            CarSnapshot *currentSnap = mLocalPlayer->getCar()->getCarSnapshot();
+            
+            btVector3 interpPos = mLocalPlayer->mSnapshots->mPosition.lerp( currentSnap->mPosition, 0.5 );
+            btQuaternion interpRot = mLocalPlayer->mSnapshots->mRotation.slerp( currentSnap->mRotation, 0.5 );
 
+            btVector3 interpLin = mLocalPlayer->mSnapshots->mLinearVelocity.lerp( currentSnap->mLinearVelocity, 0.5 );
+            btVector3 interpAng = mLocalPlayer->mSnapshots->mAngularVelocity.lerp( currentSnap->mAngularVelocity, 0.5 );
+
+            CarSnapshot *restoreSnap = new CarSnapshot( interpPos, interpRot, interpAng, interpLin, currentSnap->mWheelPosition );
+
+			mLocalPlayer->getCar()->restoreSnapshot( restoreSnap );
+
+            delete( restoreSnap );
+            restoreSnap = NULL;
+
+            delete( currentSnap );
+            currentSnap = NULL;
+#else
+            mLocalPlayer->getCar()->restoreSnapshot( mLocalPlayer->mSnapshots );
+            delete( mLocalPlayer->mSnapshots );
+            mLocalPlayer->mSnapshots = NULL;
+#endif
+
+			//delete( mLocalPlayer->mSnapshots );
+			//mLocalPlayer->mSnapshots = NULL;
+		}
+	}*/
+
+}
+
+void PlayerPool::processPlayer( Player *pPlayer )
+{
+    if( pPlayer == NULL )
+		return;
+
+	if( pPlayer->mSnapshots != NULL && pPlayer->getCar() != NULL )
+	{
+#if BASIC_INTERP
+
+        CarSnapshot *currentSnap = pPlayer->getCar()->getCarSnapshot();
+        CarSnapshot *restoreSnap = NULL;
+
+        btScalar dist = currentSnap->mPosition.distance( pPlayer->mSnapshots->mPosition );
+
+        if( dist > 3.00f )
+        {
+            restoreSnap = (CarSnapshot*)malloc( sizeof( CarSnapshot ) );
+            memcpy( restoreSnap, pPlayer->mSnapshots, sizeof( CarSnapshot ) );
+        }
+        else if( dist > 0.20f )
+        {          
+            btVector3 interpPos = pPlayer->mSnapshots->mPosition.lerp( currentSnap->mPosition, 0.9 );
+            btQuaternion interpRot = pPlayer->mSnapshots->mRotation.slerp( currentSnap->mRotation, 0.9 );
+
+            //btVector3 interpLin = pPlayer->mSnapshots->mLinearVelocity.lerp( currentSnap->mLinearVelocity, 0.9 );
+            //btVector3 interpAng = pPlayer->mSnapshots->mAngularVelocity.lerp( currentSnap->mAngularVelocity, 0.9 );
+                
+            //restoreSnap = new CarSnapshot( interpPos, interpRot, interpAng, interpLin, currentSnap->mWheelPosition );
+
+            restoreSnap = new CarSnapshot( 
+                interpPos, 
+                interpRot, 
+                pPlayer->mSnapshots->mAngularVelocity,
+                pPlayer->mSnapshots->mLinearVelocity, 
+                pPlayer->mSnapshots->mWheelPosition );
+        }
+
+        if( restoreSnap != NULL )
+        {
+	        pPlayer->getCar()->restoreSnapshot( restoreSnap );
+
+            delete( restoreSnap );
+            restoreSnap = NULL;
+        }
+
+        delete( currentSnap );
+        currentSnap = NULL;
+
+#else
+
+        pPlayer->getCar()->restoreSnapshot( mLocalPlayer->mSnapshots );
+#endif
+        delete( pPlayer->mSnapshots );
+        pPlayer->mSnapshots = NULL;
+
+
+    }
 }

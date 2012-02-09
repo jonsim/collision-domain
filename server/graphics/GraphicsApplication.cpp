@@ -315,7 +315,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     delete inputSnapshot;
 
     // Minimum of 20 FPS (maxSubsteps=3) before physics becomes wrong
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 3, (1.0f / 60.0f));
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, (1.0f / 60.0f));
 
     return true;
 }

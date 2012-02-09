@@ -9,7 +9,7 @@
 #include "SharedIncludes.h"
 #include "boost\lexical_cast.hpp"
 
-class SmallCar : Car
+class SmallCar : public Car
 {
 public:
     SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
