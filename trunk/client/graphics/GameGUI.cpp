@@ -227,7 +227,6 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
                         float fY = boost::lexical_cast<float>(strTokens.at(2));
                         float fZ = boost::lexical_cast<float>(strTokens.at(3));
                         Ogre::Vector3 trans( fX, fY, fZ );
-                        GameCore::mPlayerPool->getLocalPlayer()->getCar()->shiftDebugShape( trans );
                         char szPrint[128];
                         sprintf( szPrint, "Moved debug shape: [x] %f [y] %f [z] %f", fX, fY, fZ );
                         consoleBuffer->appendText( szPrint );

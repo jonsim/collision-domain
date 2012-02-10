@@ -549,7 +549,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
 		char szFPS[16];
 		sprintf(szFPS,   "FPS: %.2f", avgfps);
-		fps->setText(szFPS);
+		//fps->setText(szFPS);
 
 		// dont do any of the non-graphics bullshit
 		return true;
@@ -586,7 +586,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 			sprintf( szSpeed, "MPH: %f", speedmph );
 			sprintf( szFPS,   "FPS: %.2f", avgfps);
 			mph->setText( szSpeed );
-			fps->setText( szFPS );
+			//fps->setText( szFPS );
 			updateSpeedo( speedmph, curGear );
 
 			// 

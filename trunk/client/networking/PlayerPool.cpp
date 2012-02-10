@@ -80,7 +80,6 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 void PlayerPool::frameEvent()
 {
 	int i = 0;
-	Player *pPlayer;
 
 	for( i = 0; i < MAX_PLAYERS; i ++ )
 	{
@@ -148,8 +147,8 @@ void PlayerPool::processPlayer( Player *pPlayer )
         }
         else if( dist > 0.20f )
         {          
-            btVector3 interpPos = pPlayer->mSnapshots->mPosition.lerp( currentSnap->mPosition, 0.9 );
-            btQuaternion interpRot = pPlayer->mSnapshots->mRotation.slerp( currentSnap->mRotation, 0.9 );
+            btVector3 interpPos = pPlayer->mSnapshots->mPosition.lerp( currentSnap->mPosition, 0.9f );
+            btQuaternion interpRot = pPlayer->mSnapshots->mRotation.slerp( currentSnap->mRotation, 0.9f );
 
             //btVector3 interpLin = pPlayer->mSnapshots->mLinearVelocity.lerp( currentSnap->mLinearVelocity, 0.9 );
             //btVector3 interpAng = pPlayer->mSnapshots->mAngularVelocity.lerp( currentSnap->mAngularVelocity, 0.9 );

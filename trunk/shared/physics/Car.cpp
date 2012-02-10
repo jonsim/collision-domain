@@ -9,7 +9,9 @@
 #include "SharedIncludes.h"
 #include "boost/algorithm/string.hpp"
 
-#define WHEEL_FRICTION_CFM 0.05f
+#define WHEEL_FRICTION_CFM 0.6f
+
+#define DEBUG_SHOW_SKID
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
@@ -274,6 +276,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
 	}
 	GameCore::mGraphicsApplication->setRadialBlur(blurAmount);
 #endif
+    
 }
 
 float Car::getRPM()
@@ -437,36 +440,13 @@ void Car::createGeometry(
 }
 
 
-/// @brief  Move the debug chassis outline of the car (does not affect physical location at all)
-/// @param  chassisShift    Ogre::Vector3 containing translation relative to car origin
-
-// THIS DOES NOT WORK SO DO NOT USE IT. SO RETARDID.
-void Car::shiftDebugShape( Ogre::Vector3 chassisShift )
-{
-    Ogre::Matrix4 matShift;
-    matShift.getTrans( chassisShift );
-
-    OgreBulletCollisions::DebugCollisionShape *dbg = mCarChassis->getDebugShape();
-    
-    int numt = dbg->getNumWorldTransforms();
-
-
-    Ogre::Matrix4 *matTest;
-    matTest = (Ogre::Matrix4*)malloc( numt * sizeof( Ogre::Matrix4 ) );
-
-    dbg->getWorldTransforms( matTest );
-
-    
-    for( int i = 0; i < numt; i ++ )
-    {
-        matTest[i].setTrans( matTest[i].getTrans() + chassisShift );
-    }
-
-    dbg->setWorldTransform( matTest[0] );
-}
+/********************************************************
+ *  Wheel Constraint Class
+ *  - deals with individual friction levels per wheel
+ ********************************************************/
 
 WheelFrictionConstraint::WheelFrictionConstraint( OgreBulletDynamics::RaycastVehicle *v, btRigidBody *r )
-    : btTypedConstraint( POINT2POINT_CONSTRAINT_TYPE, *v->getBulletVehicle()->getRigidBody() )
+    : btTypedConstraint( CONTACT_CONSTRAINT_TYPE, *v->getBulletVehicle()->getRigidBody() )
 {
     mVehicle = v; mbtRigidBody = r;
 }
@@ -474,11 +454,13 @@ WheelFrictionConstraint::WheelFrictionConstraint( OgreBulletDynamics::RaycastVeh
 void WheelFrictionConstraint::getInfo1( btTypedConstraint::btConstraintInfo1* info )
 {
     // Add two constraint rows for each wheel on the ground
+    
     info->m_numConstraintRows = 0;
     for (int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i)
     {
-        const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
-        info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact != 0 );
+        btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+        mVehicle->getBulletVehicle()->rayCast( wheel_info );
+        info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact );
     }
 }
 
@@ -490,10 +472,11 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
 
     for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
     {
-        const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+        btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+        mVehicle->getBulletVehicle()->rayCast( wheel_info );
 
         // Only if the wheel is on the ground:
-        if( !wheel_info.m_raycastInfo.m_isInContact )
+        if( wheel_info.m_raycastInfo.m_isInContact == false )
             continue;
 
         int row_index = row++ * info->rowskip;
@@ -514,14 +497,15 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         info->m_constraintError[row_index] = 0.0f;
 
         info->cfm[row_index] = WHEEL_FRICTION_CFM; // Set constraint force mixing
-
+        //info->erp = 0.8f;
         // Set maximum friction force according to Coulomb's law
         // Substitute Pacejka here
-        btScalar max_friction = wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
-
+        //btScalar max_friction = wheel_info.m_frictionSlip;//wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+        btScalar max_friction = wheel_info.m_frictionSlip * ( wheel_info.m_wheelsSuspensionForce / wheel_info.m_maxSuspensionForce );
         // Set friction limits.
         info->m_lowerLimit[row_index] = -max_friction;
-        info->m_upperLimit[row_index] =  max_friction;
+        info->m_upperLimit[row_index] = max_friction;
+
     }
 
     // Setup forward friction.
@@ -530,7 +514,7 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
 
         // Only if the wheel is on the ground:
-        if (!wheel_info.m_raycastInfo.m_isInContact)
+        if( wheel_info.m_raycastInfo.m_isInContact == false )
             continue;
 
         int row_index = row++ * info->rowskip;
@@ -562,20 +546,86 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         info->cfm[row_index] = WHEEL_FRICTION_CFM; 
 
         // Set maximum friction force
-        btScalar max_friction = wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+        //btScalar max_friction = wheel_info.m_frictionSlip; //wheel_info.m_wheelsSuspensionForce * wheel_info.m_frictionSlip / info->fps;
+        btScalar max_friction = wheel_info.m_frictionSlip * ( wheel_info.m_wheelsSuspensionForce / wheel_info.m_maxSuspensionForce );
 
         // Set friction limits.
         info->m_lowerLimit[row_index] = -max_friction;
         info->m_upperLimit[row_index] =  max_friction;
     }
+
+#if defined(COLLISION_DOMAIN_CLIENT) && defined(DEBUG_SHOW_SKID)
+    if( mVehicle == GameCore::mPlayerPool->getLocalPlayer()->getCar()->getVehicle() )
+    {
+        CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+        char szFPS[32];
+	    sprintf(szFPS,   "fr: %.2f", mVehicle->getBulletVehicle()->getWheelInfo(3).m_skidInfo );
+	    fps->setText(szFPS);
+    }
+#endif
 }
 
-void	WheelFrictionConstraint::setParam(int num, btScalar value, int axis) { return; }
+void WheelFrictionConstraint::setParam(int num, btScalar value, int axis) { return; }
 ///return the local value of parameter
 btScalar WheelFrictionConstraint::getParam(int num, int axis) const { return 0.0; }
 
 
+btScalar WheelFrictionConstraint::calcSlipAngle( int wheelNum )
+{
+    btScalar avg_slip = 0.00f;
+    const btWheelInfo& wheel_info = 
+        mVehicle->getBulletVehicle()->getWheelInfo( wheelNum );
 
+    // Get velocity of wheel relative to the ground
+
+    btVector3 relPos = wheel_info.m_raycastInfo.m_contactPointWS - 
+        mbtRigidBody->getCenterOfMassPosition();
+
+    btVector3 vel = mbtRigidBody->getVelocityInLocalPoint( relPos );
+
+    // Get the x and z velocity
+    btScalar velX = wheel_info.m_raycastInfo.m_wheelAxleWS.dot( vel );
+    btScalar velZ = -wheel_info.m_raycastInfo.m_wheelDirectionWS.dot( vel );
+
+    // Calculate slip angle
+    m_wheel_slip[wheelNum] = btAtan2( velX, btFabs( velZ ) );
+
+    return m_wheel_slip[wheelNum];
+}
+
+btScalar WheelFrictionConstraint::calcSlipAngle()
+{
+    btScalar avg_slip = 0.00f;
+
+    for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
+        avg_slip += calcSlipAngle( i );
+
+    m_avg_slip = avg_slip / mVehicle->getBulletVehicle()->getNumWheels();
+
+    return m_avg_slip;
+}
+
+btScalar WheelFrictionConstraint::calcWheelSkid( int wheelNum )
+{
+    const btWheelInfo& wheel_info = 
+        mVehicle->getBulletVehicle()->getWheelInfo( wheelNum );
+
+    m_wheel_skid[wheelNum] = wheel_info.m_skidInfo;
+
+    return m_wheel_skid[wheelNum];
+}
+
+btScalar WheelFrictionConstraint::calcWheelSkid()
+{
+    btScalar avg_skid = 0.00f;
+
+    for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
+        avg_skid += calcWheelSkid( i );
+
+    m_avg_skid = avg_skid / mVehicle->getBulletVehicle()->getNumWheels();
+
+    return m_avg_skid;
+}
 
 void Car::readTuning( char *szFile )
 {

@@ -126,9 +126,6 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     initBody(carPosition, chassisShift);
     initWheels();
 
-    WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
-    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
-    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID);
     testCar = NULL; /*new SmallCar( sceneMgr, world, GameCore::mPhysicsCore->getUniqueEntityID() );
 
     btPoint2PointConstraint *constr = new btPoint2PointConstraint( 
@@ -138,6 +135,12 @@ TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
 
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( constr, true );*/
 
+    fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    fricConst->enableFeedback( true );
+
+    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
+
+    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID);
 }
 
 
@@ -342,6 +345,9 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
         btVector3( -1.062f, 1.714f, 2.315f ),
         btVector3( 0.0f, 1.0f, 0.0f ),
         btVector3( 0.0f, 1.0f, 0.0f ) );
+
+    leftConstraint->setParam( BT_CONSTRAINT_STOP_CFM, 0.0f );
+    leftConstraint->setParam( BT_CONSTRAINT_STOP_ERP, 0.0f );
 
     leftConstraint->setLimit( 0.0f, (Ogre::Math::PI * 0.25f), 0.9f, 0.01f, 0.0f );
 
