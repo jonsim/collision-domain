@@ -13,6 +13,7 @@
 #include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
 
 class Player;
+class WheelFrictionConstraint;
 
 class Car
 {
@@ -36,7 +37,6 @@ public:
     float getGear() { return mCurrentGear; }
     OgreBulletDynamics::RaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
-    void shiftDebugShape( const Ogre::Vector3 chassisShift );
     
     void readTuning( char *szFile );
     float getRPM();
@@ -68,6 +68,9 @@ protected:
 
 	// Exhaust system
 	Ogre::ParticleSystem* mExhaustSystem;
+
+    // Friction constraint
+    WheelFrictionConstraint *fricConst;
 
     // Data for whole class
     int mUniqueCarID;
@@ -146,6 +149,7 @@ private:
         Ogre::SceneNode *toAttachTo);
 
     void updateRPM();
+    
 
     inline float rpm2rads(float f){ return f * 0.1047197f; }
     inline float rads2rpm(float f){ return f * 9.5492966f; }
@@ -160,13 +164,35 @@ public:
 
 	///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
 	///If no axis is provided, it uses the default axis for this constraint.
-    virtual	void	setParam(int num, btScalar value, int axis = -1);
+    virtual	void setParam(int num, btScalar value, int axis = -1);
 	///return the local value of parameter
     virtual	btScalar getParam(int num, int axis = -1) const;
 
     OgreBulletDynamics::RaycastVehicle *mVehicle;
     btRigidBody *mbtRigidBody;
+
+    btScalar getSlipAngle( int wheelNum ) { 
+        return (wheelNum < 4 && wheelNum >= 0) ? m_wheel_slip[wheelNum] : -1.00f; }
+
+    btScalar getSlipAngle() { return m_avg_slip; }
+
+    btScalar getWheelSkid() { return m_avg_skid; }
+
+    btScalar getWheelSkid( int wheelNum ) {
+        return (wheelNum < 4 && wheelNum >= 0) ? m_wheel_skid[wheelNum] : -1.00f; }
+
+private:
+    btScalar calcSlipAngle( int wheelNum );
+    btScalar calcSlipAngle();
     
+    btScalar calcWheelSkid( int wheelNum );
+    btScalar calcWheelSkid();
+
+    btScalar m_wheel_slip[4];
+    btScalar m_avg_slip;
+
+    btScalar m_wheel_skid[4];
+    btScalar m_avg_skid;
 };
 
 #endif // #ifndef __Car_h_

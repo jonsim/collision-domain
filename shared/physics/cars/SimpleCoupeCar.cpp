@@ -67,7 +67,7 @@ void SimpleCoupeCar::initTuning()
     mSuspensionStiffness    =   30.0f;
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
-    mMaxSuspensionForce     =   14000.0f;
+    mMaxSuspensionForce     =   10000.0f;
     mRollInfluence          =    0.35f;
     mSuspensionRestLength   =    0.3f;
     mMaxSuspensionTravelCm  =   15.0f;
@@ -139,7 +139,9 @@ SimpleCoupeCar::SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics:
     mRightDoorBody = NULL;
     testCar = NULL;
 
-    WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    fricConst->enableFeedback( true );
+
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
 
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID);

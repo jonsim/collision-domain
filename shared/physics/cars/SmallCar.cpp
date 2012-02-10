@@ -147,7 +147,9 @@ SmallCar::SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
     mRightDoorBody = NULL;
     testCar = NULL;
 
-    WheelFrictionConstraint *fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    fricConst->enableFeedback( true );
+
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
 
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID);
