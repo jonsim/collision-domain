@@ -1,4 +1,4 @@
-particle_system SmallCar/Exhaust
+particle_system CollisionDomain/SmallCar/Exhaust
 {
 	material Examples/Smoke
 	particle_width 0.5
@@ -35,11 +35,11 @@ particle_system SmallCar/Exhaust
 
 	affector ColourImage
 	{
-		image exhaust_falloff.png
+		image particle_exhaust_falloff.png
 	}
 }
 
-particle_system Banger/Exhaust
+particle_system CollisionDomain/Banger/Exhaust
 {
 	material Examples/Smoke
 	particle_width 0.5
@@ -76,11 +76,11 @@ particle_system Banger/Exhaust
 
 	affector ColourImage
 	{
-		image exhaust_falloff.png
+		image particle_exhaust_falloff.png
 	}
 }
 
-particle_system Truck/Exhaust
+particle_system CollisionDomain/Truck/Exhaust
 {
 	material Examples/Smoke
 	particle_width 0.5
@@ -135,6 +135,6 @@ particle_system Truck/Exhaust
 
 	affector ColourImage
 	{
-		image exhaust_falloff.png
+		image particle_exhaust_falloff.png
 	}
 }

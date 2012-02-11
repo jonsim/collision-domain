@@ -66,8 +66,10 @@ protected:
 	// Wheel node
     Ogre::SceneNode *mWheelsNode;
 
-	// Exhaust system
+	// Particle systems
 	Ogre::ParticleSystem* mExhaustSystem;
+	Ogre::ParticleSystem* mDustSystem;
+	Ogre::ParticleSystem* mSparkSystem;
 
     // Friction constraint
     WheelFrictionConstraint *fricConst;

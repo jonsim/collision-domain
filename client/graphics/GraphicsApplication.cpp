@@ -325,12 +325,9 @@ void GraphicsApplication::setWeatherMode (uint8_t mode)
 		sunAmbience[3] = 800;
 		skyBoxMap = "Examples/CloudyNoonSkyBox";
 		
-		//if (weatherSystemAttached)
-		//	GameCore::mSceneMgr->getRootSceneNode()->detachObject("WeatherSystem");
-		//weatherSystemAttached = false;
-		if (!weatherSystemAttached)
-			GameCore::mSceneMgr->getRootSceneNode()->attachObject(weatherSystem);
-		weatherSystemAttached = true;
+		if (weatherSystemAttached)
+			GameCore::mSceneMgr->getRootSceneNode()->detachObject("WeatherSystem");
+		weatherSystemAttached = false;
 	}
 	else // Stormy
 	{
