@@ -17,6 +17,18 @@
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
 void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 {
+    btVector3 rel_door_pos;
+    btQuaternion door_rot;
+
+    if( mLeftDoorBody != NULL )
+    {
+        rel_door_pos = 
+            mLeftDoorBody->getBulletRigidBody()->getCenterOfMassPosition() - 
+            mbtRigidBody->getCenterOfMassPosition();
+
+        door_rot = mLeftDoorBody->getBulletRigidBody()->getOrientation();
+    }
+
     moveTo(carSnapshot->mPosition, carSnapshot->mRotation);
 
     // After this the car will be moved and rotated as specified, but the current velocity
@@ -26,6 +38,12 @@ void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 
     mSteer = carSnapshot->mWheelPosition;
     applySteeringValue();
+
+    if( mLeftDoorBody != NULL )
+    {
+        btTransform newDoorPos( door_rot, carSnapshot->mPosition);// - rel_door_pos );
+        mLeftDoorBody->getBulletRigidBody()->proceedToTransform( newDoorPos );
+    }
 }
 
 
@@ -555,12 +573,15 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
     }
 
 #if defined(COLLISION_DOMAIN_CLIENT) && defined(DEBUG_SHOW_SKID)
-    if( mVehicle == GameCore::mPlayerPool->getLocalPlayer()->getCar()->getVehicle() )
+    if( GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
     {
-        CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-        char szFPS[32];
-	    sprintf(szFPS,   "fr: %.2f", mVehicle->getBulletVehicle()->getWheelInfo(3).m_skidInfo );
-	    fps->setText(szFPS);
+        if( mVehicle == GameCore::mPlayerPool->getLocalPlayer()->getCar()->getVehicle() )
+        {
+            CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+            char szFPS[32];
+	        sprintf(szFPS,   "fr: %.2f", mVehicle->getBulletVehicle()->getWheelInfo(3).m_skidInfo );
+	        fps->setText(szFPS);
+        }
     }
 #endif
 }
