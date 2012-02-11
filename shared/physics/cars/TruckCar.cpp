@@ -308,13 +308,14 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
     mLeftDoorBody = new RigidBody(
         "CarLeftDoor" + boost::lexical_cast<std::string>(mUniqueCarID),
         GameCore::mPhysicsCore->mWorld,
-        COL_CAR, COL_CAR );
+        COL_CAR,
+        COL_ARENA );
 
     mRightDoorBody = new RigidBody(
         "CarRightDoor" + boost::lexical_cast<std::string>(mUniqueCarID),
         GameCore::mPhysicsCore->mWorld,
         COL_CAR,
-        COL_CAR | COL_ARENA );
+        COL_ARENA );
 
     mLeftDoorBody->setShape ( mLDoorNode,  leftDoor, 1.0f, 0.6f, 10.0f, mChassisNode->getPosition() );
     mLeftDoorBody->setDamping( 0.2f, 0.5f );
@@ -329,7 +330,7 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
 
     solverInfo.m_numIterations = 160;
 
-    btHingeConstraint *leftConstraint = new btHingeConstraint( 
+    leftDoorHinge = new btHingeConstraint( 
         *mbtRigidBody,
         *mLeftDoorBody->getBulletRigidBody(),
         btVector3( 1.118f, 1.714f, 2.315f ),
@@ -338,7 +339,7 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
         btVector3( 0.000f, 1.000f, 0.000f ) );
 
 
-    btHingeConstraint *rightConstraint = new btHingeConstraint( 
+    rightDoorHinge = new btHingeConstraint( 
         *mbtRigidBody,
         *mRightDoorBody->getBulletRigidBody(),
         btVector3( -1.062f, 1.714f, 2.315f ),
@@ -346,18 +347,20 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
         btVector3( 0.0f, 1.0f, 0.0f ),
         btVector3( 0.0f, 1.0f, 0.0f ) );
 
-    leftConstraint->setParam( BT_CONSTRAINT_STOP_CFM, 0.0f );
-    leftConstraint->setParam( BT_CONSTRAINT_STOP_ERP, 0.0f );
+    //leftDoorHinge->setParam( BT_CONSTRAINT_STOP_CFM, 0.6f );
+    leftDoorHinge->setParam( BT_CONSTRAINT_STOP_ERP, 0.6f );
 
-    leftConstraint->setLimit( 0.0f, (Ogre::Math::PI * 0.25f), 0.9f, 0.01f, 0.0f );
+    leftDoorHinge->setLimit( 0.0f, (Ogre::Math::PI * 0.25f), 0.9f, 0.3f, 1.0f );
+    rightDoorHinge->setLimit( -(Ogre::Math::PI * 0.25f), 0.0f, 0.9f, 0.01f, 0.0f );
 
-    rightConstraint->setLimit( -(Ogre::Math::PI * 0.25f), 0.0f, 0.9f, 0.01f, 0.0f );
+    leftDoorHinge->enableFeedback( true );
+    rightDoorHinge->enableFeedback( true );
 
     GameCore::mPhysicsCore->mWorld->
-        getBulletDynamicsWorld()->addConstraint( leftConstraint, true );
+        getBulletDynamicsWorld()->addConstraint( leftDoorHinge, true );
 
     GameCore::mPhysicsCore->mWorld->
-        getBulletDynamicsWorld()->addConstraint( rightConstraint, true );
+        getBulletDynamicsWorld()->addConstraint( rightDoorHinge, true );
 }
 
 

@@ -145,6 +145,7 @@ SmallCar::SmallCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWor
 
     mLeftDoorBody = NULL;
     mRightDoorBody = NULL;
+    leftDoorHinge = NULL;
     testCar = NULL;
 
     fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
