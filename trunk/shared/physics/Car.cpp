@@ -263,21 +263,26 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
     updateRPM();
 
 	// Update exhaust (from engine RPM).
-	float emissionRate = 0;
+	float speedmph    = getCarMph();
+	float exhaustRate = 0;
+	float dustRate    = 0;
 	static float oldRPM = 0;
 	if (isForward)
 	{
 		float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
 		if (dRdT > 1300)
-			emissionRate = (mEngineRPM / mRevLimit) * 1000;
+			exhaustRate = (mEngineRPM / mRevLimit) * 1000;
+		//if ((mCurrentGear != 0) && (speedmph < 20) && (mEngineRPM > (mRevLimit / 4)))
+		//	dustRate = 200 * (mEngineRPM / mRevLimit);
 	}
 	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
-		mExhaustSystem->getEmitter(i)->setEmissionRate(emissionRate);
+		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
+	//for (int i = 0; i < mDustSystem->getNumEmitters(); i++)
+	//	mDustSystem->getEmitter(i)->setEmissionRate(dustRate);
 	oldRPM = mEngineRPM;
-	
+		
 	// Update radial blur (from vehicle speed).
 #ifdef GFX_EFFECT_RADIAL_BLUR
-	float speedmph = getCarMph();
 	float blurAmount = 0;
 	if (speedmph > 40.0f)
 	{

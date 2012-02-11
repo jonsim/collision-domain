@@ -1,0 +1,56 @@
+material CollisionDomain/Exhaust
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_smoke.png
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material CollisionDomain/Dust
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_dust.png
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material CollisionDomain/Spark
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_spark.png
+				tex_address_mode clamp
+			}
+		}
+	}
+}
