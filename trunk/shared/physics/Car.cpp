@@ -11,24 +11,12 @@
 
 #define WHEEL_FRICTION_CFM 0.6f
 
-#define DEBUG_SHOW_SKID
+//#define DEBUG_SHOW_SKID
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
 /// @param  carSnapshot  The CarSnapshot specifying where and how to place the car.
 void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 {
-    btVector3 rel_door_pos;
-    btQuaternion door_rot;
-
-    if( mLeftDoorBody != NULL )
-    {
-        rel_door_pos = 
-            mLeftDoorBody->getBulletRigidBody()->getCenterOfMassPosition() - 
-            mbtRigidBody->getCenterOfMassPosition();
-
-        door_rot = mLeftDoorBody->getBulletRigidBody()->getOrientation();
-    }
-
     moveTo(carSnapshot->mPosition, carSnapshot->mRotation);
 
     // After this the car will be moved and rotated as specified, but the current velocity
@@ -38,12 +26,6 @@ void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 
     mSteer = carSnapshot->mWheelPosition;
     applySteeringValue();
-
-    if( mLeftDoorBody != NULL )
-    {
-        btTransform newDoorPos( door_rot, carSnapshot->mPosition);// - rel_door_pos );
-        mLeftDoorBody->getBulletRigidBody()->proceedToTransform( newDoorPos );
-    }
 }
 
 
@@ -87,8 +69,21 @@ void Car::moveTo(const btVector3 &position)
 void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     btTransform transform(rotation, position);
-    mbtRigidBody->proceedToTransform(transform);
-    //mbtRigidBody->setWorldTransform(transform);
+    mbtRigidBody->proceedToTransform(transform); 
+
+    if( mLeftDoorBody != NULL )
+    {
+        mLeftDoorBody->getBulletRigidBody()->clearForces();
+
+        btQuaternion id( 0.0f, leftDoorHinge->getHingeAngle(), 0.0f );
+
+        btTransform newDoorPos( rotation, position );
+        mLeftDoorBody->getBulletRigidBody()->proceedToTransform( newDoorPos );
+
+        /*mLeftDoorBody->getBulletRigidBody()->translate( btVector3( -1.118f, -1.714f, -2.315f ) );
+        mLeftDoorBody->setOrientation( id );
+        mLeftDoorBody->getBulletRigidBody()->translate( btVector3( 1.118f, 1.714f, 2.315f ) );*/
+    }
 }
 
 

@@ -137,6 +137,9 @@ protected:
 
     Car *testCar; 
 
+    btHingeConstraint *leftDoorHinge; 
+    btHingeConstraint *rightDoorHinge;
+
 
 private:
     void applySteeringValue();
