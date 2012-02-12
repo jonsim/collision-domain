@@ -31,7 +31,6 @@ void GraphicsApplication::createScene (void)
 
     setupLighting(1);
     setupArena();
-    setupNetworking();
 
     // Load the ninjas
     Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");
@@ -200,17 +199,9 @@ void GraphicsApplication::setupArena (void)
 }
 
 
-/// @brief  Configures the networking, retreiving the required data from the server.
-void GraphicsApplication::setupNetworking (void)
-{
-}
-
-
 /// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
-    firstFrameOccurred = false;
-    mClock = new btClock();
     GraphicsCore::createFrameListener();
 }
 
@@ -336,11 +327,6 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
 {
     return true;
-}
-
-Ogre::Entity* GraphicsApplication::getArenaEntity()
-{
-	return arenaEntity;
 }
 
 

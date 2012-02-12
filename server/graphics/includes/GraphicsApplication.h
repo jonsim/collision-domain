@@ -21,13 +21,6 @@ class GraphicsApplication : public GraphicsCore
 public:
     GraphicsApplication(void);
     virtual ~GraphicsApplication(void);
-
-    int clientID;               ///< The client ID which is assigned by the server.
-
-    //Player players[1]; ///< An array of all players in the game to keep track of.
-    btClock *mClock;
-    bool firstFrameOccurred;
-	Ogre::Entity* getArenaEntity();
 protected:
 	CEGUI::OgreRenderer* mGuiRenderer;
 
@@ -42,8 +35,6 @@ protected:
 private:
     void setupLighting (uint8_t mode);
     void setupArena (void);
-    void setupNetworking (void);
-	Ogre::Entity* arenaEntity; //Needed to do calculations on arena size
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

@@ -30,28 +30,26 @@ public:
 	void shutdown() { mShutDown = true; }
 	
     Ogre::Camera* mCamera;
-    SpawnScreen *mSpawnScreen;
+    SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
     
 protected:
-    virtual bool setup(); // Moved here so network cant call :P
-    virtual bool configure(void);
-    virtual void createCamera(void);
-    virtual void createFrameListener(void);
-    virtual void createScene(void) = 0;     // This needs to be overridden to display anything
-    virtual void destroyScene(void);
-    virtual void createViewports(void);
-    virtual void setupResources(void);
-    virtual void createResourceListener(void);
-    virtual void loadResources(void);
+    virtual bool initApplication (void); // This shouldn't be here. Will be purged.
+    virtual bool configureRenderer (void);
+    virtual void createCamera (void);
+    virtual void createFrameListener (void);
+    virtual void createScene (void) = 0;     // This needs to be overridden to display anything
+    virtual void destroyScene (void);
+    virtual void createViewports (void);
+    virtual void setupResources (void);
+    virtual void createResourceListener (void);
+    virtual void loadResources (void);
 
-    // Ogre::FrameListener
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    // Ogre::FrameListener overrides.
+    virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);
     
-    // Ogre::WindowEventListener
-    // Adjust mouse clipping area
-    virtual void windowResized(Ogre::RenderWindow* rw);
-    // Unattach OIS before window shutdown (very important under Linux)
-    virtual void windowClosed(Ogre::RenderWindow* rw);
+    // Ogre::WindowEventListener overrides.
+    virtual void windowResized (Ogre::RenderWindow* rw);
+    virtual void windowClosed (Ogre::RenderWindow* rw);
 
     // OIS user input
     Input mUserInput;
@@ -62,9 +60,7 @@ protected:
     Ogre::String mPluginsCfg;
 
     // OgreBites
-    //OgreBites::SdkTrayManager* mTrayMgr;
     OgreBites::SdkCameraMan* mCameraMan;    // basic camera controller
-    //OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
     bool mCursorWasVisible;                 // was cursor visible before dialog appeared
     bool mShutDown;
 	
