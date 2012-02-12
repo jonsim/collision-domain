@@ -29,7 +29,7 @@ GraphicsApplication::GraphicsApplication (void)
 	gfxSettingMotionBlur = 1.0f;
 #endif
 
-	benchmarkRunning = false;
+	mBenchmarkRunning = false;
 }
 
 
@@ -148,33 +148,33 @@ void GraphicsApplication::setupCompositorChain (void)
 	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
 	// Finally add the compositors to the compositor chain and configure, then enable them.
 #ifdef GFX_EFFECT_HDR
-	hdrLogic = new HDRLogic;
-	cm.registerCompositorLogic("HDR", hdrLogic);
+	mHDRLogic = new HDRLogic;
+	cm.registerCompositorLogic("HDR", mHDRLogic);
 	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
 	//hdrLoader(0);
 #endif
 #ifdef GFX_EFFECT_BLOOM
-	bloomLogic = new BloomLogic;
-	cm.registerCompositorLogic("Bloom", bloomLogic);
+	mBloomLogic = new BloomLogic;
+	cm.registerCompositorLogic("Bloom", mBloomLogic);
 	cm.addCompositor(vp, "Bloom");
-	bloomLoader(0, 0.15f, 1.0f);
+	loadBloom(0, 0.15f, 1.0f);
 #endif
 #ifdef GFX_EFFECT_MOTION_BLUR
-	motionBlurLogic = new MotionBlurLogic;
-	cm.registerCompositorLogic("MotionBlur", motionBlurLogic);
+	mMotionBlurLogic = new MotionBlurLogic;
+	cm.registerCompositorLogic("MotionBlur", mMotionBlurLogic);
 	cm.addCompositor(vp, "MotionBlur");
-	motionBlurLoader(0, 0.10f);
+	loadMotionBlur(0, 0.10f);
 #endif
 #ifdef GFX_EFFECT_RADIAL_BLUR
-	radialBlurLogic = new RadialBlurLogic;
-	cm.registerCompositorLogic("RadialBlur", radialBlurLogic);
+	mRadialBlurLogic = new RadialBlurLogic;
+	cm.registerCompositorLogic("RadialBlur", mRadialBlurLogic);
 	cm.addCompositor(vp, "RadialBlur");
 	// radial blur has no loader as it is controlled by the players speed (Car.cpp).
 #endif
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
-void GraphicsApplication::hdrLoader (uint8_t mode)
+void GraphicsApplication::loadHDR (uint8_t mode)
 {
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
 	Ogre::Viewport* vp = mCamera->getViewport();
@@ -186,7 +186,7 @@ void GraphicsApplication::hdrLoader (uint8_t mode)
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
-void GraphicsApplication::bloomLoader (uint8_t mode, float blurWeight, float originalWeight)
+void GraphicsApplication::loadBloom (uint8_t mode, float blurWeight, float originalWeight)
 {
 	// reload bloom
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
@@ -197,9 +197,9 @@ void GraphicsApplication::bloomLoader (uint8_t mode, float blurWeight, float ori
 	originalWeight *= gfxSettingBloom;
 
 	if (blurWeight > 0.0f)
-		bloomLogic->setBlurWeight(blurWeight);
+		mBloomLogic->setBlurWeight(blurWeight);
 	if (originalWeight > 0.0f)
-		bloomLogic->setOriginalWeight(originalWeight);
+		mBloomLogic->setOriginalWeight(originalWeight);
 	if (mode > 0)
 		cm.setCompositorEnabled(vp, "Bloom", false);
 	if (mode < 2)
@@ -207,7 +207,7 @@ void GraphicsApplication::bloomLoader (uint8_t mode, float blurWeight, float ori
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
-void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
+void GraphicsApplication::loadMotionBlur (uint8_t mode, float blur)
 {
 	// reload bloom
 	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
@@ -217,7 +217,7 @@ void GraphicsApplication::motionBlurLoader (uint8_t mode, float blur)
 	blur *= gfxSettingMotionBlur;
 
 	if (blur > 0.0f)
-		motionBlurLogic->setBlurStrength(blur);
+		mMotionBlurLogic->setBlurStrength(blur);
 	if (mode > 0)
 		cm.setCompositorEnabled(vp, "MotionBlur", false);
 	if (mode < 2)
@@ -240,7 +240,7 @@ void GraphicsApplication::setRadialBlur (float blur)
 		}
 		else
 		{
-			radialBlurLogic->setBlurStrength(blur);
+			mRadialBlurLogic->setBlurStrength(blur);
 		}
 	}
 	else
@@ -248,7 +248,7 @@ void GraphicsApplication::setRadialBlur (float blur)
 		if (blur > 0.001f)
 		{
 			Ogre::CompositorManager::getSingleton().setCompositorEnabled(mCamera->getViewport(), "RadialBlur", true);
-			radialBlurLogic->setBlurStrength(blur);
+			mRadialBlurLogic->setBlurStrength(blur);
 			enabled = true;
 		}
 	}
@@ -259,20 +259,20 @@ void GraphicsApplication::setRadialBlur (float blur)
 void GraphicsApplication::setupLighting (void)
 {
 	// initialise the sun
-    worldSun = GameCore::mSceneMgr->createLight("directionalLight");
-    worldSun->setType(Ogre::Light::LT_DIRECTIONAL);
+    mWorldSun = GameCore::mSceneMgr->createLight("directionalLight");
+    mWorldSun->setType(Ogre::Light::LT_DIRECTIONAL);
 
 	// initialise (but don't attach) the weather system
-	weatherSystem = GameCore::mSceneMgr->createParticleSystem("WeatherSystem", "Examples/RainSmall");
+	mWeatherSystem = GameCore::mSceneMgr->createParticleSystem("WeatherSystem", "Examples/RainSmall");
 
 	// setup the lighting and weather system
-	setWeatherMode(1);
+	setWeather(1);
 }
 
 
 /// @brief  Sets the weather and lighting mode for the scene. Without setting this no lights will be turned on.
 /// @param  mode	The lighting mode to use. 0 = Morning, 1 = Noon, 2 = Stormy.
-void GraphicsApplication::setWeatherMode (uint8_t mode)
+void GraphicsApplication::setWeather (uint8_t mode)
 {
 	static bool weatherSystemAttached = false;
 
@@ -348,7 +348,7 @@ void GraphicsApplication::setWeatherMode (uint8_t mode)
 		skyBoxMap = "Examples/StormySkyBox";
 		
 		if (!weatherSystemAttached)
-			GameCore::mSceneMgr->getRootSceneNode()->attachObject(weatherSystem);
+			GameCore::mSceneMgr->getRootSceneNode()->attachObject(mWeatherSystem);
 		weatherSystemAttached = true;
 	}
 	
@@ -378,9 +378,9 @@ void GraphicsApplication::setWeatherMode (uint8_t mode)
 	GameCore::mSceneMgr->setAmbientLight(sunAmbienceColour);
     
     // Add a directional light (for the sun).
-    worldSun->setDiffuseColour(sunBrightnessColour);
-    worldSun->setSpecularColour(sunSpecularColour);
-	worldSun->setDirection(sunDirection);
+    mWorldSun->setDiffuseColour(sunBrightnessColour);
+    mWorldSun->setSpecularColour(sunSpecularColour);
+	mWorldSun->setDirection(sunDirection);
 	
     // Create the skybox
 	GameCore::mSceneMgr->setSkyBox(true, skyBoxMap);
@@ -436,17 +436,17 @@ void GraphicsApplication::startBenchmark (uint8_t stage)
 			break;
 		case 1: // just hdr on
 			cm.addCompositor(vp, "HDR");
-			hdrLoader(0);
+			loadHDR(0);
 			break;
 		case 2: // just bloom on
 			cm.removeCompositor(vp, "HDR");
 			cm.addCompositor(vp, "Bloom");
-			bloomLoader(0, 0.15f, 1.0f);
+			loadBloom(0, 0.15f, 1.0f);
 			break;
 		case 3: // just MotionBlur on
 			cm.removeCompositor(vp, "Bloom");
 			cm.addCompositor(vp, "MotionBlur");
-			motionBlurLoader(0, 0.1f);
+			loadMotionBlur(0, 0.1f);
 			break;
 		case 4: // just RadialBlur on
 			cm.removeCompositor(vp, "MotionBlur");
@@ -455,17 +455,17 @@ void GraphicsApplication::startBenchmark (uint8_t stage)
 			break;
 		case 5: // all on
 			cm.addCompositor(vp, "HDR");
-			hdrLoader(0);
+			loadHDR(0);
 			cm.addCompositor(vp, "Bloom");
-			bloomLoader(0, 0.15f, 1.0f);
+			loadBloom(0, 0.15f, 1.0f);
 			cm.addCompositor(vp, "MotionBlur");
-			motionBlurLoader(0, 0.1f);
+			loadMotionBlur(0, 0.1f);
 			break;
 	}
 	
 	mWindow->resetStatistics();
-	benchmarkStage = stage;
-	benchmarkRunning = true;
+	mBenchmarkStage = stage;
+	mBenchmarkRunning = true;
 }
 
 void GraphicsApplication::finishBenchmark (uint8_t stage, float averageTriangles)
@@ -509,17 +509,10 @@ void GraphicsApplication::finishBenchmark (uint8_t stage, float averageTriangles
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    // MUST BE THE FIRST THING - do the core things (GraphicsCore is extended by this class)
-    if (!GraphicsCore::frameRenderingQueued(evt)) return false;
-
-    // Toggle on screen widgets
-    /*if (mUserInput.isToggleWidget()) 
-    {
-        mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
-        mDetailsPanel->show();
-    }*/
+    if (!GraphicsCore::frameRenderingQueued(evt))
+        return false;
     
-	if (benchmarkRunning)
+	if (mBenchmarkRunning)
 	{
 		static float benchmarkProgress = 0;
 		static float CATriangles = 0;
@@ -533,8 +526,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		{
 			CAi = 0;
 			benchmarkProgress = 0;
-			benchmarkRunning = false;
-			finishBenchmark(benchmarkStage, CATriangles);
+			mBenchmarkRunning = false;
+			finishBenchmark(mBenchmarkStage, CATriangles);
 		}
 
 		// rotate the camera
