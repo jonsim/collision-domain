@@ -417,7 +417,6 @@ void GraphicsApplication::setupArena (void)
 /// @brief  Passes the frame listener down to the GraphicsCore.
 void GraphicsApplication::createFrameListener (void)
 {
-    firstFrameOccurred = false;
     GraphicsCore::createFrameListener();
 }
 

@@ -28,9 +28,6 @@ class GraphicsApplication : public GraphicsCore
 public:
     GraphicsApplication(void);
     virtual ~GraphicsApplication(void);
-
-    int clientID; ///< The client ID which is assigned by the server.
-    bool firstFrameOccurred;
 	
 	void setWeatherMode (uint8_t mode);
 	void hdrLoader (uint8_t mode);
@@ -70,8 +67,8 @@ private:
 	void finishBenchmark (uint8_t stage, float averageTriangles);
 
 	Ogre::OverlayContainer *olcSpeedo;
-	Ogre::OverlayElement *oleNeedle;
-    Ogre::OverlayElement *oleGear;
+	Ogre::OverlayElement   *oleNeedle;
+    Ogre::OverlayElement   *oleGear;
 
 	Ogre::Light* worldSun;
 	Ogre::ParticleSystem* weatherSystem;

@@ -32,6 +32,9 @@ public:
 	void shutdown() { mShutDown = true; }
 
     Ogre::Camera* mCamera;
+    SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
+
+	// Extra server gameplay shit. This shouldn't be here. Will be purged.
     Ogre::Camera* mViewCam1;
     Ogre::Camera* mViewCam2;
     Ogre::Camera* mViewCam3;
@@ -41,50 +44,42 @@ public:
     Ogre::Camera* mViewCam7;
     Ogre::Camera* mViewCam8;
     Ogre::Camera* mViewCamBlank;
-
     BigScreen* bigScreen;
     ViewportManager* vpm;
     Gameplay* mGameplay;
 
-    // Had to put this in here as well even though it will never be used
-    // because of Input.cpp being shared. Really annoying.
-    SpawnScreen *mSpawnScreen;
-
 protected:
-    virtual bool setup(); // Moved here so network can't call :-)
-    virtual bool configure(void);
-    virtual void createCamera(void);
-    virtual void createFrameListener(void);
-    virtual void createScene(void) = 0;     // This needs to be overridden to display anything
-    virtual void destroyScene(void);
-    virtual void createViewports(void);
-    virtual void setupResources(void);
-    virtual void createResourceListener(void);
-    virtual void loadResources(void);
+    virtual bool initApplication (void); // This shouldn't be here. Will be purged.
+    virtual bool configureRenderer (void);
+    virtual void createCamera (void);
+    virtual void createFrameListener (void);
+    virtual void createScene (void) = 0;     // This needs to be overridden to display anything
+    virtual void destroyScene (void);
+    virtual void createViewports (void);
+    virtual void setupResources (void);
+    virtual void createResourceListener (void);
+    virtual void loadResources (void);
 
-    // Ogre::FrameListener
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
+    // Ogre::FrameListener overrides.
+    virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);
     
-    // Ogre::WindowEventListener
-    // Adjust mouse clipping area
-    virtual void windowResized(Ogre::RenderWindow* rw);
-    // Unattach OIS before window shutdown (very important under Linux)
-    virtual void windowClosed(Ogre::RenderWindow* rw);
+    // Ogre::WindowEventListener overrides.
+    virtual void windowResized (Ogre::RenderWindow* rw);
+    virtual void windowClosed (Ogre::RenderWindow* rw);
 
     // OIS user input
     Input mUserInput;
 
-
-    Ogre::Root *mRoot;
+    Ogre::Root*         mRoot;
     Ogre::RenderWindow* mWindow;
-    Ogre::String mResourcesCfg;
-    Ogre::String mPluginsCfg;
+    Ogre::String        mResourcesCfg;
+    Ogre::String        mPluginsCfg;
 
     // OgreBites
-    OgreBites::SdkTrayManager* mTrayMgr;
-    OgreBites::SdkCameraMan* mCameraMan;    // basic camera controller
-    OgreBites::ParamsPanel* mDetailsPanel;  // sample details panel
-    bool mCursorWasVisible;                 // was cursor visible before dialog appeared
+    OgreBites::SdkTrayManager* mTrayMgr;       // This shouldn't be here. Will be purged.
+    OgreBites::SdkCameraMan*   mCameraMan;     // basic camera controller
+    OgreBites::ParamsPanel*    mDetailsPanel;  // This shouldn't be here. Will be purged.
+    bool mCursorWasVisible;                    // Was the cursor visible before dialog appeared
     bool mShutDown;
 	
 	
