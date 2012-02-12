@@ -211,23 +211,13 @@ void GraphicsApplication::createFrameListener (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    // MUST BE THE FIRST THING - do the core things (GraphicsCore is extended by this class)
-    if (!GraphicsCore::frameRenderingQueued(evt)) return false;
-
-	if( NetworkCore::bConnected == false )
+    if (!GraphicsCore::frameRenderingQueued(evt))
+        return false;
+	if (!NetworkCore::bConnected)
 		return true;
-
-    // Toggle on screen widgets
-    /*if (mUserInput.isToggleWidget()) 
-    {
-        mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
-        mDetailsPanel->show();
-    }*/
-    
-    // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
-
+        
     // Process keyboard input and produce an InputState object from this.
-    InputState *inputSnapshot;
+    InputState* inputSnapshot;
 	
 	if( !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{

@@ -19,22 +19,27 @@
 class GraphicsApplication : public GraphicsCore
 {
 public:
-    GraphicsApplication(void);
-    virtual ~GraphicsApplication(void);
+    GraphicsApplication (void);
+    virtual ~GraphicsApplication (void);
+
 protected:
+    virtual void createScene (void);
+    virtual void createFrameListener (void);
+	
+    // Ogre::FrameListener overrides
+    virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);
+    virtual bool frameStarted (const Ogre::FrameEvent& evt);
+    virtual bool frameEnded (const Ogre::FrameEvent& evt);
+
+    // GUI Manager.
 	CEGUI::OgreRenderer* mGuiRenderer;
 
-    virtual void createScene(void);
-    virtual void createFrameListener(void);
-	
-    // Ogre::FrameListener
-    virtual bool frameRenderingQueued(const Ogre::FrameEvent& evt);
-    virtual bool frameStarted(const Ogre::FrameEvent& evt);
-    virtual bool frameEnded(const Ogre::FrameEvent& evt);
-
 private:
+    // Setup functions.
     void setupLighting (uint8_t mode);
     void setupArena (void);
+
+    // GUI functions.
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H
