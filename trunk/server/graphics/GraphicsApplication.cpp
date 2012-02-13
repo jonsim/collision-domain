@@ -23,6 +23,47 @@ GraphicsApplication::~GraphicsApplication (void)
 }
 
 
+/// @brief  Creates and positions the camera.
+void GraphicsApplication::createCamera (void)
+{
+	//Create the bigscreen manager
+	vpm = new ViewportManager(2,mWindow);
+	bigScreen = new BigScreen(vpm);
+
+    // Create the cameras
+    mCamera   = GameCore::mSceneMgr->createCamera("PlayerCam");
+	mViewCam1 = GameCore::mSceneMgr->createCamera("ViewCam1");
+	mViewCam2 = GameCore::mSceneMgr->createCamera("ViewCam2");
+	bigScreen->addCamera(mViewCam1);
+	bigScreen->addCamera(mViewCam2);
+
+    // Position it looking back along -Z
+    mCamera->setPosition(Ogre::Vector3(0,10,0));
+    mCamera->lookAt(Ogre::Vector3(0,100,0));
+    mCamera->setNearClipDistance(5);
+
+    //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+
+	mViewCam1->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam1->setNearClipDistance(5);
+	mViewCam1->lookAt(Ogre::Vector3(0,0,-300));
+	
+	mViewCam2->setPosition(Ogre::Vector3(0,0,80));
+	mViewCam2->setNearClipDistance(5);
+	mViewCam2->lookAt(Ogre::Vector3(0,0,-300));
+}
+
+
+/// @brief  Adds a single viewport that spans the entire window.
+void GraphicsApplication::createViewports (void)
+{
+	// Add viewports to the viewport manager.
+	vpm->addViewport(mCamera,   true);
+	vpm->addViewport(mViewCam1, false);
+	vpm->addViewport(mViewCam2, false);
+}
+
+
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
@@ -203,6 +244,11 @@ void GraphicsApplication::setupArena (void)
 void GraphicsApplication::createFrameListener (void)
 {
     GraphicsCore::createFrameListener();
+    
+	// Handle Game play (this isn't the place to do this, this will be moved).
+	mGameplay = new Gameplay();
+	Team* t1 = mGameplay->createTeam("Team1Name");
+	Team* t2 = mGameplay->createTeam("Team2Name");
 }
 
 
@@ -215,6 +261,9 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 	if (!NetworkCore::bConnected)
 		return true;
+    
+	// Update the big screen.
+	bigScreen->updateMapView();
         
     // Process keyboard input and produce an InputState object from this.
     InputState* inputSnapshot;
@@ -231,7 +280,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	else
 	{
 		// Don't want to capture any keys (typing things)
-		inputSnapshot = new InputState( false, false, false, false, false );
+		inputSnapshot = new InputState(false, false, false, false, false);
 	}
     
     // Process the networking. Sends client's input and receives data
@@ -305,7 +354,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 /// @brief  Called once a frame every time processing for a frame has begun.
 /// @param  evt  The FrameEvent associated with this frame's rendering.
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
-bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
+bool GraphicsApplication::frameStarted (const Ogre::FrameEvent& evt)
 {
     return true;
 }
@@ -314,7 +363,7 @@ bool GraphicsApplication::frameStarted(const Ogre::FrameEvent& evt)
 /// @brief  Called once a frame every time processing for a frame has ended.
 /// @param  evt  The FrameEvent associated with this frame's rendering.
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
-bool GraphicsApplication::frameEnded(const Ogre::FrameEvent& evt)
+bool GraphicsApplication::frameEnded (const Ogre::FrameEvent& evt)
 {
     return true;
 }
@@ -340,8 +389,7 @@ extern "C" {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
             MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
-            std::cerr << "An exception has occured: " <<
-                e.getFullDescription().c_str() << std::endl;
+            std::cerr << "An exception has occured: " << e.getFullDescription().c_str() << std::endl;
 #endif
         }
 

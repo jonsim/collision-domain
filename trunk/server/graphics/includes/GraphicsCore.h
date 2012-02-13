@@ -1,8 +1,6 @@
 /**
  * @file	GraphicsCore.h
- * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
- *          the Graphics Application with underlying functions to keep it tidy.
- *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
+ * @brief 	Configures the graphical settings and provides the common graphical functionality.
  */
 #ifndef GRAPHICSCORE_H
 #define GRAPHICSCORE_H
@@ -11,7 +9,6 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
-//class BigScreen;
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -37,13 +34,6 @@ public:
 	// Extra server gameplay shit. This shouldn't be here. Will be purged.
     Ogre::Camera* mViewCam1;
     Ogre::Camera* mViewCam2;
-    Ogre::Camera* mViewCam3;
-    Ogre::Camera* mViewCam4;
-    Ogre::Camera* mViewCam5;
-    Ogre::Camera* mViewCam6;
-    Ogre::Camera* mViewCam7;
-    Ogre::Camera* mViewCam8;
-    Ogre::Camera* mViewCamBlank;
     BigScreen* bigScreen;
     ViewportManager* vpm;
     Gameplay* mGameplay;
@@ -51,11 +41,11 @@ public:
 protected:
     virtual bool initApplication (void); // This shouldn't be here. Will be purged.
     virtual bool configureRenderer (void);
-    virtual void createCamera (void);
+    virtual void createCamera (void) = 0;
     virtual void createFrameListener (void);
     virtual void createScene (void) = 0;     // This needs to be overridden to display anything
     virtual void destroyScene (void);
-    virtual void createViewports (void);
+    virtual void createViewports (void) = 0;
     virtual void setupResources (void);
     virtual void createResourceListener (void);
     virtual void loadResources (void);
@@ -76,13 +66,9 @@ protected:
     Ogre::String        mPluginsCfg;
 
     // OgreBites
-    OgreBites::SdkTrayManager* mTrayMgr;       // This shouldn't be here. Will be purged.
     OgreBites::SdkCameraMan*   mCameraMan;     // basic camera controller
-    OgreBites::ParamsPanel*    mDetailsPanel;  // This shouldn't be here. Will be purged.
     bool mCursorWasVisible;                    // Was the cursor visible before dialog appeared
     bool mShutDown;
-	
-	
 };
 
 #endif // #ifndef GRAPHICSCORE_H
