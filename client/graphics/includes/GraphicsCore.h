@@ -1,8 +1,6 @@
 /**
  * @file	GraphicsCore.h
- * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
- *          the Graphics Application with underlying functions to keep it tidy.
- *          Derived from the Ogre Tutorial Framework (BaseApplication.h).
+ * @brief 	Configures the graphical settings and provides the common graphical functionality.
  */
 #ifndef GRAPHICSCORE_H
 #define GRAPHICSCORE_H
@@ -10,6 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
+
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -35,11 +34,11 @@ public:
 protected:
     virtual bool initApplication (void); // This shouldn't be here. Will be purged.
     virtual bool configureRenderer (void);
-    virtual void createCamera (void);
+    virtual void createCamera (void) = 0;
     virtual void createFrameListener (void);
     virtual void createScene (void) = 0;     // This needs to be overridden to display anything
     virtual void destroyScene (void);
-    virtual void createViewports (void);
+    virtual void createViewports (void) = 0;
     virtual void setupResources (void);
     virtual void createResourceListener (void);
     virtual void loadResources (void);

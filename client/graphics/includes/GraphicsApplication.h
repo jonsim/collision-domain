@@ -44,6 +44,9 @@ public:
 	float gfxSettingRadialBlur;  // Amount of blurring encountered at high speeds.
 
 protected:
+    virtual void createCamera (void);
+    virtual void createViewports (void);
+
     virtual void createScene (void);
     virtual void createFrameListener (void);
 	

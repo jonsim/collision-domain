@@ -1,8 +1,6 @@
 /**
  * @file	GraphicsCore.h
- * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
- *          the Graphics Application with underlying functions to keep it tidy.
- *          Derived from the Ogre Tutorial Framework (BaseApplication.cpp).
+ * @brief 	Configures the graphical settings and provides the common graphical functionality.
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -61,21 +59,6 @@ bool GraphicsCore::configureRenderer (void)
 }
 
 
-/// @brief  Creates and positions the camera.
-void GraphicsCore::createCamera (void)
-{
-    // Create the camera
-    mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
-
-    // Position it looking back along -Z
-    mCamera->setPosition(Ogre::Vector3(0, 3, 60));
-    mCamera->lookAt(Ogre::Vector3(0, 0, -300));
-    mCamera->setNearClipDistance(5);
-
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
-}
-
-
 /// @brief  Creates a frame listener for the main window.
 void GraphicsCore::createFrameListener (void)
 {
@@ -105,18 +88,6 @@ void GraphicsCore::destroyScene (void)
 }
 
 
-/// @brief  Adds a single viewport that spans the entire window.
-void GraphicsCore::createViewports (void)
-{
-    // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-
-	// Set the background colour and match the aspect ratio to the window's.
-    vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
-    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
-}
-
-
 /// @brief  Loads and configures all resources from an external file.
 void GraphicsCore::setupResources (void)
 {
@@ -143,13 +114,13 @@ void GraphicsCore::setupResources (void)
 }
 
 
-/// @brief Creates a resource listener (whatever one of those is).
+/// @brief Creates a resource listener.
 void GraphicsCore::createResourceListener (void)
 {
 }
 
 
-/// @brief  Loads resources from the resources.cfg file into a ResourceGroup.
+/// @brief  Loads resources from the resources.cfg file into the ResourceGroup.
 void GraphicsCore::loadResources (void)
 {
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
@@ -159,16 +130,15 @@ void GraphicsCore::loadResources (void)
 /// @brief  Starts the graphics.
 void GraphicsCore::go (void)
 {
-    srand ( time(NULL) );
+    srand(time(NULL));
 
-	if (!initApplication() )
+	if (!initApplication())
 		return;
 
     mRoot->startRendering();
 
     // clean up
     destroyScene();
-
     GameCore::destroy();
 }
 
@@ -219,12 +189,12 @@ bool GraphicsCore::initApplication (void)
 /// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.
 /// @param  evt  The FrameEvent associated with this frame's rendering.
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
-bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
 	// Check for exit conditions.
-    if(mWindow->isClosed())
+    if (mWindow->isClosed())
         return false;
-    if(mShutDown)
+    if (mShutDown)
         return false;
     mUserInput.capture();
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
@@ -239,7 +209,7 @@ bool GraphicsCore::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 /// @brief  Adjust mouse clipping area when the window is resized.
 /// @param  rw  The window that has been resized.
-void GraphicsCore::windowResized(Ogre::RenderWindow* rw)
+void GraphicsCore::windowResized (Ogre::RenderWindow* rw)
 {
     unsigned int width, height, depth;
     int left, top;
@@ -253,7 +223,7 @@ void GraphicsCore::windowResized(Ogre::RenderWindow* rw)
 
 /// @brief  Closes a window, unattaching OIS before window shutdown (very important under Linux).
 /// @param  rw  The window to close.
-void GraphicsCore::windowClosed(Ogre::RenderWindow* rw)
+void GraphicsCore::windowClosed (Ogre::RenderWindow* rw)
 {
     // Only close for window that created OIS
     if (rw == mWindow)

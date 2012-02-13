@@ -401,7 +401,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;..\..\shared\ogreoggsound\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;CEGUIOgreRenderer.lib;CEGUIBase.lib;CEGUIExpatParser.lib;CEGUIFalagardWRBase.lib;OgreOggSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OgreTerrain.lib;OgreMain.lib;OIS.lib;OgreBulletCollisions.lib;OgreBulletDynamics.lib;BulletCollision.lib;BulletDynamics.lib;LinearMath.lib;ConvexDecomposition.lib;ws2_32.lib;CEGUIOgreRenderer.lib;CEGUIBase.lib;CEGUIExpatParser.lib;CEGUIFalagardWRBase.lib;OgreOggSound.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(OutDir)\$(TargetFileName)" "$(OGRE_HOME)\Bin\$(Configuration)"</Command>

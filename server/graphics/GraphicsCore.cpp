@@ -1,15 +1,12 @@
 /**
  * @file	GraphicsCore.h
- * @brief 	Builds the window, loading the Ogre necessary libraries and providing 
- *          the Graphics Application with underlying functions to keep it tidy.
- *          Derived from the Ogre Tutorial Framework (BaseApplication.cpp).
+ * @brief 	Configures the graphical settings and provides the common graphical functionality.
  */
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
 #include <sstream>
-//#define ADDITIONAL_SERVER_TRACKING_CAMERAS
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -21,9 +18,7 @@ GraphicsCore::GraphicsCore (void)
     mWindow(0),
     mResourcesCfg(Ogre::StringUtil::BLANK),
     mPluginsCfg(Ogre::StringUtil::BLANK),
-    mTrayMgr(0),
     mCameraMan(0),
-    mDetailsPanel(0),
     mCursorWasVisible(false),
     mShutDown(false),
     mSpawnScreen(0)
@@ -34,9 +29,6 @@ GraphicsCore::GraphicsCore (void)
 /// @brief  Deconstructor.
 GraphicsCore::~GraphicsCore (void)
 {
-	// Destroy Ogre GUI (we are using CEGUI, we shouldn't be using Ogre Trays as well)...
-    if (mTrayMgr)
-		delete mTrayMgr;
 	// Destroy camera manager.
     if (mCameraMan)
 		delete mCameraMan;
@@ -59,42 +51,11 @@ bool GraphicsCore::configureRenderer (void)
     if (mRoot->showConfigDialog())
     {
         // Let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "Collision Domain Server");
+        mWindow = mRoot->initialise(true, "Collision Domain");
         return true;
     }
 
     return false;
-}
-
-
-/// @brief  Creates and positions the camera.
-void GraphicsCore::createCamera (void)
-{
-	//Create the bigscreen manager
-	vpm = new ViewportManager(2,mWindow);
-	bigScreen = new BigScreen(vpm);
-
-    // Create the cameras
-    mCamera   = GameCore::mSceneMgr->createCamera("PlayerCam");
-	mViewCam1 = GameCore::mSceneMgr->createCamera("ViewCam1");
-	mViewCam2 = GameCore::mSceneMgr->createCamera("ViewCam2");
-	bigScreen->addCamera(mViewCam1);
-	bigScreen->addCamera(mViewCam2);
-
-    // Position it looking back along -Z
-    mCamera->setPosition(Ogre::Vector3(0,10,0));
-    mCamera->lookAt(Ogre::Vector3(0,100,0));
-    mCamera->setNearClipDistance(5);
-
-    //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
-
-	mViewCam1->setPosition(Ogre::Vector3(0,0,80));
-	mViewCam1->setNearClipDistance(5);
-	mViewCam1->lookAt(Ogre::Vector3(0,0,-300));
-	
-	mViewCam2->setPosition(Ogre::Vector3(0,0,80));
-	mViewCam2->setNearClipDistance(5);
-	mViewCam2->lookAt(Ogre::Vector3(0,0,-300));
 }
 
 
@@ -113,44 +74,17 @@ void GraphicsCore::createFrameListener (void)
     mUserInput.createInputSystem(pl);
     windowResized(mWindow);
 
-    // Register as a Window listener
+    // Register as a Window listener.
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
-
-	// Handle Game play (this isn't the place to do this, this will be moved).
-	mGameplay = new Gameplay();
-	Team* t1 = mGameplay->createTeam("Team1Name");
-	Team* t2 = mGameplay->createTeam("Team2Name");
-
-	// Setup the Ogre Trays GUI (we shouldn't be using this at all).
-    mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mUserInput.mMouse, this);
-    mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
-    mTrayMgr->hideCursor();
-	
-	// Add progress bars to the Ogre Trays GUI (we shouldn't be using this at all). 
-	OgreBites::ProgressBar* mProgressBar = mTrayMgr->createProgressBar(OgreBites::TL_TOPLEFT, "PBarT1", t1->getName(), 200,200);
-	mProgressBar->setProgress(1.0);
-	OgreBites::ProgressBar* mProgressBar2 = mTrayMgr->createProgressBar(OgreBites::TL_TOPRIGHT, "PBarT2", t2->getName(), 200,200);
-	mProgressBar2->setProgress(1.0);
-
+    
 	// Register as a Frame listener.
-    mRoot->addFrameListener (this);
+    mRoot->addFrameListener(this);
 }
 
 
 /// @brief  Removes everything from the scene.
 void GraphicsCore::destroyScene (void)
 {
-}
-
-
-/// @brief  Adds a single viewport that spans the entire window.
-void GraphicsCore::createViewports (void)
-{
-	// Add viewports to the viewport manager.
-	vpm->addViewport(mCamera,   true);	// This shouldn't exist anymore, will be purged.
-	vpm->addViewport(mViewCam1, false);
-	vpm->addViewport(mViewCam2, false);
 }
 
 
@@ -196,7 +130,7 @@ void GraphicsCore::loadResources (void)
 /// @brief  Starts the graphics.
 void GraphicsCore::go (void)
 {
-    srand ( time(NULL) );
+    srand(time(NULL));
 
 	if (!initApplication())
 		return;
@@ -230,6 +164,7 @@ bool GraphicsCore::initApplication (void)
 
     // Init core classes, also init the SceneManager, in this case a generic one
     GameCore::initialise(this, mRoot->createSceneManager(Ogre::ST_GENERIC));
+    mSpawnScreen = NULL;
 
     createCamera();
     createViewports();
@@ -262,7 +197,7 @@ bool GraphicsCore::initApplication (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-	// Check for exit conditions
+	// Check for exit conditions.
     if (mWindow->isClosed())
         return false;
     if (mShutDown)
@@ -271,14 +206,9 @@ bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
 		return false;
 
-	// Update the big screen (this shouldn't be here).
-	bigScreen->updateMapView();
-
 	// Assign new VIP (this is completely the wrong place for this and will be purged).
 	if (mUserInput.mKeyboard->isKeyDown(OIS::KC_V))
 		mGameplay->setAllNewVIP();
-	
-    mTrayMgr->frameRenderingQueued(evt);
 
     return true;
 }

@@ -39,6 +39,33 @@ GraphicsApplication::~GraphicsApplication (void)
 }
 
 
+/// @brief  Creates and positions the camera.
+void GraphicsApplication::createCamera (void)
+{
+    // Create the camera
+    mCamera = GameCore::mSceneMgr->createCamera("PlayerCam");
+
+    // Position it looking back along -Z
+    mCamera->setPosition(Ogre::Vector3(0, 3, 60));
+    mCamera->lookAt(Ogre::Vector3(0, 0, -300));
+    mCamera->setNearClipDistance(5);
+
+    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+}
+
+
+/// @brief  Adds a single viewport that spans the entire window.
+void GraphicsApplication::createViewports (void)
+{
+    // Create one viewport, entire window
+    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+
+	// Set the background colour and match the aspect ratio to the window's.
+    vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
+    mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+}
+
+
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
@@ -534,11 +561,11 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(benchmarkIncrement, 0.0f, 0.0f);
 
 		// update fps counter
-		float avgfps   = mWindow->getAverageFPS(); // update fps
+		float avgfps = mWindow->getAverageFPS(); // update fps
 		CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
 		char szFPS[16];
-		sprintf(szFPS,   "FPS: %.2f", avgfps);
-		//fps->setText(szFPS);
+		sprintf(szFPS, "FPS: %.2f", avgfps);
+		fps->setText(szFPS);
 
 		// dont do any of the non-graphics bullshit
 		return true;
@@ -568,14 +595,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
             int   curGear  = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getGear();
 			float avgfps   = mWindow->getAverageFPS();
 
-			CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/mph" );
 			CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-			char szSpeed[64];
 			char szFPS[64];
-			sprintf( szSpeed, "MPH: %f", speedmph );
 			sprintf( szFPS,   "FPS: %.2f", avgfps);
-			mph->setText( szSpeed );
-			//fps->setText( szFPS );
+			fps->setText( szFPS );
 			updateSpeedo( speedmph, curGear );
 
 			// 
@@ -768,8 +791,7 @@ extern "C" {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
             MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
-            std::cerr << "An exception has occured: " <<
-                e.getFullDescription().c_str() << std::endl;
+            std::cerr << "An exception has occured: " << e.getFullDescription().c_str() << std::endl;
 #endif
         }
 
