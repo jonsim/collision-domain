@@ -1,0 +1,39 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Blank from "cdBaseMaterials.material"
+
+
+material small_car_seat : cd/Blank
+{
+}
+
+material small_car_steering_wheel_out : cd/Blank
+{
+}
+
+material small_car_steering_wheel_in : cd/Blank
+{
+}
+
+material small_car_bumper : cd/Blank
+{
+}
+
+material small_car_body_uv : cd/Base
+{
+    $diffuse_map small_car_body.jpg
+}
+
+material small_car_door_uv : cd/Base
+{
+    $set diffuse_map small_car_door.jpg
+}
+
+material small_car_headlight_uv : cd/Base
+{
+    $set diffuse_map small_car_headlight.jpg
+}
+
+material small_car_wheel_uv : cd/Base
+{
+    $diffuse_map small_car_wheel.jpg
+}

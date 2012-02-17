@@ -14,22 +14,13 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor.
-GraphicsApplication::GraphicsApplication (void)
+GraphicsApplication::GraphicsApplication (void) :
+    gfxSettingHDR(1.0f),
+    gfxSettingBloom(1.0f),
+    gfxSettingRadialBlur(1.0f),
+    gfxSettingMotionBlur(1.0f),
+    mBenchmarkRunning(false)
 {
-#ifdef GFX_EFFECT_HDR
-	gfxSettingHDR        = 1.0f;
-#endif
-#ifdef GFX_EFFECT_BLOOM
-	gfxSettingBloom      = 1.0f;
-#endif
-#ifdef GFX_EFFECT_RADIAL_BLUR
-	gfxSettingRadialBlur = 1.0f;
-#endif
-#ifdef GFX_EFFECT_MOTION_BLUR
-	gfxSettingMotionBlur = 1.0f;
-#endif
-
-	mBenchmarkRunning = false;
 }
 
 
@@ -49,6 +40,7 @@ void GraphicsApplication::createCamera (void)
     mCamera->setPosition(Ogre::Vector3(0, 3, 60));
     mCamera->lookAt(Ogre::Vector3(0, 0, -300));
     mCamera->setNearClipDistance(5);
+    mCamera->setFarClipDistance(2500);
 
     mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
@@ -87,8 +79,18 @@ void GraphicsApplication::createScene (void)
     ninjaEntity->setCastShadows(true);
     Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
     ninjaNode->attachObject(ninjaEntity);
-    ninjaNode->scale(0.2f, 0.2f, 0.2f);
-    ninjaNode->translate(50.0f, -3.0f, 0);
+    ninjaNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
+    ninjaNode->translate(50.0f, -10.5f, 3.0f);
+
+    // Load the ninjas into the scene. This is for testing purposes only and can be removed later.
+    //Ogre::Entity* treeEntity = GameCore::mSceneMgr->createEntity("Tree", "basic_tree.mesh");
+    Ogre::Entity* treeEntity = GameCore::mSceneMgr->createEntity("Tree", "palm_tree1.mesh");
+    //treeEntity->setCastShadows(true);
+    treeEntity->setCastShadows(false);
+    Ogre::SceneNode* treeNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("TreeNode");
+    treeNode->attachObject(treeEntity);
+    treeNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
+    treeNode->translate(50.0f, -10.5f, -3.0f);
 
 	// Attach the GUI components
 	GameCore::mGui->displayConnectBox();
@@ -96,6 +98,25 @@ void GraphicsApplication::createScene (void)
 	GameCore::mGui->displayChatbox();
 
 	createSpeedo();
+}
+
+
+/// @brief  Builds the initial arena.
+void GraphicsApplication::setupArena (void)
+{
+    // Load and meshes and create entities
+    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena.mesh");
+    arenaEntity->setMaterialName("arena_uv");
+    arenaEntity->setCastShadows(true);
+    
+    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
+    arenaNode->attachObject(arenaEntity);
+	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+    //arenaNode->setDebugDisplayEnabled(false);
+
+    // create collideable floor so shit doesn't freefall. It will hit the floor.
+    GameCore::mPhysicsCore->createFloorPlane( arenaNode );
+    GameCore::mPhysicsCore->createWallPlanes();
 }
 
 /// @brief Draws the speedo on-screen
@@ -150,13 +171,64 @@ void GraphicsApplication::createGearDisplay (void)
 /// @brief Configure the shadow system. This should be the *FIRST* thing in the scene setup, because the shadow technique can alter the way meshes are loaded.
 void GraphicsApplication::setupShadowSystem (void)
 {
-    // Set the shadow renderer
+// The shadowing method to use (1 = Stencils, 2 = DSM, 3 = PSSM).
+#define SHADOW_METHOD 1
+
+#if SHADOW_METHOD == 1
+    /**** Stencil shadowing. No shaders necessary. ****/
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-	// THIS NEEDS TO BE SET, DEFAULTS TO ZERO. GameCore::mSceneMgr->setShadowFarDistance();
+    GameCore::mSceneMgr->setShadowFarDistance(150);
+    GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
+    GameCore::mSceneMgr->setShadowCasterRenderBackFaces(true);
+#elif SHADOW_METHOD == 2
+    /**** Depth Shadowmapping with PCF filtering and LiSPSM Projection. Ensure materials are correctly setup. ****/
+    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
+
+    GameCore::mSceneMgr->setShadowFarDistance(150);
+    GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
+    GameCore::mSceneMgr->setShadowDirLightTextureOffset(0.9f);
+    GameCore::mSceneMgr->setShadowTextureCount(1);
+    GameCore::mSceneMgr->setShadowTextureConfig(0, 4096, 4096, Ogre::PF_FLOAT32_R);
+    
+    GameCore::mSceneMgr->setShadowTextureCasterMaterial("Ogre/DepthShadowmap/Caster/Float");          // Set the caster material.
+    GameCore::mSceneMgr->setShadowTextureReceiverMaterial("Ogre/DepthShadowmap/Receiver/Float/PCF");  // Set the receiver material (remove /PCF to disable).
+    GameCore::mSceneMgr->setShadowTextureSelfShadow(true);
+    GameCore::mSceneMgr->setShadowCasterRenderBackFaces(true);
+
+    Ogre::LiSPSMShadowCameraSetup* shadowSetup = new Ogre::LiSPSMShadowCameraSetup();
+    shadowSetup->setOptimalAdjustFactor(1);
+    GameCore::mSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowSetup));
+#elif SHADOW_METHOD == 3
+    /**** Depth Shadowmapping with PSSM projection and LiSPSM filtering and split resolution. Ensure materials are correctly setup. ****/
+    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
+    GameCore::mSceneMgr->setShadowFarDistance(150);
+    GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(500);
+    GameCore::mSceneMgr->setShadowDirLightTextureOffset(0.7f);
+    GameCore::mSceneMgr->setShadowTextureCountPerLightType(Ogre::Light::LT_DIRECTIONAL, 3);
+    GameCore::mSceneMgr->setShadowTextureCount(3);
+    GameCore::mSceneMgr->setShadowTextureConfig(0, 1024, 1024, Ogre::PF_FLOAT32_RGB);
+    GameCore::mSceneMgr->setShadowTextureConfig(1, 1024, 1024, Ogre::PF_FLOAT32_RGB);
+    GameCore::mSceneMgr->setShadowTextureConfig(2, 512, 512, Ogre::PF_FLOAT32_RGB);
+    GameCore::mSceneMgr->setShadowTextureSelfShadow(true);
+    GameCore::mSceneMgr->setShadowTextureCasterMaterial("PSSM/shadow_caster");
+    GameCore::mSceneMgr->setShadowCasterRenderBackFaces(false);
+    GameCore::mSceneMgr->setShadowColour(Ogre::ColourValue(0.0f, 0.0f, 0.0f));
+    
+    Ogre::PSSMShadowCameraSetup* shadowSetup = new Ogre::PSSMShadowCameraSetup();
+    shadowSetup->calculateSplitPoints(3, mCamera->getNearClipDistance() * 0.5, mCamera->getFarClipDistance());
+    char str[64];
+    sprintf(str, "\nnearClip=%.1f, farClip=%.1f\n\n", mCamera->getNearClipDistance(), mCamera->getFarClipDistance());
+    OutputDebugString(str);
+    shadowSetup->setSplitPadding(1);
+    shadowSetup->setOptimalAdjustFactor(0, 5);
+    shadowSetup->setOptimalAdjustFactor(1, 1);
+    shadowSetup->setOptimalAdjustFactor(2, 0);
+    GameCore::mSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowSetup));
+#endif
 }
 
 
-/// @brief Builds the compositor chain which adds post filters to the rendered image before being displayed.
+/// @brief  Builds the compositor chain which adds post filters to the rendered image before being displayed.
 void GraphicsApplication::setupCompositorChain (void)
 {
 	// Collect required information.
@@ -165,39 +237,29 @@ void GraphicsApplication::setupCompositorChain (void)
 	
 	// Create compositors. Where possible these are coded in the Examples.compositor script, but some need
 	// access to certain features not available when this script is compiled.
-#ifdef GFX_EFFECT_MOTION_BLUR
 	createMotionBlurCompositor();
-#endif
 
 	// Register the compositors.
 	// This is done by first setting up the logic module for them and adding this as a listener so it
 	// fires every time the compositor completes a pass allowing injection of values into the GPU
 	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
 	// Finally add the compositors to the compositor chain and configure, then enable them.
-#ifdef GFX_EFFECT_HDR
 	mHDRLogic = new HDRLogic;
 	cm.registerCompositorLogic("HDR", mHDRLogic);
 	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
 	//hdrLoader(0);
-#endif
-#ifdef GFX_EFFECT_BLOOM
 	mBloomLogic = new BloomLogic;
 	cm.registerCompositorLogic("Bloom", mBloomLogic);
 	cm.addCompositor(vp, "Bloom");
 	loadBloom(0, 0.15f, 1.0f);
-#endif
-#ifdef GFX_EFFECT_MOTION_BLUR
 	mMotionBlurLogic = new MotionBlurLogic;
 	cm.registerCompositorLogic("MotionBlur", mMotionBlurLogic);
 	cm.addCompositor(vp, "MotionBlur");
 	loadMotionBlur(0, 0.10f);
-#endif
-#ifdef GFX_EFFECT_RADIAL_BLUR
 	mRadialBlurLogic = new RadialBlurLogic;
 	cm.registerCompositorLogic("RadialBlur", mRadialBlurLogic);
 	cm.addCompositor(vp, "RadialBlur");
 	// radial blur has no loader as it is controlled by the players speed (Car.cpp).
-#endif
 }
 
 /// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
@@ -341,7 +403,7 @@ void GraphicsApplication::setWeather (uint8_t mode)
 		sunBrightness[0] = 242;
 		sunBrightness[1] = 224;
 		sunBrightness[2] = 183;
-		sunBrightness[3] = 850;
+		sunBrightness[3] = 1000;
 		sunSpecular[0] = 242;
 		sunSpecular[1] = 224;
 		sunSpecular[2] = 183;
@@ -408,9 +470,10 @@ void GraphicsApplication::setWeather (uint8_t mode)
     mWorldSun->setDiffuseColour(sunBrightnessColour);
     mWorldSun->setSpecularColour(sunSpecularColour);
 	mWorldSun->setDirection(sunDirection);
+    mWorldSun->setCastShadows(true);
 	
     // Create the skybox
-	GameCore::mSceneMgr->setSkyBox(true, skyBoxMap);
+	GameCore::mSceneMgr->setSkyBox(true, skyBoxMap, 1000);
 }
 
 
@@ -419,25 +482,6 @@ void GraphicsApplication::setupParticles (void)
 {
 	// set nonvisible timeout
 	Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
-}
-
-
-/// @brief  Builds the initial arena.
-void GraphicsApplication::setupArena (void)
-{
-    // Load and meshes and create entities
-    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena.mesh");
-    arenaEntity->setMaterialName("arena_uv");
-    arenaEntity->setCastShadows(true);
-    
-    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
-    arenaNode->attachObject(arenaEntity);
-	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-    arenaNode->setDebugDisplayEnabled( false );
-
-    // create collideable floor so shit doesn't freefall. It will hit the floor.
-    GameCore::mPhysicsCore->createFloorPlane( arenaNode );
-    GameCore::mPhysicsCore->createWallPlanes();
 }
 
 

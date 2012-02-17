@@ -112,8 +112,8 @@ void BigScreen::manageNewPlayer(Player* player)
 
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
 	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
-	tmpOLE->setMaterialName( "Arrow_Black" );
-	tmpOLE->setPosition(0.5,0.5);
+	tmpOLE->setMaterialName("ArrowBlack");
+	tmpOLE->setPosition(0.5f, 0.5f);
 	olcMap->addChild(tmpOLE);
 
 	player->setOverlayElement(tmpOLE);

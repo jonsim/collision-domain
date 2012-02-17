@@ -11,10 +11,6 @@
 
 
 /*-------------------- DEFINITIONS --------------------*/
-#define GFX_EFFECT_HDR
-#define GFX_EFFECT_BLOOM
-#define GFX_EFFECT_RADIAL_BLUR
-#define GFX_EFFECT_MOTION_BLUR
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

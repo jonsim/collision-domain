@@ -1,0 +1,39 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Blank from "cdBaseMaterials.material"
+
+
+material truck_seat : cd/Blank
+{
+}
+
+material truck_steeringwheel_in : cd/Blank
+{
+}
+
+material truck_steeringwheel_out : cd/Blank
+{
+}
+
+material truck_wingmirror_mirror : cd/Blank
+{
+}
+
+material truck_body_uv : cd/Base
+{
+    $set diffuse_map truck_body.jpg
+}
+
+material truck_door_uv : cd/Base
+{
+    $set diffuse_map truck_door.jpg
+}
+
+material truck_bumper_uv : cd/Base
+{
+    $set diffuse_map truck_bumper.jpg
+}
+
+material truck_wheel_uv : cd/Base
+{
+    $set diffuse_map truck_wheel.jpg
+}

@@ -180,11 +180,8 @@ bool GraphicsCore::initApplication (void)
     // Create the scene
     createScene();
     
-    // (Partially) init GameCore (this is completely the wrong place for this and will be purged).
 	GameCore::mNetworkCore->init( NULL );
-	Player *pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-	pPlayer->createPlayer( GameCore::mSceneMgr, CAR_BANGER, SKIN0, GameCore::mPhysicsCore );
-	//pPlayer->attachCamera( mCamera );
+	GameCore::mPlayerPool->getLocalPlayer()->createPlayer( GameCore::mSceneMgr, CAR_BANGER, SKIN0, GameCore::mPhysicsCore );
 
     createFrameListener();
 
@@ -206,9 +203,8 @@ bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
 		return false;
 
-	// Assign new VIP (this is completely the wrong place for this and will be purged).
-	if (mUserInput.mKeyboard->isKeyDown(OIS::KC_V))
-		mGameplay->setAllNewVIP();
+	// Feed the GUI the timestamping information.
+	CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 
     return true;
 }

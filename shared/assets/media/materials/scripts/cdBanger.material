@@ -1,0 +1,39 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Blank from "cdBaseMaterials.material"
+
+
+material banger_seat : cd/Blank
+{
+}
+
+material banger_steeringwheel_in : cd/Blank
+{
+}
+
+material banger_steeringwheel_out : cd/Blank
+{
+}
+
+material banger_bumper : cd/Blank
+{
+}
+
+material banger_body_uv : cd/Base
+{
+    set $diffuse_map banger_body.jpg
+}
+
+material banger_fdoor_uv : cd/Base
+{
+    set $diffuse_map banger_fdoor.jpg
+}
+
+material banger_rdoor_uv : cd/Base
+{
+    set $diffuse_map banger_rdoor.jpg
+}
+
+material banger_wheel_uv : cd/Base
+{
+    set $diffuse_map banger_wheel.jpg
+}
