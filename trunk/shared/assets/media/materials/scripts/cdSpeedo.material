@@ -1,0 +1,66 @@
+import cd/GUIComponent from "cdBaseMaterials.material"
+
+material speedo_main : cd/GUIComponent
+{
+	set $texture speedo.png
+}
+
+material speedo_needle : cd/GUIComponent
+{
+	set $texture needle.png
+}
+
+material gear0 : cd/GUIComponent
+{
+    set $texture 0.png
+}
+
+material gear1 : cd/GUIComponent
+{
+	set $texture 1.png
+}
+
+material gear2 : cd/GUIComponent
+{
+	set $texture 2.png
+}
+
+material gear3 : cd/GUIComponent
+{
+	set $texture 3.png
+}
+
+material gear4 : cd/GUIComponent
+{
+	set $texture 4.png
+}
+
+material gear5 : cd/GUIComponent
+{
+	set $texture 5.png
+}
+
+material gear6 : cd/GUIComponent
+{
+	set $texture 6.png
+}
+
+material gear7 : cd/GUIComponent
+{
+	set $texture 7.png
+}
+
+material gear8 : cd/GUIComponent
+{
+	set $texture 8.png
+}
+
+material gear9 : cd/GUIComponent
+{
+	set $texture 9.png
+}
+
+material gearoff : cd/GUIComponent
+{
+	set $texture off.png
+}

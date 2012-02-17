@@ -31,6 +31,7 @@ void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneM
     GameCore::mAudioCore = new AudioCore();
 	GameCore::mGui = new GameGUI();
     GameCore::mPowerupPool = new PowerupPool();
+
 }
 
 void GameCore::destroy()

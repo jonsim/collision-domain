@@ -211,7 +211,7 @@ void SimpleCoupeCar::initNodes()
 void SimpleCoupeCar::initGraphics(Ogre::Vector3 chassisShift)
 {
     // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    createGeometry("CarBody", "banger_body.mesh", "banger_body_uv", mChassisNode);
+    createGeometry("CarEntity_Body", "banger_body.mesh", "banger_body_uv", mChassisNode);
     PhysicsCore::auto_scale_scenenode(mChassisNode);
 
     // load the left door baby

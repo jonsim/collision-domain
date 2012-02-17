@@ -207,16 +207,16 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 				GameCore::mGraphicsApplication->setWeather(atoi(&szInput[8]) - 1);
 			else if (!stricmp(szInput, "benchmark"))
 				GameCore::mGraphicsApplication->startBenchmark(0);
-#ifdef GFX_EFFECT_BLOOM
 			else if (!strnicmp(szInput, "b1 ", 3))
 				GameCore::mGraphicsApplication->loadBloom(1, atof(&szInput[3]), -1.0f);
 			else if (!strnicmp(szInput, "b2 ", 3))
 				GameCore::mGraphicsApplication->loadBloom(1, -1.0f, atof(&szInput[3]));
-#endif
-#ifdef GFX_EFFECT_MOTION_BLUR
 			else if (!strnicmp(szInput, "mb ", 3))
 				GameCore::mGraphicsApplication->loadMotionBlur(1, atof(&szInput[3]));
-#endif
+			else if (!stricmp(szInput, "wireframe on"))
+                GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
+			else if (!stricmp(szInput, "wireframe off"))
+                GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_SOLID);
             else if( strTokens.at(0) == "movdbg" )
             {
                 if( strTokens.size() >= 4 )

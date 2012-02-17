@@ -948,7 +948,9 @@
     <ClCompile Include="..\..\shared\base\Powerup.cpp">
       <Filter>shared\base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\client\graphics\PostFilterLogic.cpp" />
+    <ClCompile Include="..\..\client\graphics\PostFilterLogic.cpp">
+      <Filter>client\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain Client.rc" />
