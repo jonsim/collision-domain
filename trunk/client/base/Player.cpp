@@ -148,3 +148,8 @@ void Player::applyHealthBonus()
 {
 
 }
+
+int Player::getHP()
+{
+	return hp;
+}

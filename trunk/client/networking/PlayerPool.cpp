@@ -33,6 +33,20 @@ void PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	}
 }
 
+int PlayerPool::getNumberOfPlayers()
+{
+	int i = 0, count = 0;
+	for( i = 0; i < MAX_PLAYERS; i ++ )
+	{
+		if( mPlayers[i] != NULL )
+		{
+			count++;
+		}
+	}
+
+	return count;
+}
+
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
 	mLocalPlayer = new Player();
@@ -64,7 +78,7 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 
 Player* PlayerPool::getLocalPlayer() { return mLocalPlayer; }
 RakNet::RakNetGUID PlayerPool::getLocalPlayerID() { return mLocalGUID; }
-
+Player* PlayerPool::getPlayer( int index ) { return mPlayers[index]; }
 Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 {
     if( playerid == mLocalGUID )

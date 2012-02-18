@@ -44,6 +44,7 @@ private:
 	RakNet::Time	mStartTime;
 	RakNet::Time	mEndTime;
 	bool			mDrawn;
+	void			sendPacket();
 };
 
 #endif

@@ -52,6 +52,7 @@ public:
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
+	int	 getHP (void);
 
 	CarSnapshot *mSnapshots;
 
@@ -66,6 +67,7 @@ private:
 	Ogre::SceneNode *camArmNode;
 
     CarType mCarType;
+	int hp;
 };
 
 #endif // #ifndef PLAYER_H
