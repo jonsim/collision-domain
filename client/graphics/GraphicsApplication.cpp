@@ -179,7 +179,7 @@ void GraphicsApplication::setupShadowSystem (void)
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     GameCore::mSceneMgr->setShadowFarDistance(150);
     GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
-    GameCore::mSceneMgr->setShadowCasterRenderBackFaces(true);
+    OutputDebugString("Yoohoo\n");
 #elif SHADOW_METHOD == 2
     /**** Depth Shadowmapping with PCF filtering and LiSPSM Projection. Ensure materials are correctly setup. ****/
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);

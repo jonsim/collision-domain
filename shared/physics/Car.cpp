@@ -282,14 +282,14 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
 	oldRPM = mEngineRPM;
 		
 	// Update radial blur (from vehicle speed).
-#ifdef GFX_EFFECT_RADIAL_BLUR
+#ifdef COLLISION_DOMAIN_CLIENT
 	float blurAmount = 0;
 	if (speedmph > 40.0f)
 	{
 		// calculate blurring as a function of speed, then scale it back depending on where you
 		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
 		// +/-180 and 0, hence the double abs() reduction)).
-		blurAmount = (speedmph - 40) / 30;
+		blurAmount = (speedmph - 40) / 28;
 		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
 	}
 	GameCore::mGraphicsApplication->setRadialBlur(blurAmount);
