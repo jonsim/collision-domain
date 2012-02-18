@@ -10,10 +10,8 @@
 
 /// @brief  Constructor to create physics stuff
 /// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.
-PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
+PhysicsCore::PhysicsCore()
 {
-    mSceneMgr = sceneMgr;
-
     // Gravity is not in the normal sense. Acceleration will look "normal" when the value is set to
     // the number of units used for a model of height 1m
     mBulletGravity = Ogre::Vector3(0, -9.81f, 0);
@@ -22,7 +20,7 @@ PhysicsCore::PhysicsCore(Ogre::SceneManager* sceneMgr)
     mNumEntitiesInstanced = 0; // how many shapes are created
 
     // Start Bullet
-    mWorld = new OgreBulletDynamics::DynamicsWorld(mSceneMgr, mBulletAlignedBox, mBulletGravity);
+    mWorld = new OgreBulletDynamics::DynamicsWorld(GameCore::mSceneMgr, mBulletAlignedBox, mBulletGravity);
 
     // add Debug info display tool
 #ifdef DEBUG_FRAMES
@@ -151,7 +149,7 @@ void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
     OgreBulletCollisions::CollisionShape *Shape;
     Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), -10); // (normal vector, distance)
     
-    Ogre::Entity* entity = mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
 
     Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
     //OgreBulletCollisions::CompoundCollisionShape *tmp = new OgreBulletCollisions::CompoundCollisionShape();
@@ -262,7 +260,7 @@ void PhysicsCore::addCube(
         Ogre::Real bodyFriction,
         Ogre::Real bodyMass)
 {
-    Ogre::Entity *entity = mSceneMgr->createEntity(instanceName , "Bulletbox.mesh");
+    Ogre::Entity *entity = GameCore::mSceneMgr->createEntity(instanceName , "Bulletbox.mesh");
     // "Crate.mesh");
     // "Crate1.mesh");
     // "Crate2.mesh");
@@ -280,7 +278,7 @@ void PhysicsCore::addCube(
     
     OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(instanceName, mWorld);
 
-    Ogre::SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
+    Ogre::SceneNode *node = GameCore::mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
     node->attachObject (entity);
 
     defaultBody->setShape (node,  sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);

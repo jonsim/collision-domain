@@ -35,37 +35,36 @@ class Player
 public:
     Player ();
     ~Player ();
-    void createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, PhysicsCore *physicsCore);
+    void createPlayer (CarType iCarType, CarSkin s);
     void attachCamera (Ogre::Camera* cam);
-    void processControlsFrameEvent(
-        InputState *userInput,
-        Ogre::Real secondsSinceLastFrame,
-        float targetPhysicsFrameRate);
+    void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation);
-    Car* getCar();
-    void collisionTickCallback(int damage);
-    void applyHealthBonus();
+    Car* getCar (void);
+    void collisionTickCallback (int damage);
+    void applyHealthBonus (void);
         
-    const char *getNickname() { return mNickname; }
-    int getCarType() { return mCarType; }
+    const char *getNickname (void) { return mNickname; }
+    int getCarType (void) { return mCarType; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
-    void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
-	int	getHP();
+    void setNickname (char *szNick) { mNickname = strdup( szNick ); }
+	int	 getHP (void);
 	
-	InputState *newInput;
-	void setOverlayElement(Ogre::OverlayElement* ole);
-    Ogre::OverlayElement* getOverlayElement();
-    void setSpawned(); //Marks the car as spawned
+	void setOverlayElement (Ogre::OverlayElement* ole);
+    void setSpawned (void); //Marks the car as spawned
+    Ogre::OverlayElement* getOverlayElement (void);
+
+	InputState* newInput;
+
 private:
     const float cameraRotationConstant;
 	int		hp;
 
-    Car *mCar;
-    CarSnapshot *mCarSnapshot;
+    Car* mCar;
+    CarSnapshot* mCarSnapshot;
     int mCarType;
 
-    char *mNickname;
+    char* mNickname;
 	Ogre::OverlayElement* mOLE;
 	bool mSpawned;
 };

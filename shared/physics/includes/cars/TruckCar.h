@@ -12,7 +12,7 @@
 class TruckCar : public Car
 {
 public:
-    TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
+    TruckCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
     virtual ~TruckCar(void);
     void playCarHorn();
 

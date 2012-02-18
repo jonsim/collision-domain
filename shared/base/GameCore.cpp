@@ -20,18 +20,15 @@ GameGUI*      GameCore::mGui = NULL;
 PowerupPool*  GameCore::mPowerupPool = NULL;
 
 
-void GameCore::initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr)
+void GameCore::initialise(GraphicsCore* graphicsCore)
 {
-    GameCore::mSceneMgr = sceneMgr;
-    GameCore::mPlayerPool = new PlayerPool();
-
     GameCore::mGraphicsCore = graphicsCore;
-    GameCore::mNetworkCore = new NetworkCore();
-    GameCore::mPhysicsCore = new PhysicsCore(GameCore::mSceneMgr);
-    GameCore::mAudioCore = new AudioCore();
-	GameCore::mGui = new GameGUI();
-    GameCore::mPowerupPool = new PowerupPool();
-
+    GameCore::mPlayerPool   = new PlayerPool();
+    GameCore::mNetworkCore  = new NetworkCore();
+    GameCore::mPhysicsCore  = new PhysicsCore();
+    GameCore::mAudioCore    = new AudioCore();
+	GameCore::mGui          = new GameGUI();
+    GameCore::mPowerupPool  = new PowerupPool();
 }
 
 void GameCore::destroy()

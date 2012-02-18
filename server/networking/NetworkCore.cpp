@@ -352,7 +352,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     // TODO: something with iCarType
 
 	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
-	pPlayer->createPlayer( GameCore::mSceneMgr, iCarType, SKIN0, GameCore::mPhysicsCore );
+	pPlayer->createPlayer( iCarType, SKIN0 );
 
 	// Alert the BigScreen we've had a player spawned
 	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(pkt->guid);

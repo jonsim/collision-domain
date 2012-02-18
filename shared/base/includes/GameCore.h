@@ -37,7 +37,7 @@ public:
 	static GameGUI* mGui;
     static PowerupPool* mPowerupPool;
 
-    static void initialise(GraphicsCore* graphicsCore, Ogre::SceneManager* sceneMgr);
+    static void initialise(GraphicsCore* graphicsCore);
     static void destroy();
 
 private:

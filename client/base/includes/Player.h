@@ -35,7 +35,7 @@ class Player //: public PhysicsEntity
 public:
     Player ();
     ~Player ();
-    void createPlayer (Ogre::SceneManager* sm, CarType iCarType, CarSkin s, PhysicsCore *physicsCore);
+    void createPlayer (CarType iCarType, CarSkin s);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent(
         InputState *userInput,
