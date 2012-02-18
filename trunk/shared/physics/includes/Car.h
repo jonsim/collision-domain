@@ -42,7 +42,6 @@ public:
     float getRPM();
 
 	Ogre::SceneNode *mBodyNode;
-	// Car related Nodes (initNodes())
     Ogre::SceneNode *mPlayerNode;
 
 
@@ -76,7 +75,6 @@ protected:
 
     // Data for whole class
     int mUniqueCarID;
-    Ogre::SceneManager* mSceneMgr; // Graphics object
     OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
     // mTuning related values

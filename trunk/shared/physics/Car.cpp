@@ -443,7 +443,7 @@ void Car::createGeometry(
                     Ogre::SceneNode *toAttachTo)
 {
     Ogre::Entity* entity;
-    entity = mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
+    entity = GameCore::mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
     if (applyMaterial) entity->setMaterialName(materialName);
 
     int GEOMETRY_QUERY_MASK = 1<<2;

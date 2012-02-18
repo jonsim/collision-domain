@@ -22,12 +22,12 @@ enum QueryFlags
 class PhysicsCore
 {
 public:
-    PhysicsCore(Ogre::SceneManager* sceneMgr);
-    virtual ~PhysicsCore(void);
+    PhysicsCore (void);
+    virtual ~PhysicsCore (void);
 	static void auto_scale_scenenode (Ogre::SceneNode* n);
-    int getUniqueEntityID(void);
-    void createFloorPlane( Ogre::SceneNode *arenaNode );
-    void createWallPlanes();
+    int getUniqueEntityID (void);
+    void createFloorPlane (Ogre::SceneNode *arenaNode);
+    void createWallPlanes (void);
     void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
     OgreBulletDynamics::RaycastVehicle *newCar(Ogre::Vector3 carPosition,
                                                Ogre::Vector3 chassisShift,
@@ -46,7 +46,6 @@ private:
     static void preTickCallback(btDynamicsWorld *world, btScalar timeStep);
     static void postTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
-    Ogre::SceneManager* mSceneMgr; // Graphics object
     PlayerCollisions* mPlayerCollisions;
     std::deque<OgreBulletDynamics::RigidBody *>        mBodies;
     std::deque<OgreBulletCollisions::CollisionShape *> mShapes;

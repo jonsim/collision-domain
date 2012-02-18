@@ -162,31 +162,28 @@ bool GraphicsCore::initApplication (void)
     if (!configureRenderer())
 		return false;
 
-    // Init core classes, also init the SceneManager, in this case a generic one
-    GameCore::initialise(this, mRoot->createSceneManager(Ogre::ST_GENERIC));
-    mSpawnScreen = NULL;
+    // Create the SceneManager. This should be updated to an Octree implementation, rather than a culling heirarchy.
+    GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
 
-    createCamera();
-    createViewports();
+    createCamera();     // Create the cameras for rendering the scene
+    createViewports();  // Create the viewports for viewing the scene
 
-    // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
-    // Create any resource listeners (for loading screens)
-    createResourceListener();
-    // Load resources
-    loadResources();
-
-    // Create the scene
-    createScene();
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
+    createResourceListener();           // Create resource listener (for loading screens)
+    loadResources();                    // Load resources
     
-	GameCore::mNetworkCore->init( NULL );
-	GameCore::mPlayerPool->getLocalPlayer()->createPlayer( GameCore::mSceneMgr, CAR_BANGER, SKIN0, GameCore::mPhysicsCore );
+    GameCore::initialise(this);         // Initialise other game elements
+
+    createScene();                      // Build the scene
+    
+    mSpawnScreen = NULL;
+	GameCore::mNetworkCore->init(NULL);
+	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN0);
 
     createFrameListener();
 
     return true;
-};
+}
 
 
 /// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.

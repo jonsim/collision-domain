@@ -12,7 +12,7 @@
 class SimpleCoupeCar : Car
 {
 public:
-    SimpleCoupeCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
+    SimpleCoupeCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
     virtual ~SimpleCoupeCar(void);
     void playCarHorn();
 

@@ -111,9 +111,8 @@ void TruckCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-TruckCar::TruckCar(Ogre::SceneManager* sceneMgr, OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
+TruckCar::TruckCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
 {
-    mSceneMgr = sceneMgr;
     mWorld = world;
     mUniqueCarID = uniqueCarID;
     
@@ -170,16 +169,16 @@ void TruckCar::playCarHorn()
 /// @brief  Initialises the node tree for this car.
 void TruckCar::initNodes()
 {
-    mPlayerNode  = mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mPlayerNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
     mBodyNode    = mPlayerNode->createChildSceneNode("BodyNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mWheelsNode  = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
     mChassisNode = mBodyNode->createChildSceneNode("ChassisNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     //mLDoorNode   = mBodyNode->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mLDoorNode   = mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mLDoorNode   = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     //mRDoorNode   = mBodyNode->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRDoorNode   = mSceneMgr->getRootSceneNode()->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRDoorNode   = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
     mFBumperNode = mBodyNode->createChildSceneNode("FBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode = mBodyNode->createChildSceneNode("RBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -192,7 +191,7 @@ void TruckCar::initNodes()
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 	
 	// setup particles. This needs to be propogated.
-    mExhaustSystem = mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Truck/Exhaust");
+    mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Truck/Exhaust");
 	//mDustSystem    = mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
 	//mSparkSystem   = mSceneMgr->createParticleSystem("Spark"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Spark");
 	mBodyNode->attachObject(mExhaustSystem);
@@ -257,7 +256,7 @@ void TruckCar::initGraphics()
 void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
 {
     // Load the collision mesh and create a collision shape out of it
-    Ogre::Entity* entity = mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "truck_collision.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "truck_collision.mesh");
     entity->setDebugDisplayEnabled( false );
     compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
 

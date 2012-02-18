@@ -161,24 +161,22 @@ bool GraphicsCore::initApplication (void)
 	// Configure the renderer and exit if not configuration was provided (via the config dialog).
     if (!configureRenderer())
 		return false;
+    
+    // Create the SceneManager. This should be updated to an Octree implementation, rather than a culling heirarchy.
+    GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+    
+    createCamera();     // Create the cameras for rendering the scene
+    createViewports();  // Create the viewports for viewing the scene
+    
+    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
+    createResourceListener();           // Create resource listener (for loading screens)
+    loadResources();                    // Load resources
+    
+    GameCore::initialise(this);         // Initialise other game elements
 
-    // Init core classes, also init the SceneManager, in this case a generic one
-    GameCore::initialise(this, mRoot->createSceneManager(Ogre::ST_GENERIC));
+    createScene();                      // Build the scene
+    
     mSpawnScreen = NULL;
-
-    createCamera();
-    createViewports();
-
-    // Set default mipmap level (NB some APIs ignore this)
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
-
-    // Create any resource listeners (for loading screens)
-    createResourceListener();
-    // Load resources
-    loadResources();
-
-    // Create the scene
-    createScene();
 
     createFrameListener();
 
