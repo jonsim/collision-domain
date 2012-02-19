@@ -98,7 +98,7 @@ public:
     static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-
+	static void InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static bool bConnected;
 
 };
