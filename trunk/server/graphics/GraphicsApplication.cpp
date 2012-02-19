@@ -84,7 +84,7 @@ void GraphicsApplication::createScene (void)
 	GameCore::mGui->displayConsole();
 	GameCore::mGui->displayChatbox();
 	GameCore::mGraphicsCore->bigScreen->setupMapView();
-	GameCore::mGraphicsCore->mGameplay->setupOverlay();
+	GameCore::mGameplay->setupOverlay();
 }
 
 
@@ -246,9 +246,9 @@ void GraphicsApplication::createFrameListener (void)
     GraphicsCore::createFrameListener();
     
 	// Handle Game play (this isn't the place to do this, this will be moved).
-	mGameplay = new Gameplay();
-	Team* t1 = mGameplay->createTeam("Team1Name");
-	Team* t2 = mGameplay->createTeam("Team2Name");
+	GameCore::mGameplay = new Gameplay();
+	Team* t1 = GameCore::mGameplay->createTeam("Team1Name");
+	Team* t2 = GameCore::mGameplay->createTeam("Team2Name");
 }
 
 
@@ -297,7 +297,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     GameCore::mAudioCore->frameEvent(200);
 
-	GameCore::mGraphicsCore->mGameplay->drawInfo();
+	GameCore::mGameplay->drawInfo();
 
 	// LOCAL
 	// get new snapshpot from control press - don't move the car though

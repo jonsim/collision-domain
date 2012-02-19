@@ -16,6 +16,7 @@ class GraphicsApplication;
 class AudioCore;
 class GameGUI;
 class PowerupPool;
+class Gameplay;
 
 #define MESH_SCALING_CONSTANT 0.01f
 
@@ -36,6 +37,7 @@ public:
     static AudioCore* mAudioCore;
 	static GameGUI* mGui;
     static PowerupPool* mPowerupPool;
+	static Gameplay* mGameplay;
 
     static void initialise(GraphicsCore* graphicsCore);
     static void destroy();

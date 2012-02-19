@@ -36,7 +36,7 @@ public:
     Ogre::Camera* mViewCam2;
     BigScreen* bigScreen;
     ViewportManager* vpm;
-    Gameplay* mGameplay;
+    
 
 protected:
     virtual bool initApplication (void); // This shouldn't be here. Will be purged.
