@@ -395,7 +395,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
 	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
 	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
-	m_RPC->RegisterSlot( "InfoItemTransmit",InfoItemTransmit, 0);
+	//m_RPC->RegisterSlot( "InfoItemTransmit",InfoItemTransmit, 0);
 
 }
 
@@ -432,3 +432,14 @@ void NetworkCore::linkBigScreen(BigScreen* bigScreen_P)
 	bigScreen = bigScreen_P;
 }
 */
+
+void NetworkCore::sendInfoItem(InfoItem* ii)
+{
+	OutputDebugString("Sending Info Item");
+	RakNet::BitStream bs;
+	bs.Write(ii->getOverlayType());
+	bs.Write(ii->getStartTime());
+	bs.Write(ii->getEndTime());
+	m_RPC->Signal("InfoItemReceive",&bs,HIGH_PRIORITY,
+		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
+}

@@ -39,12 +39,13 @@ public:
 	OverlayType		getOverlayType();
 	void			setDrawn();
 	bool			getDrawn();
+	void			sendPacket();
 private:
 	OverlayType		mOT;
 	RakNet::Time	mStartTime;
 	RakNet::Time	mEndTime;
 	bool			mDrawn;
-	void			sendPacket();
+	
 };
 
 #endif

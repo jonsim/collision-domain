@@ -79,6 +79,8 @@ public:
     NetworkCore();
     ~NetworkCore (void);
 
+	RakNet::RakNetGUID getServerGUID();
+
 	bool Connect( const char *szHost, int iPort, char *szPass );
 
     RakNet::RakPeerInterface* getRakInterface();
@@ -89,6 +91,7 @@ public:
 
     void sendSpawnRequest( CarType iCarType );
     void sendChatMessage( char *szMessage );
+	//void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
 
     // RPC Calls
     static void GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
