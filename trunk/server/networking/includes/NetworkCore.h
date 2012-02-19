@@ -90,6 +90,8 @@ public:
 	static void GamestateUpdatePlayer( RakNet::RakNetGUID playerid );
 	static void SetupGameForPlayer( RakNet::RakNetGUID playerid );
 
+	void sendInfoItem(InfoItem* ii);
+
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
 	// RPC Calls

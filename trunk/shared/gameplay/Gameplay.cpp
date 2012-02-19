@@ -337,19 +337,44 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 
 void Gameplay::scheduleCountDown()
 {
-	mInfoItems.push_back(new InfoItem(THREE_OT,1000,1000));
-	mInfoItems.push_back(new InfoItem(TWO_OT,2000,1000));
-	mInfoItems.push_back(new InfoItem(ONE_OT,3000,1000));
+	InfoItem* threeII = new InfoItem(THREE_OT,1000,1000);
+	InfoItem* twoII = new InfoItem(TWO_OT,2000,1000);
+	InfoItem* oneII = new InfoItem(ONE_OT,3000,1000);
+
+
+	mInfoItems.push_back(threeII);
+	mInfoItems.push_back(twoII);
+	mInfoItems.push_back(oneII);
 
 	//Countdown Timer
-	mInfoItems.push_back(new InfoItem(FIVE_OT,115000,1000));
-	mInfoItems.push_back(new InfoItem(FOUR_OT,116000,1000));
-	mInfoItems.push_back(new InfoItem(THREE_OT,117000,1000));
-	mInfoItems.push_back(new InfoItem(TWO_OT,118000,1000));
-	mInfoItems.push_back(new InfoItem(ONE_OT,119000,1000));
+	InfoItem* fiveEII = new InfoItem(FIVE_OT,115000,1000);
+	InfoItem* fourEII = new InfoItem(FOUR_OT,116000,1000);
+	InfoItem* threeEII = new InfoItem(THREE_OT,117000,1000);
+	InfoItem* twoEII = new InfoItem(TWO_OT,118000,1000);
+	InfoItem* oneEII = new InfoItem(ONE_OT,119000,1000);
+
+	mInfoItems.push_back(fiveEII);
+	mInfoItems.push_back(fourEII);
+	mInfoItems.push_back(threeEII);
+	mInfoItems.push_back(twoEII);
+	mInfoItems.push_back(oneEII);
 
 	//GAME OVER
-	mInfoItems.push_back(new InfoItem(GAME_OVER_OT,120000,3000));
+	InfoItem* goEII = new InfoItem(GAME_OVER_OT,120000,3000);
+	mInfoItems.push_back(goEII);
+
+	//Send packets
+	#ifdef COLLISION_DOMAIN_SERVER
+		threeII->sendPacket();
+		twoII->sendPacket();
+		oneII->sendPacket();
+		fiveEII->sendPacket();
+		fourEII->sendPacket();
+		threeEII->sendPacket();
+		twoEII->sendPacket();
+		oneEII->sendPacket();
+		goEII->sendPacket();
+	#endif
 }
 
 void Gameplay::setupOverlay()

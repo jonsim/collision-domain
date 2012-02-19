@@ -39,9 +39,9 @@ InfoItem::InfoItem(OverlayType ot, int delay, int seconds)
 
 void InfoItem::sendPacket()
 {
-	RakNet::BitStream bs;
-    bs.Write((char*)this,sizeof(this));
-	//GameCore::mNetworkCore->InfoItemTransmit(bs);
+	#ifdef COLLISION_DOMAIN_SERVER
+		GameCore::mNetworkCore->sendInfoItem(this);
+	#endif
 }
 
 RakNet::Time InfoItem::getStartTime()

@@ -199,6 +199,7 @@ void NetworkCore::sendSpawnRequest( CarType iCarType )
     m_RPC->Signal( "PlayerSpawn", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
 }
 
+
 void NetworkCore::sendChatMessage( char *szMessage )
 {
     RakNet::BitStream bsSend;
@@ -380,7 +381,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn,    0 );
     m_RPC->RegisterSlot( "PowerupCreate",   PowerupCreate,  0 );
     m_RPC->RegisterSlot( "PowerupCollect",  PowerupCollect, 0 );
-	m_RPC->RegisterSlot( "InfoItemReceive",  PowerupCollect, 0 );
+	m_RPC->RegisterSlot( "InfoItemReceive",  InfoItemReceive, 0 );
 }
 
 
@@ -407,4 +408,9 @@ void log( char *data, ... )
 	fclose( fLog );
 	
 	return;
+}
+
+RakNet::RakNetGUID NetworkCore::getServerGUID()
+{
+	return this->serverGUID;
 }
