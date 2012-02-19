@@ -47,6 +47,8 @@ public:
 	void						startGame();
 	void						drawInfo(); //Draws any info that we require
 	void						setupOverlay();
+
+	std::vector<InfoItem*>		mInfoItems;
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -57,7 +59,7 @@ private:
 	int							numberOfTeams;
 	std::vector<Team*>			teams;
 	int							mGameplayMode;
-	std::vector<InfoItem*>		mInfoItems;
+	
 	Ogre::OverlayContainer* olContainer;
 	void						handleInfoItem(InfoItem* item, bool show);
 };
