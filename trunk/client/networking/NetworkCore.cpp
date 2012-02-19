@@ -353,6 +353,20 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
     }
 }
 
+void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+	//Read in all the info need to rebuild the InfoItem
+	OverlayType ot;
+	bitStream->Read(ot);
+	RakNet::Time startTime;
+	bitStream->Read(startTime);
+	RakNet::Time endTime;
+	bitStream->Read(endTime);
+
+	InfoItem* ii = new InfoItem(ot,startTime,endTime);
+	//GameCore::mGraphicsApplication
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -366,6 +380,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn,    0 );
     m_RPC->RegisterSlot( "PowerupCreate",   PowerupCreate,  0 );
     m_RPC->RegisterSlot( "PowerupCollect",  PowerupCollect, 0 );
+	m_RPC->RegisterSlot( "InfoItemReceive",  PowerupCollect, 0 );
 }
 
 
