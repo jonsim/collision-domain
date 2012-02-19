@@ -11,14 +11,14 @@
 Ogre::SceneManager* GameCore::mSceneMgr = NULL;
 PlayerPool*  GameCore::mPlayerPool = NULL;
 
-GraphicsCore* GameCore::mGraphicsCore = NULL;
-GraphicsApplication* GameCore::mGraphicsApplication = NULL;
-NetworkCore*  GameCore::mNetworkCore = NULL;
-PhysicsCore*  GameCore::mPhysicsCore = NULL;
-AudioCore*    GameCore::mAudioCore = NULL;
-GameGUI*      GameCore::mGui = NULL;
-PowerupPool*  GameCore::mPowerupPool = NULL;
-
+GraphicsCore*			GameCore::mGraphicsCore			= NULL;
+GraphicsApplication*	GameCore::mGraphicsApplication	= NULL;
+NetworkCore*			GameCore::mNetworkCore			= NULL;
+PhysicsCore*			GameCore::mPhysicsCore			= NULL;
+AudioCore*				GameCore::mAudioCore			= NULL;
+GameGUI*				GameCore::mGui					= NULL;
+PowerupPool*			GameCore::mPowerupPool			= NULL;
+Gameplay*				GameCore::mGameplay				= NULL;
 
 void GameCore::initialise(GraphicsCore* graphicsCore)
 {
@@ -29,6 +29,7 @@ void GameCore::initialise(GraphicsCore* graphicsCore)
     GameCore::mAudioCore    = new AudioCore();
 	GameCore::mGui          = new GameGUI();
     GameCore::mPowerupPool  = new PowerupPool();
+	GameCore::mGameplay		= new Gameplay();
 }
 
 void GameCore::destroy()

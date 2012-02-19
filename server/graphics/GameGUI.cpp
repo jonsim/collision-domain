@@ -107,9 +107,9 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 	if( !stricmp( szInput, "exit" ) )
 		mWinMgr.getWindow( "/Console" )->hide();
 	if( !stricmp( szInput, "prep" ) )
-		GameCore::mGraphicsCore->mGameplay->preparePlayers();
+		GameCore::mGameplay->preparePlayers();
 	if( !stricmp( szInput, "start" ) )
-		GameCore::mGraphicsCore->mGameplay->startGame();
+		GameCore::mGameplay->startGame();
 
 	return true;
 }
