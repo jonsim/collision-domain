@@ -435,7 +435,7 @@ void NetworkCore::linkBigScreen(BigScreen* bigScreen_P)
 
 void NetworkCore::sendInfoItem(InfoItem* ii)
 {
-	OutputDebugString("Sending Info Item");
+	OutputDebugString("Sending Info Item\n");
 	RakNet::BitStream bs;
 	bs.Write(ii->getOverlayType());
 	bs.Write(ii->getStartTime());

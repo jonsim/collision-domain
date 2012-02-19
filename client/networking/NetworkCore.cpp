@@ -356,6 +356,8 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
 
 void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
+	OutputDebugString("Received Info Item\n");
+
 	//Read in all the info need to rebuild the InfoItem
 	OverlayType ot;
 	bitStream->Read(ot);
@@ -365,6 +367,7 @@ void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet 
 	bitStream->Read(endTime);
 
 	InfoItem* ii = new InfoItem(ot,startTime,endTime);
+	GameCore::mGameplay->mInfoItems.push_back(ii);
 	//GameCore::mGraphicsApplication
 }
 

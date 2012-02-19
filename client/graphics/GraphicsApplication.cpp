@@ -98,6 +98,7 @@ void GraphicsApplication::createScene (void)
 	GameCore::mGui->displayChatbox();
 
 	createSpeedo();
+	GameCore::mGameplay->setupOverlay();
 }
 
 
@@ -662,8 +663,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     */
     GameCore::mPowerupPool->frameEvent( evt );
 
-	GameCore::mGameplay->drawInfo();
-
     if( NetworkCore::bConnected && GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
     {
         float rpm = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM();
@@ -686,6 +685,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
     GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, (1.0f / 60.0f));
 	
+	//Draw info items
+	GameCore::mGameplay->drawInfo();
     return true;
 }
 
