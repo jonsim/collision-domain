@@ -112,6 +112,7 @@ void BigScreen::manageNewPlayer(Player* player)
 
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
 	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
+
 	tmpOLE->setMaterialName("ArrowBlack");
 	tmpOLE->setPosition(0.5f, 0.5f);
 	olcMap->addChild(tmpOLE);
@@ -168,12 +169,18 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		
 		//Sort out the rotation
 		btQuaternion rotationQuat = player->getCar()->getCarSnapshot()->mRotation; 
-		btScalar rot = rotationQuat.getAngle();
+		//Convert to ogre representation of quats
+		Ogre::Quaternion ogreRotQuat(rotationQuat.getW(), rotationQuat.getX(), rotationQuat.getY(), rotationQuat.getZ());
+		//Then we can use the inbuilt function (took forever to get to this point :O)
+		Ogre::Radian rot = ogreRotQuat.getYaw();
+			
+
 		Ogre::Material* matMarker = carOverlay->getMaterial().get();
+		
 		Ogre::TextureUnitState* texMarker = 
 			matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
 		//texMarker->setTextureRotate(Ogre::Radian(rotationQuat.getY()));
-		texMarker->setTextureRotate(Ogre::Radian(rot));
+		texMarker->setTextureRotate(rot);
 				
 		/*
 		std::stringstream tmpDebugString;
@@ -190,6 +197,7 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 			yPos = 1.0f;
 
 		carOverlay->setPosition(xPos,yPos);
+		//Ogre::Overlay::rota
 	}
 }
 
