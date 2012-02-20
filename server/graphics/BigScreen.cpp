@@ -113,7 +113,16 @@ void BigScreen::manageNewPlayer(Player* player)
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
 	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
 
-	tmpOLE->setMaterialName("ArrowBlack");
+	//Make a copy of the material
+	Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("ArrowBlack");
+	//Build a new name with GUID so it should be unique
+	std::stringstream newMaterialName;
+	newMaterialName << "ArrowBlack" << player->getPlayerGUID().ToString();
+	//Clone a new instance
+	arrowMaterial = arrowMaterial->clone(newMaterialName.str());
+	//We can now assign the new material with a new name
+	tmpOLE->setMaterialName(newMaterialName.str());
+	
 	tmpOLE->setPosition(0.5f, 0.5f);
 	olcMap->addChild(tmpOLE);
 
@@ -181,7 +190,7 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 			matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
 		//texMarker->setTextureRotate(Ogre::Radian(rotationQuat.getY()));
 		texMarker->setTextureRotate(rot);
-				
+
 		/*
 		std::stringstream tmpDebugString;
 		tmpDebugString << "XPos: " << xPos;

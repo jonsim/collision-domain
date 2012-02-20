@@ -13,6 +13,7 @@
 #include <vector>
 #include "RakNetTime.h"
 #include "GetTime.h"
+#include <sstream>
 
 class BigScreen
 {

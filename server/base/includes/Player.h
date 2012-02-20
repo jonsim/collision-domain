@@ -56,6 +56,9 @@ public:
 
 	InputState* newInput;
 
+	RakNet::RakNetGUID getPlayerGUID();
+	void setPlayerGUID(RakNet::RakNetGUID playerGUID);
+
 private:
     const float cameraRotationConstant;
 	int		hp;
@@ -67,6 +70,7 @@ private:
     char* mNickname;
 	Ogre::OverlayElement* mOLE;
 	bool mSpawned;
+	RakNet::RakNetGUID mPlayerGUID;
 };
 
 #endif // #ifndef PLAYER_H
