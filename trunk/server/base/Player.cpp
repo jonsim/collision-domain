@@ -166,3 +166,13 @@ void Player::setSpawned()
 {
         mSpawned = true;
 }
+
+RakNet::RakNetGUID Player::getPlayerGUID()
+{
+	return mPlayerGUID;
+}
+
+void Player::setPlayerGUID(RakNet::RakNetGUID playerGUID)
+{
+	mPlayerGUID = playerGUID;
+}
