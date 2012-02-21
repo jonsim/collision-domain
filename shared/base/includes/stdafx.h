@@ -35,7 +35,9 @@
 #include <CEGUI.h>
 #include <RendererModules/Ogre/CEGUIOgreRenderer.h>
 
-
+#include "BtOgrePG.h"
+#include "BtOgreGP.h"
+#include "BtOgreExtras.h"
 
 #include "OgreBulletCollisions.h"
 #include "OgreBulletCollisionsShape.h"
