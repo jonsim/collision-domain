@@ -13,9 +13,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\server\base\includes\Player.h" />
     <ClInclude Include="..\..\server\GameIncludes.h" />
-    <ClInclude Include="..\..\server\gameplay\includes\Gameplay.h" />
-    <ClInclude Include="..\..\server\gameplay\includes\InfoItem.h" />
-    <ClInclude Include="..\..\server\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\server\graphics\includes\BigScreen.h" />
     <ClInclude Include="..\..\server\graphics\includes\GameGUI.h" />
     <ClInclude Include="..\..\server\graphics\includes\GraphicsApplication.h" />
@@ -35,6 +32,9 @@
     <ClInclude Include="..\..\shared\base\includes\PowerupRandom.h" />
     <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h" />
     <ClInclude Include="..\..\shared\base\includes\stdafx.h" />
+    <ClInclude Include="..\..\shared\gameplay\includes\Gameplay.h" />
+    <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h" />
+    <ClInclude Include="..\..\shared\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
     <ClInclude Include="..\..\shared\physics\includes\Car.h" />
@@ -200,9 +200,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\server\base\Player.cpp" />
-    <ClCompile Include="..\..\server\gameplay\Gameplay.cpp" />
-    <ClCompile Include="..\..\server\gameplay\InfoItem.cpp" />
-    <ClCompile Include="..\..\server\gameplay\Team.cpp" />
     <ClCompile Include="..\..\server\graphics\BigScreen.cpp" />
     <ClCompile Include="..\..\server\graphics\GameGUI.cpp" />
     <ClCompile Include="..\..\server\graphics\GraphicsApplication.cpp" />
@@ -222,6 +219,9 @@
     <ClCompile Include="..\..\shared\base\PowerupRandom.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp" />
     <ClCompile Include="..\..\shared\base\stdafx.cpp" />
+    <ClCompile Include="..\..\shared\gameplay\Gameplay.cpp" />
+    <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp" />
+    <ClCompile Include="..\..\shared\gameplay\Team.cpp" />
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
     <ClCompile Include="..\..\shared\physics\Car.cpp" />
@@ -370,7 +370,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\gameplay\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalOptions> -Zm142 -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -393,7 +393,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\gameplay\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
