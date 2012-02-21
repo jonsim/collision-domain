@@ -143,7 +143,7 @@ void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
 Ogre::Vector3* PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge)
 {
     float x;
-    float y = -0.5;
+    float y = -10.0;
     float z;
 
     arenaZRadius -= safeZoneFromEdge;
