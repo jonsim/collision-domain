@@ -37,20 +37,17 @@
     <Filter Include="shared\physics\cars">
       <UniqueIdentifier>{38c010dd-5e9a-40b5-b21f-f0de250b7558}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared\gameplay">
+      <UniqueIdentifier>{3eb0f9ae-b8e3-4f84-b876-ce5a710de6fc}</UniqueIdentifier>
+    </Filter>
     <Filter Include="server\gameplay">
-      <UniqueIdentifier>{85e70af0-8118-4fba-a3fa-5990a7cc87a1}</UniqueIdentifier>
+      <UniqueIdentifier>{87cd6d2a-bc93-407b-9a93-806c0b220fc9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\server\base\includes\Player.h">
       <Filter>server\base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\server\gameplay\includes\Gameplay.h">
-      <Filter>server\gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\server\gameplay\includes\Team.h">
-      <Filter>server\gameplay</Filter>
     </ClInclude>
     <ClInclude Include="..\..\server\graphics\includes\BigScreen.h">
       <Filter>server\graphics</Filter>
@@ -586,8 +583,14 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\server\gameplay\includes\InfoItem.h">
-      <Filter>server\gameplay</Filter>
+    <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h">
+      <Filter>shared\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\gameplay\includes\Team.h">
+      <Filter>shared\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\gameplay\includes\Gameplay.h">
+      <Filter>shared\gameplay</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -596,12 +599,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\server\base\Player.cpp">
       <Filter>server\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\server\gameplay\Gameplay.cpp">
-      <Filter>server\gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\server\gameplay\Team.cpp">
-      <Filter>server\gameplay</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\BigScreen.cpp">
       <Filter>server\graphics</Filter>
@@ -969,8 +966,14 @@
     <ClCompile Include="..\..\shared\base\Powerup.cpp">
       <Filter>shared\base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\server\gameplay\InfoItem.cpp">
-      <Filter>server\gameplay</Filter>
+    <ClCompile Include="..\..\shared\gameplay\Gameplay.cpp">
+      <Filter>shared\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp">
+      <Filter>shared\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\gameplay\Team.cpp">
+      <Filter>shared\gameplay</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

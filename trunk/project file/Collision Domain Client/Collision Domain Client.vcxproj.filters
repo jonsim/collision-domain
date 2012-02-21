@@ -37,6 +37,9 @@
     <Filter Include="client\physics">
       <UniqueIdentifier>{833786d8-d78b-4004-a486-28dd2132f8d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="shared\gameplay">
+      <UniqueIdentifier>{075ff5a5-3e91-401b-a4af-7fe38c02c6c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h" />
@@ -580,6 +583,15 @@
     <ClInclude Include="..\..\client\graphics\includes\PostFilterLogic.h">
       <Filter>client\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\gameplay\includes\Gameplay.h">
+      <Filter>shared\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h">
+      <Filter>shared\gameplay</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\gameplay\includes\Team.h">
+      <Filter>shared\gameplay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -950,6 +962,15 @@
     </ClCompile>
     <ClCompile Include="..\..\client\graphics\PostFilterLogic.cpp">
       <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\gameplay\Gameplay.cpp">
+      <Filter>shared\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp">
+      <Filter>shared\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\gameplay\Team.cpp">
+      <Filter>shared\gameplay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
