@@ -41,16 +41,16 @@ void Player::createPlayer (CarType iCarType, CarSkin s)
     switch (iCarType)
     {
     case CAR_BANGER:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->mWorld, GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID());
         break;
     case CAR_SMALL:
-        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->mWorld, GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID());
         break;
     case CAR_TRUCK:
-        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->mWorld, GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID());
         break;
     default:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->mWorld, GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID());
         break;
     }
 

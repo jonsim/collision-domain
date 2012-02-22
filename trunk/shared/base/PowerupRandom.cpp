@@ -38,38 +38,34 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
         //Ogre::Vector3 axis = Ogre::Vector3::UNIT_Z;
         //Ogre::Vector3 halfExtents(1, 1, 0.125);
         //CylinderCollisionShape* collisionShape = new CylinderCollisionShape(halfExtents, axis);
-        CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
-        compoundShape->addChildShape(
-            new SphereCollisionShape(Ogre::Real(1.0)),
-            Ogre::Vector3(0, 0.90f, 0));
+        btCompoundShape *compoundShape = new btCompoundShape();
+        btTransform localTrans( btQuaternion::getIdentity(), btVector3( 0.0f, 0.9f, 0.0f ) );
+        compoundShape->addChildShape( localTrans, new btSphereShape( Ogre::Real(1.0) ) );
         
-        mRigidBody = new RigidBody(
-                "RandomPowerup" + boost::lexical_cast<std::string>(uniqueID),
-                GameCore::mPhysicsCore->mWorld,
-                COL_POWERUP,
-                COL_CAR);
-
         float bodyRestitution = 1;
         float bodyFriction = 0;
         float bodyMass = 0;
 
-        mRigidBody->setShape(
-            mNode,
-            compoundShape,
-            bodyRestitution,
-            bodyFriction,
-            bodyMass,
-            Ogre::Vector3::ZERO,
-            Ogre::Quaternion::IDENTITY);
+        btVector3 inertia;
+        compoundShape->calculateLocalInertia( bodyMass, inertia );
+
+        BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mNode );
+
+        mRigidBody = new btRigidBody( bodyMass, state, compoundShape, inertia );
+
+        mRigidBody->setRestitution( bodyRestitution );
+        mRigidBody->setFriction( bodyFriction );
+
+        GameCore::mPhysicsCore->addRigidBody( mRigidBody, COL_POWERUP, COL_CAR );
 
         // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
-        mRigidBody->getBulletRigidBody()->setUserPointer(this);
-        mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_KINEMATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-        mRigidBody->disableDeactivation();
-        mRigidBody->showDebugShape(false);
+        mRigidBody->setUserPointer(this);
+        mRigidBody->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+        mRigidBody->setActivationState( DISABLE_DEACTIVATION );
     }
     
-    mNode->translate(createAboveAt);
+    mNode->translate( createAboveAt );
+    mRigidBody->translate(BtOgre::Convert::toBullet(createAboveAt));
 
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_RANDOM, uniqueID);
 }
@@ -81,7 +77,13 @@ PowerupRandom::~PowerupRandom()
     mNode->getParentSceneNode()->removeChild(mNode);
     
     // delete the shape last
-    CollisionShape* collisionShape = mRigidBody->getShape();
+    btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
+
+    if( mRigidBody->getMotionState() )
+        delete mRigidBody->getMotionState();
+
+    GameCore::mPhysicsCore->getWorld()->removeRigidBody( mRigidBody );
+        //GameCore::mPhysicsCore->getWorld()->removeCollisionObject( mRigidBody );
 
     delete mRigidBody;
     delete collisionShape;
@@ -133,7 +135,7 @@ bool PowerupRandom::isPendingDelete()
 
 void PowerupRandom::removeFromWorlds()
 {
-    mRigidBody->getBulletRigidBody()->setUserPointer(NULL);
-    GameCore::mPhysicsCore->mWorld->removeObject(mRigidBody);
+    mRigidBody->setUserPointer(NULL);
+    GameCore::mPhysicsCore->removeBody( mRigidBody );
     mNode->detachObject(entity);
 }

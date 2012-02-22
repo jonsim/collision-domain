@@ -39,20 +39,38 @@ public:
     void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
                  const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);
     void stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep);
+    
+    btDynamicsWorld* getWorld() { return mBulletWorld; }
+    void addRigidBody( btRigidBody *body, short colGroup, short colMask );
+    bool removeBody( btRigidBody *body );
+    //OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
-    OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
+
 
 private:
     static void preTickCallback(btDynamicsWorld *world, btScalar timeStep);
     static void postTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
     PlayerCollisions* mPlayerCollisions;
-    std::deque<OgreBulletDynamics::RigidBody *>        mBodies;
-    std::deque<OgreBulletCollisions::CollisionShape *> mShapes;
+    //std::deque<OgreBulletDynamics::RigidBody *>        mBodies;
+    //std::deque<OgreBulletCollisions::CollisionShape *> mShapes;
     Ogre::Vector3 mBulletGravity;
     Ogre::AxisAlignedBox mBulletAlignedBox;
     OgreBulletCollisions::DebugDrawer *debugDrawer;
     int mNumEntitiesInstanced;
+
+    btDynamicsWorld                     *mBulletWorld;
+    btCollisionWorld                   *mCollisionWorld;
+    btAxisSweep3                        *mBroadphase;
+    btDefaultCollisionConfiguration     *mCollisionConfig;
+    btCollisionDispatcher               *mDispatcher;
+    btSequentialImpulseConstraintSolver *mSolver;
+
+    std::deque<btRigidBody*>             mBodies;
+    std::deque<btCollisionShape*>        mShapes;
+
+    BtOgre::DebugDrawer                 *dbgDraw;
+
 };
 
 #endif // #ifndef __PhysicsCore_h_

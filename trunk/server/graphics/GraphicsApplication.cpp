@@ -236,7 +236,7 @@ void GraphicsApplication::setupArena (void)
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
     GameCore::mPhysicsCore->createFloorPlane( arenaNode );
-    GameCore::mPhysicsCore->createWallPlanes();
+    //GameCore::mPhysicsCore->createWallPlanes();
 }
 
 

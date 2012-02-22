@@ -29,7 +29,13 @@ PowerupSpeed::~PowerupSpeed()
     
     // delete the shape last
     if (mHasSpawned) {
-        CollisionShape* collisionShape = mRigidBody->getShape();
+        btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
+
+        if( mRigidBody->getMotionState() )
+            delete mRigidBody->getMotionState();
+
+        GameCore::mPhysicsCore->getWorld()->removeRigidBody( mRigidBody );
+        //GameCore::mPhysicsCore->getWorld()->removeCollisionObject( mRigidBody );
 
         delete mRigidBody;
         delete collisionShape;
@@ -86,7 +92,7 @@ void PowerupSpeed::spawn(Ogre::Vector3 createAboveAt)
     createCollideable();
 
     mNode->translate(createAboveAt);
-    mRigidBody->getBulletRigidBody()->translate(btVector3(createAboveAt.x,createAboveAt.y,createAboveAt.z));
+    mRigidBody->translate(btVector3(createAboveAt.x,createAboveAt.y,createAboveAt.z));
 }
 
 void PowerupSpeed::createGraphic()
@@ -109,36 +115,30 @@ void PowerupSpeed::createGraphic()
 
 void PowerupSpeed::createCollideable()
 {
-    CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
-    compoundShape->addChildShape(
-        new BoxCollisionShape( Ogre::Vector3( 1.70f, 0.5f, 1.35f ) ),
-        Ogre::Vector3(0.0, 0.5f, 0.07f));
-
-        
-    mRigidBody = new RigidBody(
-            "SpeedPowerup" + boost::lexical_cast<std::string>(mUniqueID),
-            GameCore::mPhysicsCore->mWorld,
-            COL_POWERUP,
-            COL_CAR);
+    btCompoundShape *compoundShape = new btCompoundShape();
+    btTransform localTrans( btQuaternion::getIdentity(), btVector3( 0.0f, 0.5f, 0.07f ) );
+    compoundShape->addChildShape( localTrans, new btBoxShape( btVector3( 1.70f, 0.5f, 1.35f ) ) );
 
     float bodyRestitution = 1;
     float bodyFriction = 0;
     float bodyMass = 0;
 
-    mRigidBody->setShape(
-        mNode,
-        compoundShape,
-        bodyRestitution,
-        bodyFriction,
-        bodyMass,
-        Ogre::Vector3::ZERO,
-        Ogre::Quaternion::IDENTITY);
+    btVector3 inertia;
+    compoundShape->calculateLocalInertia( bodyMass, inertia );
+
+    BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mNode );
+
+    mRigidBody = new btRigidBody( bodyMass, state, compoundShape, inertia );
+
+    mRigidBody->setRestitution( bodyRestitution );
+    mRigidBody->setFriction( bodyFriction );
+
+    GameCore::mPhysicsCore->addRigidBody( mRigidBody, COL_POWERUP, COL_CAR );
 
     // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
-    mRigidBody->getBulletRigidBody()->setUserPointer(this);
-    mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    mRigidBody->disableDeactivation();
-    mRigidBody->showDebugShape(false);
+    mRigidBody->setUserPointer(this);
+    mRigidBody->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    mRigidBody->setActivationState( DISABLE_DEACTIVATION );
 }
 
 void PowerupSpeed::removeGraphic()
@@ -149,6 +149,6 @@ void PowerupSpeed::removeGraphic()
 
 void PowerupSpeed::removeCollideable()
 {
-    mRigidBody->getBulletRigidBody()->setUserPointer(NULL);
-    GameCore::mPhysicsCore->mWorld->removeObject(mRigidBody);
+    mRigidBody->setUserPointer(NULL);
+    GameCore::mPhysicsCore->removeBody( mRigidBody );
 }

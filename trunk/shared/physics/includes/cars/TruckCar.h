@@ -12,7 +12,7 @@
 class TruckCar : public Car
 {
 public:
-    TruckCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
+    TruckCar(int uniqueCarID);
     virtual ~TruckCar(void);
     void playCarHorn();
 
@@ -20,8 +20,8 @@ private:
     void initTuning();
     void initNodes();
     void initGraphics();
-    void initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift);
-    void initDoors( Ogre::Vector3 chassisShift );
+    void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
+    void initDoors( btTransform& chassisShift );
     void initWheels();
     
     // Car related Nodes (initNodes())
