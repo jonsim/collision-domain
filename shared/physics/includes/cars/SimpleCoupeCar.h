@@ -12,15 +12,15 @@
 class SimpleCoupeCar : Car
 {
 public:
-    SimpleCoupeCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID);
+    SimpleCoupeCar(int uniqueCarID);
     virtual ~SimpleCoupeCar(void);
     void playCarHorn();
 
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(Ogre::Vector3 chassisShift);
-    void initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift);
+    void initGraphics(btTransform& chassisShift);
+    void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
     void initWheels();
     
     // Car related Nodes (initNodes())

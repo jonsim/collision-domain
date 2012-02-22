@@ -31,7 +31,13 @@ PowerupHealth::~PowerupHealth()
 
     // delete the shape last
     if (mHasSpawned) {
-        CollisionShape* collisionShape = mRigidBody->getShape();
+        btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
+
+        if( mRigidBody->getMotionState() )
+            delete mRigidBody->getMotionState();
+
+        GameCore::mPhysicsCore->getWorld()->removeRigidBody( mRigidBody );
+        //GameCore::mPhysicsCore->getWorld()->removeCollisionObject( mRigidBody );
 
         delete mRigidBody;
         delete collisionShape;
@@ -87,7 +93,7 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
     createCollideable();
     
     mNode->translate( createAboveAt );
-    mRigidBody->getBulletRigidBody()->translate(btVector3(createAboveAt.x,createAboveAt.y,createAboveAt.z));
+    mRigidBody->translate(btVector3(createAboveAt.x,createAboveAt.y,createAboveAt.z));
 }
 
 
@@ -112,48 +118,39 @@ void PowerupHealth::createGraphic()
 
 void PowerupHealth::createCollideable()
 {
+    btCompoundShape *compoundShape = new btCompoundShape();
+
     Ogre::Real radius(0.91f);
     Ogre::Real height(1.0f);
-    ConeCollisionShape* coneCollisionShape = new ConeCollisionShape(radius, height, Ogre::Vector3::UNIT_Y);
+    btConeShape *coneCollisionShape = new btConeShape( radius, height );
+    btTransform coneTrans( btQuaternion( btVector3( 0, 0, 1 ), btRadians( btDegrees( 180 ) ) ), btVector3( 0, 0.48f, 0 ) );
+    compoundShape->addChildShape( coneTrans, coneCollisionShape );
 
-    Ogre::Vector3 extents(0.95f,0.45f,0.95f);
-    CylinderCollisionShape* cylinderCollisionShape = new CylinderCollisionShape(extents, Ogre::Vector3::UNIT_Y);
-
-    CompoundCollisionShape *compoundShape = new OgreBulletCollisions::CompoundCollisionShape();
-    compoundShape->addChildShape(
-        coneCollisionShape,
-        Ogre::Vector3(0, 0.48f, 0),
-        Ogre::Quaternion(Ogre::Radian(Ogre::Degree(180)), Ogre::Vector3(0,0,1)));
-    compoundShape->addChildShape(
-        cylinderCollisionShape,
-        Ogre::Vector3(0, 1.425f, 0));
-
-    mRigidBody = new RigidBody(
-            "HealthPowerup" + boost::lexical_cast<std::string>(mUniqueID),
-            GameCore::mPhysicsCore->mWorld,
-            COL_POWERUP,
-            COL_CAR);
+    btVector3 extents(0.95f,0.45f,0.95f);
+    btCylinderShape *cylinderCollisionShape = new btCylinderShape( extents );
+    btTransform cylinderTrans( btQuaternion::getIdentity(), btVector3( 0, 1.425f, 0 ) );
+    compoundShape->addChildShape( cylinderTrans, cylinderCollisionShape );
 
     float bodyRestitution = 1;
     float bodyFriction = 0;
     float bodyMass = 0;
 
-    mRigidBody->setShape(
-        mNode,
-        compoundShape,
-        bodyRestitution,
-        bodyFriction,
-        bodyMass,
-        Ogre::Vector3::ZERO,
-        Ogre::Quaternion::IDENTITY);
+    btVector3 inertia;
+    compoundShape->calculateLocalInertia( bodyMass, inertia );
+
+    BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mNode );
+
+    mRigidBody = new btRigidBody( bodyMass, state, compoundShape, inertia );
+
+    mRigidBody->setRestitution( bodyRestitution );
+    mRigidBody->setFriction( bodyFriction );
+
+    GameCore::mPhysicsCore->addRigidBody( mRigidBody, COL_POWERUP, COL_CAR );
         
     // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
-    mRigidBody->getBulletRigidBody()->setUserPointer(this);
-    mRigidBody->getBulletRigidBody()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
-    mRigidBody->disableDeactivation();
-    mRigidBody->showDebugShape(false);
-
-    
+    mRigidBody->setUserPointer(this);
+    mRigidBody->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
+    mRigidBody->setActivationState( DISABLE_DEACTIVATION );   
 }
 
 
@@ -165,6 +162,6 @@ void PowerupHealth::removeGraphic()
 
 void PowerupHealth::removeCollideable()
 {
-    mRigidBody->getBulletRigidBody()->setUserPointer(NULL);
-    GameCore::mPhysicsCore->mWorld->removeObject(mRigidBody);
+    mRigidBody->setUserPointer(NULL);
+    GameCore::mPhysicsCore->removeBody( mRigidBody );
 }

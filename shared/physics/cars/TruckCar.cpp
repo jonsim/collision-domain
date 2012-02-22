@@ -111,19 +111,19 @@ void TruckCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-TruckCar::TruckCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
+TruckCar::TruckCar(int uniqueCarID)
 {
-    mWorld = world;
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    Ogre::Vector3 chassisShift(0, 0.81f, 1.75f);
+    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.81f, 1.75f ) );
 
     initTuning();
     initNodes();
     initGraphics();
     initBody(carPosition, chassisShift);
     initWheels();
+    initDoors(chassisShift);
 
     testCar = NULL; /*new SmallCar( sceneMgr, world, GameCore::mPhysicsCore->getUniqueEntityID() );
 
@@ -134,10 +134,10 @@ TruckCar::TruckCar(OgreBulletDynamics::DynamicsWorld *world, int uniqueCarID)
 
     GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( constr, true );*/
 
-    fricConst = new WheelFrictionConstraint( mVehicle, mbtRigidBody );
+    fricConst = new WheelFrictionConstraint( mVehicle, mCarChassis );
     fricConst->enableFeedback( true );
 
-    GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->addConstraint( fricConst );
+    GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID);
 }
@@ -149,7 +149,6 @@ TruckCar::~TruckCar(void)
     // Cleanup Bodies:
     delete mVehicle;
     delete mVehicleRayCaster;
-    delete mTuning;
     delete mCarChassis;
 
     // Cleanup Shapes:
@@ -253,89 +252,86 @@ void TruckCar::initGraphics()
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
-void TruckCar::initBody(Ogre::Vector3 carPosition, Ogre::Vector3 chassisShift)
+void TruckCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
 {
     // Load the collision mesh and create a collision shape out of it
-    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "truck_collision.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("TruckCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "truck_collision.mesh");
     entity->setDebugDisplayEnabled( false );
-    compoundChassisShape = new OgreBulletCollisions::CompoundCollisionShape();
+    compoundChassisShape = new btCompoundShape();
 
-     OgreBulletCollisions::ConvexHullCollisionShape *convexHull = new OgreBulletCollisions::ConvexHullCollisionShape( TruckVtx, TRUCK_VTX_COUNT, 3*sizeof(btScalar) );
-    convexHull->getBulletShape()->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    btConvexHullShape *convexHull = new btConvexHullShape( TruckVtx, TRUCK_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
 
     // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( convexHull, chassisShift );
+    compoundChassisShape->addChildShape( chassisShift, convexHull );
 
-    mCarChassis = (OgreBulletDynamics::WheeledRigidBody*) (
-        new FuckOgreBulletWheeledRigidBody(
-            "CarRigidBody" + boost::lexical_cast<std::string>(mUniqueCarID),
-            mWorld,
-            COL_CAR,
-            COL_CAR | COL_ARENA | COL_POWERUP));
-    
-    // attach physics shell to mBodyNode
-    mCarChassis->setShape(mBodyNode, compoundChassisShape, mChassisRestitution, mChassisFriction, mChassisMass, carPosition, Ogre::Quaternion::IDENTITY);
+    btVector3 inertia;
+    compoundChassisShape->calculateLocalInertia( mChassisMass, inertia );
+
+    BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mBodyNode );
+
+    mCarChassis = new btRigidBody( mChassisMass, state, compoundChassisShape, inertia );
+    GameCore::mPhysicsCore->addRigidBody( mCarChassis, COL_CAR, COL_CAR | COL_ARENA | COL_POWERUP );
+
     mCarChassis->setDamping(mChassisLinearDamping, mChassisAngularDamping);
+    mCarChassis->setActivationState( DISABLE_DEACTIVATION );
 
-    mCarChassis->disableDeactivation();
-    mTuning = new OgreBulletDynamics::VehicleTuning(
-        mSuspensionStiffness, mSuspensionCompression, mSuspensionDamping, mMaxSuspensionTravelCm, mFrictionSlip);
-
-    // OGREBULLET Y U NOT TAKE THIS IN CONSTRUCTOR?!!!?!
-    mTuning->getBulletTuning()->m_maxSuspensionForce = mMaxSuspensionForce;
-
-    mVehicleRayCaster = new OgreBulletDynamics::VehicleRayCaster(mWorld);
+    mTuning.m_frictionSlip             = mWheelFriction;
+    mTuning.m_maxSuspensionForce       = mMaxSuspensionForce;
+    mTuning.m_maxSuspensionTravelCm    = mMaxSuspensionTravelCm;
+    mTuning.m_suspensionCompression    = mSuspensionCompression;
+    mTuning.m_suspensionDamping        = mSuspensionDamping;
+    mTuning.m_suspensionStiffness      = mSuspensionStiffness;
     
-    mVehicle = new OgreBulletDynamics::RaycastVehicle(mCarChassis, mTuning, mVehicleRayCaster);
-    
+    mVehicleRayCaster = new btDefaultVehicleRaycaster( GameCore::mPhysicsCore->getWorld() );
+    mVehicle = new btRaycastVehicle( mTuning, mCarChassis, mVehicleRayCaster );
+
     // This line is needed otherwise the model appears wrongly rotated.
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
-    
-    mbtRigidBody = mCarChassis->getBulletRigidBody();
 
-    initDoors( chassisShift );
-
-    mCarChassis->showDebugShape( false );
+    GameCore::mPhysicsCore->getWorld()->addVehicle( mVehicle );
 }
 
-void TruckCar::initDoors( Ogre::Vector3 chassisShift )
+void TruckCar::initDoors( btTransform& chassisShift )
 {
-    BoxCollisionShape *doorShape = new BoxCollisionShape( Ogre::Vector3( 0.005f, 0.82f, 0.55f ) );
+    btBoxShape *doorShape = new btBoxShape( btVector3( 0.005f, 0.82f, 0.55f ) );
 
-    CompoundCollisionShape *leftDoor  = new CompoundCollisionShape();
-    CompoundCollisionShape *rightDoor = new CompoundCollisionShape();
+    btCompoundShape *leftDoor  = new btCompoundShape();
+    btCompoundShape *rightDoor = new btCompoundShape();
 
-    leftDoor->addChildShape ( doorShape, Ogre::Vector3(  1.118f, 1.714f , 1.75f ) );
-    rightDoor->addChildShape( doorShape, Ogre::Vector3( -1.062f, 1.714f , 1.75f ) );
+    btTransform ltrans( btQuaternion::getIdentity(), btVector3(  1.118f, 1.714f , 1.75f ) );
+    btTransform rtrans( btQuaternion::getIdentity(), btVector3( -1.062f, 1.714f , 1.75f ) );
 
-    mLeftDoorBody = new RigidBody(
-        "CarLeftDoor" + boost::lexical_cast<std::string>(mUniqueCarID),
-        GameCore::mPhysicsCore->mWorld,
-        COL_CAR,
-        COL_ARENA );
+    leftDoor ->addChildShape( ltrans, doorShape );
+    rightDoor->addChildShape( rtrans, doorShape );
 
-    mRightDoorBody = new RigidBody(
-        "CarRightDoor" + boost::lexical_cast<std::string>(mUniqueCarID),
-        GameCore::mPhysicsCore->mWorld,
-        COL_CAR,
-        COL_ARENA );
+    btMotionState *lstate = new BtOgre::RigidBodyState( mLDoorNode );
+    btMotionState *rstate = new BtOgre::RigidBodyState( mRDoorNode );
 
-    mLeftDoorBody->setShape ( mLDoorNode,  leftDoor, 1.0f, 0.6f, 10.0f, mChassisNode->getPosition() );
+    btVector3 linertia, rinertia;
+    leftDoor ->calculateLocalInertia( 5.0f, linertia );
+    rightDoor->calculateLocalInertia( 5.0f, rinertia );
+
+    mLeftDoorBody  = new btRigidBody( 5.0f, lstate, leftDoor,  linertia );
+    mRightDoorBody = new btRigidBody( 5.0f, rstate, rightDoor, rinertia );
+
+    GameCore::mPhysicsCore->addRigidBody( mLeftDoorBody,  COL_CAR, COL_ARENA | COL_CAR );
+    GameCore::mPhysicsCore->addRigidBody( mRightDoorBody, COL_CAR, COL_ARENA | COL_CAR );
+
     mLeftDoorBody->setDamping( 0.2f, 0.5f );
-    mLeftDoorBody->disableDeactivation();
+    mLeftDoorBody->setActivationState( DISABLE_DEACTIVATION );
 
-    mRightDoorBody->setShape( mRDoorNode, rightDoor, 0.6f, 0.6f, 5.0f, mChassisNode->getPosition() );
     mRightDoorBody->setDamping( 0.2f, 0.5f );
-    mRightDoorBody->disableDeactivation();
+    mRightDoorBody->setActivationState( DISABLE_DEACTIVATION );
 
     btContactSolverInfo& solverInfo = 
-        GameCore::mPhysicsCore->mWorld->getBulletDynamicsWorld()->getSolverInfo();
+        GameCore::mPhysicsCore->getWorld()->getSolverInfo();
 
     solverInfo.m_numIterations = 160;
 
     leftDoorHinge = new btHingeConstraint( 
-        *mbtRigidBody,
-        *mLeftDoorBody->getBulletRigidBody(),
+        *mCarChassis,
+        *mLeftDoorBody,
         btVector3( 1.118f, 1.714f, 2.315f ),
         btVector3( 1.118f, 1.714f, 2.315f ),
         btVector3( 0.000f, 1.000f, 0.000f ),
@@ -343,8 +339,8 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
 
 
     rightDoorHinge = new btHingeConstraint( 
-        *mbtRigidBody,
-        *mRightDoorBody->getBulletRigidBody(),
+        *mCarChassis,
+        *mRightDoorBody,
         btVector3( -1.062f, 1.714f, 2.315f ),
         btVector3( -1.062f, 1.714f, 2.315f ),
         btVector3( 0.0f, 1.0f, 0.0f ),
@@ -359,11 +355,9 @@ void TruckCar::initDoors( Ogre::Vector3 chassisShift )
     leftDoorHinge->enableFeedback( true );
     rightDoorHinge->enableFeedback( true );
 
-    GameCore::mPhysicsCore->mWorld->
-        getBulletDynamicsWorld()->addConstraint( leftDoorHinge, true );
+    GameCore::mPhysicsCore->getWorld()->addConstraint( leftDoorHinge, true );
 
-    GameCore::mPhysicsCore->mWorld->
-        getBulletDynamicsWorld()->addConstraint( rightDoorHinge, true );
+    GameCore::mPhysicsCore->getWorld()->addConstraint( rightDoorHinge, true );
 }
 
 
@@ -376,31 +370,38 @@ void TruckCar::initWheels()
     // anything you add onto wheelbase, adjust this to take care of it
     float wheelBaseShiftZ = -0.575f;
 
-    Ogre::Vector3 wheelDirectionCS0(0,-1,0);
-    Ogre::Vector3 wheelAxleCS(-1,0,0);
+    btVector3 wheelDirectionCS0(0,-1,0);
+    btVector3 wheelAxleCS(-1,0,0);
 
     bool isFrontWheel = true;
     
     // Wheel 0 - Front Left
-    Ogre::Vector3 connectionPointCS0 (wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength );
-    mVehicle->addWheel(mFLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
-        isFrontWheel, mWheelFriction, mRollInfluence);
-    
+    btVector3 connectionPointCS0 (wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
+    mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+
     // Wheel 1 - Front Right
-    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength );
-    mVehicle->addWheel(mFRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
-        isFrontWheel, mWheelFriction, mRollInfluence);
-    
+    connectionPointCS0 = btVector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
+    mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+                    
     isFrontWheel = false;
 
     // Wheel 2 - Rear Right
-    connectionPointCS0 = Ogre::Vector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
-    mVehicle->addWheel(mRRWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
-        isFrontWheel, mWheelFriction, mRollInfluence);
+    connectionPointCS0 = btVector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
+    mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
 
     // Wheel 3 - Rear Left
-    connectionPointCS0 = Ogre::Vector3(wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
-    mVehicle->addWheel(mRLWheelNode, connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius,
-        isFrontWheel, mWheelFriction, mRollInfluence);
+    connectionPointCS0 = btVector3(wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
+    mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+
+    for( int i=0; i < mVehicle->getNumWheels(); i++ )
+	{
+		btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
+		wheel.m_suspensionStiffness         = mSuspensionStiffness;
+		wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
+		wheel.m_wheelsDampingCompression    = mSuspensionCompression;
+        wheel.m_maxSuspensionForce          = mMaxSuspensionForce;
+		wheel.m_frictionSlip                = mWheelFriction;
+		wheel.m_rollInfluence               = mRollInfluence;
+	}
 }
 

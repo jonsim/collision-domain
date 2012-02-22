@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-//#define DEBUG_FRAMES
+#define DEBUG_FRAMES
 
 
 /// @brief  Constructor to create physics stuff
@@ -20,22 +20,29 @@ PhysicsCore::PhysicsCore()
     mNumEntitiesInstanced = 0; // how many shapes are created
 
     // Start Bullet
-    mWorld = new OgreBulletDynamics::DynamicsWorld(GameCore::mSceneMgr, mBulletAlignedBox, mBulletGravity);
+    mBroadphase         = new btAxisSweep3( btVector3( -10000, -10000, -10000 ), btVector3( 1000, 1000, 1000 ) );
+    mCollisionConfig    = new btDefaultCollisionConfiguration();
+    mDispatcher         = new btCollisionDispatcher( mCollisionConfig );
+    mSolver             = new btSequentialImpulseConstraintSolver();
+
+    mBulletWorld        = new btDiscreteDynamicsWorld( mDispatcher, mBroadphase, mSolver, mCollisionConfig );
+
+    mBulletWorld->setGravity( btVector3( 0, -9.81f, 0 ) );
 
     // add Debug info display tool
 #ifdef DEBUG_FRAMES
-    debugDrawer = new OgreBulletCollisions::DebugDrawer();
-    debugDrawer->setDrawWireframe(false);   // we want to see the Bullet containers
-    mWorld->setDebugDrawer(debugDrawer);
-    mWorld->setShowDebugShapes(true);      // enable it if you want to see the Bullet containers
-    Ogre::SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
-    node->attachObject(static_cast <Ogre::SimpleRenderable *> (debugDrawer));
+
+    dbgDraw = new BtOgre::DebugDrawer( 
+        GameCore::mSceneMgr->getRootSceneNode(), mBulletWorld );
+
+    mBulletWorld->setDebugDrawer( dbgDraw );
+
 #endif
 
     // lets get the callback for collisions every substep
     mPlayerCollisions = new PlayerCollisions();
-    mWorld->getBulletDynamicsWorld()->setInternalTickCallback(postTickCallback, 0, false);
-    //mWorld->getBulletDynamicsWorld()->setInternalTickCallback(preTickCallback, 0, true);
+    //mBulletWorld->setInternalTickCallback( preTickCallback, 0, true );
+    mBulletWorld->setInternalTickCallback( postTickCallback, 0, false );
 }
 
 
@@ -43,14 +50,14 @@ PhysicsCore::PhysicsCore()
 PhysicsCore::~PhysicsCore(void)
 {
     // OgreBullet physic delete - RigidBodies
-    std::deque<OgreBulletDynamics::RigidBody *>::iterator itBody = mBodies.begin();
+    std::deque<btRigidBody*>::iterator itBody = mBodies.begin();
     while (mBodies.end() != itBody)
     {   
         delete *itBody;
         ++itBody;
     }
     // OgreBullet physic delete - Shapes
-    std::deque<OgreBulletCollisions::CollisionShape *>::iterator itShape = mShapes.begin();
+    std::deque<btCollisionShape*>::iterator itShape = mShapes.begin();
     while (mShapes.end() != itShape)
     {   
         delete *itShape;
@@ -58,9 +65,11 @@ PhysicsCore::~PhysicsCore(void)
     }
     mBodies.clear();
     mShapes.clear();
-    delete mWorld->getDebugDrawer();
-    mWorld->setDebugDrawer(0);
-    delete mWorld;
+    
+    delete mSolver;
+    delete mDispatcher;
+    delete mCollisionConfig;
+    delete mBroadphase;
 }
 
 
@@ -74,7 +83,15 @@ void PhysicsCore::auto_scale_scenenode (Ogre::SceneNode* n)
 
 void PhysicsCore::stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep)
 {
-    mWorld->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
+    //mWorld->stepSimulation(elapsedTime, maxSubSteps, fixedTimestep);
+    mBulletWorld->stepSimulation( elapsedTime, maxSubSteps, fixedTimestep );
+    mBulletWorld->debugDrawWorld();
+
+#ifdef DEBUG_FRAMES
+    dbgDraw->setDebugMode( 1 );
+    dbgDraw->step();
+#endif
+
     mPlayerCollisions->frameEventEnd();
 }
 
@@ -146,47 +163,53 @@ int PhysicsCore::getUniqueEntityID()
 /// @brief  Create the floor plane at y = 0 and add it to the physics world.
 void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
 {
-    OgreBulletCollisions::CollisionShape *Shape;
-    Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), -10); // (normal vector, distance)
+    //OgreBulletCollisions::CollisionShape *Shape;
+    //Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), -10); // (normal vector, distance)
     
     Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
 
     Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
-    //OgreBulletCollisions::CompoundCollisionShape *tmp = new OgreBulletCollisions::CompoundCollisionShape();
     
-    OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-        new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
-
-    OgreBulletCollisions::TriangleMeshCollisionShape *arenaShape = 
-        trimeshConverter->createTrimesh();
-
-    delete trimeshConverter;
+    BtOgre::StaticMeshToShapeConverter converter( entity, matScale );
+    btCollisionShape *arenaShape = converter.createTrimesh();
     
     short collisionGroup = COL_ARENA;
-    short collisionMask = COL_CAR;
+    short collisionMask  = COL_CAR;
 
-    OgreBulletDynamics::RigidBody *defaultPlaneBody = new OgreBulletDynamics::RigidBody(
-            "BasePlane",
-            mWorld,
-            collisionGroup,
-            collisionMask);
-
-    defaultPlaneBody->setStaticShape( arenaNode, arenaShape, 0.1f, 0.8f, Ogre::Vector3(0, 0, 0) ); // (shape, restitution, friction)
-    defaultPlaneBody->showDebugShape( false );
+    BtOgre::RigidBodyState *arenaState = new BtOgre::RigidBodyState( arenaNode );
+    btRigidBody *arenaBody = new btRigidBody( 0.0f, arenaState, arenaShape );
     
-    //defaultPlaneBody->addQueryFlags(btCollisionObject::CF_STATIC_OBJECT);
+    mBulletWorld->addRigidBody( arenaBody, collisionGroup, collisionMask );
 
     // push the created objects to the deques
-    mShapes.push_back(Shape);
-    mBodies.push_back(defaultPlaneBody);
+    mBodies.push_back(arenaBody);
 }
 
+void PhysicsCore::addRigidBody( btRigidBody *body, short colGroup, short colMask )
+{
+    mBulletWorld->addRigidBody( body, colGroup, colMask );
+    mBodies.push_back( body );
+}
+
+bool PhysicsCore::removeBody( btRigidBody *body )
+{
+    std::deque<btRigidBody*>::iterator it = find( mBodies.begin(), mBodies.end(), body );
+    
+    if ( it == mBodies.end() )
+        return false;
+    else
+    {
+        //mBulletWorld->removeRigidBody( body );
+        mBodies.erase( it );
+        return true;
+    }
+}
 
 /// @brief  Create the walls at +2500 and -2500 and add them to the physics world.
-void PhysicsCore::createWallPlanes()
+/*void PhysicsCore::createWallPlanes()
 {
     short collisionGroup = COL_ARENA;
-    short collisionMask = COL_CAR;
+    short collisionMask  = COL_CAR;
 
     // -2500 is good 2500 is bad. positive distances DO NOT WORK. Seriously, don't even bother
     OgreBulletCollisions::CollisionShape *Shape2;
@@ -240,7 +263,7 @@ void PhysicsCore::createWallPlanes()
     // push the created objects to the deques
     mShapes.push_back(Shape5);
     mBodies.push_back(defaultPlaneBody5);
-}
+}*/
 
 
 /// @brief  Creates a cube and adds it to the physics world
@@ -251,7 +274,7 @@ void PhysicsCore::createWallPlanes()
 /// @param  bodyRestitution  How bouncy the cube is.
 /// @param  bodyFriction  How slidey the cube is.
 /// @param  bodyMass  How heavy the cube is.
-void PhysicsCore::addCube(
+/*void PhysicsCore::addCube(
         Ogre::String instanceName,
         Ogre::Vector3 pos,
         Ogre::Quaternion q,
@@ -286,11 +309,11 @@ void PhysicsCore::addCube(
     mShapes.push_back(sceneCubeShape);
     mBodies.push_back(defaultBody);
 
-}
+}*/
 
 
 /// @brief  Creates a cube with velocity
-void PhysicsCore::newBox(
+/*void PhysicsCore::newBox(
         Ogre::SceneNode *node,
         Ogre::Vector3 position,
         Ogre::Vector3 size,
@@ -315,5 +338,5 @@ void PhysicsCore::newBox(
         // push the created objects to the deques
     mShapes.push_back(sceneBoxShape);
     mBodies.push_back(defaultBody);
-}
+}*/
 

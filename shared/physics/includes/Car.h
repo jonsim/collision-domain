@@ -35,7 +35,7 @@ public:
     virtual CarSnapshot *getCarSnapshot();
 	float getCarMph();
     float getGear() { return mCurrentGear; }
-    OgreBulletDynamics::RaycastVehicle *getVehicle() { return mVehicle; }
+    btRaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
     
     void readTuning( char *szFile );
@@ -124,7 +124,19 @@ protected:
 
 
     // Car physics objects
-    OgreBulletCollisions::BoxCollisionShape      *chassisShape;
+
+    btBoxShape                          *chassisShape;
+    btCompoundShape                     *compoundChassisShape;
+
+    btRigidBody                         *mCarChassis;
+    btRigidBody                         *mLeftDoorBody;
+    btRigidBody                         *mRightDoorBody;
+
+    btRaycastVehicle                    *mVehicle;
+    btRaycastVehicle::btVehicleTuning    mTuning;
+    btDefaultVehicleRaycaster           *mVehicleRayCaster;
+
+    /*OgreBulletCollisions::BoxCollisionShape      *chassisShape;
     OgreBulletCollisions::CompoundCollisionShape *compoundChassisShape;
     OgreBulletDynamics::WheeledRigidBody         *mCarChassis;
     OgreBulletDynamics::RigidBody                *mLeftDoorBody;
@@ -132,7 +144,7 @@ protected:
     OgreBulletDynamics::VehicleTuning            *mTuning;
     OgreBulletDynamics::VehicleRayCaster         *mVehicleRayCaster;
     OgreBulletDynamics::RaycastVehicle           *mVehicle;
-    btRigidBody                                  *mbtRigidBody;
+    btRigidBody                                  *mbtRigidBody;*/
 
 
     Car *testCar; 
@@ -161,7 +173,7 @@ private:
 class WheelFrictionConstraint : public btTypedConstraint
 {
 public:
-    WheelFrictionConstraint( OgreBulletDynamics::RaycastVehicle *v, btRigidBody *r );
+    WheelFrictionConstraint( btRaycastVehicle *v, btRigidBody *r );
     virtual void getInfo1( btTypedConstraint::btConstraintInfo1* info );
     virtual void getInfo2( btTypedConstraint::btConstraintInfo2* info );
 
@@ -171,8 +183,8 @@ public:
 	///return the local value of parameter
     virtual	btScalar getParam(int num, int axis = -1) const;
 
-    OgreBulletDynamics::RaycastVehicle *mVehicle;
-    btRigidBody *mbtRigidBody;
+    btRaycastVehicle    *mVehicle;
+    btRigidBody         *mbtRigidBody;
 
     btScalar getSlipAngle( int wheelNum ) { 
         return (wheelNum < 4 && wheelNum >= 0) ? m_wheel_slip[wheelNum] : -1.00f; }

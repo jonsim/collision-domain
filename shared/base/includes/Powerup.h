@@ -22,12 +22,11 @@ public:
     //void setPowerupType( int iType ); http://stackoverflow.com/questions/500493/c-equivalent-of-instanceof
 
 protected:
-    //int mType;  
-    OgreBulletDynamics::RigidBody* mRigidBody;
+    btRigidBody     *mRigidBody;
     Ogre::SceneNode *mNode;
 
-    bool mHasBeenCollected;
-    OgreOggISound* mSound;
+    bool            mHasBeenCollected;
+    OgreOggISound   *mSound;
 };
 
 #endif // #ifndef POWERUP_H

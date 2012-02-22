@@ -21,8 +21,8 @@ void Car::restoreSnapshot(CarSnapshot *carSnapshot)
 
     // After this the car will be moved and rotated as specified, but the current velocity
     // will be pointing in the wrong direction (if car is now rotated differently).
-    mbtRigidBody->setAngularVelocity(carSnapshot->mAngularVelocity);
-    mbtRigidBody->setLinearVelocity(carSnapshot->mLinearVelocity);
+    mCarChassis->setAngularVelocity(carSnapshot->mAngularVelocity);
+    mCarChassis->setLinearVelocity(carSnapshot->mLinearVelocity);
 
     mSteer = carSnapshot->mWheelPosition;
     applySteeringValue();
@@ -35,15 +35,15 @@ CarSnapshot *Car::getCarSnapshot()
 {
     return new CarSnapshot(
         btVector3(mBodyNode->getPosition().x, mBodyNode->getPosition().y, mBodyNode->getPosition().z),
-        mbtRigidBody->getOrientation(),
-        mbtRigidBody->getAngularVelocity(),
-        mbtRigidBody->getLinearVelocity(),
+        mCarChassis->getOrientation(),
+        mCarChassis->getAngularVelocity(),
+        mCarChassis->getLinearVelocity(),
         mSteer);
 }
 
 float Car::getCarMph()
 {
-	return mVehicle->getBulletVehicle()->getCurrentSpeedKmHour() * 0.621371192;
+	return mVehicle->getCurrentSpeedKmHour() * 0.621371192;
 }
 
 
@@ -51,11 +51,11 @@ float Car::getCarMph()
 /// @param  position  The position to move to.
 void Car::moveTo(const btVector3 &position)
 {
-    moveTo(position, mbtRigidBody->getOrientation());
+    moveTo(position, mCarChassis->getOrientation());
 
     // now stop the car moving
-    mbtRigidBody->setAngularVelocity(btVector3(0,0,0));
-    mbtRigidBody->setLinearVelocity(btVector3(0,0,0));
+    mCarChassis->setAngularVelocity(btVector3(0,0,0));
+    mCarChassis->setLinearVelocity(btVector3(0,0,0));
 
     mSteer = 0;
     applySteeringValue();
@@ -69,16 +69,16 @@ void Car::moveTo(const btVector3 &position)
 void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     btTransform transform(rotation, position);
-    mbtRigidBody->proceedToTransform(transform); 
+    mCarChassis->proceedToTransform(transform); 
 
     if( mLeftDoorBody != NULL )
     {
-        mLeftDoorBody->getBulletRigidBody()->clearForces();
+        mLeftDoorBody->clearForces();
 
         btQuaternion id( 0.0f, leftDoorHinge->getHingeAngle(), 0.0f );
 
         btTransform newDoorPos( rotation, position );
-        mLeftDoorBody->getBulletRigidBody()->proceedToTransform( newDoorPos );
+        mLeftDoorBody->proceedToTransform( newDoorPos );
 
         /*mLeftDoorBody->getBulletRigidBody()->translate( btVector3( -1.118f, -1.714f, -2.315f ) );
         mLeftDoorBody->setOrientation( id );
@@ -177,15 +177,15 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         mVehicle->applyEngineForce( 0, 2 );
         mVehicle->applyEngineForce( 0, 3 );
 
-        mVehicle->getBulletVehicle()->setBrake( mMaxAccelForce * 2, 2 );
-        mVehicle->getBulletVehicle()->setBrake( mMaxAccelForce * 2, 3 );
+        mVehicle->setBrake( mMaxAccelForce * 2, 2 );
+        mVehicle->setBrake( mMaxAccelForce * 2, 3 );
 
     }
     else
     {
         // Reset brakes to 0
         for( int i = 0; i < 4; i ++ )
-            mVehicle->getBulletVehicle()->setBrake( 0 , i );
+            mVehicle->setBrake( 0 , i );
     }
 
     // Loop through each wheel
@@ -200,7 +200,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         // This code is a bit of a mess to avoid really tight brake / reverse checks
         // on exact float values but it works!
 
-        float fSpeed = this->mVehicle->getBulletVehicle()->getCurrentSpeedKmHour();
+        float fSpeed = this->mVehicle->getCurrentSpeedKmHour();
         if( fSpeed < 2 )                                                                // Brake / Reverse threshold between 0 and 1 kph
         {
             if( isBack )
@@ -232,7 +232,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
             }
             else
             {
-                mVehicle->getBulletVehicle()->setBrake( 0, i );                         // Moving backwards and not pressing accel - turn off brake
+                mVehicle->setBrake( 0, i );                         // Moving backwards and not pressing accel - turn off brake
             }
 
         }
@@ -251,13 +251,13 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
     if( doBrake > 0 && !isHand )
     {
         for( int i = 0; i < 4; i ++ )
-            mVehicle->getBulletVehicle()->setBrake( doBrake == 1 ? mBrakingForce : mMaxBrakeForce , i );
+            mVehicle->setBrake( doBrake == 1 ? mBrakingForce : mMaxBrakeForce , i );
     }
     else if( !isHand )
     {
         // Reset brakes to 0
         for( int i = 0; i < 4; i ++ )
-            mVehicle->getBulletVehicle()->setBrake( 0 , i );
+            mVehicle->setBrake( 0 , i );
     }
 	
     updateRPM();
@@ -394,7 +394,7 @@ Ogre::SceneNode *Car::attachCamNode()
 
 void Car::attachCollisionTickCallback(Player* player)
 {
-    mbtRigidBody->setUserPointer(player);
+    mCarChassis->setUserPointer(player);
 }
 
 
@@ -463,8 +463,8 @@ void Car::createGeometry(
  *  - deals with individual friction levels per wheel
  ********************************************************/
 
-WheelFrictionConstraint::WheelFrictionConstraint( OgreBulletDynamics::RaycastVehicle *v, btRigidBody *r )
-    : btTypedConstraint( CONTACT_CONSTRAINT_TYPE, *v->getBulletVehicle()->getRigidBody() )
+WheelFrictionConstraint::WheelFrictionConstraint( btRaycastVehicle *v, btRigidBody *r )
+    : btTypedConstraint( CONTACT_CONSTRAINT_TYPE, *v->getRigidBody() )
 {
     mVehicle = v; mbtRigidBody = r;
 }
@@ -474,10 +474,10 @@ void WheelFrictionConstraint::getInfo1( btTypedConstraint::btConstraintInfo1* in
     // Add two constraint rows for each wheel on the ground
     
     info->m_numConstraintRows = 0;
-    for (int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i)
+    for (int i = 0; i < mVehicle->getNumWheels(); ++i)
     {
-        btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
-        mVehicle->getBulletVehicle()->rayCast( wheel_info );
+        btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
+        mVehicle->rayCast( wheel_info );
         info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact );
     }
 }
@@ -488,10 +488,10 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
 
     // Setup sideways friction.
 
-    for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
+    for( int i = 0; i < mVehicle->getNumWheels(); ++i )
     {
-        btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
-        mVehicle->getBulletVehicle()->rayCast( wheel_info );
+        btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
+        mVehicle->rayCast( wheel_info );
 
         // Only if the wheel is on the ground:
         if( wheel_info.m_raycastInfo.m_isInContact == false )
@@ -527,9 +527,9 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
     }
 
     // Setup forward friction.
-    for (int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i)
+    for (int i = 0; i < mVehicle->getNumWheels(); ++i)
     {
-        const btWheelInfo& wheel_info = mVehicle->getBulletVehicle()->getWheelInfo(i);
+        const btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
 
         // Only if the wheel is on the ground:
         if( wheel_info.m_raycastInfo.m_isInContact == false )
@@ -595,7 +595,7 @@ btScalar WheelFrictionConstraint::calcSlipAngle( int wheelNum )
 {
     btScalar avg_slip = 0.00f;
     const btWheelInfo& wheel_info = 
-        mVehicle->getBulletVehicle()->getWheelInfo( wheelNum );
+        mVehicle->getWheelInfo( wheelNum );
 
     // Get velocity of wheel relative to the ground
 
@@ -618,10 +618,10 @@ btScalar WheelFrictionConstraint::calcSlipAngle()
 {
     btScalar avg_slip = 0.00f;
 
-    for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
+    for( int i = 0; i < mVehicle->getNumWheels(); ++i )
         avg_slip += calcSlipAngle( i );
 
-    m_avg_slip = avg_slip / mVehicle->getBulletVehicle()->getNumWheels();
+    m_avg_slip = avg_slip / mVehicle->getNumWheels();
 
     return m_avg_slip;
 }
@@ -629,7 +629,7 @@ btScalar WheelFrictionConstraint::calcSlipAngle()
 btScalar WheelFrictionConstraint::calcWheelSkid( int wheelNum )
 {
     const btWheelInfo& wheel_info = 
-        mVehicle->getBulletVehicle()->getWheelInfo( wheelNum );
+        mVehicle->getWheelInfo( wheelNum );
 
     m_wheel_skid[wheelNum] = wheel_info.m_skidInfo;
 
@@ -640,10 +640,10 @@ btScalar WheelFrictionConstraint::calcWheelSkid()
 {
     btScalar avg_skid = 0.00f;
 
-    for( int i = 0; i < mVehicle->getBulletVehicle()->getNumWheels(); ++i )
+    for( int i = 0; i < mVehicle->getNumWheels(); ++i )
         avg_skid += calcWheelSkid( i );
 
-    m_avg_skid = avg_skid / mVehicle->getBulletVehicle()->getNumWheels();
+    m_avg_skid = avg_skid / mVehicle->getNumWheels();
 
     return m_avg_skid;
 }
