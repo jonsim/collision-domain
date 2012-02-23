@@ -75,7 +75,6 @@ protected:
 
     // Data for whole class
     int mUniqueCarID;
-    OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
     // mTuning related values
     float mSteer;
@@ -136,17 +135,6 @@ protected:
     btRaycastVehicle::btVehicleTuning    mTuning;
     btDefaultVehicleRaycaster           *mVehicleRayCaster;
 
-    /*OgreBulletCollisions::BoxCollisionShape      *chassisShape;
-    OgreBulletCollisions::CompoundCollisionShape *compoundChassisShape;
-    OgreBulletDynamics::WheeledRigidBody         *mCarChassis;
-    OgreBulletDynamics::RigidBody                *mLeftDoorBody;
-    OgreBulletDynamics::RigidBody                *mRightDoorBody;
-    OgreBulletDynamics::VehicleTuning            *mTuning;
-    OgreBulletDynamics::VehicleRayCaster         *mVehicleRayCaster;
-    OgreBulletDynamics::RaycastVehicle           *mVehicle;
-    btRigidBody                                  *mbtRigidBody;*/
-
-
     Car *testCar; 
 
     btHingeConstraint *leftDoorHinge; 
@@ -164,6 +152,8 @@ private:
         Ogre::SceneNode *toAttachTo);
 
     void updateRPM();
+
+    void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );
     
 
     inline float rpm2rads(float f){ return f * 0.1047197f; }

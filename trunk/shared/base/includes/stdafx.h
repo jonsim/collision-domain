@@ -39,30 +39,6 @@
 #include "BtOgreGP.h"
 #include "BtOgreExtras.h"
 
-#include "OgreBulletCollisions.h"
-#include "OgreBulletCollisionsShape.h"
-
-#include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
-#include "Debug/OgreBulletCollisionsDebugShape.h"
-#include "Shapes/OgreBulletCollisionsTrimeshShape.h"
-#include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
-#include "Shapes/OgreBulletCollisionsBoxShape.h"
-#include "Shapes/OgreBulletCollisionsSphereShape.h"
-#include "Shapes/OgreBulletCollisionsCylinderShape.h"
-#include "Shapes/OgreBulletCollisionsCompoundShape.h"
-#include "Shapes/OgreBulletCollisionsConeShape.h"
-#include "Shapes/OgreBulletCollisionsConvexHullShape.h"
-
-#include "Constraints/OgreBulletDynamicsPoint2pointConstraint.h"
-
-
-#include "OgreBulletDynamics.h"
-#include "OgreBulletDynamicsRigidBody.h"
-
-#include "btBulletCollisionCommon.h"
-#include "btBulletDynamicsCommon.h"
-
-
 // Windows specific include
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
     #define WIN32_LEAN_AND_MEAN

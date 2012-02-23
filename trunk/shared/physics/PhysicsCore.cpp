@@ -162,10 +162,7 @@ int PhysicsCore::getUniqueEntityID()
 
 /// @brief  Create the floor plane at y = 0 and add it to the physics world.
 void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
-{
-    //OgreBulletCollisions::CollisionShape *Shape;
-    //Shape = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), -10); // (normal vector, distance)
-    
+{    
     Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
 
     Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);

@@ -6,7 +6,6 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-using namespace OgreBulletCollisions;
 
 /// @brief  Constructor.
 PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
