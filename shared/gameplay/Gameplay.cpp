@@ -188,7 +188,7 @@ void Gameplay::positionPlayers()
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
 	int hypo = 25; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
-	Ogre::Real segSize = (2*M_PI)/totalNumberOfPlayers;
+	Ogre::Real segSize = (2*Ogre::Math::PI)/totalNumberOfPlayers;
 
 	for(int i=0;i<MAX_PLAYERS;i++)
 	{
@@ -199,9 +199,9 @@ void Gameplay::positionPlayers()
 			//Calcualte the correct positions
 			Ogre::Real omega = (Ogre::Real)i*segSize;
 			//Calculate which sector of the circle it's in
-			int sector = floor(omega/ (M_PI/2));
+			int sector = floor(omega/ (Ogre::Math::PI/2));
 			//Adjust to keep omega under 90
-			omega-=(M_PI/2)*sector;
+			omega-=(Ogre::Math::PI/2)*sector;
 
 			Ogre::Real x = 0.0;
 			Ogre::Real y = 0.0;

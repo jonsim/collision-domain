@@ -14,7 +14,6 @@
 #include "PowerupPool.h"
 #include "PlayerCollisions.h"
 #include "PhysicsCore.h"
-#include "FuckOgreBulletWheeledRigidBody.h"
 #include "cars/SimpleCoupeCar.h"
 #include "cars/SmallCar.h"
 #include "cars/TruckCar.h"

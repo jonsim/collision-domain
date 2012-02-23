@@ -8,8 +8,6 @@
 #include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btHingeConstraint.h"
 
-using namespace OgreBulletCollisions;
-using namespace OgreBulletDynamics;
 using namespace Ogre;
 
 /*  Width:    2490mm (not inc wing mirrors, 2866mm with them)

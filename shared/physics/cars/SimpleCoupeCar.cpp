@@ -5,8 +5,6 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-using namespace OgreBulletCollisions;
-using namespace OgreBulletDynamics;
 using namespace Ogre;
 
 /*  Width:    1886mm (car not modelled with wing mirrors)

@@ -29,13 +29,6 @@ public:
     void createFloorPlane (Ogre::SceneNode *arenaNode);
     void createWallPlanes (void);
     void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
-    OgreBulletDynamics::RaycastVehicle *newCar(Ogre::Vector3 carPosition,
-                                               Ogre::Vector3 chassisShift,
-                                               Ogre::SceneNode *carNode,
-                                               Ogre::SceneNode *wheelNodeFrontLeft,
-                                               Ogre::SceneNode *wheelNodeFrontRight,
-                                               Ogre::SceneNode *wheelNodeRearLeft,
-                                               Ogre::SceneNode *wheelNodeRearRight);
     void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
                  const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);
     void stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep);
@@ -56,7 +49,6 @@ private:
     //std::deque<OgreBulletCollisions::CollisionShape *> mShapes;
     Ogre::Vector3 mBulletGravity;
     Ogre::AxisAlignedBox mBulletAlignedBox;
-    OgreBulletCollisions::DebugDrawer *debugDrawer;
     int mNumEntitiesInstanced;
 
     btDynamicsWorld                     *mBulletWorld;

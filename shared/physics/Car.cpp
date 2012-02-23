@@ -68,22 +68,17 @@ void Car::moveTo(const btVector3 &position)
 /// @param  rotation  The rotation to move to.
 void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
+    //GameCore::mPhysicsCore->getWorld()->removeRigidBody( mCarChassis );
     btTransform transform(rotation, position);
-    mCarChassis->proceedToTransform(transform); 
-
+    //mCarChassis->setWorldTransform( transform );
+    //mCarChassis->setInterpolationWorldTransform( transform );
+    reset( mCarChassis, transform );
     if( mLeftDoorBody != NULL )
     {
-        mLeftDoorBody->clearForces();
-
-        btQuaternion id( 0.0f, leftDoorHinge->getHingeAngle(), 0.0f );
-
-        btTransform newDoorPos( rotation, position );
-        mLeftDoorBody->proceedToTransform( newDoorPos );
-
-        /*mLeftDoorBody->getBulletRigidBody()->translate( btVector3( -1.118f, -1.714f, -2.315f ) );
-        mLeftDoorBody->setOrientation( id );
-        mLeftDoorBody->getBulletRigidBody()->translate( btVector3( 1.118f, 1.714f, 2.315f ) );*/
+        reset( mLeftDoorBody, transform );
+        reset( mRightDoorBody, transform, false );
     }
+    //GameCore::mPhysicsCore->getWorld()->addRigidBody( mCarChassis );
 }
 
 
@@ -457,6 +452,22 @@ void Car::createGeometry(
     toAttachTo->attachObject(entity);
 }
 
+void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )
+{
+    GameCore::mPhysicsCore->getWorld()->removeRigidBody( body );
+
+    if( dotrans )
+    {
+        body->setWorldTransform( trans );
+        body->setInterpolationWorldTransform( trans );
+    }
+
+    GameCore::mPhysicsCore->getWorld()->addRigidBody( body );
+
+    body->setLinearVelocity( btVector3( 0, 0, 0 ) );
+    body->setAngularVelocity( btVector3( 0, 0, 0 ) );
+    GameCore::mPhysicsCore->getWorld()->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs( body->getBroadphaseHandle(), GameCore::mPhysicsCore->getWorld()->getDispatcher() );
+}
 
 /********************************************************
  *  Wheel Constraint Class
