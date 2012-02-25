@@ -10,6 +10,8 @@
 #include <iostream>
 #include <fstream>
 
+// The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
+#define SHADOW_METHOD 2
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
@@ -85,8 +87,11 @@ void GraphicsApplication::createScene (void)
     // Load the ninjas into the scene. This is for testing purposes only and can be removed later.
     //Ogre::Entity* treeEntity = GameCore::mSceneMgr->createEntity("Tree", "basic_tree.mesh");
     Ogre::Entity* treeEntity = GameCore::mSceneMgr->createEntity("Tree", "palm_tree1.mesh");
-    //treeEntity->setCastShadows(true);
+#if SHADOW_METHOD == 1
     treeEntity->setCastShadows(false);
+#else
+    treeEntity->setCastShadows(true);
+#endif
     Ogre::SceneNode* treeNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("TreeNode");
     treeNode->attachObject(treeEntity);
     treeNode->scale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
@@ -108,7 +113,11 @@ void GraphicsApplication::setupArena (void)
     // Load and meshes and create entities
     Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena.mesh");
     arenaEntity->setMaterialName("arena_uv");
+#if SHADOW_METHOD == 2
+    arenaEntity->setCastShadows(false);
+#else
     arenaEntity->setCastShadows(true);
+#endif
     
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode", Ogre::Vector3(0, 0, 0));
     arenaNode->attachObject(arenaEntity);
@@ -117,7 +126,6 @@ void GraphicsApplication::setupArena (void)
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
     GameCore::mPhysicsCore->createFloorPlane( arenaNode );
-    //GameCore::mPhysicsCore->createWallPlanes();
 }
 
 /// @brief Draws the speedo on-screen
@@ -172,17 +180,26 @@ void GraphicsApplication::createGearDisplay (void)
 /// @brief Configure the shadow system. This should be the *FIRST* thing in the scene setup, because the shadow technique can alter the way meshes are loaded.
 void GraphicsApplication::setupShadowSystem (void)
 {
-// The shadowing method to use (1 = Stencils, 2 = DSM, 3 = PSSM).
-#define SHADOW_METHOD 1
-
 #if SHADOW_METHOD == 1
     /**** Stencil shadowing. No shaders necessary. ****/
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     GameCore::mSceneMgr->setShadowFarDistance(150);
     GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
-    OutputDebugString("Yoohoo\n");
 #elif SHADOW_METHOD == 2
-    /**** Depth Shadowmapping with PCF filtering and LiSPSM Projection. Ensure materials are correctly setup. ****/
+    /**** Texture shadowmapping. Uses LiSPSM projection to enhance quality. ****/
+    GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
+    GameCore::mSceneMgr->setShadowFarDistance(150);
+    GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
+
+    GameCore::mSceneMgr->setShadowDirLightTextureOffset(0.9f);
+    GameCore::mSceneMgr->setShadowTextureCount(1);
+    GameCore::mSceneMgr->setShadowTextureSize(2048);
+
+    Ogre::LiSPSMShadowCameraSetup* shadowSetup = new Ogre::LiSPSMShadowCameraSetup();
+    shadowSetup->setOptimalAdjustFactor(1);
+    GameCore::mSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowSetup));
+#elif SHADOW_METHOD == 3
+    /**** Depth Shadowmapping with PCF filtering and LiSPSM projection. Ensure materials are correctly setup. ****/
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
 
     GameCore::mSceneMgr->setShadowFarDistance(150);
@@ -199,7 +216,7 @@ void GraphicsApplication::setupShadowSystem (void)
     Ogre::LiSPSMShadowCameraSetup* shadowSetup = new Ogre::LiSPSMShadowCameraSetup();
     shadowSetup->setOptimalAdjustFactor(1);
     GameCore::mSceneMgr->setShadowCameraSetup(Ogre::ShadowCameraSetupPtr(shadowSetup));
-#elif SHADOW_METHOD == 3
+#elif SHADOW_METHOD == 4
     /**** Depth Shadowmapping with PSSM projection and LiSPSM filtering and split resolution. Ensure materials are correctly setup. ****/
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE_INTEGRATED);
     GameCore::mSceneMgr->setShadowFarDistance(150);
