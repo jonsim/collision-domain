@@ -177,8 +177,6 @@ bool GraphicsCore::initApplication (void)
     createScene();                      // Build the scene
     
     mSpawnScreen = NULL;
-	GameCore::mNetworkCore->init(NULL);
-	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN0);
 
     createFrameListener();
 

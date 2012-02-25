@@ -144,8 +144,11 @@ namespace BtOgre {
 				if (i == mBoneIndex->end())
 				{
 					l = new Vector3Array;
-					mBoneIndex->insert(BoneKeyIndex(currBone, l));
-				}						
+                    std::pair<unsigned char, Vector3Array*> t;
+                    t.first  = (unsigned char) BoneKeyIndex(currBone, l).first;
+                    t.second = BoneKeyIndex(currBone, l).second;
+					mBoneIndex->insert(t);
+				}
 				else 
 				{
 					l = i->second;
@@ -207,7 +210,7 @@ namespace BtOgre {
 		if (mBoundRadius == (-1))
 		{
 			getSize();
-			mBoundRadius = (std::max(mBounds.x,std::max(mBounds.y,mBounds.z)) * 0.5);
+			mBoundRadius = (std::max(mBounds.x,std::max(mBounds.y, mBounds.z)) * 0.5f);
 		}
 		return mBoundRadius;
 	}
@@ -706,7 +709,7 @@ namespace BtOgre {
 			 {
 				 box_kCenter += vertices[c];
 			 }
-			 const Ogre::Real invVertexCount = 1.0 / vertex_count;
+			 const Ogre::Real invVertexCount = 1.0f / vertex_count;
 			 box_kCenter *= invVertexCount;
 		 }
 		Quaternion orient = boneOrientation;
@@ -747,15 +750,15 @@ namespace BtOgre {
 				fY2Max = fY2;
 		}
 
-		box_afExtent.x = ((Real)0.5)*(fY0Max - fY0Min);
-		box_afExtent.y = ((Real)0.5)*(fY1Max - fY1Min);
-		box_afExtent.z = ((Real)0.5)*(fY2Max - fY2Min);
+		box_afExtent.x = 0.5f * (fY0Max - fY0Min);
+		box_afExtent.y = 0.5f * (fY1Max - fY1Min);
+		box_afExtent.z = 0.5f * (fY2Max - fY2Min);
 
-		box_kCenter += (0.5*(fY0Max+fY0Min))*box_akAxis[0] +
-			(0.5*(fY1Max+fY1Min))*box_akAxis[1] +
-			(0.5*(fY2Max+fY2Min))*box_akAxis[2];
+		box_kCenter += (0.5f * (fY0Max + fY0Min) * box_akAxis[0]) +
+			           (0.5f * (fY1Max + fY1Min) * box_akAxis[1]) +
+			           (0.5f * (fY2Max + fY2Min) * box_akAxis[2]);
 
-		box_afExtent *= 2.0;
+		box_afExtent *= 2.0f;
 
 		return true;
 	}
@@ -785,7 +788,6 @@ namespace BtOgre {
  * BtOgre::DynamicRenderable
  * =============================================================================================
  */
-
 	DynamicRenderable::DynamicRenderable()
 	{
 	}
@@ -919,7 +921,7 @@ namespace BtOgre {
  * BtOgre::DynamicLines
  * =============================================================================================
  */
-
+    
 	enum {
 	  POSITION_BINDING,
 	  TEXCOORD_BINDING

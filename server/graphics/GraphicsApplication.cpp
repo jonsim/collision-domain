@@ -244,6 +244,9 @@ void GraphicsApplication::createFrameListener (void)
 {
     GraphicsCore::createFrameListener();
     
+    // The gamecore stuff should really be handled in a different manner - I will come back and change this later.
+	GameCore::mNetworkCore->init(NULL);
+
 	// Handle Game play (this isn't the place to do this, this will be moved).
 	GameCore::mGameplay = new Gameplay();
 	Team* t1 = GameCore::mGameplay->createTeam("Team1Name");

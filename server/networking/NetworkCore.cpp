@@ -48,6 +48,7 @@ void NetworkCore::init( char *szPass )
 	bConnected = true;
 	// Add the local player
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "SERVER" );	
+	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN0);
 	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
 }
 
