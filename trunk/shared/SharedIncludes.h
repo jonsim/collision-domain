@@ -19,6 +19,7 @@
 #include "cars/TruckCar.h"
 #include "PostFilterLogic.h"
 #include "SceneSetup.h"
+#include "GraphicsCore.h"
 #include "ViewCamera.h"
 #include "GameCore.h"
 
