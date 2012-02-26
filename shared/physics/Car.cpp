@@ -51,18 +51,14 @@ float Car::getCarMph()
 /// @param  position  The position to move to.
 void Car::moveTo(const btVector3 &position)
 {
-    OutputDebugString("hi\n");
     moveTo(position, mCarChassis->getOrientation());
     
-    OutputDebugString("hi4\n");
     // now stop the car moving
     mCarChassis->setAngularVelocity(btVector3(0,0,0));
     mCarChassis->setLinearVelocity(btVector3(0,0,0));
     
-    OutputDebugString("hi5\n");
     mSteer = 0;
     applySteeringValue();
-    OutputDebugString("hi6\n");
 }
 
 
@@ -74,11 +70,9 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     //GameCore::mPhysicsCore->getWorld()->removeRigidBody( mCarChassis );
     btTransform transform(rotation, position);
-    OutputDebugString("hi2\n");
     //mCarChassis->setWorldTransform( transform );
     //mCarChassis->setInterpolationWorldTransform( transform );
     reset( mCarChassis, transform );
-    OutputDebugString("hi3\n");
     if( mLeftDoorBody != NULL )
     {
         reset( mLeftDoorBody, transform );

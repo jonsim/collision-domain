@@ -91,7 +91,6 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 	Team* teamToJoin = getTeamToJoin();
 	teamToJoin->addPlayer(tmpPlayer);
-	OutputDebugString("Joined player to team");
 	return teamToJoin;
 }
 
@@ -172,7 +171,6 @@ Team* Gameplay::checkIfGameOver()
 
 void Gameplay::preparePlayers()
 {
-	OutputDebugString("Preparing Players");
 	resetAllHP();
 	positionPlayers();
 }
@@ -185,7 +183,6 @@ void Gameplay::resetAllHP()
 
 void Gameplay::positionPlayers()
 {
-    OutputDebugString("boobs\n");
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
 	int hypo = 25; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
@@ -237,7 +234,6 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
-	OutputDebugString("Starting Game\n");
 	this->positionPlayers();
 	this->setAllNewVIP(); //TODO - Change this once we have multiple game modes
 	this->scheduleCountDown();
@@ -263,7 +259,6 @@ void Gameplay::drawInfo()
 			//else
 			if(!tmpInfoItem->getDrawn())
 			{
-				OutputDebugString("DrawingInfo\n");
 				handleInfoItem(tmpInfoItem,true);
 				tmpInfoItem->setDrawn();
 				//mInfoItems.erase(itr);
@@ -272,7 +267,6 @@ void Gameplay::drawInfo()
 			{
 				if(RakNet::GreaterThan(RakNet::GetTime(),tmpInfoItem->getEndTime()))
 				{
-					OutputDebugString("Clearing Info\n");
 					handleInfoItem(tmpInfoItem,false);
 					mInfoItems.erase(itr);
 				}
