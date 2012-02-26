@@ -81,7 +81,6 @@ bool PowerupMass::isPendingDelete()
 void PowerupMass::createGraphic()
 {
     entity = GameCore::mSceneMgr->createEntity("MassPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_mass.mesh");
-    //entity->setMaterialName("powerup_mass_weight");
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK);

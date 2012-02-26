@@ -337,7 +337,7 @@ void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
 
 /*-------------------- SPEEDOMETER --------------------*/
 /// @brief Draws the speedo on-screen
-void GameGUI::setupSpeedo (void)
+void GameGUI::setupSpeedo( void )
 {
 	// Create our speedometer overlays
 	Ogre::Overlay *olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
@@ -362,10 +362,16 @@ void GameGUI::setupSpeedo (void)
 	olcSpeedo->addChild( oleNeedle );
 }
 
+void GameGUI::updateSpeedo( void )
+{
+    updateSpeedo(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph(),
+                 GameCore::mPlayerPool->getLocalPlayer()->getCar()->getGear());
+}
+
 /// @brief	Update the rotation of the speedo needle
 /// @param	fSpeed	Float containing speed of car in mph
 /// @param  iGear   Current car gear
-void GameGUI::updateSpeedo (float fSpeed, int iGear)
+void GameGUI::updateSpeedo( float fSpeed, int iGear )
 {
 	if( fSpeed < 0 )
 		fSpeed *= -1;
@@ -399,7 +405,7 @@ void GameGUI::updateSpeedo (float fSpeed, int iGear)
 
 /*-------------------- GEAR DISPLAY --------------------*/
 /// @brief Draws the gear display
-void GameGUI::setupGearDisplay (void)
+void GameGUI::setupGearDisplay()
 {
 	oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
 
@@ -413,4 +419,13 @@ void GameGUI::setupGearDisplay (void)
 	olcSpeedo->addChild( oleGear );
 
 	updateSpeedo( 0, -1 );
+}
+
+void GameGUI::updateCounters()
+{
+	static char szFPS[64];
+
+	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+	sprintf( szFPS,   "FPS: %.2f", GameCore::mGraphicsCore->mWindow->getAverageFPS());
+	fps->setText( szFPS );
 }

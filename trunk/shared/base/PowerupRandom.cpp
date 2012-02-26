@@ -18,7 +18,6 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
 
     {
         entity = GameCore::mSceneMgr->createEntity("RandomPowerupMesh" + boost::lexical_cast<std::string>(uniqueID) , "powerup_random.mesh");
-        entity->setMaterialName("powerup_random_uv");
 
         int GEOMETRY_QUERY_MASK = 1<<2;
         entity->setQueryFlags(GEOMETRY_QUERY_MASK);

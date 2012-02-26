@@ -97,7 +97,6 @@ void PowerupSpeed::spawn(Ogre::Vector3 createAboveAt)
 void PowerupSpeed::createGraphic()
 {
     mEntity = GameCore::mSceneMgr->createEntity("SpeedPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_speed.mesh");
-    mEntity->setMaterialName("powerup_speed");
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     mEntity->setQueryFlags(GEOMETRY_QUERY_MASK);

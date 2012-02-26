@@ -46,15 +46,7 @@ public:
 
 
 protected:
-    void createGeometry(
-        const std::string &entityName,
-        const std::string &meshName,
-        Ogre::SceneNode *toAttachTo);
-    void createGeometry(
-        const std::string &entityName,
-        const std::string &meshName,
-        const std::string &materialName,
-        Ogre::SceneNode *toAttachTo);
+    void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo);
     
     OgreOggISound *mHornSound;
 
@@ -143,12 +135,6 @@ protected:
 private:
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
-    void createGeometry(
-        const std::string &entityName,
-        const std::string &meshName,
-        bool applyMaterial,
-        const std::string &materialName,
-        Ogre::SceneNode *toAttachTo);
 
     void updateRPM();
 

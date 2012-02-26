@@ -49,14 +49,16 @@ void NetworkCore::init( char *szPass )
 	// Add the local player
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "SERVER" );	
 	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN0);
-    OutputDebugString("Problems ahead\n");
 	GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
-    OutputDebugString("Problems behind\n");
 }
+
 
 /// @brief Get the interface to RakNet (shouldn't be needed if this class is thorough)
 /// @return RakPeerInterface pointer
-RakNet::RakPeerInterface* NetworkCore::getRakInterface() { return m_pRak; }
+RakNet::RakPeerInterface* NetworkCore::getRakInterface()
+{
+    return m_pRak;
+}
 
 
 /// @brief  Deconstructor.
@@ -306,7 +308,6 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
 	SetupGameForPlayer( pkt->guid );
-
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

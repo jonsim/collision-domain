@@ -186,29 +186,29 @@ void GraphicsApplication::finishBenchmark (uint8_t stage, float averageTriangles
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
+    static const float oneSecond = 1.0f / 60.0f;
+
     if (!GraphicsCore::frameRenderingQueued(evt))
         return false;
     
 	if (mBenchmarkRunning)
 	{
-		static float benchmarkProgress = 0;
-		static float CATriangles = 0;
-		static uint16_t CAi = 0;
-		float benchmarkIncrement = 500 * evt.timeSinceLastFrame;
-		benchmarkProgress += benchmarkIncrement;
+		static float    benchmarkProgress = 0;
+		static float    CATriangles       = 0;
+		static uint16_t CAi               = 0;
+        benchmarkProgress += evt.timeSinceLastFrame;
 		CATriangles += ((float) (mWindow->getTriangleCount() - CATriangles)) / ((float) (++CAi));
-
 		// stop the benchmark after 8 seconds
-		if (benchmarkProgress > 4000)
+		if (benchmarkProgress > 8)
 		{
-			CAi = 0;
+			CAi               = 0;
 			benchmarkProgress = 0;
 			mBenchmarkRunning = false;
 			finishBenchmark(mBenchmarkStage, CATriangles);
 		}
 
 		// rotate the camera
-		GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(benchmarkIncrement, 0.0f, 0.0f);
+        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * evt.timeSinceLastFrame, 0.0f, 0.0f);
 
 		// update fps counter
 		float avgfps = mWindow->getAverageFPS(); // update fps
@@ -221,37 +221,26 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		return true;
 	}
 
-    // NOW WE WILL DO EVERYTHING BASED OFF THE LATEST KEYBOARD / MOUSE INPUT
+    // Collect input
 	InputState *inputSnapshot = mUserInput.getInputState();
-	if( mUserInput.isToggleConsole() )      GameCore::mGui->toggleConsole();
-	else if( mUserInput.isToggleChatbox() ) GameCore::mGui->toggleChatbox();
+    mUserInput.processInterfaceControls();
     
     // Process the networking. Sends client's input and receives data
     GameCore::mNetworkCore->frameEvent(inputSnapshot);
 
-	if( NetworkCore::bConnected == true )
+	if (NetworkCore::bConnected)
 	{
 		// Process the player pool. Perform updates on other players
 		GameCore::mPlayerPool->frameEvent();
 
 		// Apply controls the player (who will be moved on frameEnd and frameStart).
-		if( GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
+		if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
 		{
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel());
-
-            // update GUI
-			float speedmph = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph();
-            int   curGear  = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getGear();
-			float avgfps   = mWindow->getAverageFPS();
-
-			CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-			char szFPS[64];
-			sprintf( szFPS,   "FPS: %.2f", avgfps);
-			fps->setText( szFPS );
-			GameCore::mGui->updateSpeedo( speedmph, curGear );
-
-			// 
+            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
+            GameCore::mGui->updateCounters();
+            GameCore::mGui->updateSpeedo();
 		}
 
 	}
@@ -261,32 +250,22 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         All powerup removals handled by the server's collision events
         In fact, client probably shouldn't register any collision callbacks for powerups
     */
-    GameCore::mPowerupPool->frameEvent( evt );
-
-    if( NetworkCore::bConnected && GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL )
-    {
-        float rpm = GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM();
-
-        GameCore::mAudioCore->frameEvent(rpm);
-    }
-    else
-    {
-        GameCore::mAudioCore->frameEvent(800);
-    }
+    GameCore::mPowerupPool->frameEvent(evt);
 
     // FUTURE
     // game will run x ticks behind the server
     // when a new snapshot is received, it should be in the client's future
     // interpolate based on snapshot timestamps
 
-    // Cleanup frame specific objects so we don't rape memory. If you want to remember some, delete them later!
+    // Cleanup frame specific objects.
     delete inputSnapshot;
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, (1.0f / 60.0f));
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, oneSecond);
 	
 	//Draw info items
 	GameCore::mGameplay->drawInfo();
+
     return true;
 }
 

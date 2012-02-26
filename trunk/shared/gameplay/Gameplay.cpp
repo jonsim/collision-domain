@@ -185,6 +185,7 @@ void Gameplay::resetAllHP()
 
 void Gameplay::positionPlayers()
 {
+    OutputDebugString("boobs\n");
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
 	int hypo = 25; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
@@ -192,10 +193,9 @@ void Gameplay::positionPlayers()
 
 	for(int i=0;i<MAX_PLAYERS;i++)
 	{
-		if(GameCore::mPlayerPool->getPlayer(i) != NULL)
+		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+		if(tmpPlayer != NULL)
 		{
-			Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-		
 			//Calcualte the correct positions
 			Ogre::Real omega = (Ogre::Real)i*segSize;
 			//Calculate which sector of the circle it's in

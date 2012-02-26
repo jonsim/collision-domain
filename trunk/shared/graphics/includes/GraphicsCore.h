@@ -24,7 +24,8 @@ public:
     virtual void go (void);
 	void shutdown() { mShutDown = true; }
 
-    Ogre::Camera* mCamera;
+    Ogre::Camera*       mCamera;
+    Ogre::RenderWindow* mWindow;
     SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
     
 
@@ -50,10 +51,9 @@ protected:
     // OIS user input
     Input mUserInput;
 
-    Ogre::Root*         mRoot;
-    Ogre::RenderWindow* mWindow;
-    Ogre::String        mResourcesCfg;
-    Ogre::String        mPluginsCfg;
+    Ogre::Root*  mRoot;
+    Ogre::String mResourcesCfg;
+    Ogre::String mPluginsCfg;
 
     // OgreBites
     OgreBites::SdkCameraMan* mCameraMan;     // basic camera controller

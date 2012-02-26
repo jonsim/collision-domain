@@ -51,14 +51,18 @@ float Car::getCarMph()
 /// @param  position  The position to move to.
 void Car::moveTo(const btVector3 &position)
 {
+    OutputDebugString("hi\n");
     moveTo(position, mCarChassis->getOrientation());
-
+    
+    OutputDebugString("hi4\n");
     // now stop the car moving
     mCarChassis->setAngularVelocity(btVector3(0,0,0));
     mCarChassis->setLinearVelocity(btVector3(0,0,0));
-
+    
+    OutputDebugString("hi5\n");
     mSteer = 0;
     applySteeringValue();
+    OutputDebugString("hi6\n");
 }
 
 
@@ -70,9 +74,11 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 {
     //GameCore::mPhysicsCore->getWorld()->removeRigidBody( mCarChassis );
     btTransform transform(rotation, position);
+    OutputDebugString("hi2\n");
     //mCarChassis->setWorldTransform( transform );
     //mCarChassis->setInterpolationWorldTransform( transform );
     reset( mCarChassis, transform );
+    OutputDebugString("hi3\n");
     if( mLeftDoorBody != NULL )
     {
         reset( mLeftDoorBody, transform );
@@ -377,11 +383,12 @@ void Car::updateRPM()
 ///         guaranteed to be the arm node.
 Ogre::SceneNode *Car::attachCamNode()
 {
-    if (mCamNode != NULL) return mCamNode;
+    if (mCamNode != NULL)
+        return mCamNode;
 
     // else we need to make a new camera
     mCamArmNode = mBodyNode->createChildSceneNode("CamArmNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mCamNode = mCamArmNode->createChildSceneNode("CamNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mCamNode  = mCamArmNode->createChildSceneNode("CamNode"    + boost::lexical_cast<std::string>(mUniqueCarID));
 
     return mCamNode;
 }
@@ -395,51 +402,13 @@ void Car::attachCollisionTickCallback(Player* player)
 
 /// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
 ///         with this car's unique ID so that (forbidden) name collisions don't occur.
-/// @param  entityName  Name which the imported mesh will be given.
-/// @param  meshName    Name of the mesh which is to be imported.
-/// @param  toAttachTo  The SceneNode which the mesh should be imported and attached to.
-void Car::createGeometry(
-                    const std::string &entityName,
-                    const std::string &meshName,
-                    Ogre::SceneNode *toAttachTo)
-{
-    createGeometry(entityName, meshName, false, "", toAttachTo);
-}
-
-
-/// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
-///         with this car's unique ID so that (forbidden) name collisions don't occur.
-/// @param  entityName    Name which the imported mesh will be given.
-/// @param  meshName      Name of the mesh which is to be imported.
-/// @param  materialName  The name of the material file which is to be imported and applied to the mesh.
-/// @param  toAttachTo    The SceneNode which the mesh should be imported and attached to.
-void Car::createGeometry(
-                    const std::string &entityName,
-                    const std::string &meshName,
-                    const std::string &materialName,
-                    Ogre::SceneNode *toAttachTo)
-{
-    createGeometry(entityName, meshName, true, materialName, toAttachTo);
-}
-
-
-/// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
-///         with this car's unique ID so that (forbidden) name collisions don't occur.
 /// @param  entityName     Name which the imported mesh will be given.
 /// @param  meshName       Name of the mesh which is to be imported.
-/// @param  applyMaterial  Specified whether to apply the given material (which may be NULL) or not.
-/// @param  materialName   The name of the material file which is to be imported and applied to the mesh.
 /// @param  toAttachTo     The SceneNode which the mesh should be imported and attached to.
-void Car::createGeometry(
-                    const std::string &entityName,
-                    const std::string &meshName,
-                    bool applyMaterial,
-                    const std::string &materialName,
-                    Ogre::SceneNode *toAttachTo)
+void Car::createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo)
 {
     Ogre::Entity* entity;
     entity = GameCore::mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
-    if (applyMaterial) entity->setMaterialName(materialName);
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
@@ -447,7 +416,6 @@ void Car::createGeometry(
     entity->setNormaliseNormals(true);
 #endif // only applicable before shoggoth (1.5.0)
 
-    //DOESNT WORKmSceneMgr->setFlipCullingOnNegativeScale(false); // make sure that the culling mesh gets flipped for negatively scaled nodes
     entity->setCastShadows(true);
     toAttachTo->attachObject(entity);
 }

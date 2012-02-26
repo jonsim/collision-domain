@@ -97,34 +97,17 @@ InputState* Input::getFreeCamInputState()
     }
 }
 
-
-/// @brief  Processes the key bound (here) to toggling widgets on screen.
-/// @return Whether the key bound to toggling widgets on screen is pressed or not.
-//bool Input::isToggleWidget()
-//{
-//    return mKeyboard->isKeyDown(OIS::KC_G);
-//}
-
-/// @brief  Processes the key bound (here) to toggling chatbox on screen.
-/// @return Whether the key bound to toggling chatbox on screen is pressed or not.
-bool Input::isToggleChatbox()
+/// @brief  Processes the interface controls, performing the correct actions if they are found pressed.
+void Input::processInterfaceControls()
 {
-    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
-	{
-        return mKeyboard->isKeyDown(OIS::KC_T);
-	}
-    else return false;
-}
-
-/// @brief  Processes the key bound (here) to toggling console on screen.
-/// @return Whether the key bound to toggling console on screen is pressed or not.
-bool Input::isToggleConsole()
-{
-    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
-	{
-        return mKeyboard->isKeyDown(OIS::KC_C);
-	}
-    else return false;
+    // Check for console and chatbox - NB: they cannot be displayed simultaneously.
+    if (NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
+    {
+	    if (mKeyboard->isKeyDown(OIS::KC_T))
+            GameCore::mGui->toggleConsole();
+	    else if (mKeyboard->isKeyDown(OIS::KC_C))
+            GameCore::mGui->toggleChatbox();
+    }
 }
 
 /// @brief  Deals with mouse input.

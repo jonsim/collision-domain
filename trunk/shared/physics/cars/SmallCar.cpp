@@ -181,31 +181,29 @@ void SmallCar::playCarHorn()
 /// @brief  Initialises the node tree for this car.
 void SmallCar::initNodes()
 {
-    mPlayerNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mPlayerNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
-    mBodyNode    = mPlayerNode->createChildSceneNode("BodyNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mWheelsNode  = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mBodyNode       = mPlayerNode->createChildSceneNode("BodyNode"   + boost::lexical_cast<std::string>(mUniqueCarID));
+    mWheelsNode     = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
-    mChassisNode = mBodyNode->createChildSceneNode("ChassisNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mLDoorNode   = mBodyNode->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRDoorNode   = mBodyNode->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFBumperNode = mBodyNode->createChildSceneNode("FBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRBumperNode = mBodyNode->createChildSceneNode("RBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mChassisNode    = mBodyNode->createChildSceneNode("ChassisNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
+    mLDoorNode      = mBodyNode->createChildSceneNode("LDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRDoorNode      = mBodyNode->createChildSceneNode("RDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
+    mFBumperNode    = mBodyNode->createChildSceneNode("FBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRBumperNode    = mBodyNode->createChildSceneNode("RBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     mLHeadlightNode = mBodyNode->createChildSceneNode("mLHeadlightNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRHeadlightNode = mBodyNode->createChildSceneNode("mRHeadlightNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
-    mFLWheelNode = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mFLWheelNode    = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mFRWheelNode    = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRLWheelNode    = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRRWheelNode    = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
 	// setup particles. This needs to be propogated.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
-	//mDustSystem    = mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	//mSparkSystem   = mSceneMgr->createParticleSystem("Spark"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Spark");
+	//mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
 	mBodyNode->attachObject(mExhaustSystem);
 	//mBodyNode->attachObject(mDustSystem);
-	//mBodyNode->attachObject(mSparkSystem);
 
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;
@@ -216,47 +214,28 @@ void SmallCar::initNodes()
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
 void SmallCar::initGraphics(btTransform& chassisShift)
 {
-    // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    createGeometry("CarBody", "small_car_body.mesh", "small_car_body_uv", mChassisNode);
+    // Load the small car meshes and scale them appropriately
+    createGeometry("CarBody",              "small_car_body.mesh",       mChassisNode);
+    createGeometry("CarEntity_LDoor",      "small_car_ldoor.mesh",      mLDoorNode);
+    createGeometry("CarEntity_RDoor",      "small_car_rdoor.mesh",      mRDoorNode);
+    createGeometry("CarEntity_FBumper",    "small_car_fbumper.mesh",    mFBumperNode);
+    createGeometry("CarEntity_RBumper",    "small_car_rbumper.mesh",    mRBumperNode);
+    createGeometry("CarEntity_LHeadlight", "small_car_lheadlight.mesh", mLHeadlightNode);
+    createGeometry("CarEntity_RHeadlight", "small_car_rheadlight.mesh", mRHeadlightNode);
+    createGeometry("CarEntity_FLWheel",    "small_car_lwheel.mesh",     mFLWheelNode);
+    createGeometry("CarEntity_FRWheel",    "small_car_rwheel.mesh",     mFRWheelNode);
+    createGeometry("CarEntity_RLWheel",    "small_car_lwheel.mesh",     mRLWheelNode);
+    createGeometry("CarEntity_RRWheel",    "small_car_rwheel.mesh",     mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mChassisNode);
-
-    // load the left door baby
-    createGeometry("CarEntity_LDoor", "small_car_ldoor.mesh", "small_car_door_uv", mLDoorNode);
     PhysicsCore::auto_scale_scenenode(mLDoorNode);
-    
-    // lets get a tasty right door
-    createGeometry("CarEntity_RDoor", "small_car_rdoor.mesh", "small_car_door_uv", mRDoorNode);
     PhysicsCore::auto_scale_scenenode(mRDoorNode);
-
-    // and now a sweet sweet front bumper
-    createGeometry("CarEntity_FBumper", "small_car_fbumper.mesh", "small_car_bumper", mFBumperNode);
     PhysicsCore::auto_scale_scenenode(mFBumperNode);
-
-    // and now a regular rear bumper
-    createGeometry("CarEntity_RBumper", "small_car_rbumper.mesh", "small_car_bumper", mRBumperNode);
     PhysicsCore::auto_scale_scenenode(mRBumperNode);
-
-    // Headlights
-    createGeometry("CarEntity_LHeadlight", "small_car_lheadlight.mesh", "small_car_headlight_uv", mLHeadlightNode);
     PhysicsCore::auto_scale_scenenode(mLHeadlightNode);
-
-    createGeometry("CarEntity_RHeadlight", "small_car_rheadlight.mesh", "small_car_headlight_uv", mRHeadlightNode);
     PhysicsCore::auto_scale_scenenode(mRHeadlightNode);
-
-    // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "small_car_lwheel.mesh", "small_car_wheel_uv", mFLWheelNode);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
-
-    // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "small_car_rwheel.mesh", "small_car_wheel_uv", mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
-
-    // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "small_car_lwheel.mesh", "small_car_wheel_uv", mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
-
-    // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "small_car_rwheel.mesh", "small_car_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
 }
 
