@@ -18,12 +18,11 @@ public:
     SceneSetup (void);
     virtual ~SceneSetup (void);
 
-    void setWeather (uint8_t mode);
-	
     void loadHDR (Ogre::Viewport* vp, uint8_t mode);
     void loadBloom (Ogre::Viewport* vp, uint8_t mode, float blurWeight, float originalWeight);
     void loadMotionBlur (Ogre::Viewport* vp, uint8_t mode, float blur);
     void setRadialBlur (Ogre::Viewport* vp, float blur);
+    void setWeather (uint8_t mode);
 
 	// Graphical effect settings. Adjusts the scale of the effect - default is 1.
 	float gfxSettingHDR;         // Strength of the High Dynamic Range lighting.
