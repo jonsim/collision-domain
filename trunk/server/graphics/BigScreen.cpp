@@ -17,9 +17,6 @@ BigScreen::BigScreen(ViewportManager* vpm_P, NetworkCore* networkCore)
 BigScreen::BigScreen(ViewportManager* vpm_P)
 {
 	mViewportManager = vpm_P;
-
-	//Ogre::LogManager::getSingleton().logMessage("Starting BigScreen");
-	OutputDebugString("BigScreen Loaded \n");
 }
 
 bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )

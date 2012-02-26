@@ -176,7 +176,6 @@ bool GraphicsCore::initApplication (void)
     createScene();                      // Build the scene
     
     mSpawnScreen = NULL;
-    OutputDebugString("oogly boogly\n");
     createFrameListener();
 
     return true;
