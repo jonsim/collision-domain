@@ -99,7 +99,6 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
 void PowerupHealth::createGraphic()
 {
     entity = GameCore::mSceneMgr->createEntity("HealthPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_health.mesh");
-    entity->setMaterialName("powerup_health");
     
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK);

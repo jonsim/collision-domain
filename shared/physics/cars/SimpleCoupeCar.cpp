@@ -203,48 +203,28 @@ void SimpleCoupeCar::initNodes()
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
 void SimpleCoupeCar::initGraphics(btTransform& chassisShift)
 {
-    // Load the car mesh and attach it to the car node (this will be a large if statement for all models/meshes)
-    createGeometry("CarEntity_Body", "banger_body.mesh", "banger_body_uv", mChassisNode);
+    // Load the banger meshes and scale them appropriately
+    createGeometry("CarEntity_Body",    "banger_body.mesh",    mChassisNode);
+    createGeometry("CarEntity_LDoor",   "banger_fldoor.mesh",  mFLDoorNode);
+    createGeometry("CarEntity_RDoor",   "banger_frdoor.mesh",  mFRDoorNode);
+    createGeometry("CarEntity_RLDoor",  "banger_rldoor.mesh",  mRLDoorNode);
+    createGeometry("CarEntity_RRDoor",  "banger_rrdoor.mesh",  mRRDoorNode);
+    createGeometry("CarEntity_FBumper", "banger_fbumper.mesh", mFBumperNode);
+    createGeometry("CarEntity_RBumper", "banger_rbumper.mesh", mRBumperNode);
+    createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh",  mFLWheelNode);
+    createGeometry("CarEntity_FRWheel", "banger_rwheel.mesh",  mFRWheelNode);
+    createGeometry("CarEntity_RLWheel", "banger_lwheel.mesh",  mRLWheelNode);
+    createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh",  mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mChassisNode);
-
-    // load the left door baby
-    createGeometry("CarEntity_LDoor", "banger_fldoor.mesh", "banger_fdoor_uv", mFLDoorNode);
     PhysicsCore::auto_scale_scenenode(mFLDoorNode);
-    
-    // lets get a tasty right door
-    createGeometry("CarEntity_RDoor", "banger_frdoor.mesh", "banger_fdoor_uv", mFRDoorNode);
     PhysicsCore::auto_scale_scenenode(mFRDoorNode);
-
-    // load the left door baby
-    createGeometry("CarEntity_RLDoor", "banger_rldoor.mesh", "banger_rdoor_uv", mRLDoorNode);
     PhysicsCore::auto_scale_scenenode(mRLDoorNode);
-    
-    // lets get a tasty right door
-    createGeometry("CarEntity_RRDoor", "banger_rrdoor.mesh", "banger_rdoor_uv", mRRDoorNode);
     PhysicsCore::auto_scale_scenenode(mRRDoorNode);
-
-    // and now a sweet sweet front bumper
-    createGeometry("CarEntity_FBumper", "banger_fbumper.mesh", "banger_bumper", mFBumperNode);
     PhysicsCore::auto_scale_scenenode(mFBumperNode);
-
-    // and now a regular rear bumper
-    createGeometry("CarEntity_RBumper", "banger_rbumper.mesh", "banger_bumper", mRBumperNode);
     PhysicsCore::auto_scale_scenenode(mRBumperNode);
-
-    // tidy front left wheel
-    createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh", "banger_wheel_uv", mFLWheelNode);
     PhysicsCore::auto_scale_scenenode(mFLWheelNode);
-
-    // delightful front right wheel
-    createGeometry("CarEntity_FRWheel", "banger_rwheel.mesh", "banger_wheel_uv", mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
-
-    // and now an arousing rear left wheel
-    createGeometry("CarEntity_RLWheel", "banger_lwheel.mesh", "banger_wheel_uv", mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
-
-    // and finally a rear right wheel to seal the deal. beaut.
-    createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh", "banger_wheel_uv", mRRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
 }
 

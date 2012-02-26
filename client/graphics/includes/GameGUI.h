@@ -35,9 +35,12 @@ public:
 	bool Console_Off( const CEGUI::EventArgs &args );
 
     void setupSpeedo();
+    void updateSpeedo();
 	void updateSpeedo( float fSpeed, int iGear );
 
     void setupGearDisplay();
+
+    void updateCounters();
     
 private:
 	CEGUI::Window *mSheet;

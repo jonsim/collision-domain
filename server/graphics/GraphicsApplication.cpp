@@ -114,6 +114,8 @@ void GraphicsApplication::createFrameListener (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
+    static const float oneSecond = 1.0f / 60.0f;
+
     if (!GraphicsCore::frameRenderingQueued(evt))
         return false;
 	if (!NetworkCore::bConnected)
@@ -128,11 +130,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	if( !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{
 		inputSnapshot = mUserInput.getInputState();
-
-		if( mUserInput.isToggleConsole() )
-			GameCore::mGui->toggleConsole();
-		else if( mUserInput.isToggleChatbox() )
-			GameCore::mGui->toggleChatbox();
+        mUserInput.processInterfaceControls();
 	}
 	else
 	{
@@ -147,12 +145,12 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	GameCore::mPlayerPool->frameEvent( evt );
 
     // Apply controls the player (who will be moved on frameEnd and frameStart).
-	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
+	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, oneSecond);
     //mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
 
     GameCore::mPowerupPool->frameEvent( evt );
 
-    GameCore::mAudioCore->frameEvent(200);
+    //GameCore::mAudioCore->frameEvent(200);
 
 	GameCore::mGameplay->drawInfo();
 

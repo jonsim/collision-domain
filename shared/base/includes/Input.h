@@ -28,12 +28,11 @@ public:
     // Controls are assigned here
     InputState* getInputState();
     InputState* getFreeCamInputState();
-    /* bool isToggleWidget();*/
-	bool isToggleChatbox();
-	bool isToggleConsole();
     int getMouseXRel();
     int getMouseYRel();
 	int getMouseZRel();
+
+    void processInterfaceControls();
 
 protected:
     //OIS Input devices
