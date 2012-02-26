@@ -191,10 +191,8 @@ void SimpleCoupeCar::initNodes()
 	// setup particles. This needs to be propogated.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
 	//mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	mSparkSystem   = GameCore::mSceneMgr->createParticleSystem("Spark"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Spark");
 	mBodyNode->attachObject(mExhaustSystem);
 	//mBodyNode->attachObject(mDustSystem);
-	mBodyNode->attachObject(mSparkSystem);
 
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;

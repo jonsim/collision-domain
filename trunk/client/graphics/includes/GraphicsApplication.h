@@ -10,14 +10,9 @@
 #include "GameIncludes.h"
 
 
-/*-------------------- DEFINITIONS --------------------*/
-
-
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
  *  @brief  Adds objects to the graphics interface.
- *
- *          Derived from the Ogre Tutorial Framework (TutorialApplication.h).
  */
 class GraphicsApplication : public GraphicsCore, public SceneSetup
 {
@@ -30,7 +25,6 @@ public:
 protected:
     virtual void createCamera (void);
     virtual void createViewports (void);
-
     virtual void createScene (void);
     virtual void createFrameListener (void);
 	
@@ -41,7 +35,7 @@ protected:
 
 private:
 	// Setup functions.
-	void setupGUI (void);
+	virtual void setupGUI (void);
 
 	void finishBenchmark (uint8_t stage, float averageTriangles);
 

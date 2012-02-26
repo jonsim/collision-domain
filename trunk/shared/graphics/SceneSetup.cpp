@@ -354,8 +354,12 @@ void SceneSetup::setWeather (uint8_t mode)
 /// @brief Configures the particle system.
 void SceneSetup::setupParticleSystem (void)
 {
-	// set nonvisible timeout
+	// Set nonvisible timeout
 	Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
+    
+    // Create spark system
+	//mSparkSystem = GameCore::mSceneMgr->createParticleSystem("SparkSystem", "CollisionDomain/Spark");
+    //GameCore::mSceneMgr->getRootSceneNode()->attachObject(mSparkSystem);
 }
 
 

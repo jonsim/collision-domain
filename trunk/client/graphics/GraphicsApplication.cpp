@@ -1,7 +1,6 @@
 /**
  * @file    GraphicsApplication.cpp
  * @brief     Adds objects to the graphics interface.
- *          Derived from the Ogre Tutorial Framework (TutorialApplication.cpp).
  */
 
 /*-------------------- INCLUDES --------------------*/
