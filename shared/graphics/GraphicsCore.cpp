@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "SharedIncludes.h"
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -68,14 +68,14 @@ void GraphicsCore::createFrameListener (void)
     mWindow->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-
+	
     // Setup User Input, setting initial mouse clipping area.
     mUserInput.createInputSystem(pl);
     windowResized(mWindow);
 
     // Register as a Window listener.
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
-	
+    
 	// Register as a Frame listener.
     mRoot->addFrameListener(this);
 }
@@ -138,7 +138,7 @@ void GraphicsCore::go (void)
 
     // clean up
     destroyScene();
-    GameCore::destroy();
+	GameCore::destroy();
 }
 
 
@@ -160,13 +160,13 @@ bool GraphicsCore::initApplication (void)
 	// Configure the renderer and exit if not configuration was provided (via the config dialog).
     if (!configureRenderer())
 		return false;
-    
+
     // Create the SceneManager. This should be updated to an Octree implementation, rather than a culling heirarchy.
     GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-    
+
     createCamera();     // Create the cameras for rendering the scene
     createViewports();  // Create the viewports for viewing the scene
-    
+
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
     createResourceListener();           // Create resource listener (for loading screens)
     loadResources();                    // Load resources
@@ -176,7 +176,7 @@ bool GraphicsCore::initApplication (void)
     createScene();                      // Build the scene
     
     mSpawnScreen = NULL;
-
+    OutputDebugString("oogly boogly\n");
     createFrameListener();
 
     return true;

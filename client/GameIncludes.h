@@ -11,7 +11,6 @@
 
 #include "PlayerPool.h"
 #include "Player.h"
-#include "GraphicsCore.h"
 #include "GraphicsApplication.h"
 #include "NetworkCore.h"
 #include "GameGUI.h"

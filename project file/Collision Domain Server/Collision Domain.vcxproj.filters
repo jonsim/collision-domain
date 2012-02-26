@@ -55,9 +55,6 @@
     <ClInclude Include="..\..\server\graphics\includes\GraphicsApplication.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\server\graphics\includes\GraphicsCore.h">
-      <Filter>server\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\server\graphics\includes\ViewportManager.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
@@ -604,6 +601,9 @@
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -616,9 +616,6 @@
       <Filter>server\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\GraphicsApplication.cpp">
-      <Filter>server\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\server\graphics\GraphicsCore.cpp">
       <Filter>server\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\ViewportManager.cpp">
@@ -991,6 +988,9 @@
       <Filter>shared\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp">
+      <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp">
       <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
