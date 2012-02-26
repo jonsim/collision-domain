@@ -10,7 +10,7 @@ GameGUI::~GameGUI()
 {
 }
 
-void GameGUI::setupGUI()
+void GameGUI::initialiseGUI()
 {
 	// Create the default font
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
@@ -45,7 +45,7 @@ void GameGUI::setupGUI()
 }
 
 /*-------------------- DEV CONSOLE --------------------*/
-void GameGUI::displayConsole()
+void GameGUI::setupConsole()
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -122,7 +122,7 @@ bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
 }
 
 /*-------------------- DEV Chatbox --------------------*/
-void GameGUI::displayChatbox()
+void GameGUI::setupChatbox()
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 

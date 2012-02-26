@@ -287,7 +287,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
 		blurAmount = (speedmph - 40) / 28;
 		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
 	}
-	GameCore::mGraphicsApplication->setRadialBlur(blurAmount);
+    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
 #endif
     
 }

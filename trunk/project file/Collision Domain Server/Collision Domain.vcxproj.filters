@@ -598,6 +598,12 @@
     <ClInclude Include="..\..\shared\physics\includes\BtOgrePG.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -980,6 +986,12 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\BtOgre.cpp">
       <Filter>shared\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
+      <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp">
+      <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -30,12 +30,6 @@ public:
 
     Ogre::Camera* mCamera;
     SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
-
-	// Extra server gameplay shit. This shouldn't be here. Will be purged.
-    Ogre::Camera* mViewCam1;
-    Ogre::Camera* mViewCam2;
-    BigScreen* bigScreen;
-    ViewportManager* vpm;
     
 
 protected:
@@ -66,8 +60,8 @@ protected:
     Ogre::String        mPluginsCfg;
 
     // OgreBites
-    OgreBites::SdkCameraMan*   mCameraMan;     // basic camera controller
-    bool mCursorWasVisible;                    // Was the cursor visible before dialog appeared
+    OgreBites::SdkCameraMan* mCameraMan;     // basic camera controller
+    bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
     bool mShutDown;
 };
 

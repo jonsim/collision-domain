@@ -30,7 +30,7 @@ CircularBuffer<T>::~CircularBuffer (void)
 }
 
 
-/// @brief  sMod performs the calculation (x % bufferSize) where x < 2*bufferSize and x >= 0.
+/// @brief  sMod performs the calculation (x % bufferSize) where 0 <= x < 2*bufferSize.
 /**         The function performs the calculation much faster than the modulo function, however
             it is important that the two restrictions on x are observed. */
 /// @param  x   x in the calculation (x % bufferSize).
@@ -90,7 +90,7 @@ void CircularBuffer<T>::add (const T item)
 template <class T>
 void CircularBuffer<T>::remove (void)
 {
-    if (!this->bufferEmpty())
+    if (!isEmpty())
         tail = sMod(tail + 1);
 }
 

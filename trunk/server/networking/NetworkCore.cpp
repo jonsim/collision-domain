@@ -49,7 +49,9 @@ void NetworkCore::init( char *szPass )
 	// Add the local player
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "SERVER" );	
 	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN0);
-	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
+    OutputDebugString("Problems ahead\n");
+	GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
+    OutputDebugString("Problems behind\n");
 }
 
 /// @brief Get the interface to RakNet (shouldn't be needed if this class is thorough)
@@ -356,7 +358,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	pPlayer->createPlayer( iCarType, SKIN0 );
 
 	// Alert the BigScreen we've had a player spawned
-	GameCore::mGraphicsCore->bigScreen->declareNewPlayer(pkt->guid);
+	GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
     GameCore::mGameplay->declareNewPlayer(pkt->guid);
 
 	RakNet::BitStream bsSpawn;
