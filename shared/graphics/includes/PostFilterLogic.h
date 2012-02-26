@@ -10,7 +10,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "SharedIncludes.h"
 
 // The basic compositor logics will all do the same thing: attach a listener to the created
 // compositor. Define a shared definition to keep things minimal.

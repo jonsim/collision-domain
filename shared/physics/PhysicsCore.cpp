@@ -161,20 +161,20 @@ int PhysicsCore::getUniqueEntityID()
 
 
 /// @brief  Create the floor plane at y = 0 and add it to the physics world.
-void PhysicsCore::createFloorPlane( Ogre::SceneNode *arenaNode )
+void PhysicsCore::attachArenaCollisionMesh( Ogre::SceneNode *arenaNode )
 {    
-    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
+    Ogre::Entity* arenaCMEntity = GameCore::mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
 
-    Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
+    Ogre::Matrix4 arenaCMScaling(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
     
-    BtOgre::StaticMeshToShapeConverter converter( entity, matScale );
-    btCollisionShape *arenaShape = converter.createTrimesh();
+    BtOgre::StaticMeshToShapeConverter converter(arenaCMEntity, arenaCMScaling);
+    btCollisionShape *arenaCMShape = converter.createTrimesh();
     
     short collisionGroup = COL_ARENA;
     short collisionMask  = COL_CAR;
 
     BtOgre::RigidBodyState *arenaState = new BtOgre::RigidBodyState( arenaNode );
-    btRigidBody *arenaBody = new btRigidBody( 0.0f, arenaState, arenaShape );
+    btRigidBody *arenaBody = new btRigidBody( 0.0f, arenaState, arenaCMShape );
     
     mBulletWorld->addRigidBody( arenaBody, collisionGroup, collisionMask );
 
@@ -201,66 +201,6 @@ bool PhysicsCore::removeBody( btRigidBody *body )
         return true;
     }
 }
-
-/// @brief  Create the walls at +2500 and -2500 and add them to the physics world.
-/*void PhysicsCore::createWallPlanes()
-{
-    short collisionGroup = COL_ARENA;
-    short collisionMask  = COL_CAR;
-
-    // -2500 is good 2500 is bad. positive distances DO NOT WORK. Seriously, don't even bother
-    OgreBulletCollisions::CollisionShape *Shape2;
-    Shape2 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,1), -2500); // (normal vector, distance)
-    OgreBulletDynamics::RigidBody *defaultPlaneBody2 = new OgreBulletDynamics::RigidBody(
-            "BasePlane2",
-            mWorld,
-            collisionGroup,
-            collisionMask);
-    defaultPlaneBody2->setStaticShape(Shape2, 0.1f, 0.8f); // (shape, restitution, friction)
-    //defaultPlaneBody2-> ->setPosition();
-    // push the created objects to the deques
-    mShapes.push_back(Shape2);
-    mBodies.push_back(defaultPlaneBody2);
-
-
-    OgreBulletCollisions::CollisionShape *Shape3;
-    Shape3 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(0,0,-1), -2500); // (normal vector, distance)
-    OgreBulletDynamics::RigidBody *defaultPlaneBody3 = new OgreBulletDynamics::RigidBody(
-            "BasePlane3",
-            mWorld,
-            collisionGroup,
-            collisionMask);
-    defaultPlaneBody3->setStaticShape(Shape3, 0.1f, 0.8f); // (shape, restitution, friction)
-    // push the created objects to the deques
-    mShapes.push_back(Shape3);
-    mBodies.push_back(defaultPlaneBody3);
-
-    
-    OgreBulletCollisions::CollisionShape *Shape4;
-    Shape4 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(1,0,0), -2500); // (normal vector, distance)
-    OgreBulletDynamics::RigidBody *defaultPlaneBody4 = new OgreBulletDynamics::RigidBody(
-            "BasePlane4",
-            mWorld,
-            collisionGroup,
-            collisionMask);
-    defaultPlaneBody4->setStaticShape(Shape4, 0.1f, 0.8f); // (shape, restitution, friction)
-    // push the created objects to the deques
-    mShapes.push_back(Shape4);
-    mBodies.push_back(defaultPlaneBody4);
-
-
-    OgreBulletCollisions::CollisionShape *Shape5;
-    Shape5 = new OgreBulletCollisions::StaticPlaneCollisionShape(Ogre::Vector3(-1,0,0), -2500); // (normal vector, distance)
-    OgreBulletDynamics::RigidBody *defaultPlaneBody5 = new OgreBulletDynamics::RigidBody(
-            "BasePlane5",
-            mWorld,
-            collisionGroup,
-            collisionMask);
-    defaultPlaneBody5->setStaticShape(Shape5, 0.1f, 0.8f); // (shape, restitution, friction)
-    // push the created objects to the deques
-    mShapes.push_back(Shape5);
-    mBodies.push_back(defaultPlaneBody5);
-}*/
 
 
 /// @brief  Creates a cube and adds it to the physics world

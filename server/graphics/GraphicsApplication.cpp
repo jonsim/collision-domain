@@ -67,8 +67,12 @@ void GraphicsApplication::createViewports (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
+	// Save reference
+	GameCore::mGraphicsApplication = this;
+    
+	// Setup the GUI
 	mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-	GameCore::mGui->setupGUI();
+	GameCore::mGui->initialiseGUI();
 
     setupLighting(1);
     setupArena();
@@ -81,9 +85,9 @@ void GraphicsApplication::createScene (void)
     ninjaNode->scale(0.2f, 0.2f, 0.2f);
     ninjaNode->translate(100.0f,0,0);
 
-	GameCore::mGui->displayConsole();
-	GameCore::mGui->displayChatbox();
-	GameCore::mGraphicsCore->bigScreen->setupMapView();
+	GameCore::mGui->setupConsole();
+	GameCore::mGui->setupChatbox();
+	bigScreen->setupMapView();
 	GameCore::mGameplay->setupOverlay();
 }
 
@@ -230,12 +234,12 @@ void GraphicsApplication::setupArena (void)
 	arenaSize = arenaSize*arenaNode->getScale();//Scale the size
 	Ogre::Vector3 arenaLocation = arenaNode->getPosition();
 	
-	GameCore::mGraphicsCore->bigScreen->setMapCorner(arenaLocation);
-	GameCore::mGraphicsCore->bigScreen->setMapSize(arenaSize);
+	bigScreen->setMapCorner(arenaLocation);
+	bigScreen->setMapSize(arenaSize);
 
 
     // create collideable floor so shit doesn't freefall. It will hit the floor.
-    GameCore::mPhysicsCore->createFloorPlane( arenaNode );
+    GameCore::mPhysicsCore->attachArenaCollisionMesh( arenaNode );
 }
 
 

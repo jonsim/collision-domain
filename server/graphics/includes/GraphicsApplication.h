@@ -21,6 +21,12 @@ class GraphicsApplication : public GraphicsCore
 public:
     GraphicsApplication (void);
     virtual ~GraphicsApplication (void);
+    
+	// Extra server gameplay shit. This shouldn't be here. Will be purged.
+    Ogre::Camera* mViewCam1;
+    Ogre::Camera* mViewCam2;
+    BigScreen* bigScreen;
+    ViewportManager* vpm;
 
 protected:
     virtual void createCamera (void);

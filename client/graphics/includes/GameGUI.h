@@ -11,32 +11,40 @@
 
 class GameGUI
 {
-private:
-	CEGUI::Window *mSheet;
-
 public:
-
 	GameGUI();
 	~GameGUI();
 
-	void setupGUI();
+	void initialiseGUI();
 
-	void displayConnectBox();
+	void setupConnectBox();
     void closeConnectBox();
 	bool Connect_Host( const CEGUI::EventArgs &args );
 	bool Connect_Quit( const CEGUI::EventArgs &args );
 
-	void displayChatbox();
+	void setupChatbox();
 	void toggleChatbox();
 	bool chatboxVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Chatbox/input" )->isVisible(); }
 	bool Chatbox_Send( const CEGUI::EventArgs &args );
     void chatboxAddMessage( const char *szNickname, char *szMessage );
 
-	void displayConsole();
+	void setupConsole();
 	void toggleConsole();
 	bool consoleVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Console" )->isVisible(); }
 	bool Console_Send( const CEGUI::EventArgs &args );
 	bool Console_Off( const CEGUI::EventArgs &args );
+
+    void setupSpeedo();
+	void updateSpeedo( float fSpeed, int iGear );
+
+    void setupGearDisplay();
+    
+private:
+	CEGUI::Window *mSheet;
+
+	Ogre::OverlayContainer *olcSpeedo;
+	Ogre::OverlayElement   *oleNeedle;
+    Ogre::OverlayElement   *oleGear;
 };
 
 #endif

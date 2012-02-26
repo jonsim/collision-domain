@@ -8,7 +8,6 @@
 #include "GameIncludes.h"
 
 
-
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, initialising all resources.
@@ -181,7 +180,7 @@ bool GraphicsCore::initApplication (void)
     createFrameListener();
 
     return true;
-};
+}
 
 
 /// @brief  Called once a frame as the CPU has finished its calculations and the GPU is about to start rendering.

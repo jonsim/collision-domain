@@ -31,6 +31,7 @@ public:
     Ogre::Camera* mCamera;
     SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
     
+
 protected:
     virtual bool initApplication (void); // This shouldn't be here. Will be purged.
     virtual bool configureRenderer (void);
@@ -52,17 +53,16 @@ protected:
 
     // OIS user input
     Input mUserInput;
-
-    Ogre::Root *mRoot;
+    
+    Ogre::Root*         mRoot;
     Ogre::RenderWindow* mWindow;
-    Ogre::String mResourcesCfg;
-    Ogre::String mPluginsCfg;
-
+    Ogre::String        mResourcesCfg;
+    Ogre::String        mPluginsCfg;
+    
     // OgreBites
-    OgreBites::SdkCameraMan* mCameraMan;    // basic camera controller
-    bool mCursorWasVisible;                 // was cursor visible before dialog appeared
+    OgreBites::SdkCameraMan* mCameraMan;     // basic camera controller
+    bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
     bool mShutDown;
-	
 };
 
 #endif // #ifndef GRAPHICSCORE_H

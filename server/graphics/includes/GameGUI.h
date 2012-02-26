@@ -19,14 +19,14 @@ public:
 	GameGUI();
 	~GameGUI();
 
-	void setupGUI();
+	void initialiseGUI();
 
-	void displayChatbox();
+	void setupChatbox();
 	void toggleChatbox();
 	bool chatboxVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Chatbox/input" )->isVisible(); }
 	bool Chatbox_Send( const CEGUI::EventArgs &args );
 
-	void displayConsole();
+	void setupConsole();
 	void toggleConsole();
 	bool consoleVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Console" )->isVisible(); }
 	bool Console_Send( const CEGUI::EventArgs &args );

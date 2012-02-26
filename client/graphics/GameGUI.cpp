@@ -11,7 +11,7 @@ GameGUI::~GameGUI()
 {
 }
 
-void GameGUI::setupGUI()
+void GameGUI::initialiseGUI()
 {
 	// Create the default font
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
@@ -56,7 +56,7 @@ void GameGUI::setupGUI()
 
 /*-------------------- CONNECTION BOX --------------------*/
 
-void GameGUI::displayConnectBox()
+void GameGUI::setupConnectBox()
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -135,7 +135,7 @@ bool GameGUI::Connect_Quit( const CEGUI::EventArgs &args )
 }
 
 /*-------------------- DEV CONSOLE --------------------*/
-void GameGUI::displayConsole()
+void GameGUI::setupConsole()
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -208,11 +208,11 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 			else if (!stricmp(szInput, "benchmark"))
 				GameCore::mGraphicsApplication->startBenchmark(0);
 			else if (!strnicmp(szInput, "b1 ", 3))
-				GameCore::mGraphicsApplication->loadBloom(1, atof(&szInput[3]), -1.0f);
+                GameCore::mGraphicsApplication->loadBloom(GameCore::mGraphicsCore->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
 			else if (!strnicmp(szInput, "b2 ", 3))
-				GameCore::mGraphicsApplication->loadBloom(1, -1.0f, atof(&szInput[3]));
+				GameCore::mGraphicsApplication->loadBloom(GameCore::mGraphicsCore->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
 			else if (!strnicmp(szInput, "mb ", 3))
-				GameCore::mGraphicsApplication->loadMotionBlur(1, atof(&szInput[3]));
+				GameCore::mGraphicsApplication->loadMotionBlur(GameCore::mGraphicsCore->mCamera->getViewport(), 1, atof(&szInput[3]));
 			else if (!stricmp(szInput, "wireframe on"))
                 GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
 			else if (!stricmp(szInput, "wireframe off"))
@@ -253,7 +253,7 @@ bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
 }
 
 /*-------------------- DEV Chatbox --------------------*/
-void GameGUI::displayChatbox()
+void GameGUI::setupChatbox()
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -333,4 +333,84 @@ void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
 	
 	lstHistory->addItem( newItem );
 	lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
+}
+
+/*-------------------- SPEEDOMETER --------------------*/
+/// @brief Draws the speedo on-screen
+void GameGUI::setupSpeedo (void)
+{
+	// Create our speedometer overlays
+	Ogre::Overlay *olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
+	olSpeedo->setZOrder( 500 );
+	olSpeedo->show();
+
+	olcSpeedo = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDO" ) );
+	olcSpeedo->setMetricsMode( Ogre::GMM_PIXELS );
+	olcSpeedo->setHorizontalAlignment( Ogre::GHA_LEFT );
+	olcSpeedo->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	olcSpeedo->setDimensions( 250, 250 );
+	olcSpeedo->setMaterialName( "speedo_main" );
+	olcSpeedo->setPosition( 20, -270 );
+
+	olSpeedo->add2D( olcSpeedo );
+
+	oleNeedle = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDONEEDLE" );
+	oleNeedle->setMetricsMode( Ogre::GMM_PIXELS );
+	oleNeedle->setDimensions( 250, 250 );
+	oleNeedle->setMaterialName( "speedo_needle" );
+
+	olcSpeedo->addChild( oleNeedle );
+}
+
+/// @brief	Update the rotation of the speedo needle
+/// @param	fSpeed	Float containing speed of car in mph
+/// @param  iGear   Current car gear
+void GameGUI::updateSpeedo (float fSpeed, int iGear)
+{
+	if( fSpeed < 0 )
+		fSpeed *= -1;
+
+	if( fSpeed > 220 )
+		fSpeed = 220;
+
+	float iDegree = 58; // This is 0 for some reason
+
+	// 1 mph = 298 / 220 degrees
+
+	iDegree = 58 - ( fSpeed * ( 298.0f / 220.0f ) );
+    
+	Ogre::Material *matNeedle = oleNeedle->getMaterial().get();
+	Ogre::TextureUnitState *texNeedle = matNeedle->getTechnique( 0 )->getPass( 0 )->getTextureUnitState( 0 );
+	texNeedle->setTextureRotate( Ogre::Degree( iDegree ) );
+
+    if( iGear >= 0 )
+    {
+        char cnum[2];
+        itoa( iGear, cnum, 10 );
+        cnum[1] = '\0';
+        
+        char matname[32];
+        sprintf( matname, "gear%s", cnum );
+        oleGear->setMaterialName( matname );
+    }
+    else
+        oleGear->setMaterialName( "gearoff" );
+}
+
+/*-------------------- GEAR DISPLAY --------------------*/
+/// @brief Draws the gear display
+void GameGUI::setupGearDisplay (void)
+{
+	oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
+
+	oleGear->setMetricsMode( Ogre::GMM_PIXELS );
+	oleGear->setHorizontalAlignment( Ogre::GHA_LEFT );
+	oleGear->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	oleGear->setDimensions( 32, 57 );
+	oleGear->setMaterialName( "gearoff" );
+	oleGear->setPosition( 109, -73 );
+
+	olcSpeedo->addChild( oleGear );
+
+	updateSpeedo( 0, -1 );
 }
