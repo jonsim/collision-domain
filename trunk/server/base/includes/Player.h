@@ -8,6 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
+#include "CarCam.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -17,13 +18,13 @@
 /// CarSkin represents the texture applied to the player object.
 enum CarSkin {SKIN0, SKIN1, SKIN2, SKIN3, SKIN4, SKIN5, SKIN6, SKIN7, SKIN8, SKIN9};
 
-enum CarType : int
+enum CarType
 {
     CAR_BANGER = 0,
-    CAR_SMALL,
-    CAR_TRUCK,
+    CAR_SMALL  = 1,
+    CAR_TRUCK  = 2,
 
-    CAR_COUNT, // Num of car types
+    CAR_COUNT
 };
 
 /**
@@ -33,12 +34,13 @@ class Player
 {
  
 public:
-    Player ();
-    ~Player ();
+    Player (void);
+    ~Player (void);
     void createPlayer (CarType iCarType, CarSkin s);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
-    void updateCameraFrameEvent (int XRotation, int YRotation);
+    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
+	float getCameraYaw (void);
     Car* getCar (void);
     void collisionTickCallback (int damage);
     void applyHealthBonus (void);
@@ -60,14 +62,16 @@ public:
 	void setPlayerGUID(RakNet::RakNetGUID playerGUID);
 
 private:
-    const float cameraRotationConstant;
-	int		hp;
+    const float      cameraRotationConstant;
+	int		         hp;
+    char*            mNickname;
+    Car*             mCar;
+    CarSnapshot*     mCarSnapshot;
+	CarCam*	         mCarCam;
+	Ogre::SceneNode* camNode;
+	Ogre::SceneNode* camArmNode;
+    CarType          mCarType;
 
-    Car* mCar;
-    CarSnapshot* mCarSnapshot;
-    int mCarType;
-
-    char* mNickname;
 	Ogre::OverlayElement* mOLE;
 	bool mSpawned;
 	RakNet::RakNetGUID mPlayerGUID;

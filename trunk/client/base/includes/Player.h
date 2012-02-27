@@ -10,6 +10,7 @@
 #include "GameIncludes.h"
 #include "CarCam.h"
 
+
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /// CarType represents the type of car used as the player object (i.e. the model).
 //enum CarType {SMALL, MEDIUM, LARGE};
@@ -17,13 +18,13 @@
 /// CarSkin represents the texture applied to the player object.
 enum CarSkin {SKIN0, SKIN1, SKIN2, SKIN3, SKIN4, SKIN5, SKIN6, SKIN7, SKIN8, SKIN9};
 
-enum CarType : int
+enum CarType
 {
     CAR_BANGER = 0,
-    CAR_SMALL,
-    CAR_TRUCK,
+    CAR_SMALL  = 1,
+    CAR_TRUCK  = 2,
 
-    CAR_COUNT, // Num of car types
+    CAR_COUNT
 };
 
 /**
@@ -33,41 +34,36 @@ class Player //: public PhysicsEntity
 {
  
 public:
-    Player ();
-    ~Player ();
+    Player (void);
+    ~Player (void);
     void createPlayer (CarType iCarType, CarSkin s);
     void attachCamera (Ogre::Camera* cam);
-    void processControlsFrameEvent(
-        InputState *userInput,
-        Ogre::Real secondsSinceLastFrame,
-        float targetPhysicsFrameRate);
+    void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
-	float getCameraYaw ();
-    Car* getCar();
-    void collisionTickCallback(int damage);
-    void applyHealthBonus();
+	float getCameraYaw (void);
+    Car* getCar (void);
+    void collisionTickCallback (int damage);
+    void applyHealthBonus (void);
     
-    const char *getNickname() { return mNickname; }
-    int getCarType() { return mCarType; }
+    const char *getNickname (void) { return mNickname; }
+    int getCarType (void) { return mCarType; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
-    void setNickname( char *szNick ) { mNickname = strdup( szNick ); }
+    void setNickname (char *szNick) { mNickname = strdup( szNick ); }
 	int	 getHP (void);
 
 	CarSnapshot *mSnapshots;
 
 private:
-    const float cameraRotationConstant;
-
-    Car *mCar;
-    CarSnapshot *mCarSnapshot;
-    char *mNickname;
-	CarCam*	mCarCam;
-	Ogre::SceneNode *camNode;
-	Ogre::SceneNode *camArmNode;
-
-    CarType mCarType;
-	int hp;
+    const float      cameraRotationConstant;
+	int              hp;
+    char*            mNickname;
+    Car*             mCar;
+    CarSnapshot*     mCarSnapshot;
+	CarCam*	         mCarCam;
+	Ogre::SceneNode* camNode;
+	Ogre::SceneNode* camArmNode;
+    CarType          mCarType;
 };
 
 #endif // #ifndef PLAYER_H

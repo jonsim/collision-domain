@@ -107,8 +107,8 @@ void Player::processControlsFrameEvent(
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
 void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 {
-    Ogre::SceneNode *camNode = mCar->attachCamNode();
-    Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
+    //Ogre::SceneNode *camNode = mCar->attachCamNode();
+    //Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
     
     camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
 	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
