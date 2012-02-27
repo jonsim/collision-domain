@@ -125,11 +125,23 @@ void Player::processControlsFrameEvent(
 /// @brief  Updates the camera's rotation based on the values given.
 /// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
-void Player::updateCameraFrameEvent (int XRotation, int YRotation)
+void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 {
-    Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
+    //Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
+
     camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
     camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * YRotation), Ogre::Node::TS_LOCAL);
+
+    
+    camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
+	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
+
+	Ogre::Vector3 camPosition = camNode->getPosition();
+	ZDepth = -ZDepth;
+	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
+		camNode->translate(0, 0, ZDepth * 0.02f);
+
+    mCarCam->updatePosition(XRotation, YRotation);
 }
 
 
