@@ -37,13 +37,13 @@ public:
     bool removeBody( btRigidBody *body );
     //OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
+    PlayerCollisions* mPlayerCollisions;
 
 
 private:
     static void preTickCallback(btDynamicsWorld *world, btScalar timeStep);
     static void postTickCallback(btDynamicsWorld *world, btScalar timeStep);
 
-    PlayerCollisions* mPlayerCollisions;
     //std::deque<OgreBulletDynamics::RigidBody *>        mBodies;
     //std::deque<OgreBulletCollisions::CollisionShape *> mShapes;
     Ogre::Vector3 mBulletGravity;

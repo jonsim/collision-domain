@@ -128,9 +128,6 @@ void BigScreen::manageNewPlayer(Player* player)
 
 void BigScreen::updateMapView()
 {
-	//Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-	//updatePlayer(localPlayer,oleCar);
-
 	//Loop through all possible players
 	for(int i=0;i<MAX_PLAYERS;i++)
 	{
@@ -173,37 +170,25 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		xPos -= MARKER_WIDTH;
 		yPos -= MARKER_HEIGHT;
 		
-		//Sort out the rotation
-		btQuaternion rotationQuat = player->getCar()->getCarSnapshot()->mRotation; 
-		//Convert to ogre representation of quats
-		Ogre::Quaternion ogreRotQuat(rotationQuat.getW(), rotationQuat.getX(), rotationQuat.getY(), rotationQuat.getZ());
-		//Then we can use the inbuilt function (took forever to get to this point :O)
-		Ogre::Radian rot = ogreRotQuat.getYaw();
-			
-
-		Ogre::Material* matMarker = carOverlay->getMaterial().get();
+		// Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
+        // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
+		btQuaternion q = player->getCar()->getCarSnapshot()->mRotation;
+        Ogre::Radian rot = Ogre::Math::ATan2(      (2.0 * (q.getZ()*q.getX() + q.getY()*q.getW())),
+                                             1.0 - (2.0 * (q.getX()*q.getX() + q.getY()*q.getY())) );
+        rot = (rot.valueRadians() > 0) ? rot.valueRadians() - Ogre::Math::PI : rot.valueRadians() + Ogre::Math::PI;
 		
-		Ogre::TextureUnitState* texMarker = 
-			matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
-		//texMarker->setTextureRotate(Ogre::Radian(rotationQuat.getY()));
+        // Rotate the arrow.
+		Ogre::Material* matMarker = carOverlay->getMaterial().get();
+		Ogre::TextureUnitState* texMarker = matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
 		texMarker->setTextureRotate(rot);
 
-		/*
-		std::stringstream tmpDebugString;
-		tmpDebugString << "XPos: " << xPos;
-		tmpDebugString << " yPos: " << yPos;
-		tmpDebugString << "\n";
-		OutputDebugString(tmpDebugString.str().c_str());
-		*/
-
-		//This is not really needed if the above code is working
+		// This is not really needed if the above code is working
 		if(xPos > 1)
 			xPos = 1.0f;
 		if(yPos > 1)
 			yPos = 1.0f;
 
 		carOverlay->setPosition(xPos,yPos);
-		//Ogre::Overlay::rota
 	}
 }
 
