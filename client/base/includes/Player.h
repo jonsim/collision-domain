@@ -30,9 +30,8 @@ enum CarType
 /**
  *  @brief 	Contains the Player nodes and the related data.
  */
-class Player //: public PhysicsEntity
+class Player
 {
- 
 public:
     Player (void);
     ~Player (void);

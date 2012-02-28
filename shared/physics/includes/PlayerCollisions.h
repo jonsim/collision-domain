@@ -18,9 +18,9 @@ public:
     virtual ~PlayerCollisions();
     void addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold);
     void frameEventEnd();
-
-private:
+    
     void printLists();
+private:
     void emptyLists();
     void hasAlreadyBeenSeenThisFrame(
         std::list<Player*> **player1AlreadySeen,
