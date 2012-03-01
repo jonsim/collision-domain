@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 #include "InfoItem.h"
+#include "ScoreBoard.h"
 
 #include <math.h>
 #include <string>
@@ -47,8 +48,11 @@ public:
 	void						startGame();
 	void						drawInfo(); //Draws any info that we require
 	void						setupOverlay();
+	Team*						getTeam(int i);
 
 	std::vector<InfoItem*>		mInfoItems;
+	int							numberOfTeams;
+
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -56,12 +60,13 @@ private:
 	void						printTeamStats();
 	void						scheduleCountDown();
 	//Variabels
-	int							numberOfTeams;
 	std::vector<Team*>			teams;
 	int							mGameplayMode;
 	
 	Ogre::OverlayContainer* olContainer;
 	void						handleInfoItem(InfoItem* item, bool show);
+
+	ScoreBoard*					mSB;
 };
 
 

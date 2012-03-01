@@ -11,12 +11,18 @@
 
 Gameplay::Gameplay()
 {
-
+	mSB = new ScoreBoard();
+	this->setNumberOfTeams(2); //Might as well default it to 2
 }
 
 void Gameplay::setNumberOfTeams(int num)
 {
 	numberOfTeams = num;
+	//Create the new teams
+	for(int i=0;i<num;i++)
+	{
+		this->createTeam("");
+	}
 }
 
 Team* Gameplay::createTeam(std::string teamName)
@@ -290,6 +296,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				tmpOLE->setMaterialName( "gear1" );
 				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
+				mSB->initialize();
 				break;
 			case TWO_OT:
 				tmpOLE->setDimensions(0.1f,0.1f);
@@ -402,4 +409,9 @@ void Gameplay::setupOverlay()
 	tmpOLE->setPosition(0.45f, 0.1f);
 	tmpOLE->hide();
 	olContainer->addChild(tmpOLE);
+}
+
+Team* Gameplay::getTeam(int i)
+{
+	return teams[i];
 }

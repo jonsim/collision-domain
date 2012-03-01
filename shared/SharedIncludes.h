@@ -22,5 +22,6 @@
 #include "GraphicsCore.h"
 #include "ViewCamera.h"
 #include "GameCore.h"
+#include "ScoreBoard.h"
 
 #endif // #ifndef SHAREDINCLUDES_H
