@@ -23,5 +23,6 @@
 #include "ViewCamera.h"
 #include "GameCore.h"
 #include "ScoreBoard.h"
+#include "HUD.h"
 
 #endif // #ifndef SHAREDINCLUDES_H

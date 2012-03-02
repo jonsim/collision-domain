@@ -10,6 +10,7 @@
 #include "GameIncludes.h"
 #include "InfoItem.h"
 #include "ScoreBoard.h"
+#include "HUD.h"
 
 #include <math.h>
 #include <string>
@@ -49,6 +50,8 @@ public:
 	void						drawInfo(); //Draws any info that we require
 	void						setupOverlay();
 	Team*						getTeam(int i);
+	void						drawDeathInfo();
+	void						initialize();
 
 	std::vector<InfoItem*>		mInfoItems;
 	int							numberOfTeams;
@@ -67,6 +70,7 @@ private:
 	void						handleInfoItem(InfoItem* item, bool show);
 
 	ScoreBoard*					mSB;
+	HUD*						mHUD;
 };
 
 

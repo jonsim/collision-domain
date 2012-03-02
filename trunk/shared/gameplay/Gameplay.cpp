@@ -12,6 +12,7 @@
 Gameplay::Gameplay()
 {
 	mSB = new ScoreBoard();
+	mHUD = new HUD();
 	this->setNumberOfTeams(2); //Might as well default it to 2
 }
 
@@ -414,4 +415,14 @@ void Gameplay::setupOverlay()
 Team* Gameplay::getTeam(int i)
 {
 	return teams[i];
+}
+
+void Gameplay::drawDeathInfo()
+{
+	mHUD->drawDeathMessage(NULL,NULL);
+}
+
+void Gameplay::initialize()
+{
+	mHUD->initialize();
 }
