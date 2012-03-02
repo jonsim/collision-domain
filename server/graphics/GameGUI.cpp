@@ -110,6 +110,8 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 		GameCore::mGameplay->preparePlayers();
 	if( !stricmp( szInput, "start" ) )
 		GameCore::mGameplay->startGame();
+	if( !stricmp( szInput, "ddinfo" ) )
+		GameCore::mGameplay->drawDeathInfo();
 
 	return true;
 }
