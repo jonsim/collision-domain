@@ -172,14 +172,14 @@ void SimpleCoupeCar::initNodes()
 {
     mPlayerNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
-    mBodyNode    = mPlayerNode->createChildSceneNode("BodyNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mBodyNode    = mPlayerNode->createChildSceneNode("BodyNode"   + boost::lexical_cast<std::string>(mUniqueCarID));
     mWheelsNode  = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
     mChassisNode = mBodyNode->createChildSceneNode("ChassisNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFLDoorNode   = mBodyNode->createChildSceneNode("FLDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFRDoorNode   = mBodyNode->createChildSceneNode("FRDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRLDoorNode   = mBodyNode->createChildSceneNode("RLDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRRDoorNode   = mBodyNode->createChildSceneNode("RRDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mFLDoorNode  = mBodyNode->createChildSceneNode("FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID));
+    mFRDoorNode  = mBodyNode->createChildSceneNode("FRDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRLDoorNode  = mBodyNode->createChildSceneNode("RLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRRDoorNode  = mBodyNode->createChildSceneNode("RRDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID));
     mFBumperNode = mBodyNode->createChildSceneNode("FBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode = mBodyNode->createChildSceneNode("RBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
@@ -190,9 +190,17 @@ void SimpleCoupeCar::initNodes()
 	
 	// setup particles. This needs to be propogated.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
-	//mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
 	mBodyNode->attachObject(mExhaustSystem);
+//	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+    //mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Spark" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
 	//mBodyNode->attachObject(mDustSystem);
+    //mDustSystem->getEmitter(0)->setEmissionRate(100.0f);
+    // The dust emitters should be placed in the location of the wheel nodes but since
+    // the wheels nodes are not currently positioned correctly these are hard coded numbers.
+    //mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 18.86f * 5 * MESH_SCALING_CONSTANT, 0,  20.49f * 5 * MESH_SCALING_CONSTANT));  // FL
+    //mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-18.86f * 5 * MESH_SCALING_CONSTANT, 0,  20.49f * 5 * MESH_SCALING_CONSTANT));  // FR
+    //mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 18.86f * 5 * MESH_SCALING_CONSTANT, 0, -20.49f * 5 * MESH_SCALING_CONSTANT));  // RL
+    //mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-18.86f * 5 * MESH_SCALING_CONSTANT, 0, -20.49f * 5 * MESH_SCALING_CONSTANT));  // RR
 
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;

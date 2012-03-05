@@ -81,6 +81,19 @@ void BigScreen::setupMapView()
 	olcMap->setMaterialName( "map_top_1" );
 	olMap->add2D(olcMap);
 
+    //Set the dimensions
+    try
+    {
+        Ogre::Entity*    ae = GameCore::mSceneMgr->getEntity("Arena");
+        Ogre::SceneNode* an = GameCore::mSceneMgr->getSceneNode("ArenaNode");
+        setMapCorner(an->getPosition());
+        setMapSize(ae->getBoundingBox().getSize() * an->getScale());
+    }
+    catch (int e)
+    {
+        OutputDebugString("Exception caught while creating the bigScreen view, arena not fully initialised.\n");
+    }
+
 	//Start thinking about the cars
 	/*
 	oleCar = 
