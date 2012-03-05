@@ -1,3 +1,78 @@
+material CollisionDomain/Fire
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_fire.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/Explosion1
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_explosion1.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+material CollisionDomain/Explosion3
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_explosion3.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/Smoke
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_smoke.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
 material CollisionDomain/Exhaust
 {
 	technique
@@ -10,7 +85,7 @@ material CollisionDomain/Exhaust
 
 			texture_unit
 			{
-				texture particle_smoke.png
+				texture particle_exhaust.png
 				tex_address_mode clamp
 			}
 		}

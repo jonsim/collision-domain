@@ -104,9 +104,9 @@ void Input::processInterfaceControls()
     if (NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
     {
 	    if (mKeyboard->isKeyDown(OIS::KC_T))
-            GameCore::mGui->toggleConsole();
-	    else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleChatbox();
+	    else if (mKeyboard->isKeyDown(OIS::KC_C))
+            GameCore::mGui->toggleConsole();
     }
 }
 

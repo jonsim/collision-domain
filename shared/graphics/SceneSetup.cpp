@@ -229,7 +229,7 @@ void SceneSetup::setupLightSystem (void)
 	mWeatherSystem = GameCore::mSceneMgr->createParticleSystem("WeatherSystem", "Examples/RainSmall");
 
 	// setup the lighting and weather system
-	setWeather(1);
+	setWeather(0);
 }
 
 

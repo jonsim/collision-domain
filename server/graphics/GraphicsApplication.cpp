@@ -91,20 +91,8 @@ void GraphicsApplication::setupGUI (void)
     GameCore::mGui->setupConsole();
     GameCore::mGui->setupChatbox();
     
-    // Setup the bigScreen map. As this is called *after* the 3D scene is setup the arena must
-    // be fetched from the root scene node in this fashion in order to keep the code organised.
+    // Setup the bigScreen map. This must be called after the Arena is set up.
     bigScreen->setupMapView();
-    try
-    {
-        Ogre::Entity*    ae = GameCore::mSceneMgr->getEntity("Arena");
-        Ogre::SceneNode* an = GameCore::mSceneMgr->getSceneNode("ArenaNode");
-        bigScreen->setMapCorner(an->getPosition());
-        bigScreen->setMapSize(ae->getBoundingBox().getSize() * an->getScale());
-    }
-    catch (int e)
-    {
-        OutputDebugString("Exception caught while creating the bigScreen view, arena not fully initialised.\n");
-    }
     GameCore::mGameplay->setupOverlay();
 }
 

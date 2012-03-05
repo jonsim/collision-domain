@@ -23,8 +23,6 @@ public:
 	void						addCamera(Ogre::Camera* cam);
 	void						setupMapView();
 	void						updateMapView();
-	void						setMapCorner(Ogre::Vector3 corner);
-	void						setMapSize(Ogre::Vector3 size);
 private:
 	ViewportManager*			mViewportManager;
 	std::vector<ViewCamera*>	viewCameraVector;
@@ -35,6 +33,8 @@ private:
 
 	void						updatePlayer(Player* player, Ogre::OverlayElement* carOverlay);
 	void						manageNewPlayer(Player* player);
+	void						setMapCorner(Ogre::Vector3 corner);
+	void						setMapSize(Ogre::Vector3 size);
 };
 
 #endif // #ifndef BIGSCREENH
