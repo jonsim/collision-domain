@@ -125,6 +125,13 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 	if (!NetworkCore::bConnected)
 		return true;
+
+	if(mUserInput.mKeyboard->isKeyDown(OIS::KC_1))
+		GameCore::mAiCore->createNewAiAgent(wander);
+	else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_2))
+		GameCore::mAiCore->createNewAiAgent(seek);
+	else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_3))
+		GameCore::mAiCore->createNewAiAgent(flee);
     
 	// Update the big screen.
 	bigScreen->updateMapView();
@@ -151,7 +158,11 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Apply controls the player (who will be moved on frameEnd and frameStart).
 	GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, oneSecond);
+	Ogre::Vector3 pos = GameCore::mPlayerPool->getLocalPlayer()->getCar()->GetPos();
+	cout << pos << endl;
     //mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel());
+
+	GameCore::mAiCore->frameEvent(evt.timeSinceLastFrame);
 
     GameCore::mPowerupPool->frameEvent( evt );
 

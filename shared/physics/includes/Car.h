@@ -41,6 +41,11 @@ public:
     void readTuning( char *szFile );
     float getRPM();
 
+	float getMaxSpeed() { return mMaxSpeed; }
+
+	Ogre::Vector3 GetPos();
+	Ogre::Quaternion GetHeading();
+
 	Ogre::SceneNode *mBodyNode;
     Ogre::SceneNode *mPlayerNode;
 
@@ -112,6 +117,7 @@ protected:
     float mRevTick;
     float mRevLimit;
 
+	float mMaxSpeed;
 
     // Car physics objects
 

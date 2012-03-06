@@ -9,6 +9,7 @@
 
 #include "SharedIncludes.h"
 
+#include "AiCore.h"
 #include "PlayerPool.h"
 #include "Player.h"
 #include "ViewportManager.h"
