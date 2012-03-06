@@ -155,10 +155,14 @@ void BigScreen::updateMapView()
 
 void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 {
-	
-	if(player->getCar() != NULL && player->getCar()->getCarSnapshot() != NULL)
+	CarSnapshot *playerSnap = NULL;
+
+    if(player->getCar() != NULL)
+        player->getCar()->getCarSnapshot();
+
+	if(playerSnap != NULL)
 	{
-		btVector3 localPlayerPos = player->getCar()->getCarSnapshot()->mPosition;
+		btVector3 localPlayerPos = playerSnap->mPosition;
 		float xPos = localPlayerPos.getX(); 
 		float yPos = localPlayerPos.getZ(); //Z as we're doing a 2D projection
 	
@@ -202,6 +206,8 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 			yPos = 1.0f;
 
 		carOverlay->setPosition(xPos,yPos);
+
+        delete playerSnap;
 	}
 }
 
