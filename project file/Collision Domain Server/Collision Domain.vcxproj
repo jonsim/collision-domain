@@ -32,7 +32,9 @@
     <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h" />
     <ClInclude Include="..\..\shared\base\includes\stdafx.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\Gameplay.h" />
+    <ClInclude Include="..\..\shared\gameplay\includes\HUD.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h" />
+    <ClInclude Include="..\..\shared\gameplay\includes\ScoreBoard.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h" />
@@ -223,7 +225,9 @@
     <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp" />
     <ClCompile Include="..\..\shared\base\stdafx.cpp" />
     <ClCompile Include="..\..\shared\gameplay\Gameplay.cpp" />
+    <ClCompile Include="..\..\shared\gameplay\HUD.cpp" />
     <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp" />
+    <ClCompile Include="..\..\shared\gameplay\ScoreBoard.cpp" />
     <ClCompile Include="..\..\shared\gameplay\Team.cpp" />
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp" />

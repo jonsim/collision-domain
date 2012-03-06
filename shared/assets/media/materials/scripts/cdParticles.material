@@ -104,7 +104,8 @@ material CollisionDomain/Dust
 
 			texture_unit
 			{
-				texture particle_dust.png
+				//texture particle_dust.png
+                texture particle_sand.png
 				tex_address_mode clamp
 			}
 		}

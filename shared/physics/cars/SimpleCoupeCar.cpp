@@ -188,19 +188,19 @@ void SimpleCoupeCar::initNodes()
     mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 	
-	// setup particles. This needs to be propogated.
+	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
 	mBodyNode->attachObject(mExhaustSystem);
-//	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-    //mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Spark" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
-	//mBodyNode->attachObject(mDustSystem);
-    //mDustSystem->getEmitter(0)->setEmissionRate(100.0f);
+    //Ogre::ParticleSystem* foo = GameCore::mSceneMgr->createParticleSystem("TestEffect" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Sparks");
+	//mBodyNode->attachObject(foo);
+	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+	mBodyNode->attachObject(mDustSystem);
     // The dust emitters should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
-    //mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 18.86f * 5 * MESH_SCALING_CONSTANT, 0,  20.49f * 5 * MESH_SCALING_CONSTANT));  // FL
-    //mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-18.86f * 5 * MESH_SCALING_CONSTANT, 0,  20.49f * 5 * MESH_SCALING_CONSTANT));  // FR
-    //mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 18.86f * 5 * MESH_SCALING_CONSTANT, 0, -20.49f * 5 * MESH_SCALING_CONSTANT));  // RL
-    //mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-18.86f * 5 * MESH_SCALING_CONSTANT, 0, -20.49f * 5 * MESH_SCALING_CONSTANT));  // RR
+    mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.8f, 0.2f,  1.6f));  // FL
+    mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.8f, 0.2f,  1.6f));  // FR
+    mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.8f, 0.2f, -1.6f));  // RL
+    mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.8f, 0.2f, -1.6f));  // RR
 
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;

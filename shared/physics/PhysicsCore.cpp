@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
-#define DEBUG_FRAMES
+//#define DEBUG_FRAMES
 
 
 /// @brief  Constructor to create physics stuff

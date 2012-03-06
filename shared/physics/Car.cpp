@@ -256,47 +256,8 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
     }
 	
     updateRPM();
-
-	float speedmph    = getCarMph();
-	float exhaustRate = 0;
-	float dustRate    = 0;
-	static float oldRPM = 0;
-
-	// Calculate the new exhaust emission rate (from engine RPM).
-	if (isForward)
-	{
-		float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
-		if (dRdT > 1300)
-			exhaustRate = (mEngineRPM / mRevLimit) * 1000;
-	}
-	oldRPM = mEngineRPM;
-
-    // Draw dust clouds (from wheel slip).
-    /*float foo = fricConst->getWheelSkid(1);
-    char strxx[64];
-    sprintf(strxx, "slipAngle(1)=%.2f\n", foo);
-    OutputDebugString(strxx);*/
-
-    // Set the new particle emission rates.
-	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
-		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
-	/*for (int i = 0; i < mDustSystem->getNumEmitters(); i++)
-		mDustSystem->getEmitter(i)->setEmissionRate(100.0f);*/
-    
-	// Update radial blur (from vehicle speed).
-#ifdef COLLISION_DOMAIN_CLIENT
-	float blurAmount = 0;
-	if (speedmph > 40.0f)
-	{
-		// calculate blurring as a function of speed, then scale it back depending on where you
-		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
-		// +/-180 and 0, hence the double abs() reduction)).
-		blurAmount = (speedmph - 40) / 28;
-		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
-	}
-    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
-#endif
-    
+    updateParticleSystems(isForward, secondsSinceLastFrame);
+    updateCompositors();
 }
 
 float Car::getRPM()
@@ -378,6 +339,60 @@ void Car::updateRPM()
 
 }
 
+void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame)
+{
+	static float oldRPM = 0;
+
+	// Calculate the new exhaust emission rate (from engine RPM).
+	float exhaustRate = 0;
+	if (isForward)
+	{
+		float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
+		if (dRdT > 1300)
+			exhaustRate = (mEngineRPM / mRevLimit) * 1000;
+	}
+	oldRPM = mEngineRPM;
+
+    // Calculate the new dust emission rate (from wheel slip/skid).
+    float dustRate[4] = {0, 0, 0, 0};
+
+    fricConst->calcWheelSkid();
+    if (fricConst->getWheelSkid() < 0.1f)
+    {
+        fricConst->calcSlipAngle();
+
+        for (int i = 0; i < 4; i++)
+        {
+            btScalar slipAngle = abs(fricConst->getSlipAngle(i));
+            if (slipAngle > 0.9f)
+                dustRate[i] = slipAngle * 13;
+        }
+    }
+    // Set the new particle emission rates.
+	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
+		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
+	for (int i = 0; i < 4; i++)
+		mDustSystem->getEmitter(i)->setEmissionRate(dustRate[i]);
+    
+}
+
+void Car::updateCompositors (void)
+{
+#ifdef COLLISION_DOMAIN_CLIENT
+	float speedmph    = getCarMph();
+	// Update radial blur (from vehicle speed).
+	float blurAmount = 0;
+	if (speedmph > 40.0f)
+	{
+		// calculate blurring as a function of speed, then scale it back depending on where you
+		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
+		// +/-180 and 0, hence the double abs() reduction)).
+		blurAmount = (speedmph - 40) / 28;
+		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
+	}
+    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
+#endif
+}
 
 /// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
 /// @return The node onto which a camera can be attached to observe the car. The parent of this node is
