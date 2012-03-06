@@ -37,6 +37,10 @@ PlayerCollisions::~PlayerCollisions()
 /// 
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
 {
+    bool damageP2 = p1->getCar()->getCarMph() > p2->getCar()->getCarMph() ? true : false;
+    p1->collisionTickCallback(damageP2 ? 0 : 1);
+    p2->collisionTickCallback(damageP2 ? 1 : 0);
+
     // TODO: look at collision information such as location and force and store alongside Player*
     // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION
     
