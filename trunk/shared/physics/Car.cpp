@@ -716,3 +716,17 @@ void Car::readTuning( char *szFile )
             mMaxBrakeForce = boost::lexical_cast<float>( tokens.at(1) );
     }
 }
+
+//get the car's current position
+Ogre::Vector3 Car::GetPos()
+{
+	//return mPlayerNode->_getDerivedPosition() + mPlayerNode->_getDerivedOrientation() *
+	//	mPlayerNode->_getDerivedScale() * mBodyNode->_getDerivedPosition();
+	return mBodyNode->getPosition();
+}
+
+//get the car's current heading
+Ogre::Quaternion Car::GetHeading()
+{
+	return mBodyNode->getOrientation();
+}

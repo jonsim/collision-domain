@@ -9,6 +9,7 @@
 
 // needed for non-shared variables like GraphicsCore and NetworkCore
 #include "GameIncludes.h"
+class AiCore;
 class PlayerPool;
 class NetworkCore;
 class GraphicsCore;
@@ -30,6 +31,7 @@ public:
     static Ogre::SceneManager* mSceneMgr;
     static PlayerPool*  mPlayerPool;
 
+	static AiCore* mAiCore;
     static GraphicsCore* mGraphicsCore;
 	static GraphicsApplication* mGraphicsApplication;
     static NetworkCore* mNetworkCore;

@@ -110,6 +110,8 @@ void SimpleCoupeCar::initTuning()
     mRevTick  = 1800;
     mRevLimit = 6000;
 
+	mMaxSpeed = 80.0;
+
     readTuning( "spec_banger.txt" );
 }
 
