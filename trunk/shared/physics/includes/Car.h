@@ -137,6 +137,8 @@ private:
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
 
     void updateRPM();
+    void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
+    void updateCompositors();
 
     void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );
     
@@ -160,23 +162,22 @@ public:
 
     btRaycastVehicle    *mVehicle;
     btRigidBody         *mbtRigidBody;
-
+    
+    // Note to Jamie: I made the two calc functions public to implement my shit, do whatever you like with them this is your domain.
+    btScalar calcWheelSkid();
+    btScalar calcSlipAngle();
+    
+    btScalar getSlipAngle() { return m_avg_slip; }    
+    btScalar getWheelSkid() { return m_avg_skid; }
     btScalar getSlipAngle( int wheelNum ) { 
         return (wheelNum < 4 && wheelNum >= 0) ? m_wheel_slip[wheelNum] : -1.00f; }
-
-    btScalar getSlipAngle() { return m_avg_slip; }
-
-    btScalar getWheelSkid() { return m_avg_skid; }
-
     btScalar getWheelSkid( int wheelNum ) {
         return (wheelNum < 4 && wheelNum >= 0) ? m_wheel_skid[wheelNum] : -1.00f; }
 
 private:
     btScalar calcSlipAngle( int wheelNum );
-    btScalar calcSlipAngle();
     
     btScalar calcWheelSkid( int wheelNum );
-    btScalar calcWheelSkid();
 
     btScalar m_wheel_slip[4];
     btScalar m_avg_slip;
