@@ -1,6 +1,6 @@
 particle_system CollisionDomain/SmallCar/Exhaust
 {
-	material Examples/Smoke
+	material CollisionDomain/Exhaust
 	particle_width 0.5
 	particle_height 0.5
 	quota 500
@@ -41,7 +41,7 @@ particle_system CollisionDomain/SmallCar/Exhaust
 
 particle_system CollisionDomain/Banger/Exhaust
 {
-	material Examples/Smoke
+	material CollisionDomain/Exhaust
 	particle_width 0.5
 	particle_height 0.5
 	quota 500
@@ -82,7 +82,7 @@ particle_system CollisionDomain/Banger/Exhaust
 
 particle_system CollisionDomain/Truck/Exhaust
 {
-	material Examples/Smoke
+	material CollisionDomain/Exhaust
 	particle_width 0.5
 	particle_height 0.5
 	quota 1000
