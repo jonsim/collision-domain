@@ -44,7 +44,7 @@
       <UniqueIdentifier>{87cd6d2a-bc93-407b-9a93-806c0b220fc9}</UniqueIdentifier>
     </Filter>
     <Filter Include="server\ai">
-      <UniqueIdentifier>{26dd9b01-a639-46d2-a310-cede622bd97a}</UniqueIdentifier>
+      <UniqueIdentifier>{19b5387f-79ce-433e-a5e3-410fc96d737d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -541,6 +541,9 @@
     <ClInclude Include="..\..\shared\base\includes\AudioCore.h">
       <Filter>shared\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\base\includes\GameCore.h">
+      <Filter>shared\base</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
@@ -609,9 +612,6 @@
     </ClInclude>
     <ClInclude Include="..\..\shared\gameplay\includes\HUD.h">
       <Filter>shared\gameplay</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\shared\base\includes\GameCore.h">
-      <Filter>server\base</Filter>
     </ClInclude>
     <ClInclude Include="..\..\server\ai\includes\AiCore.h">
       <Filter>server\ai</Filter>
@@ -954,6 +954,9 @@
     <ClCompile Include="..\..\server\graphics\GameGUI.cpp">
       <Filter>server\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\shared\base\GameCore.cpp">
+      <Filter>shared\base</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\shared\base\AudioCore.cpp">
       <Filter>shared\base</Filter>
     </ClCompile>
@@ -1016,9 +1019,6 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\HUD.cpp">
       <Filter>shared\gameplay</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\base\GameCore.cpp">
-      <Filter>server\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\ai\AiCore.cpp">
       <Filter>server\ai</Filter>

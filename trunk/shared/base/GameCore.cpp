@@ -11,7 +11,9 @@
 Ogre::SceneManager* GameCore::mSceneMgr = NULL;
 PlayerPool*  GameCore::mPlayerPool = NULL;
 
+#ifdef COLLISION_DOMAIN_SERVER
 AiCore*					GameCore::mAiCore				= NULL;
+#endif
 GraphicsCore*			GameCore::mGraphicsCore			= NULL;
 GraphicsApplication*	GameCore::mGraphicsApplication	= NULL;
 NetworkCore*			GameCore::mNetworkCore			= NULL;
@@ -24,7 +26,9 @@ Gameplay*				GameCore::mGameplay				= NULL;
 void GameCore::initialise(GraphicsCore* graphicsCore)
 {
     GameCore::mGraphicsCore = graphicsCore;
+#ifdef COLLISION_DOMAIN_SERVER
 	GameCore::mAiCore		= new AiCore();
+#endif
     GameCore::mPlayerPool   = new PlayerPool();
     GameCore::mNetworkCore  = new NetworkCore();
     GameCore::mPhysicsCore  = new PhysicsCore();
