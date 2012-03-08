@@ -46,9 +46,17 @@ public:
 	RakNet::RakNetGUID getPlayerGUID();
 	void setPlayerGUID(RakNet::RakNetGUID playerGUID);
 
+	//Just some getters and setters
+	void setAlive(bool pAlive);
+	bool getAlive();
+
+	//Now have a "Kill" method that will also set the call backs
+	void killPlayer();
+
 private:
     const float      cameraRotationConstant;
 	int		         hp;
+	bool		     mAlive;
     char*            mNickname;
     Car*             mCar;
     CarSnapshot*     mCarSnapshot;
