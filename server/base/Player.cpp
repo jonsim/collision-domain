@@ -52,7 +52,8 @@ void Player::createPlayer (CarType carType, CarSkin skin)
         mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
         break;
     }
-
+	
+    mCar->attachCollisionTickCallback(this);
 	//Set HP. More clever damage might be implemented in the future
 	hp = 100;
 
