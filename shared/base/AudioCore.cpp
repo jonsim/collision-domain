@@ -14,6 +14,7 @@ using namespace OgreOggSound;
 
 #define FILE_1_ENGINE_IDLE     "engine-idle-1.wav"
 #define FILE_CAR_CRASH         "car-crash-1.wav"
+#define FILE_EXPLOSION         "explosion.wav"
 
 #define FILE_TRUCK_ENGINE_LOW  "truck-engine-low.ogg"
 #define FILE_TRUCK_ENGINE_HIGH "truck-engine-high.ogg"
@@ -35,7 +36,7 @@ AudioCore::AudioCore()
     {
         std::string tempName = "hello";
         OgreOggISound* preload;
-        for (int i=0; i < 9; i++)
+        for (int i=0; i < 10; i++)
         {
             //                                               name      file                 stream loop   preBuffer scenemgr         immediate
 
@@ -50,6 +51,7 @@ AudioCore::AudioCore()
 
             if (i == 7) preload = mSoundManager->createSound(tempName, FILE_1_ENGINE_IDLE,  false, true,  true, GameCore::mSceneMgr, true);
             if (i == 8) preload = mSoundManager->createSound(tempName, FILE_CAR_CRASH,      false, false, true, GameCore::mSceneMgr, false);
+            if (i == 9) preload = mSoundManager->createSound(tempName, FILE_EXPLOSION,      false, false, true, GameCore::mSceneMgr, false);
 
             mSoundManager->destroySound(preload);
         }
@@ -66,7 +68,6 @@ AudioCore::AudioCore()
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineHigh->setPitch(2.0f);
 
-    //mEngineLow->play();
 #ifdef COLLISION_DOMAIN_CLIENT
     mEngineHigh->play();
 #endif
@@ -120,6 +121,10 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID)
 
         case CAR_CRASH:
             file = FILE_CAR_CRASH;
+            break;
+
+        case EXPLOSION:
+            file = FILE_EXPLOSION;
             break;
 
         default:

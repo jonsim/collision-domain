@@ -81,6 +81,52 @@ void GraphicsCore::createFrameListener (void)
 }
 
 
+void GraphicsCore::updateParticleSystems (void)
+{
+    unsigned short i;
+    // Check for stale emitters in the systems and cleanup
+    for (i = 0; i < mSparkSystem->getNumEmitters(); i++)
+        if (!mSparkSystem->getEmitter(i)->getEnabled())
+            mSparkSystem->removeEmitter(i--);
+    for (i = 0; i < mExplosionNucleusSystem->getNumEmitters(); i++)
+        if (!mExplosionNucleusSystem->getEmitter(i)->getEnabled())
+            mExplosionNucleusSystem->removeEmitter(i--);
+    for (i = 0; i < mExplosionSmokeSystem->getNumEmitters(); i++)
+        if (!mExplosionSmokeSystem->getEmitter(i)->getEnabled())
+            mExplosionSmokeSystem->removeEmitter(i--);
+}
+
+
+/// @brief  Generates an explosion.
+void GraphicsCore::generateExplosion (Ogre::Vector3 location)
+{
+    unsigned short nucleusIndex = mExplosionNucleusSystem->getNumEmitters();
+    unsigned short smokeIndex   = mExplosionSmokeSystem->getNumEmitters();
+
+    mExplosionNucleusSystem->addEmitter("Point");
+    mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
+    mExplosionNucleusSystem->getEmitter(nucleusIndex)->setPosition(location);
+
+    mExplosionSmokeSystem->addEmitter("Point");
+    mExplosionSmokeSystem->getEmitter(smokeIndex)->setParameterList(mExplosionSmokeParams);
+    mExplosionSmokeSystem->getEmitter(smokeIndex)->setPosition(location);
+    
+    // Generate a sound (this isn't a particularly good way of doing it but it will work until a better method is available).
+    static OgreOggSound::OgreOggISound* explosionSound = GameCore::mAudioCore->getSoundInstance(EXPLOSION, 0);
+    GameCore::mAudioCore->playSoundOrRestart(explosionSound);
+}
+
+void GraphicsCore::generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction)
+{
+    unsigned short sparkIndex = mSparkSystem->getNumEmitters();
+
+    mSparkSystem->addEmitter("Point");
+    mSparkSystem->getEmitter(sparkIndex)->setParameterList(mSparkParams);
+    mSparkSystem->getEmitter(sparkIndex)->setPosition(location);
+    mSparkSystem->getEmitter(sparkIndex)->setDirection(direction);
+}
+
+
 /// @brief  Removes everything from the scene.
 void GraphicsCore::destroyScene (void)
 {
@@ -198,6 +244,9 @@ bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
 	// Feed the GUI the timestamping information.
 	CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+
+    // Update the particle systems
+    updateParticleSystems();
 
     return true;
 }
