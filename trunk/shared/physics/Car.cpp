@@ -416,7 +416,7 @@ void Car::attachCollisionTickCallback(Player* player)
 }
 
 
-/// @brief  Loads the given mesh and attaches it to the given node. The given entity name is used, but appended
+/// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended
 ///         with this car's unique ID so that (forbidden) name collisions don't occur.
 /// @param  entityName     Name which the imported mesh will be given.
 /// @param  meshName       Name of the mesh which is to be imported.
@@ -434,6 +434,12 @@ void Car::createGeometry(const std::string &entityName, const std::string &meshN
 
     entity->setCastShadows(true);
     toAttachTo->attachObject(entity);
+}
+
+void Car::setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo)
+{
+    Ogre::Entity* ent = (Ogre::Entity*) attachedTo->getAttachedObject(0);
+    ent->setMaterialName(materialName);
 }
 
 void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )

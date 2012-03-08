@@ -6,42 +6,83 @@ material banger_seat : cd/Blank
 {
 }
 
+
 material banger_steeringwheel_in : cd/Blank
 {
 }
+
 
 material banger_steeringwheel_out : cd/Blank
 {
 }
 
+
 material banger_bumper : cd/Blank
 {
 }
 
-material banger_body_uv : cd/Base
-{
-    set $diffuse_map banger_body.jpg
-}
 
 material banger_body_burnt_uv : cd/Base
 {
     set $diffuse_map banger_body_burnt.jpg
 }
 
+
+material banger_body_uv : cd/Base
+{
+    set $diffuse_map banger_body.jpg
+}
+material banger_body_t1 : cd/Base
+{
+    set $diffuse_map banger_body1.jpg
+}
+material banger_body_t2 : cd/Base
+{
+    set $diffuse_map banger_body2.jpg
+}
+material banger_body_v1 : cd/Base
+{
+    set $diffuse_map banger_body1V.jpg
+}
+material banger_body_v2 : cd/Base
+{
+    set $diffuse_map banger_body2V.jpg
+}
+
+
 material banger_fdoor_uv : cd/Base
 {
     set $diffuse_map banger_fdoor.jpg
 }
+material banger_fdoor_t1 : cd/Base
+{
+    set $diffuse_map banger_fdoor1.jpg
+}
+material banger_fdoor_t2 : cd/Base
+{
+    set $diffuse_map banger_fdoor2.jpg
+}
+
 
 material banger_rdoor_uv : cd/Base
 {
     set $diffuse_map banger_rdoor.jpg
 }
+material banger_rdoor_t1 : cd/Base
+{
+    set $diffuse_map banger_rdoor1.jpg
+}
+material banger_rdoor_t2 : cd/Base
+{
+    set $diffuse_map banger_rdoor2.jpg
+}
+
 
 material banger_wheel_uv : cd/Base
 {
     set $diffuse_map banger_wheel.jpg
 }
+
 
 material banger_rim_uv : cd/Base
 {

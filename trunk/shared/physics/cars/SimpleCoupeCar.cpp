@@ -120,7 +120,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID)
+SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -129,7 +129,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID)
 
     initTuning();
     initNodes();
-    initGraphics(chassisShift);
+    initGraphics(chassisShift, skin);
     initBody(carPosition, chassisShift);
     initWheels();
 
@@ -211,20 +211,22 @@ void SimpleCoupeCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SimpleCoupeCar::initGraphics(btTransform& chassisShift)
+void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
 {
-    // Load the banger meshes and scale them appropriately
-    createGeometry("CarEntity_Body",    "banger_body.mesh",    mChassisNode);
-    createGeometry("CarEntity_LDoor",   "banger_fldoor.mesh",  mFLDoorNode);
-    createGeometry("CarEntity_RDoor",   "banger_frdoor.mesh",  mFRDoorNode);
-    createGeometry("CarEntity_RLDoor",  "banger_rldoor.mesh",  mRLDoorNode);
-    createGeometry("CarEntity_RRDoor",  "banger_rrdoor.mesh",  mRRDoorNode);
+    // Load the meshes.
+    createGeometry("CarEntity_Body",   "banger_body.mesh",   mChassisNode);
+    createGeometry("CarEntity_LDoor",  "banger_fldoor.mesh", mFLDoorNode);
+    createGeometry("CarEntity_RDoor",  "banger_frdoor.mesh", mFRDoorNode);
+    createGeometry("CarEntity_RLDoor", "banger_rldoor.mesh", mRLDoorNode);
+    createGeometry("CarEntity_RRDoor", "banger_rrdoor.mesh", mRRDoorNode);
     createGeometry("CarEntity_FBumper", "banger_fbumper.mesh", mFBumperNode);
     createGeometry("CarEntity_RBumper", "banger_rbumper.mesh", mRBumperNode);
     createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh",  mFLWheelNode);
     createGeometry("CarEntity_FRWheel", "banger_rwheel.mesh",  mFRWheelNode);
     createGeometry("CarEntity_RLWheel", "banger_lwheel.mesh",  mRLWheelNode);
     createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh",  mRRWheelNode);
+    
+    // Scale all loaded meshes.
     PhysicsCore::auto_scale_scenenode(mChassisNode);
     PhysicsCore::auto_scale_scenenode(mFLDoorNode);
     PhysicsCore::auto_scale_scenenode(mFRDoorNode);
@@ -236,6 +238,37 @@ void SimpleCoupeCar::initGraphics(btTransform& chassisShift)
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+}
+
+
+void SimpleCoupeCar::updateTeam (int teamNumber, bool isVIP)
+{
+    // Load the team coloured items
+    switch (teamNumber)
+    {
+    case 1:
+        if (isVIP)
+            setMaterial("banger_body_v1",  mChassisNode);
+        else
+            setMaterial("banger_body_t1",  mChassisNode);
+        setMaterial("banger_fdoor_t1", mFLDoorNode);
+        setMaterial("banger_fdoor_t1", mFRDoorNode);
+        setMaterial("banger_rdoor_t1", mRLDoorNode);
+        setMaterial("banger_rdoor_t1", mRRDoorNode);
+        break;
+    case 2:
+        if (isVIP)
+            setMaterial("banger_body_v2",  mChassisNode);
+        else
+            setMaterial("banger_body_t2",  mChassisNode);
+        setMaterial("banger_fdoor_t2", mFLDoorNode);
+        setMaterial("banger_fdoor_t2", mFRDoorNode);
+        setMaterial("banger_rdoor_t2", mRLDoorNode);
+        setMaterial("banger_rdoor_t2", mRRDoorNode);
+        break;
+    default:
+        break;
+    }
 }
 
 

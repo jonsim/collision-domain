@@ -22,13 +22,13 @@ void Gameplay::setNumberOfTeams(int num)
 	//Create the new teams
 	for(int i=0;i<num;i++)
 	{
-		Team* tmpTeam = this->createTeam("");
+		this->createTeam("", i+1);
 	}
 }
 
-Team* Gameplay::createTeam(std::string teamName)
+Team* Gameplay::createTeam(std::string teamName, int teamNumber)
 {
-	Team* tmpTeam = new Team(teamName);
+	Team* tmpTeam = new Team(teamName, teamNumber);
 	teams.push_back(tmpTeam);
 	return tmpTeam;
 }
@@ -79,10 +79,15 @@ bool Gameplay::vipModeGameWon()
 Player* Gameplay::setNewVIP(Team* team)
 {
 	Player* pPlayer = team->getRandomPlayer();
+    
+        // Manage and assign VIP Cameras for the server
+#ifdef COLLISION_DOMAIN_SERVER
 	if(team == teams[0])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
 	else if(team == teams[1])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
+#endif
+
 	return team->setNewVIP(pPlayer);
 }
 
@@ -93,7 +98,9 @@ void Gameplay::setAllNewVIP()
 	{
 		Team* team = *itr;
 		Player* vipPlayer = team->getRandomPlayer();
-		//Do VIP Camera assignment stuff
+
+        // Manage and assign VIP Cameras for the server
+#ifdef COLLISION_DOMAIN_SERVER
 		//Clear the previous assignments
 		GameCore::mGraphicsApplication->mViewCam1->detachFromParent();
 		GameCore::mGraphicsApplication->mViewCam2->detachFromParent();
@@ -102,6 +109,7 @@ void Gameplay::setAllNewVIP()
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
 		else if(team == teams[1])
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
+#endif
 		team->setNewVIP(vipPlayer);
 	}
 }

@@ -36,7 +36,7 @@ public:
 	void						setNumberOfTeams(int num);
 	Ogre::Real					getScorePercentage(std::string identifier);
 	int							getScoreValue(std::string identifier);
-	Team*						createTeam(std::string teamName);
+	Team*						createTeam(std::string teamName, int teamNumber);
 	void						addPlayerToTeam(Team* team, Player* player);
 	bool						gameOver();
 	bool						hasWon(Team* team);

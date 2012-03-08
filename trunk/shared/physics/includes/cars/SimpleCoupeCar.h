@@ -12,14 +12,15 @@
 class SimpleCoupeCar : Car
 {
 public:
-    SimpleCoupeCar(int uniqueCarID);
+    SimpleCoupeCar(int uniqueCarID, CarSkin skin);
     virtual ~SimpleCoupeCar(void);
     void playCarHorn();
+    virtual void updateTeam (int teamNumber, bool isVIP);
 
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(btTransform& chassisShift);
+    void initGraphics(btTransform& chassisShift, CarSkin skin);
     void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
     void initWheels();
     

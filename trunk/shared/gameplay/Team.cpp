@@ -7,13 +7,18 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
-Team::Team(std::string teamName_P)
+Team::Team(std::string teamName_P, int teamNumber)
 {
 	Team::teamName = teamName_P;
+    Team::teamNumber = teamNumber;
 }
 
 void Team::addPlayer(Player *player)
 {
+    player->getCar()->updateTeam(teamNumber, false);
+    char bob[64];
+    sprintf(bob, "team number = %d\n", teamNumber);
+    OutputDebugString(bob);
 	players.push_back(player);
 }
 

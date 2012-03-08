@@ -285,14 +285,14 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
         GameCore::mGraphicsCore->mSpawnScreen = NULL;
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-		pPlayer->createPlayer( iCarType, SKIN0 );
+		pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
         pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
 	}
 	else
 	{
 		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		if( pPlayer != NULL )
-			pPlayer->createPlayer( iCarType, SKIN0 );
+			pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
 		else
 			log( "..invalid player" );
 	}
