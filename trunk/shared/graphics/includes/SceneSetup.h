@@ -25,10 +25,10 @@ public:
     void setWeather (uint8_t mode);
 
 	// Graphical effect settings. Adjusts the scale of the effect - default is 1.
-	float gfxSettingHDR;         // Strength of the High Dynamic Range lighting.
-	float gfxSettingBloom;       // Strength of the bloom lighting artifact.
-	float gfxSettingMotionBlur;  // Amount of blurring of relatively moving objects.
-	float gfxSettingRadialBlur;  // Amount of blurring encountered at high speeds.
+	float mGfxSettingHDR;         // Strength of the High Dynamic Range lighting.
+	float mGfxSettingBloom;       // Strength of the bloom lighting artifact.
+	float mGfxSettingMotionBlur;  // Amount of blurring of relatively moving objects.
+	float mGfxSettingRadialBlur;  // Amount of blurring encountered at high speeds.
 
 protected:
 	void setupCompositorChain (Ogre::Viewport* vp);
@@ -41,12 +41,19 @@ protected:
 	void createMotionBlurCompositor (void);
     
     // GUI elements which are setup.
-	CEGUI::OgreRenderer* mGuiRenderer;
+	CEGUI::OgreRenderer* mGUIRenderer;
 
     // Scene elements which are setup.
 	Ogre::Light*          mWorldSun;
+    // Particle Systems
 	Ogre::ParticleSystem* mWeatherSystem;
 	Ogre::ParticleSystem* mSparkSystem;
+    Ogre::ParticleSystem* mExplosionNucleusSystem;
+    Ogre::ParticleSystem* mExplosionSmokeSystem;
+    // Particle System configurations
+    Ogre::NameValuePairList mSparkParams;
+    Ogre::NameValuePairList mExplosionNucleusParams;
+    Ogre::NameValuePairList mExplosionSmokeParams;
     
 	// Compositor logic modules
 	HDRLogic*		 mHDRLogic;

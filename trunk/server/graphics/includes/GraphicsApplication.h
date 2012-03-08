@@ -14,7 +14,7 @@
 /**
  *  @brief  Adds objects to the graphics interface.
  */
-class GraphicsApplication : public GraphicsCore, public SceneSetup
+class GraphicsApplication : public GraphicsCore
 {
 public:
     GraphicsApplication (void);

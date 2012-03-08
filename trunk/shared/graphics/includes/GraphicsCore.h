@@ -16,13 +16,15 @@
  */
 class SpawnScreen;
 
-class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener
+class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
 {
 public:
     GraphicsCore (void);
     virtual ~GraphicsCore (void);
     virtual void go (void);
 	void shutdown() { mShutDown = true; }
+    void generateExplosion (Ogre::Vector3 location);
+    void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
 
     Ogre::Camera*       mCamera;
     Ogre::RenderWindow* mWindow;
@@ -40,6 +42,7 @@ protected:
     virtual void setupResources (void);
     virtual void createResourceListener (void);
     virtual void loadResources (void);
+    virtual void updateParticleSystems (void);
 
     // Ogre::FrameListener overrides.
     virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);

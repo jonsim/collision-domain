@@ -11,10 +11,10 @@
 
 
 SceneSetup::SceneSetup (void) :
-    gfxSettingHDR(1.0f),
-    gfxSettingBloom(1.0f),
-    gfxSettingRadialBlur(1.0f),
-    gfxSettingMotionBlur(1.0f)
+    mGfxSettingHDR(1.0f),
+    mGfxSettingBloom(1.0f),
+    mGfxSettingRadialBlur(1.0f),
+    mGfxSettingMotionBlur(1.0f)
 {
 }
 
@@ -31,122 +31,6 @@ SceneSetup::~SceneSetup (void)
 /***************************************************************************
  *****************          SCENE SETUP FUNCTIONS          *****************
  ***************************************************************************/
-
-
-/// @brief  Builds the compositor chain which adds post filters to the rendered image before being displayed.
-void SceneSetup::setupCompositorChain (Ogre::Viewport* vp)
-{
-	// Collect required information.
-	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
-	
-	// Create compositors. Where possible these are coded in the Examples.compositor script, but some need
-	// access to certain features not available when this script is compiled.
-	createMotionBlurCompositor();
-
-	// Register the compositors.
-	// This is done by first setting up the logic module for them and adding this as a listener so it
-	// fires every time the compositor completes a pass allowing injection of values into the GPU
-	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
-	// Finally add the compositors to the compositor chain and configure, then enable them.
-	mHDRLogic = new HDRLogic;
-	cm.registerCompositorLogic("HDR", mHDRLogic);
-	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
-	//hdrLoader(vp, 0);
-
-	mBloomLogic = new BloomLogic;
-	cm.registerCompositorLogic("Bloom", mBloomLogic);
-	cm.addCompositor(vp, "Bloom");
-	loadBloom(vp, 0, 0.15f, 1.0f);
-
-	mMotionBlurLogic = new MotionBlurLogic;
-	cm.registerCompositorLogic("MotionBlur", mMotionBlurLogic);
-	cm.addCompositor(vp, "MotionBlur");
-	loadMotionBlur(vp, 0, 0.10f);
-
-	mRadialBlurLogic = new RadialBlurLogic;
-	cm.registerCompositorLogic("RadialBlur", mRadialBlurLogic);
-	cm.addCompositor(vp, "RadialBlur");
-	// radial blur has no loader as it is controlled by the players speed (Car.cpp).
-}
-
-
-/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
-void SceneSetup::loadHDR (Ogre::Viewport* vp, uint8_t mode)
-{
-	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
-
-	if (mode > 0)
-		cm.setCompositorEnabled(vp, "HDR", false);
-	if (mode < 2)
-		cm.setCompositorEnabled(vp, "HDR", true);
-}
-
-/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
-void SceneSetup::loadBloom (Ogre::Viewport* vp, uint8_t mode, float blurWeight, float originalWeight)
-{
-	// reload bloom
-	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
-	
-	// Scale the bloom values by the bloom graphical setting. This defaults to 1.
-	blurWeight     *= gfxSettingBloom;
-	originalWeight *= gfxSettingBloom;
-
-	if (blurWeight > 0.0f)
-		mBloomLogic->setBlurWeight(blurWeight);
-	if (originalWeight > 0.0f)
-		mBloomLogic->setOriginalWeight(originalWeight);
-	if (mode > 0)
-		cm.setCompositorEnabled(vp, "Bloom", false);
-	if (mode < 2)
-		cm.setCompositorEnabled(vp, "Bloom", true);
-}
-
-/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
-void SceneSetup::loadMotionBlur (Ogre::Viewport* vp, uint8_t mode, float blur)
-{
-	// reload bloom
-	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
-	
-	// Scale the blur amount by the blur graphical setting. This defaults to 1.
-	blur *= gfxSettingMotionBlur;
-
-	if (blur > 0.0f)
-		mMotionBlurLogic->setBlurStrength(blur);
-	if (mode > 0)
-		cm.setCompositorEnabled(vp, "MotionBlur", false);
-	if (mode < 2)
-		cm.setCompositorEnabled(vp, "MotionBlur", true);
-}
-
-void SceneSetup::setRadialBlur (Ogre::Viewport* vp, float blur)
-{
-	static bool enabled = false;
-
-	// Scale the blur amount by the blur graphical setting. This defaults to 1.
-	blur *= gfxSettingRadialBlur;
-
-	if (enabled)
-	{
-		if (blur < 0.001f)
-		{
-			Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "RadialBlur", false);
-			enabled = false;
-		}
-		else
-		{
-			mRadialBlurLogic->setBlurStrength(blur);
-		}
-	}
-	else
-	{
-		if (blur > 0.001f)
-		{
-			Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "RadialBlur", true);
-			mRadialBlurLogic->setBlurStrength(blur);
-			enabled = true;
-		}
-	}
-}
 
 
 /// @brief Configure the shadow system. This should be the *FIRST* thing in the scene setup, because the shadow technique can alter the way meshes are loaded.
@@ -354,12 +238,52 @@ void SceneSetup::setWeather (uint8_t mode)
 /// @brief Configures the particle system.
 void SceneSetup::setupParticleSystem (void)
 {
-	// Set nonvisible timeout
+    // Build the emitter definitions
+    // Spark parameters
+    //mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("position",       "0.0 10.0 0.0") );
+    //mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "1.0 1.0 0.0") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "5") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "200") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",   "35") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_max",   "40") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",   "0.5") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_start", "1.000 1.000 0.847 1.0") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_end",   "0.851 0.737 0.565 1.0") );
+
+    // Explosion nucleus parameters
+    //mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("position",       "0.0 10.0 0.0") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "0.0 0.0 0.0") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "0") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "20") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("velocity",       "0") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",   "0.5") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.5") );
+    //mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("repeat_delay",   "1.5") );
+    mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("colour",         "0.871 0.392 0.067 1") );
+
+    // Explosion smoke parameters
+    //mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("position",       "0.0 10.0 0.0") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "0.0 1.0 0.0") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "0") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "20") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("velocity",       "1") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live_min", "1.5") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live_max", "2.0") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.5") );
+    //mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("repeat_delay",   "1.5") );
+    mExplosionSmokeParams.insert( std::pair<Ogre::String, Ogre::String>("colour",         "0.1 0.1 0.1 1") );
+    
+    // Setup the particle systems.
+	// Set nonvisible timeout.
 	Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
     
-    // Create spark system
-	//mSparkSystem = GameCore::mSceneMgr->createParticleSystem("SparkSystem", "CollisionDomain/Spark");
-    //GameCore::mSceneMgr->getRootSceneNode()->attachObject(mSparkSystem);
+    // Create systems.
+	mSparkSystem            = GameCore::mSceneMgr->createParticleSystem("SparkSystem",            "CollisionDomain/Spark");
+    mExplosionNucleusSystem = GameCore::mSceneMgr->createParticleSystem("ExplosionNucleusSystem", "CollisionDomain/Explosion/Nucleus");
+    mExplosionSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("ExplosionSmokeSystem",   "CollisionDomain/Explosion/Smoke");
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(mSparkSystem);
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionNucleusSystem);
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionSmokeSystem);
 }
 
 
@@ -400,8 +324,124 @@ void SceneSetup::setupArena (void)
 void SceneSetup::setupGUI (void)
 {
     // Attach and start the GUI renderer.
-    mGuiRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+    mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
     GameCore::mGui->initialiseGUI();
+}
+
+
+/// @brief  Builds the compositor chain which adds post filters to the rendered image before being displayed.
+void SceneSetup::setupCompositorChain (Ogre::Viewport* vp)
+{
+	// Collect required information.
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	
+	// Create compositors. Where possible these are coded in the Examples.compositor script, but some need
+	// access to certain features not available when this script is compiled.
+	createMotionBlurCompositor();
+
+	// Register the compositors.
+	// This is done by first setting up the logic module for them and adding this as a listener so it
+	// fires every time the compositor completes a pass allowing injection of values into the GPU
+	// shaders which render the materials each pass, thus altering the behaviour of the compositor.
+	// Finally add the compositors to the compositor chain and configure, then enable them.
+	mHDRLogic = new HDRLogic;
+	cm.registerCompositorLogic("HDR", mHDRLogic);
+	//cm.addCompositor(vp, "HDR", 0);		// HDR must be at the front of the chain.
+	//hdrLoader(vp, 0);
+
+	mBloomLogic = new BloomLogic;
+	cm.registerCompositorLogic("Bloom", mBloomLogic);
+	cm.addCompositor(vp, "Bloom");
+	loadBloom(vp, 0, 0.15f, 1.0f);
+
+	mMotionBlurLogic = new MotionBlurLogic;
+	cm.registerCompositorLogic("MotionBlur", mMotionBlurLogic);
+	cm.addCompositor(vp, "MotionBlur");
+	loadMotionBlur(vp, 0, 0.10f);
+
+	mRadialBlurLogic = new RadialBlurLogic;
+	cm.registerCompositorLogic("RadialBlur", mRadialBlurLogic);
+	cm.addCompositor(vp, "RadialBlur");
+	// radial blur has no loader as it is controlled by the players speed (Car.cpp).
+}
+
+
+/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+void SceneSetup::loadHDR (Ogre::Viewport* vp, uint8_t mode)
+{
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+
+	if (mode > 0)
+		cm.setCompositorEnabled(vp, "HDR", false);
+	if (mode < 2)
+		cm.setCompositorEnabled(vp, "HDR", true);
+}
+
+/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+void SceneSetup::loadBloom (Ogre::Viewport* vp, uint8_t mode, float blurWeight, float originalWeight)
+{
+	// reload bloom
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	
+	// Scale the bloom values by the bloom graphical setting. This defaults to 1.
+	blurWeight     *= mGfxSettingBloom;
+	originalWeight *= mGfxSettingBloom;
+
+	if (blurWeight > 0.0f)
+		mBloomLogic->setBlurWeight(blurWeight);
+	if (originalWeight > 0.0f)
+		mBloomLogic->setOriginalWeight(originalWeight);
+	if (mode > 0)
+		cm.setCompositorEnabled(vp, "Bloom", false);
+	if (mode < 2)
+		cm.setCompositorEnabled(vp, "Bloom", true);
+}
+
+/// @param mode	 The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+void SceneSetup::loadMotionBlur (Ogre::Viewport* vp, uint8_t mode, float blur)
+{
+	// reload bloom
+	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+	
+	// Scale the blur amount by the blur graphical setting. This defaults to 1.
+	blur *= mGfxSettingMotionBlur;
+
+	if (blur > 0.0f)
+		mMotionBlurLogic->setBlurStrength(blur);
+	if (mode > 0)
+		cm.setCompositorEnabled(vp, "MotionBlur", false);
+	if (mode < 2)
+		cm.setCompositorEnabled(vp, "MotionBlur", true);
+}
+
+void SceneSetup::setRadialBlur (Ogre::Viewport* vp, float blur)
+{
+	static bool enabled = false;
+
+	// Scale the blur amount by the blur graphical setting. This defaults to 1.
+	blur *= mGfxSettingRadialBlur;
+
+	if (enabled)
+	{
+		if (blur < 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "RadialBlur", false);
+			enabled = false;
+		}
+		else
+		{
+			mRadialBlurLogic->setBlurStrength(blur);
+		}
+	}
+	else
+	{
+		if (blur > 0.001f)
+		{
+			Ogre::CompositorManager::getSingleton().setCompositorEnabled(vp, "RadialBlur", true);
+			mRadialBlurLogic->setBlurStrength(blur);
+			enabled = true;
+		}
+	}
 }
 
 

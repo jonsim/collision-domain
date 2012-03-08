@@ -77,8 +77,6 @@ void GraphicsApplication::createScene (void)
     setupParticleSystem();
     setupArena();
     setupGUI();
-
-	
 }
 
 
