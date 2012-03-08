@@ -14,6 +14,7 @@ Gameplay::Gameplay()
 	mSB = new ScoreBoard();
 	mHUD = new HUD();
 	this->setNumberOfTeams(2); //Might as well default it to 2
+	mGameActive = false;
 }
 
 void Gameplay::setNumberOfTeams(int num)
@@ -260,7 +261,7 @@ void Gameplay::positionPlayers()
 
 			//TODO - Move cars to correct positions
 			std::stringstream debugString;
-			debugString << "X: "<< x << " Y: "<<y<<"\n";
+			debugString << "Alignment Car Pos X: "<< x << " Y: "<<y<<"\n";
 			OutputDebugString(debugString.str().c_str());
 			tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
 		}
@@ -272,6 +273,7 @@ void Gameplay::startGame()
 	this->positionPlayers();
 	this->setAllNewVIP(); //TODO - Change this once we have multiple game modes
 	this->scheduleCountDown();
+	mGameActive = true;
 }
 
 void Gameplay::drawInfo()

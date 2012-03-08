@@ -56,6 +56,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
     mCar->attachCollisionTickCallback(this);
 	//Set HP. More clever damage might be implemented in the future
 	hp = 100;
+	this->setAlive(true);
 
     mCar->moveTo(btVector3(0,0.5,0));
 }
@@ -72,6 +73,13 @@ void Player::collisionTickCallback(int damage)
 	{
 		hp-=damage*10; //Apply damage to player
 		GameCore::mGameplay->notifyDamage(this);
+
+		//Force health to never drop below 0
+		if(hp <= 0)
+		{
+			hp = 0;
+			this->killPlayer();
+		}
 	}
 }
 
@@ -102,14 +110,14 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
-	//TODO - APPLLY IF THAT STOPS STEERING IF THE PLAYER IS DEAD
-
-    // process steering
-    mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+	if(this->getAlive())
+	{
+		// process steering
+		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
-    // apply acceleration 4wd style
-    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
-
+	    // apply acceleration 4wd style
+	    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
+	}
     // TELEPORT TESTING
     /*if (userInput->isLeft() && userInput->isRight())
     {
