@@ -60,6 +60,11 @@ Player* Team::setNewVIP(Player* player)
 	}
 }
 
+Player* Team::getVIP()
+{
+	return vipPlayer;
+}
+
 int Team::getTeamSize()
 {
 	return players.size();

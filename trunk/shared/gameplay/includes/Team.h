@@ -22,6 +22,7 @@ public:
 	std::string				getName();
 	Player*					getRandomPlayer();
 	Player*					setNewVIP(Player* player);
+	Player*					getVIP();
 	int						getTeamSize();
 	int						getTotalTeamHP();
 private:
