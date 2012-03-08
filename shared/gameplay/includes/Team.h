@@ -16,7 +16,7 @@
 class Team
 {
 public:
-							Team(std::string teamName_P);
+							Team(std::string teamName_P, int teamNumber);
 	void					addPlayer(Player *player);
 	std::vector<Player*>	getPlayers();
 	std::string				getName();
@@ -26,6 +26,7 @@ public:
 	int						getTotalTeamHP();
 private:
 	std::vector<Player*>	players;
+    int                     teamNumber;
 	std::string				teamName;
 	Player*					vipPlayer;
 };

@@ -33,24 +33,23 @@ Player::~Player (void)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (CarType iCarType, CarSkin s)
+void Player::createPlayer (CarType carType, CarSkin skin)
 {
-    mCarType = iCarType;
+    mCarType = carType;
 
-    // TODO: something with iCarType
-    switch (iCarType)
+    switch (carType)
     {
     case CAR_BANGER:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
         break;
     case CAR_SMALL:
-        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
         break;
     case CAR_TRUCK:
-        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
         break;
     default:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID());
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
         break;
     }
 

@@ -12,9 +12,10 @@
 class SmallCar : public Car
 {
 public:
-    SmallCar(int uniqueCarID);
+    SmallCar(int uniqueCarID, CarSkin skin);
     virtual ~SmallCar(void);
     void playCarHorn();
+    virtual void updateTeam (int teamNumber, bool isVIP);
 
 private:
     void initTuning();

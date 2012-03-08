@@ -15,6 +15,20 @@
 class Player;
 class WheelFrictionConstraint;
 
+/// CarType represents the type of car used as the player object (i.e. the model).
+enum CarType
+{
+    CAR_BANGER = 0,
+    CAR_SMALL  = 1,
+    CAR_TRUCK  = 2,
+
+    CAR_COUNT
+};
+
+/// CarSkin represents the texture applied to the player object.
+enum CarSkin {SKIN_DEFAULT, SKIN_TEAM1, SKIN_TEAM2, SKIN_VIP1, SKIN_VIP2};
+
+
 class Car
 {
 
@@ -43,6 +57,8 @@ public:
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
+    virtual void updateTeam (int teamNumber, bool isVIP) = 0;
+
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();
 
@@ -52,6 +68,7 @@ public:
 
 protected:
     void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo);
+    void setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo);
     
     OgreOggISound *mHornSound;
 

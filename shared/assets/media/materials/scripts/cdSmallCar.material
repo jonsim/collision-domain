@@ -6,42 +6,75 @@ material small_car_seat : cd/Blank
 {
 }
 
+
 material small_car_steering_wheel_out : cd/Blank
 {
 }
+
 
 material small_car_steering_wheel_in : cd/Blank
 {
 }
 
+
 material small_car_bumper : cd/Blank
 {
 }
 
-material small_car_body_uv : cd/Base
-{
-    set $diffuse_map small_car_body.jpg
-}
 
 material small_car_body_burnt_uv : cd/Base
 {
     set $diffuse_map small_car_body_burnt.jpg
 }
 
+
+material small_car_body_uv : cd/Base
+{
+    set $diffuse_map small_car_body.jpg
+}
+material small_car_body_t1 : cd/Base
+{
+    set $diffuse_map small_car_body1.jpg
+}
+material small_car_body_t2 : cd/Base
+{
+    set $diffuse_map small_car_body2.jpg
+}
+material small_car_body_v1 : cd/Base
+{
+    set $diffuse_map small_car_body1V.jpg
+}
+material small_car_body_v2 : cd/Base
+{
+    set $diffuse_map small_car_body2V.jpg
+}
+
+
 material small_car_door_uv : cd/Base
 {
     set $diffuse_map small_car_door.jpg
 }
+material small_car_door_t1 : cd/Base
+{
+    set $diffuse_map small_car_door1.jpg
+}
+material small_car_door_t2 : cd/Base
+{
+    set $diffuse_map small_car_door2.jpg
+}
+
 
 material small_car_headlight_uv : cd/Base
 {
     set $diffuse_map small_car_headlight.jpg
 }
 
+
 material small_car_wheel_uv : cd/Base
 {
     set $diffuse_map small_car_wheel.jpg
 }
+
 
 material small_car_rim_uv : cd/Base
 {

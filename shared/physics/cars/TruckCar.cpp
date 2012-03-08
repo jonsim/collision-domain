@@ -109,7 +109,7 @@ void TruckCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-TruckCar::TruckCar(int uniqueCarID)
+TruckCar::TruckCar(int uniqueCarID, CarSkin skin)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -207,7 +207,7 @@ void TruckCar::initNodes()
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
 void TruckCar::initGraphics()
 {
-    // Load the truck meshes and scale them appropriately
+    // Load the truck meshes.
     createGeometry("CarBody",               "truck_body.mesh",        mChassisNode);
     createGeometry("CarEntity_LDoor",       "truck_ldoor.mesh",       mLDoorNode);
     createGeometry("CarEntity_RDoor",       "truck_rdoor.mesh",       mRDoorNode);
@@ -218,6 +218,8 @@ void TruckCar::initGraphics()
     createGeometry("CarEntity_FRWheel",     "truck_rwheel.mesh",      mFRWheelNode);
     createGeometry("CarEntity_RLWheel",     "truck_lwheel.mesh",      mRLWheelNode);
     createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode);
+
+    // Scale the loaded meshes
     PhysicsCore::auto_scale_scenenode(mChassisNode);
     PhysicsCore::auto_scale_scenenode(mLDoorNode);
     PhysicsCore::auto_scale_scenenode(mRDoorNode);
@@ -228,6 +230,33 @@ void TruckCar::initGraphics()
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+}
+
+
+void TruckCar::updateTeam (int teamNumber, bool isVIP)
+{
+    // Load the team coloured items
+    switch (teamNumber)
+    {
+    case 1:
+        if (isVIP)
+            setMaterial("truck_body_v1",  mChassisNode);
+        else
+            setMaterial("truck_body_t1",  mChassisNode);
+        setMaterial("truck_fdoor_t1", mLDoorNode);
+        setMaterial("truck_fdoor_t1", mRDoorNode);
+        break;
+    case 2:
+        if (isVIP)
+            setMaterial("truck_body_v2",  mChassisNode);
+        else
+            setMaterial("truck_body_t2",  mChassisNode);
+        setMaterial("truck_fdoor_t2", mLDoorNode);
+        setMaterial("truck_fdoor_t2", mRDoorNode);
+        break;
+    default:
+        break;
+    }
 }
 
 
