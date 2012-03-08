@@ -22,7 +22,7 @@ void Gameplay::setNumberOfTeams(int num)
 	//Create the new teams
 	for(int i=0;i<num;i++)
 	{
-		this->createTeam("");
+		Team* tmpTeam = this->createTeam("");
 	}
 }
 
@@ -78,7 +78,12 @@ bool Gameplay::vipModeGameWon()
 
 Player* Gameplay::setNewVIP(Team* team)
 {
-	return team->setNewVIP(team->getRandomPlayer());
+	Player* pPlayer = team->getRandomPlayer();
+	if(team == teams[0])
+		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
+	else if(team == teams[1])
+		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
+	return team->setNewVIP(pPlayer);
 }
 
 void Gameplay::setAllNewVIP()
@@ -88,8 +93,16 @@ void Gameplay::setAllNewVIP()
 	{
 		Team* team = *itr;
 		Player* vipPlayer = team->getRandomPlayer();
+		//Do VIP Camera assignment stuff
+		//Clear the previous assignments
+		GameCore::mGraphicsApplication->mViewCam1->detachFromParent();
+		GameCore::mGraphicsApplication->mViewCam2->detachFromParent();
+		//Assign to the new VIPS
+		if(team == teams[0])
+			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
+		else if(team == teams[1])
+			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
 		team->setNewVIP(vipPlayer);
-		//vipPlayer->getCar()->
 	}
 }
 
@@ -98,6 +111,13 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 	Team* teamToJoin = getTeamToJoin();
 	teamToJoin->addPlayer(tmpPlayer);
+
+	//Check to see if we need to start game
+	if(GameCore::mPlayerPool->getNumberOfPlayers() >= NUM_PLAYERS_TO_START)
+	{
+		this->startGame();
+	}
+
 	return teamToJoin;
 }
 
@@ -297,7 +317,6 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				tmpOLE->setMaterialName( "gear1" );
 				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
-				mSB->initialize();
 				break;
 			case TWO_OT:
 				tmpOLE->setDimensions(0.1f,0.1f);

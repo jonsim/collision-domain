@@ -16,6 +16,9 @@
 #include <string>
 #include "RakNetTypes.h"
 
+/*-------------------- Some Game Values -------------*/
+#define NUM_PLAYERS_TO_START 5
+
 /*-------------------- ENUM TYPES -------------------*/
 enum
 {
