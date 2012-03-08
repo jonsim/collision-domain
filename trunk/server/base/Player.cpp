@@ -67,16 +67,19 @@ void Player::collisionTickCallback(int damage)
 {
     // p1 and p2 might not be the only two players who collided this physics step.
     //OutputDebugString("Server: Player collision\n");
-	hp-=damage*10; //Apply damage to player
-	GameCore::mGameplay->notifyDamage(this);\
+	if(GameCore::mGameplay->mGameActive)
+	{
+		hp-=damage*10; //Apply damage to player
+		GameCore::mGameplay->notifyDamage(this);
+	}
 }
 
 
 /// @brief  Attaches a camera to the player.
 /// @param  cam   The camera object to attach to the player.
 void Player::attachCamera (Ogre::Camera* cam)
-{
-    // only attach a camera to one of them!! Imagine the carnage if there were more
+{	
+	// only attach a camera to one of them!! Imagine the carnage if there were more
     Ogre::SceneNode *camNode = mCar->attachCamNode();
     Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
 
@@ -85,7 +88,6 @@ void Player::attachCamera (Ogre::Camera* cam)
     camNode->yaw(Ogre::Degree(180));
     camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
 
-	camNode->detachAllObjects(); //Program crashes if you attach more than one cam to each objet.
     camNode->attachObject(cam);
 }
 
@@ -99,6 +101,8 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
+	//TODO - APPLLY IF THAT STOPS STEERING IF THE PLAYER IS DEAD
+
     // process steering
     mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
     
@@ -186,4 +190,20 @@ RakNet::RakNetGUID Player::getPlayerGUID()
 void Player::setPlayerGUID(RakNet::RakNetGUID playerGUID)
 {
 	mPlayerGUID = playerGUID;
+}
+
+void Player::setAlive(bool pAlive)
+{
+	mAlive = pAlive;
+}
+
+bool Player::getAlive()
+{
+	return mAlive;
+}
+
+void Player::killPlayer()
+{
+	mAlive = false;
+	//INSERT CALL BACKS HERE - For you Johhny
 }

@@ -58,6 +58,7 @@ public:
 
 	std::vector<InfoItem*>		mInfoItems;
 	int							numberOfTeams;
+	bool						mGameActive; //True = Game underway, False = Game not yet started
 
 private:
 	//Methods
