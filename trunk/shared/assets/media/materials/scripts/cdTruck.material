@@ -23,6 +23,11 @@ material truck_body_uv : cd/Base
     set $diffuse_map truck_body.jpg
 }
 
+material truck_body_burnt_uv : cd/Base
+{
+    set $diffuse_map truck_body_burnt.jpg
+}
+
 material truck_door_uv : cd/Base
 {
     set $diffuse_map truck_door.jpg
@@ -36,4 +41,9 @@ material truck_bumper_uv : cd/Base
 material truck_wheel_uv : cd/Base
 {
     set $diffuse_map truck_wheel.jpg
+}
+
+material truck_rim_uv : cd/Base
+{
+    set $diffuse_map truck_rim.jpg
 }

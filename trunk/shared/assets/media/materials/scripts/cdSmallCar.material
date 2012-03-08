@@ -23,6 +23,11 @@ material small_car_body_uv : cd/Base
     set $diffuse_map small_car_body.jpg
 }
 
+material small_car_body_burnt_uv : cd/Base
+{
+    set $diffuse_map small_car_body_burnt.jpg
+}
+
 material small_car_door_uv : cd/Base
 {
     set $diffuse_map small_car_door.jpg
@@ -36,4 +41,9 @@ material small_car_headlight_uv : cd/Base
 material small_car_wheel_uv : cd/Base
 {
     set $diffuse_map small_car_wheel.jpg
+}
+
+material small_car_rim_uv : cd/Base
+{
+	set $diffuse_map small_car_rim.jpg
 }
