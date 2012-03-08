@@ -4,8 +4,8 @@
 #define MAP_WIDTH	1.0f
 #define MAP_HEIGHT	0.8f
 
-#define MARKER_WIDTH 0.05f
-#define MARKER_HEIGHT 0.05f
+#define MARKER_WIDTH 0.03f
+#define MARKER_HEIGHT 0.04f
 /*
 BigScreen::BigScreen(ViewportManager* vpm_P, NetworkCore* networkCore)
 {
@@ -158,7 +158,7 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 	CarSnapshot *playerSnap = NULL;
 
     if(player->getCar() != NULL)
-        player->getCar()->getCarSnapshot();
+        playerSnap = player->getCar()->getCarSnapshot();
 
 	if(playerSnap != NULL)
 	{
@@ -192,7 +192,7 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		btQuaternion q = player->getCar()->getCarSnapshot()->mRotation;
         Ogre::Radian rot = Ogre::Math::ATan2(      (2.0 * (q.getZ()*q.getX() + q.getY()*q.getW())),
                                              1.0 - (2.0 * (q.getX()*q.getX() + q.getY()*q.getY())) );
-        rot = (rot.valueRadians() > 0) ? rot.valueRadians() - Ogre::Math::PI : rot.valueRadians() + Ogre::Math::PI;
+        //rot = (rot.valueRadians() > 0) ? rot.valueRadians() - Ogre::Math::PI : rot.valueRadians() + Ogre::Math::PI;
 		
         // Rotate the arrow.
 		Ogre::Material* matMarker = carOverlay->getMaterial().get();

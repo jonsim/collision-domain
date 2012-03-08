@@ -23,6 +23,11 @@ material banger_body_uv : cd/Base
     set $diffuse_map banger_body.jpg
 }
 
+material banger_body_burnt_uv : cd/Base
+{
+    set $diffuse_map banger_body_burnt.jpg
+}
+
 material banger_fdoor_uv : cd/Base
 {
     set $diffuse_map banger_fdoor.jpg
@@ -36,4 +41,9 @@ material banger_rdoor_uv : cd/Base
 material banger_wheel_uv : cd/Base
 {
     set $diffuse_map banger_wheel.jpg
+}
+
+material banger_rim_uv : cd/Base
+{
+	set $diffuse_map banger_rim.jpg
 }
