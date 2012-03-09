@@ -416,6 +416,17 @@ void Car::attachCollisionTickCallback(Player* player)
 }
 
 
+/// @brief Applies the force vector to the car through the node supplied.
+/// @param node     The node to apply the force through. Use the chassis node if a central force is desired.
+/// @param force    The force vector to apply.
+void Car::applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force)
+{
+    btVector3 btForce(force.x, force.y, force.z);
+    btVector3 btPos(node->getPosition().x, node->getPosition().y, node->getPosition().z);
+    mCarChassis->applyImpulse(btForce, btPos);
+}
+
+
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended
 ///         with this car's unique ID so that (forbidden) name collisions don't occur.
 /// @param  entityName     Name which the imported mesh will be given.
@@ -424,7 +435,14 @@ void Car::attachCollisionTickCallback(Player* player)
 void Car::createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo)
 {
     Ogre::Entity* entity;
-    entity = GameCore::mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
+    try
+    {
+        entity = GameCore::mSceneMgr->getEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID));
+    }
+    catch (Ogre::ItemIdentityException)
+    {
+        entity = GameCore::mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
+    }
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)

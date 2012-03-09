@@ -154,3 +154,10 @@ int Player::getHP()
 {
 	return hp;
 }
+
+void Player::killPlayer()
+{
+    // Place an explosion at the players position and load the burnt model
+    GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
+    mCar->loadDestroyedModel();
+}

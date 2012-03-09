@@ -36,6 +36,8 @@ public:
     void setNickname (char *szNick) { mNickname = strdup( szNick ); }
 	int	 getHP (void);
 
+    void killPlayer (void);
+
 	CarSnapshot *mSnapshots;
 
 private:

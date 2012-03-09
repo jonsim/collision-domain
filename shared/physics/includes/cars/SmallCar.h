@@ -16,6 +16,7 @@ public:
     virtual ~SmallCar(void);
     void playCarHorn();
     virtual void updateTeam (int teamNumber, bool isVIP);
+    virtual void loadDestroyedModel (void);
 
 private:
     void initTuning();
@@ -25,14 +26,14 @@ private:
     void initWheels();
     
     // Car related Nodes (initNodes())
-    Ogre::SceneNode *mChassisNode;
     Ogre::SceneNode *mLDoorNode;
     Ogre::SceneNode *mRDoorNode;
     Ogre::SceneNode *mFBumperNode;
     Ogre::SceneNode *mRBumperNode;
     Ogre::SceneNode *mLHeadlightNode;
     Ogre::SceneNode *mRHeadlightNode;
-
+    
+    Ogre::SceneNode *mChassisNode;
     Ogre::SceneNode *mFLWheelNode;
     Ogre::SceneNode *mFRWheelNode;
     Ogre::SceneNode *mRLWheelNode;
