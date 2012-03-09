@@ -51,6 +51,7 @@ public:
     float getGear() { return mCurrentGear; }
     btRaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
+    void applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force);
     
     void readTuning( char *szFile );
     float getRPM();
@@ -58,6 +59,7 @@ public:
 	float getMaxSpeed() { return mMaxSpeed; }
 
     virtual void updateTeam (int teamNumber, bool isVIP) = 0;
+    virtual void loadDestroyedModel (void) = 0;
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();

@@ -8,18 +8,8 @@ particle_system CollisionDomain/Spark
 	billboard_type  	oriented_self
 	billboard_origin    top_center
     
-	emitter Point
-	{
-		position 1.1 1.0 0
-		angle 5
-		emission_rate 200
-		time_to_live 0.50
-		direction 1 1 0
-		velocity_min 35
-		velocity_max 40
-		colour_range_start 1.000 1.000 0.847 1.0
-		colour_range_end 0.851 0.737 0.565 1.0
-	}
+
+    // The emitter's parameters are set in SceneSetup::setupParticleSystem
 
 	affector LinearForce
 	{

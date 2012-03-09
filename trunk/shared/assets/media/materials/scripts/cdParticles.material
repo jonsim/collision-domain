@@ -17,7 +17,7 @@ material CollisionDomain/Fire
     }
 }
 
-material CollisionDomain/Explosion1
+material CollisionDomain/Explosion/Nucleus
 {
     technique
     {
@@ -35,7 +35,7 @@ material CollisionDomain/Explosion1
         }
     }
 }
-material CollisionDomain/Explosion3
+material CollisionDomain/Explosion/Debris
 {
     technique
     {

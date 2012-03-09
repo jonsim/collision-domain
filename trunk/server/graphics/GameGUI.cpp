@@ -112,6 +112,17 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 		GameCore::mGameplay->startGame();
 	if( !stricmp( szInput, "ddinfo" ) )
 		GameCore::mGameplay->drawDeathInfo();
+    if( !strnicmp( szInput, "kill", 4) )
+        GameCore::mPlayerPool->getPlayer(atoi((szInput+5)))->killPlayer();
+    if( !strnicmp( szInput, "spawn wander", 12) )
+        for (int i = 0; i < atoi((szInput+13)); i++)
+		    GameCore::mAiCore->createNewAiAgent(wander);
+    if( !strnicmp( szInput, "spawn seek", 10) )
+        for (int i = 0; i < atoi((szInput+11)); i++)
+		    GameCore::mAiCore->createNewAiAgent(seek);
+    if( !strnicmp( szInput, "spawn flee", 10) )
+        for (int i = 0; i < atoi((szInput+11)); i++)
+		    GameCore::mAiCore->createNewAiAgent(flee);
 
 	return true;
 }

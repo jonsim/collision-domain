@@ -16,6 +16,7 @@ public:
     virtual ~SimpleCoupeCar(void);
     void playCarHorn();
     virtual void updateTeam (int teamNumber, bool isVIP);
+    virtual void loadDestroyedModel (void);
 
 private:
     void initTuning();

@@ -1,7 +1,7 @@
 // Explosion Nucleus
-particle_system CollisionDomain/Explosion1
+particle_system CollisionDomain/Explosion/Nucleus
 {
-	material CollisionDomain/Explosion1
+	material CollisionDomain/Explosion/Nucleus
 	particle_width 1
 	particle_height 1
 	quota 50
@@ -16,18 +16,7 @@ particle_system CollisionDomain/Explosion1
 	point_rendering false
 	accurate_facing false
 
-	emitter Point
-	{
-		position 0.0 5.0 0.0
-		direction 0.0 0.0 0.0
-		angle 0
-		emission_rate 20
-		velocity 0
-        time_to_live 0.5
-		duration 0.5
-		repeat_delay 1.5
-		colour 0.871 0.392 0.067 1
-	}
+    // The emitter's parameters are set in SceneSetup::setupParticleSystem
     
     affector ColourFader
     {
@@ -53,7 +42,7 @@ particle_system CollisionDomain/Explosion1
 }
 
 // Smoke
-particle_system CollisionDomain/Explosion2
+particle_system CollisionDomain/Explosion/Smoke
 {
 	material CollisionDomain/Smoke
 	particle_width 2.0
@@ -70,19 +59,7 @@ particle_system CollisionDomain/Explosion2
 	point_rendering false
 	accurate_facing false
 
-	emitter Point
-	{
-		position 0.0 5.0 0.0
-		direction 0.0 1.0 0.0
-		angle 0
-		emission_rate 20
-		velocity 1
-        time_to_live_min 1.5
-        time_to_live_max 2.0
-		duration 0.5
-		repeat_delay 1.5
-		colour 0.1 0.1 0.1 1
-	}
+    // The emitter's parameters are set in SceneSetup::setupParticleSystem
     
     affector ColourFader
     {
@@ -114,20 +91,8 @@ particle_system CollisionDomain/Explosion3
 	particle_width 1
 	particle_height 1
 	quota 50
-	billboard_type oriented_self
 
-	emitter Point
-	{
-		position 0.0 5.0 0.0
-		direction 1.0 5.0 1.0
-		angle 0
-		emission_rate 30
-		velocity 3
-        time_to_live 2.0
-		duration 0.5
-		repeat_delay 1.5
-        colour 0.969 0.882 0.482 1
-	}
+    // The emitter's parameters are set in SceneSetup::setupParticleSystem
     
     affector ColourFader
     {

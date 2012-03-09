@@ -272,6 +272,13 @@ void SimpleCoupeCar::updateTeam (int teamNumber, bool isVIP)
 }
 
 
+void SimpleCoupeCar::loadDestroyedModel (void)
+{
+    mChassisNode->detachAllObjects();
+    createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode);
+}
+
+
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
 void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
 {

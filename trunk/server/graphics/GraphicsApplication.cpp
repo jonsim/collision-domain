@@ -123,13 +123,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 	if (!NetworkCore::bConnected)
 		return true;
-
-	if(mUserInput.mKeyboard->isKeyDown(OIS::KC_1))
-		GameCore::mAiCore->createNewAiAgent(wander);
-	else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_2))
-		GameCore::mAiCore->createNewAiAgent(seek);
-	else if(mUserInput.mKeyboard->isKeyDown(OIS::KC_3))
-		GameCore::mAiCore->createNewAiAgent(flee);
     
 	// Update the big screen.
 	bigScreen->updateMapView();

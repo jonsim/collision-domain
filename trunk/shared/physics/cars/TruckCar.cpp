@@ -260,6 +260,13 @@ void TruckCar::updateTeam (int teamNumber, bool isVIP)
 }
 
 
+void TruckCar::loadDestroyedModel (void)
+{
+    mChassisNode->detachAllObjects();
+    createGeometry("CarEntity_Burnt", "truck_burnt.mesh", mChassisNode);
+}
+
+
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
 void TruckCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
 {
