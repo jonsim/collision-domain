@@ -307,9 +307,10 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShi
     btVector3 inertia;
     compoundChassisShape->calculateLocalInertia( mChassisMass, inertia );
 
-    BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mBodyNode );
+    //BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mBodyNode );
+    mState = new CarState( mBodyNode );
 
-    mCarChassis = new btRigidBody( mChassisMass, state, compoundChassisShape, inertia );
+    mCarChassis = new btRigidBody( mChassisMass, mState, compoundChassisShape, inertia );
     GameCore::mPhysicsCore->addRigidBody( mCarChassis, COL_CAR, COL_CAR | COL_ARENA | COL_POWERUP );
 
     mCarChassis->setDamping(mChassisLinearDamping, mChassisAngularDamping);
@@ -324,6 +325,7 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShi
     
     mVehicleRayCaster = new btDefaultVehicleRaycaster( GameCore::mPhysicsCore->getWorld() );
     mVehicle = new btRaycastVehicle( mTuning, mCarChassis, mVehicleRayCaster );
+    mState->setVehicle( mVehicle );
 
     // This line is needed otherwise the model appears wrongly rotated.
     mVehicle->setCoordinateSystem(0, 1, 2); // rightIndex, upIndex, forwardIndex
@@ -349,20 +351,24 @@ void SimpleCoupeCar::initWheels()
     // Wheel 0 - Front Left
     btVector3 connectionPointCS0 (wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
     mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+    mState->setWheel( 0, mFLWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
 
     // Wheel 1 - Front Right
     connectionPointCS0 = btVector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ + wheelBaseLength);
     mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+    mState->setWheel( 1, mFRWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
                     
     isFrontWheel = false;
 
     // Wheel 2 - Rear Right
     connectionPointCS0 = btVector3(-wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+    mState->setWheel( 2, mRRWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
 
     // Wheel 3 - Rear Left
     connectionPointCS0 = btVector3(wheelBaseHalfWidth, mConnectionHeight, wheelBaseShiftZ - wheelBaseLength);
     mVehicle->addWheel( connectionPointCS0, wheelDirectionCS0, wheelAxleCS, mSuspensionRestLength, mWheelRadius, mTuning, isFrontWheel );
+    mState->setWheel( 3, mRLWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
 
     for( int i=0; i < mVehicle->getNumWheels(); i++ )
 	{
