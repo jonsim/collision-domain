@@ -91,6 +91,7 @@ public:
 	static void SetupGameForPlayer( RakNet::RakNetGUID playerid );
 
 	void sendInfoItem(InfoItem* ii);
+	void sendPlayerDeath(Player* player); 
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
@@ -101,6 +102,7 @@ public:
 	static void InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+	
 
 	static bool bConnected;
 

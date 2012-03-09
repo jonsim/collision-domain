@@ -371,6 +371,16 @@ void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet 
 	//GameCore::mGraphicsApplication
 }
 
+void NetworkCore::PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+	OutputDebugString("Player Death Notice Received\n");
+	RakNet::RakNetGUID deadPlayerGUID;
+	bitStream->Read(deadPlayerGUID);
+
+	Player* deadPlayer = GameCore::mPlayerPool->getPlayer(deadPlayerGUID);
+	deadPlayer->killPlayer();
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -384,7 +394,8 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn,    0 );
     m_RPC->RegisterSlot( "PowerupCreate",   PowerupCreate,  0 );
     m_RPC->RegisterSlot( "PowerupCollect",  PowerupCollect, 0 );
-	m_RPC->RegisterSlot( "InfoItemReceive",  InfoItemReceive, 0 );
+	m_RPC->RegisterSlot( "InfoItemReceive", InfoItemReceive, 0 );
+	m_RPC->RegisterSlot( "PlayerDeath",		PlayerDeath, 0 );
 }
 
 
