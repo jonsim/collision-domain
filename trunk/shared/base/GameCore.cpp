@@ -43,5 +43,5 @@ void GameCore::destroy()
     // TODO: DESTROY THE OTHERS? (also sceneManager doesn't exist by the
     //       time this method is called, which could really mess up physics
 
-    GameCore::mNetworkCore->~NetworkCore();
+    delete GameCore::mNetworkCore;
 }

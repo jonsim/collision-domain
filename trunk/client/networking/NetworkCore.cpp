@@ -281,7 +281,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	{
         // Get rid of our spawn screen
-        GameCore::mGraphicsCore->mSpawnScreen->~SpawnScreen();
+        delete GameCore::mGraphicsCore->mSpawnScreen;
         GameCore::mGraphicsCore->mSpawnScreen = NULL;
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();

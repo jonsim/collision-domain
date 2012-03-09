@@ -11,12 +11,9 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
-Player::Player (void) : cameraRotationConstant(0.08f)
+Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
-    mCarSnapshot = NULL;
-    mSnapshots = NULL;
-    mCar = NULL;
 }
 
 
@@ -157,6 +154,7 @@ int Player::getHP()
 
 void Player::killPlayer()
 {
+    mAlive = false;
     // Place an explosion at the players position and load the burnt model
     GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
