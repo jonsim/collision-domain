@@ -447,3 +447,12 @@ void NetworkCore::sendInfoItem(InfoItem* ii)
 	m_RPC->Signal("InfoItemReceive",&bs,HIGH_PRIORITY,
 		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
 }
+
+void NetworkCore::sendPlayerDeath(Player* player)
+{
+	OutputDebugString("Send Player Death\n");
+	RakNet::BitStream bs;
+	bs.Write(player->getPlayerGUID());
+	m_RPC->Signal("PlayerDeath",&bs,HIGH_PRIORITY,
+		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
+}
