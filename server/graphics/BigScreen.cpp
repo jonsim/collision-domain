@@ -89,7 +89,7 @@ void BigScreen::setupMapView()
         setMapCorner(an->getPosition());
         setMapSize(ae->getBoundingBox().getSize() * an->getScale());
     }
-    catch (int e)
+    catch (exception&)
     {
         OutputDebugString("Exception caught while creating the bigScreen view, arena not fully initialised.\n");
     }

@@ -238,8 +238,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		{
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel());
-            if (mUserInput.mKeyboard->isKeyDown(OIS::KC_DELETE))
-                GameCore::mPlayerPool->getLocalPlayer()->killPlayer();
             GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
             GameCore::mGui->updateCounters();
             GameCore::mGui->updateSpeedo();

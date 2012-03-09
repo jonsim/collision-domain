@@ -44,6 +44,7 @@ private:
     const float      cameraRotationConstant;
 	int              hp;
     char*            mNickname;
+    bool             mAlive;
     Car*             mCar;
     CarSnapshot*     mCarSnapshot;
 	CarCam*	         mCarCam;

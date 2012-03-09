@@ -37,9 +37,28 @@ PlayerCollisions::~PlayerCollisions()
 /// 
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
 {
+    // New damage calculations
+    Ogre::Real p1MPH = p1->getCar()->getCarMph();
+    Ogre::Real p2MPH = p2->getCar()->getCarMph();
+    Ogre::Real damage  = abs(p1MPH - p2MPH) * 0.25;  // quarter the difference in speeds
+    if (p1MPH > 15 || p2MPH > 15)
+    {
+        if (p1MPH > p2MPH)
+        {
+            p1->collisionTickCallback(damage * 0.4);
+            p2->collisionTickCallback(damage);
+        }
+        else
+        {
+            p1->collisionTickCallback(damage);
+            p2->collisionTickCallback(damage * 0.4);
+        }
+    }
+    /* Old damage calculations
     bool damageP2 = p1->getCar()->getCarMph() > p2->getCar()->getCarMph() ? true : false;
     p1->collisionTickCallback(damageP2 ? 0 : 1);
-    p2->collisionTickCallback(damageP2 ? 1 : 0);
+    p2->collisionTickCallback(damageP2 ? 1 : 0);*/
+        
 
     // TODO: look at collision information such as location and force and store alongside Player*
     // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION

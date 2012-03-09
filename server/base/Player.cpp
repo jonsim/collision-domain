@@ -10,13 +10,9 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
-Player::Player (void) : cameraRotationConstant(0.08f)
+Player::Player (void) : cameraRotationConstant(0.08f), mSpawned(false), mAlive(false), mCarSnapshot(NULL), newInput(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
-    mCarSnapshot = NULL;
-	newInput = NULL;
-	mCar = NULL;
-	mSpawned = false;
 }
 
 
@@ -69,9 +65,9 @@ void Player::collisionTickCallback(int damage)
 {
     // p1 and p2 might not be the only two players who collided this physics step.
     //OutputDebugString("Server: Player collision\n");
-	if(GameCore::mGameplay->mGameActive)
+	if(GameCore::mGameplay->mGameActive && mAlive)
 	{
-		hp-=damage*10; //Apply damage to player
+		hp-=damage; //Apply damage to player
 		GameCore::mGameplay->notifyDamage(this);
 
 		//Force health to never drop below 0
