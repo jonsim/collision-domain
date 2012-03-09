@@ -754,3 +754,47 @@ Ogre::Quaternion Car::GetHeading()
 {
 	return mBodyNode->getOrientation();
 }
+
+
+/********************************************************
+ *  Car State Class
+ *  - move graphical car body and wheels with physics
+ ********************************************************/
+CarState::CarState( Ogre::SceneNode *node )
+    : RigidBodyState( node )
+{
+    mVehicle = NULL;
+    for( int i = 0; i < 4; i ++ )
+        mWheelNode[i] = NULL;
+}
+
+void CarState::setWorldTransform(const btTransform &in)
+{
+    RigidBodyState::setWorldTransform( in );
+    if( mVehicle )
+    {
+        for( int i = 0; i < mVehicle->getNumWheels(); i ++ )
+        {
+            if( !mWheelNode[i] ) continue;
+
+            mVehicle->updateWheelTransform( i, true );
+            const btTransform& wt = mVehicle->getWheelInfo( i ).m_worldTransform;
+
+            mWheelNode[i]->setPosition( BtOgre::Convert::toOgre( wt.getOrigin() ) );
+            mWheelNode[i]->setOrientation( BtOgre::Convert::toOgre( wt.getRotation() ) );
+        }
+    }
+}
+
+void CarState::setVehicle( btRaycastVehicle *v )
+{
+    mVehicle = v;
+}
+
+void CarState::setWheel( int wheelnum, Ogre::SceneNode *node, const Ogre::Vector3 &connectionPoint )
+{
+    mWheelNode[wheelnum] = node;
+    node->setPosition( connectionPoint );
+
+    
+}

@@ -14,6 +14,7 @@
 
 class Player;
 class WheelFrictionConstraint;
+class CarState;
 
 /// CarType represents the type of car used as the player object (i.e. the model).
 enum CarType
@@ -148,6 +149,7 @@ protected:
     btRigidBody                         *mRightDoorBody;
 
     btRaycastVehicle                    *mVehicle;
+    CarState                            *mState;
     btRaycastVehicle::btVehicleTuning    mTuning;
     btDefaultVehicleRaycaster           *mVehicleRayCaster;
 
@@ -209,6 +211,23 @@ private:
 
     btScalar m_wheel_skid[4];
     btScalar m_avg_skid;
+};
+
+class CarState : public BtOgre::RigidBodyState 
+{
+public:
+
+    CarState( Ogre::SceneNode *node );
+
+    virtual void    setWorldTransform( const btTransform &in );
+    void            setVehicle( btRaycastVehicle *v );
+    void            setWheel( int wheelnum, Ogre::SceneNode *node, const Ogre::Vector3 &connectionPoint );
+
+private:
+
+    Ogre::SceneNode *mWheelNode[4];
+    btRaycastVehicle *mVehicle;
+
 };
 
 #endif // #ifndef __Car_h_
