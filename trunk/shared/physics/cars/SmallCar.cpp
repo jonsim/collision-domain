@@ -89,7 +89,7 @@ void SmallCar::initTuning()
 
     mWheelRadius            =  0.2775f; // this is actually diameter!!
     mWheelWidth             =  0.153f;
-    mWheelFriction          =  1.8f;    //1000;//1e30f;
+    mWheelFriction          =  2.2f;    //1000;//1e30f;
     mConnectionHeight       =  0.3f;    // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement         =  0.015f;
@@ -331,7 +331,7 @@ void SmallCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
     mTuning.m_suspensionStiffness      = mSuspensionStiffness;
     
     mVehicleRayCaster = new btDefaultVehicleRaycaster( GameCore::mPhysicsCore->getWorld() );
-    mVehicle = new btRaycastVehicle( mTuning, mCarChassis, mVehicleRayCaster );
+    mVehicle = new Vehicle( mTuning, mCarChassis, mVehicleRayCaster );
     mState->setVehicle( mVehicle );
 
     // This line is needed otherwise the model appears wrongly rotated.

@@ -172,8 +172,8 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         mVehicle->applyEngineForce( 0, 2 );
         mVehicle->applyEngineForce( 0, 3 );
 
-        mVehicle->setBrake( mMaxAccelForce * 2, 2 );
-        mVehicle->setBrake( mMaxAccelForce * 2, 3 );
+        mVehicle->setBrake( 2* mMaxAccelForce, 2 );
+        mVehicle->setBrake( 2* mMaxAccelForce, 3 );
 
     }
     else
@@ -363,8 +363,8 @@ void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame
 
         for (int i = 0; i < 4; i++)
         {
-            btScalar slipAngle = abs(fricConst->getSlipAngle(i));
-            if (slipAngle > 0.9f)
+            btScalar slipAngle = fricConst->getSlipAngle(i);
+            if (slipAngle > 1.2f)
                 dustRate[i] = slipAngle * 13;
         }
     }
@@ -628,7 +628,7 @@ btScalar WheelFrictionConstraint::calcSlipAngle( int wheelNum )
     btScalar velZ = -wheel_info.m_raycastInfo.m_wheelDirectionWS.dot( vel );
 
     // Calculate slip angle
-    m_wheel_slip[wheelNum] = btAtan2( velX, btFabs( velZ ) );
+    m_wheel_slip[wheelNum] = 1.0f + btFabs( btAtan2( velX, btFabs( velZ ) ) );
 
     return m_wheel_slip[wheelNum];
 }

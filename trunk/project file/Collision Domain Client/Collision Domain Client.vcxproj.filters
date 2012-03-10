@@ -607,6 +607,9 @@
     <ClInclude Include="..\..\shared\gameplay\includes\HUD.h">
       <Filter>shared\gameplay</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\Vehicle.h">
+      <Filter>shared\physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -995,6 +998,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\HUD.cpp">
       <Filter>shared\gameplay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\Vehicle.cpp">
+      <Filter>shared\physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
