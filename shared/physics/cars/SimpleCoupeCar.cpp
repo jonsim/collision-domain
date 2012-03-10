@@ -65,11 +65,11 @@ void SimpleCoupeCar::initTuning()
     mSuspensionStiffness    =   30.0f;
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
-    mMaxSuspensionForce     =   10000.0f;
+    mMaxSuspensionForce     = 8000.00f;
     mRollInfluence          =    0.35f;
     mSuspensionRestLength   =    0.3f;
     mMaxSuspensionTravelCm  =   15.0f;
-    mFrictionSlip           =   10.5f;
+    mFrictionSlip           =    0.8f;
 	mChassisLinearDamping   =    0.2f;
 	mChassisAngularDamping  =    0.2f;
 	mChassisRestitution		=    0.6f;
@@ -78,7 +78,7 @@ void SimpleCoupeCar::initTuning()
 
     mWheelRadius      =  0.345f; // this is actually diameter!!
     mWheelWidth       =  0.176f;
-    mWheelFriction    =  1.8f;//1000;//1e30f;
+    mWheelFriction    =  2.0f;//1000;//1e30f;
     mConnectionHeight =  0.6f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
@@ -324,7 +324,7 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShi
     mTuning.m_suspensionStiffness      = mSuspensionStiffness;
     
     mVehicleRayCaster = new btDefaultVehicleRaycaster( GameCore::mPhysicsCore->getWorld() );
-    mVehicle = new btRaycastVehicle( mTuning, mCarChassis, mVehicleRayCaster );
+    mVehicle = new Vehicle( mTuning, mCarChassis, mVehicleRayCaster );
     mState->setVehicle( mVehicle );
 
     // This line is needed otherwise the model appears wrongly rotated.

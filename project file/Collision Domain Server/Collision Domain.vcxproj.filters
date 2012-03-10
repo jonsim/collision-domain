@@ -625,6 +625,9 @@
     <ClInclude Include="..\..\server\ai\includes\utils.h">
       <Filter>server\ai</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\physics\includes\Vehicle.h">
+      <Filter>shared\physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -1028,6 +1031,9 @@
     </ClCompile>
     <ClCompile Include="..\..\server\ai\SteeringBehaviour.cpp">
       <Filter>server\ai</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\physics\Vehicle.cpp">
+      <Filter>shared\physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

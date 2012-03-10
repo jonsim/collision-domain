@@ -10,6 +10,7 @@
 #include "InputState.h"
 #include "Input.h"
 #include "CarSnapshot.h"
+#include "Vehicle.h"
 #include "Car.h"
 #include "PowerupPool.h"
 #include "PlayerCollisions.h"

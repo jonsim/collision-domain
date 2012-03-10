@@ -55,6 +55,7 @@
     <ClInclude Include="..\..\shared\physics\includes\cars\TruckCar.h" />
     <ClInclude Include="..\..\shared\physics\includes\PhysicsCore.h" />
     <ClInclude Include="..\..\shared\physics\includes\PlayerCollisions.h" />
+    <ClInclude Include="..\..\shared\physics\includes\Vehicle.h" />
     <ClInclude Include="..\..\shared\raknet\AutopatcherPatchContext.h" />
     <ClInclude Include="..\..\shared\raknet\AutopatcherRepositoryInterface.h" />
     <ClInclude Include="..\..\shared\raknet\BitStream.h" />
@@ -248,6 +249,7 @@
     <ClCompile Include="..\..\shared\physics\cars\TruckCar.cpp" />
     <ClCompile Include="..\..\shared\physics\PhysicsCore.cpp" />
     <ClCompile Include="..\..\shared\physics\PlayerCollisions.cpp" />
+    <ClCompile Include="..\..\shared\physics\Vehicle.cpp" />
     <ClCompile Include="..\..\shared\raknet\BitStream.cpp" />
     <ClCompile Include="..\..\shared\raknet\CCRakNetSlidingWindow.cpp" />
     <ClCompile Include="..\..\shared\raknet\CCRakNetUDT.cpp" />
