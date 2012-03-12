@@ -31,6 +31,9 @@ private:
 	Ogre::Vector3				mapCorner;
 	Ogre::Vector3				mapSize;
 
+	Ogre::OverlayElement*		oleVIP1;
+	Ogre::OverlayElement*		oleVIP2;
+
 	void						updatePlayer(Player* player, Ogre::OverlayElement* carOverlay);
 	void						manageNewPlayer(Player* player);
 	void						setMapCorner(Ogre::Vector3 corner);
