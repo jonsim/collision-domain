@@ -35,6 +35,10 @@ private:
 	void						manageNewPlayer(Player* player);
 	void						setMapCorner(Ogre::Vector3 corner);
 	void						setMapSize(Ogre::Vector3 size);
+
+	inline float				convertWorldToScreenX(float xPos);
+	inline float				convertWorldToScreenY(float yPos);
+
 };
 
 #endif // #ifndef BIGSCREENH

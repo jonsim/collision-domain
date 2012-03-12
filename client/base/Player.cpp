@@ -95,9 +95,13 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
-    // process steering and apply acceleration
-    mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
-    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
+	//Only take input if the player is alive
+	if(this->mAlive)
+	{
+		// process steering and apply acceleration
+		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+		mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
+	}
 }
 
 
@@ -155,8 +159,18 @@ int Player::getHP()
 
 void Player::killPlayer()
 {
-    mAlive = false;
+	this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
     GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
+}
+
+void Player::setAlive(bool pAlive)
+{
+	mAlive = pAlive;
+}
+
+bool Player::getAlive()
+{
+	return mAlive;
 }

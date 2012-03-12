@@ -122,7 +122,7 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 	teamToJoin->addPlayer(tmpPlayer);
 
 	//Check to see if we need to start game
-	if(GameCore::mPlayerPool->getNumberOfPlayers() >= NUM_PLAYERS_TO_START)
+	if(this->mGameActive == false && GameCore::mPlayerPool->getNumberOfPlayers() >= NUM_PLAYERS_TO_START)
 	{
 		this->startGame();
 	}
