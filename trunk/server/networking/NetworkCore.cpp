@@ -365,6 +365,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
     bsSpawn.Write( iCarType );
+	bsSpawn.Write( GameCore::mPlayerPool->getLocalPlayer()->getTeam());
 	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
@@ -381,6 +382,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 				RakNet::BitStream bsSpawn;
 				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( i ) );
                 bsSpawn.Write( GameCore::mPlayerPool->getPlayer( i )->getCarType() );
+				bsSpawn.Write( GameCore::mPlayerPool->getPlayer( i )->getTeam());
 				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 			}
 		}
@@ -399,8 +401,6 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
 	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
 	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
-	//m_RPC->RegisterSlot( "InfoItemTransmit",InfoItemTransmit, 0);
-
 }
 
 
@@ -454,5 +454,14 @@ void NetworkCore::sendPlayerDeath(Player* player)
 	RakNet::BitStream bs;
 	bs.Write(player->getPlayerGUID());
 	m_RPC->Signal("PlayerDeath",&bs,HIGH_PRIORITY,
+		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
+}
+
+void NetworkCore::declareNewVIP(Player* player)
+{
+	OutputDebugString("Sending new VIP decleartion\n");
+	RakNet::BitStream bs;
+	bs.Write(player->getPlayerGUID());
+	m_RPC->Signal("DeclareVIP",&bs,HIGH_PRIORITY,
 		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
 }

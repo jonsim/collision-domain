@@ -270,9 +270,10 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	Player *pPlayer = NULL;
 	RakNet::RakNetGUID playerid;
     CarType iCarType;
+	int teamNum;
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
-
+	bitStream->Read( teamNum );
     // TODO: something with iCarType to change the model created
     // .. which also needs changes to Player.cpp
 
@@ -286,13 +287,17 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
 		pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
+		pPlayer->setTeam(teamNum);
         pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
 	}
 	else
 	{
 		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		if( pPlayer != NULL )
+		{
 			pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
+			pPlayer->setTeam(teamNum);
+		}
 		else
 			log( "..invalid player" );
 	}
@@ -381,6 +386,17 @@ void NetworkCore::PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	deadPlayer->killPlayer();
 }
 
+void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+	OutputDebugString("New VIP assignment notice Received\n");
+	RakNet::RakNetGUID vipPlayerGUID;
+	bitStream->Read(vipPlayerGUID);
+
+	Player* newPlayer = GameCore::mPlayerPool->getPlayer(vipPlayerGUID);
+	Team* team = GameCore::mGameplay->getTeam(newPlayer->getTeam());
+	team->setNewVIP(newPlayer);
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -396,6 +412,7 @@ void NetworkCore::RegisterRPCSlots()
     m_RPC->RegisterSlot( "PowerupCollect",  PowerupCollect, 0 );
 	m_RPC->RegisterSlot( "InfoItemReceive", InfoItemReceive, 0 );
 	m_RPC->RegisterSlot( "PlayerDeath",		PlayerDeath, 0 );
+	m_RPC->RegisterSlot( "DeclareVIP",		DeclareVIP, 0 );
 }
 
 
