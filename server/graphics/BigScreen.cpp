@@ -95,17 +95,25 @@ void BigScreen::setupMapView()
     }
 
 	//Start thinking about the cars
-	/*
-	oleCar = 
-		Ogre::OverlayManager::getSingleton().createOverlayElement( 
-			"Panel", 
-			"Player" );
-	oleCar->setMetricsMode( Ogre::GMM_RELATIVE );
-	oleCar->setDimensions(0.2f,0.2f);
-	oleCar->setMaterialName( "map_top_1" );
-	oleCar->setPosition(0.5,0.5);
-	olcMap->addChild(oleCar);
-	*/
+	oleVIP1 = Ogre::OverlayManager::getSingleton().createOverlayElement( 
+			"Panel", "VIP1" );
+	oleVIP2 = Ogre::OverlayManager::getSingleton().createOverlayElement( 
+			"Panel", "VIP2" );
+
+	oleVIP1->setMetricsMode( Ogre::GMM_RELATIVE );
+	oleVIP2->setMetricsMode( Ogre::GMM_RELATIVE );
+
+	oleVIP1->setDimensions(0.05f,0.05f);
+	oleVIP2->setDimensions(0.05f,0.05f);
+	
+	oleVIP1->setMaterialName( "vipComponent" );
+	oleVIP2->setMaterialName( "vipComponent" );
+
+	oleVIP1->setPosition(1.0f,1.0f);
+	oleVIP2->setPosition(1.0f,1.0f);
+
+	olcMap->addChild(oleVIP1);
+	olcMap->addChild(oleVIP2);
 }
 
 void BigScreen::manageNewPlayer(Player* player)
@@ -211,9 +219,24 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		if(yPos > 1)
 			yPos = 1.0f;
 
+
+		//Only check if get VIP
+		if(player->getVIP())
+		{
+			if(player->getTeam() == 1)
+			{
+				oleVIP1->setPosition(xPos,yPos);
+			}
+			else
+			{
+				oleVIP2->setPosition(xPos,yPos);
+			}
+		}
+
 		carOverlay->setPosition(xPos,yPos);
 
-        delete playerSnap;
+
+        delete playerSnap; //Fixes the memory leak
 	}
 }
 
