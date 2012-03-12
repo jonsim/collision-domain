@@ -40,7 +40,12 @@ public:
     void setTeam(int newTeam) { mTeam = newTeam; };
     int  getTeam(void) { return mTeam; };
 
-    void killPlayer (void);
+	//Just some getters and setters
+	void setAlive(bool pAlive);
+	bool getAlive();
+
+	//Now have a "Kill" method that will also set the call backs
+	void killPlayer();
 
 	CarSnapshot *mSnapshots;
 

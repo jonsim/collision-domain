@@ -153,6 +153,26 @@ void BigScreen::updateMapView()
 	}
 }
 
+inline float BigScreen::convertWorldToScreenX(float xPos)
+{
+	xPos = xPos/(mapSize.x);
+	xPos += MAP_WIDTH/2;
+	xPos *= MAP_WIDTH;
+	xPos -= MARKER_WIDTH;
+
+	return xPos;
+}
+
+inline float BigScreen::convertWorldToScreenY(float yPos)
+{
+	yPos = yPos/(mapSize.z);
+	yPos += MAP_HEIGHT/2;
+	yPos *= MAP_HEIGHT;
+	yPos -= MARKER_HEIGHT;
+	
+	return yPos;
+}
+
 void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 {
 	CarSnapshot *playerSnap = NULL;
@@ -163,8 +183,8 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 	if(playerSnap != NULL)
 	{
 		btVector3 localPlayerPos = playerSnap->mPosition;
-		float xPos = localPlayerPos.getX(); 
-		float yPos = localPlayerPos.getZ(); //Z as we're doing a 2D projection
+		float xPos = this->convertWorldToScreenX(localPlayerPos.getX()); 
+		float yPos = this->convertWorldToScreenY(localPlayerPos.getZ()); //Z as we're doing a 2D projection
 	
 		//Correct the position to be relative of top left corner.
 		//xPos -= mapCorner.x;
@@ -172,21 +192,7 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		//Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
 		//Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
 	
-		//Correct to make percentage
-		xPos = xPos/(mapSize.x);
-		yPos = yPos/(mapSize.z);
-	
-		xPos += MAP_WIDTH/2;
-		yPos += MAP_HEIGHT/2;
 
-		//Corrects it for aspect ratio of drawn map
-		xPos *= MAP_WIDTH;
-		yPos *= MAP_HEIGHT;
-
-		//Correct for the size of the marker
-		xPos -= MARKER_WIDTH;
-		yPos -= MARKER_HEIGHT;
-		
 		// Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
         // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
 		btQuaternion q = player->getCar()->getCarSnapshot()->mRotation;
