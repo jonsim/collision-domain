@@ -58,6 +58,7 @@ Player* Team::setNewVIP(Player* player)
 		OutputDebugString("Set new VIP player\n");
         player->setVIP(true);
 		vipPlayer = player;
+		GameCore::mNetworkCore->declareNewVIP(vipPlayer);
 		return player;
 	}
 	else

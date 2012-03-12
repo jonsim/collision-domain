@@ -92,6 +92,7 @@ public:
 
 	void sendInfoItem(InfoItem* ii);
 	void sendPlayerDeath(Player* player); 
+	void declareNewVIP(Player* player);
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
