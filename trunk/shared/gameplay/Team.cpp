@@ -53,6 +53,7 @@ Player*	Team::getRandomPlayer()
 
 Player* Team::setNewVIP(Player* player)
 {
+#ifdef COLLISION_DOMAIN_SERVER
 	if(player!=NULL)
 	{
 		OutputDebugString("Set new VIP player\n");
@@ -62,6 +63,7 @@ Player* Team::setNewVIP(Player* player)
 		return player;
 	}
 	else
+#endif
 	{
 		return NULL;
 	}
