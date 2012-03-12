@@ -10,7 +10,8 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
-Player::Player (void) : cameraRotationConstant(0.08f), mSpawned(false), mAlive(false), mCarSnapshot(NULL), newInput(NULL), mCar(NULL)
+Player::Player (void) : cameraRotationConstant(0.08f), mSpawned(false), mAlive(false),
+                        mIsVIP(false), mTeam(0), mCarSnapshot(NULL), newInput(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
 }
@@ -220,5 +221,5 @@ void Player::killPlayer()
     // Blast the fuck out of the car (renders it completely undriveable but since this
     // should only be called on dead cars thats not such a problem).
     // Yeah so turns out this just fucks everything up and not in a good way.
-    //mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 10, 0)); 
+    mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 10, 0)); 
 }

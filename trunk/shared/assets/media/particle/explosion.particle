@@ -85,7 +85,7 @@ particle_system CollisionDomain/Explosion/Smoke
 }
 
 // Debris
-particle_system CollisionDomain/Explosion3
+particle_system CollisionDomain/Explosion/Debris
 {
 	material Examples/Smoke
 	particle_width 1

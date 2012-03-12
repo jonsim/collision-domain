@@ -214,11 +214,11 @@ void SimpleCoupeCar::initNodes()
 void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
 {
     // Load the meshes.
-    createGeometry("CarEntity_Body",   "banger_body.mesh",   mChassisNode);
-    createGeometry("CarEntity_LDoor",  "banger_fldoor.mesh", mFLDoorNode);
-    createGeometry("CarEntity_RDoor",  "banger_frdoor.mesh", mFRDoorNode);
-    createGeometry("CarEntity_RLDoor", "banger_rldoor.mesh", mRLDoorNode);
-    createGeometry("CarEntity_RRDoor", "banger_rrdoor.mesh", mRRDoorNode);
+    createGeometry("CarEntity_Body",    "banger_body.mesh",   mChassisNode);
+    createGeometry("CarEntity_LDoor",   "banger_fldoor.mesh", mFLDoorNode);
+    createGeometry("CarEntity_RDoor",   "banger_frdoor.mesh", mFRDoorNode);
+    createGeometry("CarEntity_RLDoor",  "banger_rldoor.mesh", mRLDoorNode);
+    createGeometry("CarEntity_RRDoor",  "banger_rrdoor.mesh", mRRDoorNode);
     createGeometry("CarEntity_FBumper", "banger_fbumper.mesh", mFBumperNode);
     createGeometry("CarEntity_RBumper", "banger_rbumper.mesh", mRBumperNode);
     createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh",  mFLWheelNode);
@@ -238,29 +238,28 @@ void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+
+    if (skin == SKIN_TEAM1)
+        updateTeam(1);
+    else if (skin == SKIN_TEAM2)
+        updateTeam(2);
 }
 
 
-void SimpleCoupeCar::updateTeam (int teamNumber, bool isVIP)
+void SimpleCoupeCar::updateTeam (int teamNumber)
 {
     // Load the team coloured items
     switch (teamNumber)
     {
     case 1:
-        if (isVIP)
-            setMaterial("banger_body_v1",  mChassisNode);
-        else
-            setMaterial("banger_body_t1",  mChassisNode);
+        setMaterial("banger_body_t1",  mChassisNode);
         setMaterial("banger_fdoor_t1", mFLDoorNode);
         setMaterial("banger_fdoor_t1", mFRDoorNode);
         setMaterial("banger_rdoor_t1", mRLDoorNode);
         setMaterial("banger_rdoor_t1", mRRDoorNode);
         break;
     case 2:
-        if (isVIP)
-            setMaterial("banger_body_v2",  mChassisNode);
-        else
-            setMaterial("banger_body_t2",  mChassisNode);
+        setMaterial("banger_body_t2",  mChassisNode);
         setMaterial("banger_fdoor_t2", mFLDoorNode);
         setMaterial("banger_fdoor_t2", mFRDoorNode);
         setMaterial("banger_rdoor_t2", mRLDoorNode);

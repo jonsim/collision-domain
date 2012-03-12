@@ -35,6 +35,10 @@ public:
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname (char *szNick) { mNickname = strdup( szNick ); }
 	int	 getHP (void);
+    void setVIP(bool newState) { mIsVIP = newState; };
+    bool getVIP(void) { return mIsVIP; };
+    void setTeam(int newTeam) { mTeam = newTeam; };
+    int  getTeam(void) { return mTeam; };
 
     void killPlayer (void);
 
@@ -43,7 +47,9 @@ public:
 private:
     const float      cameraRotationConstant;
 	int              hp;
+    int              mTeam;
     char*            mNickname;
+    bool             mIsVIP;
     bool             mAlive;
     Car*             mCar;
     CarSnapshot*     mCarSnapshot;

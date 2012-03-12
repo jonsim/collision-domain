@@ -233,26 +233,20 @@ void TruckCar::initGraphics()
 }
 
 
-void TruckCar::updateTeam (int teamNumber, bool isVIP)
+void TruckCar::updateTeam (int teamNumber)
 {
     // Load the team coloured items
     switch (teamNumber)
     {
     case 1:
-        if (isVIP)
-            setMaterial("truck_body_v1",  mChassisNode);
-        else
-            setMaterial("truck_body_t1",  mChassisNode);
-        setMaterial("truck_fdoor_t1", mLDoorNode);
-        setMaterial("truck_fdoor_t1", mRDoorNode);
+        setMaterial("truck_body_t1",  mChassisNode);
+        setMaterial("truck_door_t1", mLDoorNode);
+        setMaterial("truck_door_t1", mRDoorNode);
         break;
     case 2:
-        if (isVIP)
-            setMaterial("truck_body_v2",  mChassisNode);
-        else
-            setMaterial("truck_body_t2",  mChassisNode);
-        setMaterial("truck_fdoor_t2", mLDoorNode);
-        setMaterial("truck_fdoor_t2", mRDoorNode);
+        setMaterial("truck_body_t2",  mChassisNode);
+        setMaterial("truck_door_t2", mLDoorNode);
+        setMaterial("truck_door_t2", mRDoorNode);
         break;
     default:
         break;

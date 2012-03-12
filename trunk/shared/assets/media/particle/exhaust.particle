@@ -1,3 +1,57 @@
+particle_system CollisionDomain/Banger/Exhaust
+{
+    material CollisionDomain/NewExhaust
+	particle_width 0.2
+	particle_height 0.2
+	quota 1000
+    
+    emitter Point
+    {
+		position -0.35 0.25 -2.0
+		direction 0.0 0.0 -1.0
+		angle 5
+		emission_rate 30
+		velocity_min 1
+		velocity_max 5
+		time_to_live_min 0.7
+        time_to_live_max 1.0
+		colour 0.6 0.6 0.6 0.6
+    }
+
+	affector Scaler
+	{
+		rate 2
+	}
+    
+    affector Rotator
+    {
+        rotation_speed_range_start -60
+        rotation_speed_range_end 60
+        rotation_range_start 0
+        rotation_range_end 360
+    }
+    
+    affector DirectionRandomiser
+    {
+        randomness 5
+        scope 0.8
+        keep_velocity false
+    }
+    
+    affector ColourFader
+    {
+        red    0.4
+        green  0.4
+        blue   0.4
+        alpha -0.6
+    }
+    
+    affector LinearForce
+    {
+        force_vector 0 2.5 0
+    }
+}
+
 particle_system CollisionDomain/SmallCar/Exhaust
 {
 	material CollisionDomain/Exhaust
@@ -39,7 +93,7 @@ particle_system CollisionDomain/SmallCar/Exhaust
 	}
 }
 
-particle_system CollisionDomain/Banger/Exhaust
+particle_system CollisionDomain/Banger/ExhaustOld
 {
 	material CollisionDomain/Exhaust
 	particle_width 0.5

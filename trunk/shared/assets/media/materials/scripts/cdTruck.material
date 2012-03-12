@@ -1,24 +1,34 @@
 import cd/Base from "cdBaseMaterials.material"
-import cd/Blank from "cdBaseMaterials.material"
+import cd/SolidColour from "cdBaseMaterials.material"
+import cd/Reflective from "cdBaseMaterials.material"
+import cd/ReflectiveSolid from "cdBaseMaterials.material"
 
 
-material truck_seat : cd/Blank
+material truck_seat : cd/SolidColour
 {
+    set $specular_colour "0.9 0.9 0.9 20.0"
+    set $diffuse_colour "0.114 0.114 0.167"
 }
 
 
-material truck_steeringwheel_in : cd/Blank
+material truck_steeringwheel_in : cd/SolidColour
 {
+    set $specular_colour "0.9 0.9 0.9 70.0"
+    set $diffuse_colour "0.85 0.85 0.85"
 }
 
 
-material truck_steeringwheel_out : cd/Blank
+material truck_steeringwheel_out : cd/SolidColour
 {
+    set $specular_colour "0.9 0.9 0.9 70.0"
+    set $diffuse_colour "0.18 0.18 0.18"
 }
 
 
-material truck_wingmirror_mirror : cd/Blank
+material truck_wingmirror_mirror : cd/SolidColour
 {
+    set $specular_colour "1.0 1.0 1.0 120.0"
+    set $diffuse_colour "0.94 0.98 0.98"
 }
 
 
@@ -28,45 +38,44 @@ material truck_body_burnt_uv : cd/Base
 }
 
 
-material truck_body_uv : cd/Base
+material truck_body_uv : cd/Reflective
 {
-    set $diffuse_map truck_body.jpg
+    set $specular_map truck_body_uv_s.jpg
+    set $diffuse_map  truck_body_uv_d.jpg
 }
-material truck_body_t1 : cd/Base
+material truck_body_t1 : cd/Reflective
 {
-    set $diffuse_map truck_body1.jpg
+    set $specular_map truck_body_t1_s.jpg
+    set $diffuse_map  truck_body_t1_d.jpg
 }
-material truck_body_t2 : cd/Base
+material truck_body_t2 : cd/Reflective
 {
-    set $diffuse_map truck_body2.jpg
-}
-material truck_body_v1 : cd/Base
-{
-    set $diffuse_map truck_body1V.jpg
-}
-material truck_body_v2 : cd/Base
-{
-    set $diffuse_map truck_body2V.jpg
+    set $specular_map truck_body_t2_s.jpg
+    set $diffuse_map  truck_body_t2_d.jpg
 }
 
 
-material truck_door_uv : cd/Base
+material truck_door_uv : cd/Reflective
 {
-    set $diffuse_map truck_door.jpg
+    set $specular_map truck_door_uv_s.jpg
+    set $diffuse_map  truck_door_uv_d.jpg
 }
-material truck_door_t1 : cd/Base
+material truck_door_t1 : cd/Reflective
 {
-    set $diffuse_map truck_door1.jpg
+    set $specular_map truck_door_t1_s.jpg
+    set $diffuse_map  truck_door_t1_d.jpg
 }
-material truck_door_t2 : cd/Base
+material truck_door_t2 : cd/Reflective
 {
-    set $diffuse_map truck_door2.jpg
+    set $specular_map truck_door_t2_s.jpg
+    set $diffuse_map  truck_door_t2_d.jpg
 }
 
 
-material truck_bumper_uv : cd/Base
+material truck_bumper_uv : cd/Reflective
 {
-    set $diffuse_map truck_bumper.jpg
+    set $specular_map truck_bumper_s.jpg
+    set $diffuse_map  truck_bumper_d.jpg
 }
 
 

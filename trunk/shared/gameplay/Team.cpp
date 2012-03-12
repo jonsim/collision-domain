@@ -7,6 +7,10 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
+/// @brief Constructor.
+/// @param teamName_P   The name for this team
+/// @param teamNumber   The number which uniquely identifies this team. Should be >= 1
+///                     (0 is reserved for no-team or free-for-all).
 Team::Team(std::string teamName_P, int teamNumber)
 {
 	Team::teamName = teamName_P;
@@ -15,7 +19,8 @@ Team::Team(std::string teamName_P, int teamNumber)
 
 void Team::addPlayer(Player *player)
 {
-    player->getCar()->updateTeam(teamNumber, false);
+    player->setTeam(teamNumber);
+    player->getCar()->updateTeam(teamNumber);
     char bob[64];
     sprintf(bob, "team number = %d\n", teamNumber);
     OutputDebugString(bob);
@@ -51,6 +56,7 @@ Player* Team::setNewVIP(Player* player)
 	if(player!=NULL)
 	{
 		OutputDebugString("Set new VIP player\n");
+        player->setVIP(true);
 		vipPlayer = player;
 		return player;
 	}

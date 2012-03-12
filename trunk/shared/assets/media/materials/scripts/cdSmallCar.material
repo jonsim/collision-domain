@@ -1,24 +1,33 @@
 import cd/Base from "cdBaseMaterials.material"
-import cd/Blank from "cdBaseMaterials.material"
+import cd/SolidColour from "cdBaseMaterials.material"
+import cd/Reflective from "cdBaseMaterials.material"
+import cd/ReflectiveSolid from "cdBaseMaterials.material"
 
 
-material small_car_seat : cd/Blank
+material small_car_seat : cd/SolidColour
 {
+    set $specular_colour "0.9 0.9 0.9 20.0"
+    set $diffuse_colour "0.22 0.145 0.089"
 }
 
 
-material small_car_steering_wheel_out : cd/Blank
+material small_car_steering_wheel_out : cd/SolidColour
 {
+    set $specular_colour "0.9 0.9 0.9 20.0"
+    set $diffuse_colour "0.193 0.094 0.055"
 }
 
 
-material small_car_steering_wheel_in : cd/Blank
+material small_car_steering_wheel_in : cd/SolidColour
 {
+    set $specular_colour "0.9 0.9 0.9 60.0"
+    set $diffuse_colour "0.75 0.75 0.75"
 }
 
 
-material small_car_bumper : cd/Blank
+material small_car_bumper : cd/ReflectiveSolid
 {
+    set $diffuse_colour "0.6 0.6 0.6"
 }
 
 
@@ -28,39 +37,37 @@ material small_car_body_burnt_uv : cd/Base
 }
 
 
-material small_car_body_uv : cd/Base
+material small_car_body_uv : cd/Reflective
 {
-    set $diffuse_map small_car_body.jpg
+    set $specular_map small_car_body_uv_s.jpg
+    set $diffuse_map  small_car_body_uv_d.jpg
 }
-material small_car_body_t1 : cd/Base
+material small_car_body_t1 : cd/Reflective
 {
-    set $diffuse_map small_car_body1.jpg
+    set $specular_map small_car_body_t1_s.jpg
+    set $diffuse_map  small_car_body_t1_d.jpg
 }
-material small_car_body_t2 : cd/Base
+material small_car_body_t2 : cd/Reflective
 {
-    set $diffuse_map small_car_body2.jpg
-}
-material small_car_body_v1 : cd/Base
-{
-    set $diffuse_map small_car_body1V.jpg
-}
-material small_car_body_v2 : cd/Base
-{
-    set $diffuse_map small_car_body2V.jpg
+    set $specular_map small_car_body_t2_s.jpg
+    set $diffuse_map  small_car_body_t2_d.jpg
 }
 
 
-material small_car_door_uv : cd/Base
+material small_car_door_uv : cd/Reflective
 {
-    set $diffuse_map small_car_door.jpg
+    set $specular_map small_car_door_uv_s.jpg
+    set $diffuse_map  small_car_door_uv_d.jpg
 }
-material small_car_door_t1 : cd/Base
+material small_car_door_t1 : cd/Reflective
 {
-    set $diffuse_map small_car_door1.jpg
+    set $specular_map small_car_door_t1_s.jpg
+    set $diffuse_map  small_car_door_t1_d.jpg
 }
-material small_car_door_t2 : cd/Base
+material small_car_door_t2 : cd/Reflective
 {
-    set $diffuse_map small_car_door2.jpg
+    set $specular_map small_car_door_t2_s.jpg
+    set $diffuse_map  small_car_door_t2_d.jpg
 }
 
 

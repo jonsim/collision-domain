@@ -15,7 +15,7 @@ public:
     SmallCar(int uniqueCarID, CarSkin skin);
     virtual ~SmallCar(void);
     void playCarHorn();
-    virtual void updateTeam (int teamNumber, bool isVIP);
+    virtual void updateTeam (int teamNumber);
     virtual void loadDestroyedModel (void);
 
 private:

@@ -1,5 +1,11 @@
 // Base materials
-abstract material cd/Blank : receiver/stencil
+abstract material cd/Base : receiver/stencil
+{
+}
+abstract material cd/Leaf : leaf_receiver/stencil
+{
+}
+abstract material cd/Blank
 {
 	technique
 	{
@@ -8,7 +14,7 @@ abstract material cd/Blank : receiver/stencil
 		}
 	}
 }
-abstract material cd/SolidColour : receiver/stencil
+abstract material cd/SolidColour
 {
 	technique
 	{
@@ -22,11 +28,49 @@ abstract material cd/SolidColour : receiver/stencil
 		}
 	}
 }
-abstract material cd/Base : receiver/stencil
+abstract material cd/ReflectiveSolid
 {
+	technique
+	{
+		pass decal
+		{
+			texture_unit env_map
+			{
+				texture sphere_map_morning2.jpg
+                env_map spherical
+			}
+			texture_unit reflection_map
+			{
+				colour_op_ex modulate_x4 src_manual src_current $diffuse_colour
+                //colour_op_multipass_fallback one one
+			}
+		}
+	}
 }
-abstract material cd/Leaf : leaf_receiver/stencil
+abstract material cd/Reflective
 {
+	technique
+	{
+		pass decal
+		{
+			texture_unit env_map
+			{
+				texture sphere_map_morning2.jpg
+                env_map spherical
+			}
+			texture_unit reflection_map
+			{
+				texture $specular_map
+                colour_op_ex modulate_x2 src_texture src_current
+                //colour_op_multipass_fallback one one
+			}
+            texture_unit final_combination
+            {
+                texture $diffuse_map
+                colour_op add
+            }
+		}
+	}
 }
 
 
@@ -109,7 +153,7 @@ abstract material receiver/PSSM
 }
 abstract material leaf_receiver/PSSM
 {
-    //receive_shadows off
+    receive_shadows off
     transparency_casts_shadows off
     
 	technique
@@ -203,10 +247,11 @@ abstract material receiver/DSMPCF
 		}
 	}
 }
+
 abstract material leaf_receiver/DSMPCF : receiver/DSMPCF
 {
-    //receive_shadows off
     transparency_casts_shadows off
+    receive_shadows off
     
 	technique
 	{
@@ -221,7 +266,7 @@ abstract material leaf_receiver/DSMPCF : receiver/DSMPCF
             alpha_rejection greater 192
             cull_hardware none
             cull_software none
-               
+            
 			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTextureUnified
 			{
 				param_named ambient float4 1 1 1 1
