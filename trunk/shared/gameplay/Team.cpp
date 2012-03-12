@@ -53,17 +53,17 @@ Player*	Team::getRandomPlayer()
 
 Player* Team::setNewVIP(Player* player)
 {
-#ifdef COLLISION_DOMAIN_SERVER
 	if(player!=NULL)
 	{
 		OutputDebugString("Set new VIP player\n");
         player->setVIP(true);
 		vipPlayer = player;
-		GameCore::mNetworkCore->declareNewVIP(vipPlayer);
+		#ifdef COLLISION_DOMAIN_SERVER
+			GameCore::mNetworkCore->declareNewVIP(vipPlayer);
+		#endif
 		return player;
 	}
 	else
-#endif
 	{
 		return NULL;
 	}
