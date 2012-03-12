@@ -45,15 +45,20 @@ protected:
 
     // Scene elements which are setup.
 	Ogre::Light*          mWorldSun;
+    Ogre::SceneNode*      mVIPIcon[2]; ///< This is completely not the place for this but I'm waiting
+                                      //   for a better place (in the team class for example) to be 
+                                      //   made available.
     // Particle Systems
 	Ogre::ParticleSystem* mWeatherSystem;
 	Ogre::ParticleSystem* mSparkSystem;
     Ogre::ParticleSystem* mExplosionNucleusSystem;
     Ogre::ParticleSystem* mExplosionSmokeSystem;
+    Ogre::ParticleSystem* mExplosionDebrisSystem;
     // Particle System configurations
     Ogre::NameValuePairList mSparkParams;
     Ogre::NameValuePairList mExplosionNucleusParams;
     Ogre::NameValuePairList mExplosionSmokeParams;
+    Ogre::NameValuePairList mExplosionDebrisParams;
     
 	// Compositor logic modules
 	HDRLogic*		 mHDRLogic;

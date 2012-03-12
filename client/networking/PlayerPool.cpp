@@ -195,6 +195,8 @@ void PlayerPool::processPlayer( Player *pPlayer )
         delete( pPlayer->mSnapshots );
         pPlayer->mSnapshots = NULL;
 
-
+        
+        if (pPlayer->getVIP())
+            GameCore::mGraphicsCore->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
     }
 }

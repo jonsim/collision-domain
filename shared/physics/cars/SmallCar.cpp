@@ -248,26 +248,20 @@ void SmallCar::initGraphics(btTransform& chassisShift)
 }
 
 
-void SmallCar::updateTeam (int teamNumber, bool isVIP)
+void SmallCar::updateTeam (int teamNumber)
 {
     // Load the team coloured items
     switch (teamNumber)
     {
     case 1:
-        if (isVIP)
-            setMaterial("small_car_body_v1", mChassisNode);
-        else
-            setMaterial("small_car_body_t1", mChassisNode);
-        setMaterial("small_car_fdoor_t1", mLDoorNode);
-        setMaterial("small_car_fdoor_t1", mRDoorNode);
+        setMaterial("small_car_body_t1",  mChassisNode);
+        setMaterial("small_car_door_t1", mLDoorNode);
+        setMaterial("small_car_door_t1", mRDoorNode);
         break;
     case 2:
-        if (isVIP)
-            setMaterial("small_car_body_v2", mChassisNode);
-        else
-            setMaterial("small_car_body_t2", mChassisNode);
-        setMaterial("small_car_fdoor_t2", mLDoorNode);
-        setMaterial("small_car_fdoor_t2", mRDoorNode);
+        setMaterial("small_car_body_t2",  mChassisNode);
+        setMaterial("small_car_door_t2", mLDoorNode);
+        setMaterial("small_car_door_t2", mRDoorNode);
         break;
     default:
         break;

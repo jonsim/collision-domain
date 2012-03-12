@@ -49,6 +49,10 @@ public:
 	//Just some getters and setters
 	void setAlive(bool pAlive);
 	bool getAlive();
+    void setVIP(bool newState) { mIsVIP = newState; };
+    bool getVIP(void) { return mIsVIP; };
+    void setTeam(int newTeam) { mTeam = newTeam; };
+    int  getTeam(void) { return mTeam; };
 
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
@@ -56,7 +60,10 @@ public:
 private:
     const float      cameraRotationConstant;
 	int		         hp;
+    int              mTeam;
 	bool		     mAlive;
+    bool             mIsVIP;
+	bool             mSpawned;
     char*            mNickname;
     Car*             mCar;
     CarSnapshot*     mCarSnapshot;
@@ -66,7 +73,6 @@ private:
     CarType          mCarType;
 
 	Ogre::OverlayElement* mOLE;
-	bool mSpawned;
 	RakNet::RakNetGUID mPlayerGUID;
 };
 

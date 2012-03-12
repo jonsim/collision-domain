@@ -25,6 +25,7 @@ public:
 	void shutdown() { mShutDown = true; }
     void generateExplosion (Ogre::Vector3 location);
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
+    void updateVIPLocation (int teamNumber, Ogre::Vector3 location);
 
     Ogre::Camera*       mCamera;
     Ogre::RenderWindow* mWindow;
@@ -61,6 +62,7 @@ protected:
     // OgreBites
     OgreBites::SdkCameraMan* mCameraMan;     // basic camera controller
     bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
+    bool mDebrisVisible;
     bool mShutDown;
 };
 

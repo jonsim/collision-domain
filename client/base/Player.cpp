@@ -11,7 +11,8 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
-Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
+Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mIsVIP(false), 
+                        mTeam(0), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
 }

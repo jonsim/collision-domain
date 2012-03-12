@@ -19,6 +19,7 @@ GraphicsCore::GraphicsCore (void)
     mPluginsCfg(Ogre::StringUtil::BLANK),
     mCameraMan(0),
     mCursorWasVisible(false),
+    mDebrisVisible(false),
     mShutDown(false),
     mSpawnScreen(0)
 {
@@ -94,6 +95,19 @@ void GraphicsCore::updateParticleSystems (void)
     for (i = 0; i < mExplosionSmokeSystem->getNumEmitters(); i++)
         if (!mExplosionSmokeSystem->getEmitter(i)->getEnabled())
             mExplosionSmokeSystem->removeEmitter(i--);
+    for (i = 0; i < mExplosionDebrisSystem->getNumEmitters(); i++)
+        if (!mExplosionDebrisSystem->getEmitter(i)->getEnabled())
+            mExplosionDebrisSystem->removeEmitter(i--);
+}
+
+
+void GraphicsCore::updateVIPLocation (int teamNumber, Ogre::Vector3 location)
+{
+    location.y += 4;
+    if (teamNumber == 1)
+        mVIPIcon[0]->setPosition(location);
+    else
+        mVIPIcon[1]->setPosition(location);
 }
 
 
@@ -102,6 +116,7 @@ void GraphicsCore::generateExplosion (Ogre::Vector3 location)
 {
     unsigned short nucleusIndex = mExplosionNucleusSystem->getNumEmitters();
     unsigned short smokeIndex   = mExplosionSmokeSystem->getNumEmitters();
+    unsigned short debrisIndex  = mExplosionDebrisSystem->getNumEmitters();
 
     mExplosionNucleusSystem->addEmitter("Point");
     mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
@@ -110,6 +125,10 @@ void GraphicsCore::generateExplosion (Ogre::Vector3 location)
     mExplosionSmokeSystem->addEmitter("Point");
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setParameterList(mExplosionSmokeParams);
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setPosition(location);
+
+    mExplosionDebrisSystem->addEmitter("Point");
+    mExplosionDebrisSystem->getEmitter(debrisIndex)->setParameterList(mExplosionDebrisParams);
+    mExplosionDebrisSystem->getEmitter(debrisIndex)->setPosition(location);
     
     // Generate a sound (this isn't a particularly good way of doing it but it will work until a better method is available).
     static OgreOggSound::OgreOggISound* explosionSound = GameCore::mAudioCore->getSoundInstance(EXPLOSION, 0);
@@ -247,6 +266,9 @@ bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     // Update the particle systems
     updateParticleSystems();
+    // Rotate the VIP crowns (this should really be done somewhere else, but again waiting for a good place)
+    mVIPIcon[0]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
+    mVIPIcon[1]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
 
     return true;
 }

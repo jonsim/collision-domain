@@ -27,7 +27,7 @@ enum CarType
 };
 
 /// CarSkin represents the texture applied to the player object.
-enum CarSkin {SKIN_DEFAULT, SKIN_TEAM1, SKIN_TEAM2, SKIN_VIP1, SKIN_VIP2};
+enum CarSkin {SKIN_DEFAULT, SKIN_TEAM1, SKIN_TEAM2};
 
 
 class Car
@@ -59,7 +59,7 @@ public:
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
-    virtual void updateTeam (int teamNumber, bool isVIP) = 0;
+    virtual void updateTeam (int teamNumber) = 0;
     virtual void loadDestroyedModel (void) = 0;
 
 	Ogre::Vector3 GetPos();

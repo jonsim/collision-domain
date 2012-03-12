@@ -115,6 +115,9 @@ void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
 			pPlayer->processControlsFrameEvent( pPlayer->newInput, evt.timeSinceLastFrame, (1.0f / 60.0f));
 		}
 		// TODO: add timestamps to snapshots
+        
+        if (pPlayer->getVIP())
+            GameCore::mGraphicsCore->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
 	}
 
 }

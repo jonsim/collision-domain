@@ -21,9 +21,9 @@ void Gameplay::setNumberOfTeams(int num)
 {
 	numberOfTeams = num;
 	//Create the new teams
-	for(int i=0;i<num;i++)
+	for(int i=1;i<=num;i++)
 	{
-		this->createTeam("", i+1);
+		this->createTeam("", i);
 	}
 }
 

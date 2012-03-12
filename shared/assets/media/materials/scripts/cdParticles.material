@@ -92,6 +92,25 @@ material CollisionDomain/Exhaust
 	}
 }
 
+material CollisionDomain/NewExhaust
+{
+    technique
+    {
+        pass
+        {
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_newexhaust.png
+				tex_address_mode clamp
+			}
+        }
+    }
+}
+
 material CollisionDomain/Dust
 {
 	technique
@@ -129,4 +148,23 @@ material CollisionDomain/Spark
 			}
 		}
 	}
+}
+
+material CollisionDomain/Streak
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+            
+            texture_unit
+            {
+                texture particle_streak.png
+                tex_address_mode clamp
+            }
+        }
+    }
 }
