@@ -1,9 +1,14 @@
 import cd/GUIComponent from "cdBaseMaterials.material"
 
 
-material ArrowBlack : cd/GUIComponent
+material DefaultIcon : cd/GUIComponent
 {
-	set $texture ArrowBlack.png
+	set $texture icon_arrow.png
+}
+
+material DeadIcon : cd/GUIComponent
+{
+    set $texture icon_skull.png
 }
 
 material map_top_1 : cd/GUIComponent

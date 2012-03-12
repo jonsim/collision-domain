@@ -289,11 +289,14 @@ abstract material cd/GUIComponent
 	{
 		pass
 		{
+            lighting off
 			scene_blend alpha_blend
+            depth_write off
 			
 			texture_unit
 			{
 				texture $texture
+                tex_address_mode clamp
 			}
 		}
 	}

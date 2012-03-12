@@ -132,10 +132,10 @@ void BigScreen::manageNewPlayer(Player* player)
 	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
 
 	//Make a copy of the material
-	Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("ArrowBlack");
+	Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DefaultIcon");
 	//Build a new name with GUID so it should be unique
 	std::stringstream newMaterialName;
-	newMaterialName << "ArrowBlack" << player->getPlayerGUID().ToString();
+	newMaterialName << "DefaultIcon" << player->getPlayerGUID().ToString();
 	//Clone a new instance
 	arrowMaterial = arrowMaterial->clone(newMaterialName.str());
 	//We can now assign the new material with a new name
