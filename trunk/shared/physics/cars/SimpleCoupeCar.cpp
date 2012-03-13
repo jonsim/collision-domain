@@ -69,7 +69,7 @@ void SimpleCoupeCar::initTuning()
     mRollInfluence          =    0.35f;
     mSuspensionRestLength   =    0.3f;
     mMaxSuspensionTravelCm  =   15.0f;
-    mFrictionSlip           =    0.8f;
+    mFrictionSlip           =    2.0f;
 	mChassisLinearDamping   =    0.2f;
 	mChassisAngularDamping  =    0.2f;
 	mChassisRestitution		=    0.6f;
@@ -78,7 +78,7 @@ void SimpleCoupeCar::initTuning()
 
     mWheelRadius      =  0.345f; // this is actually diameter!!
     mWheelWidth       =  0.176f;
-    mWheelFriction    =  2.0f;//1000;//1e30f;
+    mWheelFriction    =  3.0f;//1000;//1e30f;
     mConnectionHeight =  0.6f; // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement = 0.015f;
