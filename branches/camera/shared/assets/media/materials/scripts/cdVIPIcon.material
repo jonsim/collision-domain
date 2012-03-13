@@ -1,0 +1,6 @@
+import cd/GUIComponent from "cdBaseMaterials.material"
+
+material vipComponent : cd/GUIComponent
+{
+    set $texture Star.png
+}

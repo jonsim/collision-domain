@@ -1,0 +1,303 @@
+// Base materials
+abstract material cd/Base : receiver/stencil
+{
+}
+abstract material cd/Leaf : leaf_receiver/stencil
+{
+}
+abstract material cd/Blank
+{
+	technique
+	{
+		pass decal
+		{
+		}
+	}
+}
+abstract material cd/SolidColour
+{
+	technique
+	{
+		pass decal
+		{
+			specular $specular_colour
+			texture_unit diffuse_tex
+			{
+				colour_op_ex source1 src_manual src_current $diffuse_colour
+			}
+		}
+	}
+}
+abstract material cd/ReflectiveSolid
+{
+	technique
+	{
+		pass decal
+		{
+			texture_unit env_map
+			{
+				texture sphere_map_morning2.jpg
+                env_map spherical
+			}
+			texture_unit reflection_map
+			{
+				colour_op_ex modulate_x4 src_manual src_current $diffuse_colour
+                //colour_op_multipass_fallback one one
+			}
+		}
+	}
+}
+abstract material cd/Reflective
+{
+	technique
+	{
+		pass decal
+		{
+			texture_unit env_map
+			{
+				texture sphere_map_morning2.jpg
+                env_map spherical
+			}
+			texture_unit reflection_map
+			{
+				texture $specular_map
+                colour_op_ex modulate_x2 src_texture src_current
+                //colour_op_multipass_fallback one one
+			}
+            texture_unit final_combination
+            {
+                texture $diffuse_map
+                colour_op add
+            }
+		}
+	}
+}
+
+
+// Base material for stencil shadowing.
+abstract material receiver/stencil
+{
+	technique
+	{
+		pass decal
+		{
+			texture_unit diffuse_tex
+			{
+				texture $diffuse_map
+			}
+		}
+	}
+}
+abstract material leaf_receiver/stencil
+{
+    transparency_casts_shadows off
+    receive_shadows off
+    
+	technique
+	{
+		pass decal
+		{
+			ambient 1 1 1 1
+            diffuse 0.4 0.6 0.3
+            
+			scene_blend alpha_blend
+			depth_write on
+            alpha_rejection greater 192
+            cull_hardware none
+            cull_software none
+            
+			texture_unit
+			{
+				texture $diffuse_map
+			}
+		}
+	}
+}
+
+
+// Base material for Parallel Split Mapping (PSSM) shadowing.
+abstract material receiver/PSSM
+{
+	technique
+	{
+		pass decal
+		{
+			ambient 1 1 1 1
+			diffuse 1 1 1 1
+
+			vertex_program_ref PSSM/shadow_receiver_vs {}
+			fragment_program_ref PSSM/shadow_receiver_ps {}
+
+			texture_unit shadow_tex0
+			{
+				content_type shadow
+				tex_address_mode clamp
+			}
+			texture_unit shadow_tex1
+			{
+				content_type shadow
+				tex_address_mode clamp
+			}
+			texture_unit shadow_tex2
+			{
+				content_type shadow
+				tex_address_mode clamp
+			}
+
+			texture_unit diffuse_tex
+			{
+				texture $diffuse_map
+			}
+		}
+	}
+}
+abstract material leaf_receiver/PSSM
+{
+    receive_shadows off
+    transparency_casts_shadows off
+    
+	technique
+	{
+		pass decal
+		{
+			ambient 1 1 1 1
+            diffuse 0.4 0.6 0.3
+            
+			scene_blend alpha_blend
+			depth_write on
+            alpha_rejection greater 192
+            cull_hardware none
+            cull_software none
+
+			vertex_program_ref PSSM/shadow_receiver_vs {}
+			fragment_program_ref PSSM/shadow_receiver_ps {}
+
+			texture_unit shadow_tex0
+			{
+				content_type shadow
+				tex_address_mode clamp
+			}
+			texture_unit shadow_tex1
+			{
+				content_type shadow
+				tex_address_mode clamp
+			}
+			texture_unit shadow_tex2
+			{
+				content_type shadow
+				tex_address_mode clamp
+			}
+
+			texture_unit diffuse_tex
+			{
+				texture $diffuse_map
+			}
+		}
+	}
+}
+
+// Base material for Depth Shadowmapping (DSM) with Percentage Closer Filtering (PCF) filtering.
+abstract material receiver/DSMPCF
+{
+	technique
+	{
+		// Ambient pass.
+		pass decal
+		{
+			// Base colours (used for lighting pass categorisation routine, not rendering).
+			ambient 1 1 1
+			diffuse 0 0 0 
+			specular 0 0 0 0 
+            
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTextureUnified {}
+			
+		}
+		// Lighting pass (repeated per light).
+		pass lighting
+		{
+			// Base colours (used for lighting pass categorisation routine, not rendering).
+			ambient 0 0 0 
+			
+			iteration once_per_light
+			scene_blend add
+
+			vertex_program_ref Ogre/DepthShadowmap/ReceiverVP {}
+			shadow_receiver_vertex_program_ref Ogre/DepthShadowmap/ReceiverVP {}
+			fragment_program_ref Ogre/DepthShadowmap/ReceiverFP {}
+			shadow_receiver_fragment_program_ref Ogre/DepthShadowmap/ReceiverFPPCF {}
+		}
+		
+		// Decal pass.
+		pass decal
+		{
+			// Base colours (used for lighting pass categorisation routine, not rendering).
+			lighting off
+            
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTextureUnified
+			{
+				param_named ambient float4 1 1 1 1
+			}
+			scene_blend dest_colour zero
+
+			texture_unit diffuse_tex
+			{
+				texture $diffuse_map
+			}
+			
+		}
+	}
+}
+
+abstract material leaf_receiver/DSMPCF : receiver/DSMPCF
+{
+    transparency_casts_shadows off
+    receive_shadows off
+    
+	technique
+	{
+		pass decal
+		{
+			ambient 1 1 1 1
+            diffuse 0.4 0.6 0.3
+            
+			lighting off
+			scene_blend alpha_blend
+			depth_write on
+            alpha_rejection greater 192
+            cull_hardware none
+            cull_software none
+            
+			vertex_program_ref Ogre/BasicVertexPrograms/AmbientOneTextureUnified
+			{
+				param_named ambient float4 1 1 1 1
+			}
+			scene_blend dest_colour zero
+
+			texture_unit diffuse_tex
+			{
+				texture $diffuse_map
+			}
+			
+		}
+    }
+}
+
+
+abstract material cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+            lighting off
+			scene_blend alpha_blend
+            depth_write off
+			
+			texture_unit
+			{
+				texture $texture
+                tex_address_mode clamp
+			}
+		}
+	}
+}
