@@ -382,7 +382,7 @@ void GameGUI::updateSpeedo( float fSpeed, int iGear )
 	float iDegree = 58; // This is 0 for some reason
 
 	// 1 mph = 298 / 220 degrees
-
+    
 	iDegree = 58 - ( fSpeed * ( 298.0f / 220.0f ) );
     
 	Ogre::Material *matNeedle = oleNeedle->getMaterial().get();
@@ -428,4 +428,83 @@ void GameGUI::updateCounters()
 	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
 	sprintf( szFPS,   "FPS: %.2f", GameCore::mGraphicsCore->mWindow->getAverageFPS());
 	fps->setText( szFPS );
+}
+
+void GameGUI::setupDamageDisplay()
+{
+    int width = 82, height = 169;
+
+    // setup body image
+    {
+	    oleDamage = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE" ) );
+	    oleDamage->setMetricsMode( Ogre::GMM_PIXELS );
+        
+        /*{ // Bottom Left Aligned
+            oleDamage->setHorizontalAlignment( Ogre::GHA_LEFT );
+	        oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	        oleDamage->setDimensions( width, height );
+	        oleDamage->setPosition( 290, -height - 20 );
+        }*/
+
+        { // Bottom Right Aligned
+            oleDamage->setHorizontalAlignment( Ogre::GHA_RIGHT );
+	        oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	        oleDamage->setDimensions( width, height );
+	        oleDamage->setMaterialName( "damage_y_body" );
+	        oleDamage->setPosition( -width - 20, -height - 20 );
+        }
+
+	    Ogre::Overlay *damage = Ogre::OverlayManager::getSingleton().create( "OVERLAY_DAMAGE" );
+	    damage->setZOrder( 500 );
+	    damage->show();
+        damage->add2D( oleDamage );
+    }
+
+
+    // setup individual parts
+    oleDamageEngine = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ENGINE" );
+    oleDamageFL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FL" );
+    oleDamageFR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FR" );
+    oleDamageRL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RL" );
+    oleDamageRR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RR" );
+
+	oleDamageEngine->setMetricsMode( Ogre::GMM_PIXELS );
+    oleDamageFL    ->setMetricsMode( Ogre::GMM_PIXELS );
+    oleDamageFR    ->setMetricsMode( Ogre::GMM_PIXELS );
+    oleDamageRL    ->setMetricsMode( Ogre::GMM_PIXELS );
+    oleDamageRR    ->setMetricsMode( Ogre::GMM_PIXELS );
+
+	oleDamageEngine->setDimensions( width, height );
+    oleDamageFL    ->setDimensions( width, height );
+    oleDamageFR    ->setDimensions( width, height );
+    oleDamageRL    ->setDimensions( width, height );
+    oleDamageRR    ->setDimensions( width, height );
+
+	oleDamage->addChild( oleDamageEngine );
+    oleDamage->addChild( oleDamageFL );
+    oleDamage->addChild( oleDamageFR );
+    oleDamage->addChild( oleDamageRL );
+    oleDamage->addChild( oleDamageRR );
+
+	updateDamage();
+}
+
+void GameGUI::updateDamage()
+{
+	oleDamage       ->setMaterialName( "damage_g_body" );
+	oleDamageEngine ->setMaterialName( "damage_y_engine" );
+    oleDamageFL     ->setMaterialName( "damage_g_fl" );
+    oleDamageFR     ->setMaterialName( "damage_r_fr" );
+    oleDamageRL     ->setMaterialName( "damage_y_rl" );
+    oleDamageRR     ->setMaterialName( "damage_g_rr" );
+}
+
+void GameGUI::setupOverlays()
+{
+    setupSpeedo();
+    setupGearDisplay();
+    updateSpeedo(0.0f, 0);
+    
+    setupDamageDisplay();
+    updateDamage();
 }

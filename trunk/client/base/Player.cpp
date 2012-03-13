@@ -50,7 +50,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
     }
 
     mCar->attachCollisionTickCallback(this);
-
+    
     mCar->moveTo(btVector3(0,0.5,0));
 }
 

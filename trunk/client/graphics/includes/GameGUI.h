@@ -34,20 +34,28 @@ public:
 	bool Console_Send( const CEGUI::EventArgs &args );
 	bool Console_Off( const CEGUI::EventArgs &args );
 
-    void setupSpeedo();
+    void setupOverlays();
+
     void updateSpeedo();
 	void updateSpeedo( float fSpeed, int iGear );
-
-    void setupGearDisplay();
+    void updateDamage();
 
     void updateCounters();
     
 private:
+    void setupSpeedo();
+    void setupGearDisplay();
+    void setupDamageDisplay();
+
 	CEGUI::Window *mSheet;
 
 	Ogre::OverlayContainer *olcSpeedo;
+    Ogre::OverlayContainer *oleDamage;
+
 	Ogre::OverlayElement   *oleNeedle;
     Ogre::OverlayElement   *oleGear;
+
+    Ogre::OverlayElement   *oleDamageEngine, *oleDamageFL, *oleDamageFR, *oleDamageRL, *oleDamageRR;
 };
 
 #endif

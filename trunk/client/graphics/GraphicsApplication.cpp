@@ -78,9 +78,7 @@ void GraphicsApplication::setupGUI (void)
     GameCore::mGui->setupConnectBox();
     GameCore::mGui->setupConsole();
     GameCore::mGui->setupChatbox();
-    GameCore::mGui->setupSpeedo();
-    GameCore::mGui->setupGearDisplay();
-    GameCore::mGui->updateSpeedo(0.0f, 0);
+    GameCore::mGui->setupOverlays();
 
     GameCore::mGameplay->setupOverlay();
 }
