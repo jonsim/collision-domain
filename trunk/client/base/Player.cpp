@@ -60,7 +60,6 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 void Player::collisionTickCallback(int damage)
 {
     OutputDebugString("Client: Player collision\n");
-    GameCore::mPhysicsCore->mPlayerCollisions->printLists();
 }
 
 

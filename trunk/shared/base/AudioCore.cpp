@@ -84,6 +84,10 @@ AudioCore::~AudioCore()
 /// eventually this will be attached to cars and networked
 void AudioCore::playSoundOrRestart(OgreOggISound *sound)
 {
+    // fix for some crash, if !mInitOK
+    // (example of using optical output and some app is using it for encoded (i.e. dolby))
+    if (!sound) return;
+
     if (sound->isPlaying()) sound->stop();
     
     sound->setPlayPosition(0);
@@ -98,6 +102,7 @@ void AudioCore::playSoundOrRestart(OgreOggISound *sound)
     mCarCrashSound = mSoundManager->createSound("car-crash-1", FILE_1_CRASH, false, false, true, GameCore::mSceneMgr, false);
 }*/
 
+/// it is quite possible mInitOK is false, so this may return null.
 /// the ID needs to be unique to the sound type (can be same for different sounds)
 OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID)
 {
@@ -137,6 +142,7 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID)
     return mSoundManager->createSound(name, file,  false, false, true, GameCore::mSceneMgr, true);
 }
 
+/// it is quite possible mInitOK is false, so this may return null.
 /// the ID needs to be unique to the sound type (can be same for different sounds)
 OgreOggISound* AudioCore::getSoundInstance(PowerupType p, int uniqueID)
 {
