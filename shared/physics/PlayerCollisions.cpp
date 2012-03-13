@@ -79,7 +79,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
         // for sparks
 
         //btVector3 contactCenter = (worldPosOnA + worldPosOnB) / 2.0;
-        std::stringstream ss;
+        /*std::stringstream ss;
         ss << p1 << p2 << "   " << i << "   " <<
             combinedLateralFriction << "   " <<
             appliedImpulse << "   " <<
@@ -108,7 +108,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
             << " y" << normalOnB.y()
             << " z" << normalOnB.z()
             << "\n";
-        OutputDebugString(ss.str().c_str());
+        OutputDebugString(ss.str().c_str());*/
     }
 
 
