@@ -54,14 +54,68 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
             p2->collisionTickCallback(damage * 0.4);
         }
     }
-    /* Old damage calculations
-    bool damageP2 = p1->getCar()->getCarMph() > p2->getCar()->getCarMph() ? true : false;
-    p1->collisionTickCallback(damageP2 ? 0 : 1);
-    p2->collisionTickCallback(damageP2 ? 1 : 0);*/
-        
-
-    // TODO: look at collision information such as location and force and store alongside Player*
+    
     // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION
+    for (int i=0; i < contactManifold->getNumContacts(); i++)
+    {
+        const btManifoldPoint &pt = contactManifold->getContactPoint(i);
+
+        btScalar combinedLateralFriction = pt.m_combinedFriction;
+        btScalar appliedImpulse = pt.getAppliedImpulse();
+        btScalar distance = pt.getDistance();
+        btScalar lifetime = pt.getLifeTime();
+        btScalar lateralImpulse1 = pt.m_appliedImpulseLateral1;
+        btScalar lateralImpulse2 = pt.m_appliedImpulseLateral2;
+        
+        btVector3 localA = pt.m_localPointA;
+        btVector3 localB = pt.m_localPointB;
+        btVector3 normalOnB = pt.m_normalWorldOnB;
+        // for deformation
+
+        p1->getCar()->GetHeading();
+
+        btVector3 worldPosOnA = pt.getPositionWorldOnA();
+        btVector3 worldPosOnB = pt.getPositionWorldOnB();
+        // for sparks
+
+        //btVector3 contactCenter = (worldPosOnA + worldPosOnB) / 2.0;
+        std::stringstream ss;
+        ss << p1 << p2 << "   " << i << "   " <<
+            combinedLateralFriction << "   " <<
+            appliedImpulse << "   " <<
+            distance << "   " <<
+            lifetime 
+            << "   x" << worldPosOnA.x()
+            << " y" << worldPosOnA.y()
+            << " z" << worldPosOnA.z()
+
+            << "   x" << worldPosOnB.x()
+            << " y" << worldPosOnB.y()
+            << " x" << worldPosOnB.z()
+
+            << "   " << lateralImpulse1
+            << "   " << lateralImpulse2
+
+            << "   x" << localA.x()
+            << " y" << localA.y()
+            << " z" << localA.z()
+
+            << "   x" << localB.x()
+            << " y" << localB.y()
+            << " z" << localB.z()
+
+            << "   x" << normalOnB.x()
+            << " y" << normalOnB.y()
+            << " z" << normalOnB.z()
+            << "\n";
+        OutputDebugString(ss.str().c_str());
+    }
+
+
+
+    // contactManifold->getContactBreakingThreshold();
+    // contactManifold->getContactPoint();
+    // contactManifold->validContactDistance();
     
     // check if player pointer is already somewhere in the lists
     std::list<Player*>* player1AlreadySeen = NULL;
