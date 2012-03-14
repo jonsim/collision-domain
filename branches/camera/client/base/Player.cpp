@@ -71,17 +71,14 @@ void Player::attachCamera (Ogre::Camera* cam)
     camNode = mCar->attachCamNode();
     camArmNode = camNode->getParentSceneNode();
     camNode->translate(0, 0, -20); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
-	/*
-    camArmNode->translate(0, 0.5, 0); // place camera y above car node
-    camArmNode->pitch(Ogre::Degree(25));
-    camNode->yaw(Ogre::Degree(180));
-    camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
-	*/
-	
-	mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
-    //camNode->attachObject(cam);
 
-	
+    mCamera = new GameCamera( cam );
+    mCamera->setCamType( CAM_CHASE );
+    mCamera->setTarget( getCar()->mBodyNode );
+    mCamera->setOffset( btVector3( 0.f, 5.f, -10.f ) );
+    mCamera->setLookOffset( btVector3( 0, 0, 3.0f ) );
+    mCamera->setTransform( btVector3( 0, 20, 0 ) );
+
 }
 
 
@@ -120,7 +117,7 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
 		camNode->translate(0, 0, ZDepth * 0.02f);
 
-    mCarCam->updatePosition(XRotation, YRotation);
+    mCamera->update();
 
 	//Update the camera
 	//

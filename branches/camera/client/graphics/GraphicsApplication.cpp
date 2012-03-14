@@ -37,7 +37,7 @@ void GraphicsApplication::createCamera (void)
     mCamera->setNearClipDistance(5);
     mCamera->setFarClipDistance(2500);
 
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+    //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
 
 

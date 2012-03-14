@@ -62,6 +62,7 @@ private:
 	Ogre::SceneNode* camNode;
 	Ogre::SceneNode* camArmNode;
     CarType          mCarType;
+    GameCamera*      mCamera;
 };
 
 #endif // #ifndef PLAYER_H

@@ -22,6 +22,7 @@
 #include "SceneSetup.h"
 #include "GraphicsCore.h"
 #include "ViewCamera.h"
+#include "Camera.h"
 #include "GameCore.h"
 #include "ScoreBoard.h"
 #include "HUD.h"

@@ -36,6 +36,7 @@
     <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\ScoreBoard.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\Team.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\Camera.h" />
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h" />
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp" />
     <ClCompile Include="..\..\shared\gameplay\ScoreBoard.cpp" />
     <ClCompile Include="..\..\shared\gameplay\Team.cpp" />
+    <ClCompile Include="..\..\shared\graphics\Camera.cpp" />
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp" />
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp" />
