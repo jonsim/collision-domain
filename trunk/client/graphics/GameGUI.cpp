@@ -450,16 +450,15 @@ void GameGUI::setupDamageDisplay()
             oleDamage->setHorizontalAlignment( Ogre::GHA_RIGHT );
 	        oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
 	        oleDamage->setDimensions( width, height );
-	        oleDamage->setMaterialName( "damage_y_body" );
 	        oleDamage->setPosition( -width - 20, -height - 20 );
         }
 
 	    Ogre::Overlay *damage = Ogre::OverlayManager::getSingleton().create( "OVERLAY_DAMAGE" );
 	    damage->setZOrder( 500 );
 	    damage->show();
+        damage->setScale(1.0,1.0);
         damage->add2D( oleDamage );
     }
-
 
     // setup individual parts
     oleDamageEngine = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ENGINE" );
@@ -473,25 +472,39 @@ void GameGUI::setupDamageDisplay()
     oleDamageFR    ->setMetricsMode( Ogre::GMM_PIXELS );
     oleDamageRL    ->setMetricsMode( Ogre::GMM_PIXELS );
     oleDamageRR    ->setMetricsMode( Ogre::GMM_PIXELS );
-
-	oleDamageEngine->setDimensions( width, height );
+    
+	/*oleDamageEngine->setDimensions( width, height );
     oleDamageFL    ->setDimensions( width, height );
     oleDamageFR    ->setDimensions( width, height );
     oleDamageRL    ->setDimensions( width, height );
-    oleDamageRR    ->setDimensions( width, height );
+    oleDamageRR    ->setDimensions( width, height );*/
+    
+    // this is necessary as the images didn't line up pixel perfect when
+    // wheel parts were the same size as the whole body (with transparency)
+    // (the ogre overlays appear to do some unexpected scaling / processing)
+    oleDamageEngine->setDimensions( 32, 43 );
+    oleDamageFL    ->setDimensions( 24, 49 );
+    oleDamageFR    ->setDimensions( 24, 49 );
+    oleDamageRL    ->setDimensions( 24, 49 );
+    oleDamageRR    ->setDimensions( 24, 49 );
+    oleDamageEngine->setPosition( 25, 9 );
+    oleDamageFL    ->setPosition( 0, 13 );
+    oleDamageFR    ->setPosition( 58, 13 );
+    oleDamageRL    ->setPosition( 0, 114 );
+    oleDamageRR    ->setPosition( 58, 114 );
 
 	oleDamage->addChild( oleDamageEngine );
     oleDamage->addChild( oleDamageFL );
     oleDamage->addChild( oleDamageFR );
     oleDamage->addChild( oleDamageRL );
     oleDamage->addChild( oleDamageRR );
-
+    
 	updateDamage();
 }
 
 void GameGUI::updateDamage()
 {
-	oleDamage       ->setMaterialName( "damage_g_body" );
+	oleDamage       ->setMaterialName( "damage_y_body" );
 	oleDamageEngine ->setMaterialName( "damage_y_engine" );
     oleDamageFL     ->setMaterialName( "damage_g_fl" );
     oleDamageFR     ->setMaterialName( "damage_r_fr" );

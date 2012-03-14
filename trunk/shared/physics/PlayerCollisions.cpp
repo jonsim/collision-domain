@@ -45,13 +45,13 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
     {
         if (p1MPH > p2MPH)
         {
-            p1->collisionTickCallback(damage * 0.4);
-            p2->collisionTickCallback(damage);
+            p1->collisionTickCallback(damage * 0.4, p2);
+            p2->collisionTickCallback(damage, p1);
         }
         else
         {
-            p1->collisionTickCallback(damage);
-            p2->collisionTickCallback(damage * 0.4);
+            p1->collisionTickCallback(damage, p2);
+            p2->collisionTickCallback(damage * 0.4, p1);
         }
     }
     

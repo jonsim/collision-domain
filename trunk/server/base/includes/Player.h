@@ -27,7 +27,7 @@ public:
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
 	float getCameraYaw (void);
     Car* getCar (void);
-    void collisionTickCallback (int damage);
+    void collisionTickCallback (int damage, Player *causedByPlayer);
     void applyHealthBonus (void);
         
     const char *getNickname (void) { return mNickname; }
