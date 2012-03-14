@@ -360,6 +360,13 @@ void GameGUI::setupSpeedo( void )
 	oleNeedle->setMaterialName( "speedo_needle" );
 
 	olcSpeedo->addChild( oleNeedle );
+
+    Ogre::OverlayElement *hub = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDOHUB" );
+	hub->setMetricsMode( Ogre::GMM_PIXELS );
+	hub->setDimensions( 250, 250 );
+	hub->setMaterialName( "speedo_hub" );
+
+	olcSpeedo->addChild( hub );
 }
 
 void GameGUI::updateSpeedo( void )
@@ -443,7 +450,7 @@ void GameGUI::setupDamageDisplay()
             oleDamage->setHorizontalAlignment( Ogre::GHA_LEFT );
 	        oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
 	        oleDamage->setDimensions( width, height );
-	        oleDamage->setPosition( 290, -height - 20 );
+	        oleDamage->setPosition( 20, -height - 290 );
         }*/
 
         { // Bottom Right Aligned

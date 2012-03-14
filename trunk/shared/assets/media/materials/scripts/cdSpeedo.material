@@ -10,6 +10,11 @@ material speedo_needle : cd/GUIComponent
 	set $texture needle.png
 }
 
+material speedo_hub : cd/GUIComponent
+{
+	set $texture speedo-hub.png
+}
+
 material gear0 : cd/GUIComponent
 {
     set $texture 0.png
