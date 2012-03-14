@@ -57,7 +57,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 /// @param  damage   Currently hardcoded to 1
-void Player::collisionTickCallback(int damage)
+void Player::collisionTickCallback(int damage, Player *causedByPlayer)
 {
     OutputDebugString("Client: Player collision\n");
 }

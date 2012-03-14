@@ -62,7 +62,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 ///         In total this will even out to 60 calls per second :-)
 /// @param  damage   0 if no damage was done to this player in the collision, else 1.
-void Player::collisionTickCallback(int damage)
+void Player::collisionTickCallback(int damage, Player *causedByPlayer)
 {
     // p1 and p2 might not be the only two players who collided this physics step.
     //OutputDebugString("Server: Player collision\n");
