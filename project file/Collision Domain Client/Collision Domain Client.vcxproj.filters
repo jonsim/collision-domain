@@ -610,6 +610,9 @@
     <ClInclude Include="..\..\shared\physics\includes\Vehicle.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\Camera.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -1001,6 +1004,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\Vehicle.cpp">
       <Filter>shared\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\Camera.cpp">
+      <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
