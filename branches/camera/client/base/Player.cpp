@@ -72,11 +72,21 @@ void Player::attachCamera (Ogre::Camera* cam)
     camArmNode = camNode->getParentSceneNode();
     camNode->translate(0, 0, -20); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
 
+    // Create game camera
     mCamera = new GameCamera( cam );
+    // Set it to chase mode
     mCamera->setCamType( CAM_CHASE );
+    // Set how much the camera 'snaps' to locations
+    // This gets multiplied by time since last frame
+    // For cinematic style camera 0.2 works quite well
+    mCamera->setTension( 2.8f );
+    // Chase the car body
     mCamera->setTarget( getCar()->mBodyNode );
+    // Positional offset - behind and above the vehicle
     mCamera->setOffset( btVector3( 0.f, 5.f, -10.f ) );
+    // Focus offset - slightly in front of car's local origin
     mCamera->setLookOffset( btVector3( 0, 0, 3.0f ) );
+    // Put the camera up in the air
     mCamera->setTransform( btVector3( 0, 20, 0 ) );
 
 }
@@ -104,7 +114,7 @@ void Player::processControlsFrameEvent(
 /// @brief  Updates the camera's rotation based on the values given.
 /// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
-void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
+void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time)
 {
     //Ogre::SceneNode *camNode = mCar->attachCamNode();
     //Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
@@ -117,7 +127,7 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
 		camNode->translate(0, 0, ZDepth * 0.02f);
 
-    mCamera->update();
+    mCamera->update(time);
 
 	//Update the camera
 	//

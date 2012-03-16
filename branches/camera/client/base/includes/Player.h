@@ -23,7 +23,7 @@ public:
     void createPlayer (CarType carType, CarSkin skin);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
-    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
+    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time);
 	float getCameraYaw (void);
     Car* getCar (void);
     void collisionTickCallback (int damage);

@@ -208,7 +208,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		}
 
 		// rotate the camera
-        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * evt.timeSinceLastFrame, 0.0f, 0.0f);
+        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * evt.timeSinceLastFrame, 0.0f, 0.0f, evt.timeSinceLastFrame);
 
 		// update fps counter
 		float avgfps = mWindow->getAverageFPS(); // update fps
@@ -237,7 +237,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
 		{
 			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
-			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel());
+			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
             GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
             GameCore::mGui->updateCounters();
             GameCore::mGui->updateSpeedo();
