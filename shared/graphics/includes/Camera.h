@@ -2,7 +2,7 @@
  * @file	Camera.h
  * @brief 	Contains the controls for implementing various cameras
  * @details Tried to keep this as abstracted as possible - nothing specific to players,
-            just a physics object to follow if so desired.
+            just a scene node to follow if you wish
  */
 #ifndef CAMERA_H_
 #define CAMERA_H_
@@ -28,6 +28,9 @@ public:
 
     void            setCamType( CAM_TYPE t )                        { mCamType = t; }
 
+    float           getTension()                                    { return mTension; }
+    void            setTension( float t )                           { mTension = t; }
+
     bool            isCollidable()                                  { return mCollidable; }
     void            setCollidable( bool canCollide )                { mCollidable = canCollide; }
 
@@ -46,7 +49,7 @@ public:
 
     void            lookAtTarget();
 
-    void            update();
+    void            update( btScalar timeStep );
 
 private:
 

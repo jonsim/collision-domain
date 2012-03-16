@@ -21,12 +21,13 @@ void GameCamera::lookAtTarget()
     up.normalise();
     fwd.normalise();
 
+    // Add on the offset for the position to focus on
     Ogre::Vector3 lookatPos  = pos + up * mLookOffset.getY()  + fwd * mLookOffset.getZ();
 
     mCam->lookAt( lookatPos );    
 }
 
-void GameCamera::update()
+void GameCamera::update( btScalar timeStep )
 {
     // Fixed camera
     if( mCamType == CAM_FREE )
@@ -55,8 +56,7 @@ void GameCamera::update()
     // Adjust the position to look at on the local axes
     Ogre::Vector3 lookatPos  = pos + up * mLookOffset.getY()  + fwd * mLookOffset.getZ();
 
-    // Sweep around the camera for objects we might collide with
-    btSphereShape camSphere( 0.2f );
+    // Set up some transforms in if we need to check for collisions
     btTransform cameraFrom, cameraTo;
 
     // Original camera pos = current pos
@@ -65,26 +65,39 @@ void GameCamera::update()
 
     // Now move towards new position
     if( mCamType == CAM_CHASE )
-        mWorldPos = mWorldPos.lerp( BtOgre::Convert::toBullet( desiredPos ), mTension );
+        mWorldPos = mWorldPos.lerp( BtOgre::Convert::toBullet( desiredPos ), timeStep * mTension );
     else if( mCamType == CAM_FIXED )
         mWorldPos = BtOgre::Convert::toBullet( desiredPos );
 
-    cameraTo.setIdentity();
-    cameraTo.setOrigin( mWorldPos );
-
-    btCollisionWorld::ClosestConvexResultCallback cb( 
-        cameraFrom.getOrigin(), cameraTo.getOrigin() );
-
-    cb.m_collisionFilterMask = btBroadphaseProxy::AllFilter;
-
-    GameCore::mPhysicsCore->getWorld()->convexSweepTest( &camSphere, cameraFrom, cameraTo, cb );
-
-    if( cb.hasHit() )
+    // Test for collisions if the camera is collidable
+    if( mCollidable )
     {
-        btScalar minFraction = cb.m_closestHitFraction;
-        mWorldPos.setInterpolate3( cameraFrom.getOrigin(), cameraTo.getOrigin(), minFraction );
+
+        // Set up the position the camera wants to move to
+        cameraTo.setIdentity();
+        cameraTo.setOrigin( mWorldPos );
+
+        // Create a physics shape for the camera
+        btSphereShape camSphere( 0.2f );
+
+        // Set up collision detection callback
+        btCollisionWorld::ClosestConvexResultCallback cb( cameraFrom.getOrigin(), cameraTo.getOrigin() );
+        // Set to collide with everything (includes arena and cars then (and actually maybe pickups, might need to change))
+        cb.m_collisionFilterMask = btBroadphaseProxy::AllFilter;
+
+        // Sweep test for objects
+        GameCore::mPhysicsCore->getWorld()->convexSweepTest( &camSphere, cameraFrom, cameraTo, cb );
+
+        if( cb.hasHit() )
+        {
+            // If we hit something, interpolate beteween old cam pos and furthest possible distsnce before hit
+            btScalar minFraction = cb.m_closestHitFraction;
+            mWorldPos.setInterpolate3( cameraFrom.getOrigin(), cameraTo.getOrigin(), minFraction );
+        }
     }
 
+    // Update the camera position
     mCam->setPosition( BtOgre::Convert::toOgre( mWorldPos ) );
+    // Turn to face target object
     mCam->lookAt( lookatPos );
 }
