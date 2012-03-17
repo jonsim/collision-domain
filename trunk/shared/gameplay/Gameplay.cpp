@@ -455,3 +455,11 @@ void Gameplay::initialize()
 {
 	mHUD->initialize();
 }
+
+void Gameplay::markDeath(Player* deadPlayer, Player* causedBy)
+{
+	DEATH newDeath;
+	newDeath.player = deadPlayer;
+	newDeath.causedBy = causedBy;
+	deathList.push_back(&newDeath);
+}
