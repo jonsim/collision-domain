@@ -11,6 +11,7 @@
 #include "InfoItem.h"
 #include "ScoreBoard.h"
 #include "HUD.h"
+#include "Death.h"
 
 #include <math.h>
 #include <string>
@@ -59,7 +60,7 @@ public:
 	std::vector<InfoItem*>		mInfoItems;
 	int							numberOfTeams;
 	bool						mGameActive; //True = Game underway, False = Game not yet started
-
+	void						markDeath(Player* deadPlayer, Player* causedBy);
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -75,6 +76,7 @@ private:
 
 	ScoreBoard*					mSB;
 	HUD*						mHUD;
+	std::vector<DEATH*>			deathList;
 };
 
 

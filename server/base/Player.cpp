@@ -75,7 +75,7 @@ void Player::collisionTickCallback(int damage, Player *causedByPlayer)
 		if(hp <= 0)
 		{
 			hp = 0;
-			this->killPlayer();
+			this->killPlayer(causedByPlayer);
 		}
 	}
 }
@@ -222,4 +222,10 @@ void Player::killPlayer()
     // should only be called on dead cars thats not such a problem).
     // Yeah so turns out this just fucks everything up and not in a good way.
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 10, 0)); 
+}
+
+void Player::killPlayer(Player* causedBy)
+{
+	this->killPlayer();
+	GameCore::mGameplay->markDeath(this,causedBy);	
 }
