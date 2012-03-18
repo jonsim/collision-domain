@@ -74,60 +74,81 @@ void AiPlayer::Update(double timeSinceLastFrame)
 	double distance = pos.distance(targetPos);
 	double theta = heading.getYaw().valueRadians();
 	
-	if(distance > 10)
-		mPlayer->getCar()->accelInputTick(true, false, false, timeSinceLastFrame);
-	else
-		mPlayer->getCar()->accelInputTick(false, false, false, timeSinceLastFrame);
-
-	double angle = sin((pos.x-targetPos.x) / (pos.z - targetPos.z));
-
-	if(pos.z > targetPos.z && pos.x > targetPos.x)
+	if(mPlayer->getAlive())
 	{
-		if(theta < 0)
+		if(distance > 10)
+			mPlayer->getCar()->accelInputTick(true, false, false, timeSinceLastFrame);
+		else
+			mPlayer->getCar()->accelInputTick(false, false, false, timeSinceLastFrame);
+
+		double angle = sin((pos.x-targetPos.x) / (pos.z - targetPos.z));
+
+		if(pos.z > targetPos.z && pos.x > targetPos.x)
 		{
-			theta = fabs(theta);
+			if(theta < 0)
+			{
+				theta = fabs(theta);
+				angle += HalfPi;
+
+				if(fabs(theta-angle) < 0.03)
+					return;
+				else if(theta > angle)
+					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+				else
+					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+			}
+			else
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+
+			return;
+		}
+
+		if(pos.z < targetPos.z && pos.x > targetPos.x)
+		{
+			if(theta < 0)
+			{
+				//angle = fabs(angle);
+				//theta = fabs(theta);
+				//angle += HalfPi;
+
+				if(fabs(theta-angle) < 0.03)
+					return;
+				else if(theta < angle)
+					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+				else
+					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+			}
+			else
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+
+			return;
+
+		}
+
+		if(targetPos.x > pos.x && targetPos.z > pos.z)
+		{
+			if(theta >= 0)
+			{
+				if(fabs(theta - angle) < 0.03)
+					return;
+				else if(angle > theta)
+					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+				else
+					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+			}
+			else
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+
+			return;
+
+		}
+
+		if(theta > 0)
+		{
+			angle = fabs(angle);
 			angle += HalfPi;
 
 			if(fabs(theta-angle) < 0.03)
-				return;
-			else if(theta > angle)
-				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
-			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-		}
-		else
-			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-
-		return;
-	}
-
-	if(pos.z < targetPos.z && pos.x > targetPos.x)
-	{
-		if(theta < 0)
-		{
-			//angle = fabs(angle);
-			//theta = fabs(theta);
-			//angle += HalfPi;
-
-			if(fabs(theta-angle) < 0.03)
-				return;
-			else if(theta < angle)
-				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
-			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-		}
-		else
-			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-
-		return;
-
-	}
-
-	if(targetPos.x > pos.x && targetPos.z > pos.z)
-	{
-		if(theta >= 0)
-		{
-			if(fabs(theta - angle) < 0.03)
 				return;
 			else if(angle > theta)
 				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
@@ -136,26 +157,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 		}
 		else
 			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-
-		return;
-
 	}
-
-	if(theta > 0)
-	{
-		angle = fabs(angle);
-		angle += HalfPi;
-
-		if(fabs(theta-angle) < 0.03)
-			return;
-		else if(angle > theta)
-			mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
-		else
-			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-	}
-	else
-		mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
-	
 }
 
 Ogre::Vector3 AiPlayer::GetPos()
