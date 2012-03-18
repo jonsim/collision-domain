@@ -24,7 +24,8 @@ enum OverlayType
 	FIVE_OT,
 	GO_OT,
 	ONE_MINUTE_OT,
-	GAME_OVER_OT
+	GAME_OVER_OT,
+	NEW_GAME_OT
 };
 
 class InfoItem
