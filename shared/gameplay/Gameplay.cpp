@@ -214,7 +214,15 @@ void Gameplay::preparePlayers()
 //Bah this does nothing yet
 void Gameplay::resetAllHP()
 {
-
+	//Loop through the entire array
+	for(int i=0;i<MAX_PLAYERS;i++)
+	{
+		Player* player = GameCore::mPlayerPool->getPlayer(i);
+		if(player != NULL)
+		{
+			player->resetHP();
+		}
+	}
 }
 
 void Gameplay::positionPlayers()
@@ -462,4 +470,16 @@ void Gameplay::markDeath(Player* deadPlayer, Player* causedBy)
 	newDeath.player = deadPlayer;
 	newDeath.causedBy = causedBy;
 	deathList.push_back(&newDeath);
+}
+
+std::vector<DEATH*> Gameplay::getDeathList()
+{
+	return this->deathList;
+}
+
+void Gameplay::restartGame()
+{
+	// Loop through all players setting health to full
+	this->resetAllHP();
+	// Set game to not active
 }

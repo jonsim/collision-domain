@@ -7,6 +7,8 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
+
+#define INITIAL_HEALTH 100
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -52,7 +54,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 	
     mCar->attachCollisionTickCallback(this);
 	//Set HP. More clever damage might be implemented in the future
-	hp = 100;
+	hp = INITIAL_HEALTH;
 	this->setAlive(true);
 
     mCar->moveTo(btVector3(0,0.5,0));
@@ -167,6 +169,10 @@ int Player::getHP()
 	return hp;
 }
 
+void Player::resetHP()
+{
+	this->hp = INITIAL_HEALTH;
+}
 
 void Player::applyHealthBonus()
 {

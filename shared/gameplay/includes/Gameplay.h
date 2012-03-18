@@ -61,6 +61,8 @@ public:
 	int							numberOfTeams;
 	bool						mGameActive; //True = Game underway, False = Game not yet started
 	void						markDeath(Player* deadPlayer, Player* causedBy);
+	std::vector<DEATH*>			getDeathList();
+	void						restartGame();
 private:
 	//Methods
 	bool						vipModeGameWon();

@@ -8,6 +8,7 @@
 #include "GameIncludes.h"
 #include <sstream>
 
+#define INITIAL_HEALTH 100
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -172,4 +173,10 @@ void Player::setAlive(bool pAlive)
 bool Player::getAlive()
 {
 	return mAlive;
+}
+
+
+void Player::resetHP()
+{
+	this->hp = INITIAL_HEALTH;
 }
