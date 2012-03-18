@@ -58,6 +58,11 @@ public:
 	void killPlayer();
 	void killPlayer(Player* causedBy);
 	void resetHP();
+
+	//Increase
+	void addToScore(int amount);
+	int getRoundScore();	
+	void addToGameScore(int amount);
 private:
     const float      cameraRotationConstant;
 	int		         hp;
@@ -75,6 +80,9 @@ private:
 
 	Ogre::OverlayElement* mOLE;
 	RakNet::RakNetGUID mPlayerGUID;
+
+	int roundScore;
+	int gameScore;
 };
 
 #endif // #ifndef PLAYER_H

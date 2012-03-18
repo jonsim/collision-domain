@@ -9,6 +9,8 @@
 #include <sstream>
 #include <math.h>
 
+
+
 Gameplay::Gameplay()
 {
 	mSB = new ScoreBoard();
@@ -369,6 +371,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_SERVER
 					newGameII = new InfoItem(NEW_GAME_OT, 5000, 1000);
 					mInfoItems.push_back(newGameII);
+					this->calculateRoundScores();
 				#endif
 				break;
 			case NEW_GAME_OT:
@@ -494,4 +497,48 @@ void Gameplay::restartGame()
 	this->resetAllHP();
 	// Set game to not active
 	this->mGameActive = false;
+}
+
+void Gameplay::calculateRoundScores()
+{
+	for(int j=0;j<5;j++)
+		topPlayers[j] = NULL;
+
+	//Loop through each of the players in the game
+	for(int i=0;i<MAX_PLAYERS;i++)
+	{
+		//Only consider them if they're not NULL
+		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+		if(tmpPlayer != NULL)
+		{
+			//Loop through each of the top players inserting the new player in the correct place
+			for(int j=0;j<NUM_TOP_PLAYERS;j++)
+			{
+				//If they're is no player in this slot put it in
+				if(topPlayers[j] == NULL)
+				{
+					topPlayers[j] = tmpPlayer;
+					break;
+				}
+				else if(tmpPlayer->getRoundScore() >= topPlayers[j]->getRoundScore())
+				{
+					//IN the case where the socre is better than or comperable
+					//TODO - Do some randomness here it choosed either player some times
+					//Rotate the palyers array
+					for(int z=(NUM_TOP_PLAYERS-1);z>j;z--)
+					{
+						topPlayers[z] = topPlayers[z-1];
+					}
+					topPlayers[j] = tmpPlayer;
+
+				}
+			}
+		}
+	}
+
+	for(int i=0;i<NUM_TOP_PLAYERS;i++)
+	{
+		topPlayers[i]->addToGameScore(NUM_TOP_PLAYERS-i+1);
+		
+	}
 }
