@@ -57,6 +57,7 @@ public:
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
 	void killPlayer(Player* causedBy);
+	void resetHP();
 private:
     const float      cameraRotationConstant;
 	int		         hp;

@@ -46,7 +46,7 @@ public:
 
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
-
+	void resetHP();
 	CarSnapshot *mSnapshots;
 
 private:
