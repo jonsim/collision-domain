@@ -50,6 +50,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
         break;
     }
 
+	roundScore = 0;
     mCar->attachCollisionTickCallback(this);
     
     mCar->moveTo(btVector3(0,0.5,0));
@@ -179,4 +180,33 @@ bool Player::getAlive()
 void Player::resetHP()
 {
 	this->hp = INITIAL_HEALTH;
+}
+
+void Player::killPlayer(Player* causedBy)
+{
+	this->killPlayer();
+	GameCore::mGameplay->markDeath(this,causedBy);
+
+	if(this->getVIP())
+	{
+		causedBy->addToScore(5);
+	}
+	else
+	{
+		causedBy->addToScore(1);
+	}
+}
+
+void Player::addToScore(int amount)
+{
+	roundScore += amount;
+}
+
+int Player::getRoundScore()
+{
+	return this->roundScore;
+}
+void Player::addToGameScore(int amount)
+{
+	this->gameScore += amount;
 }

@@ -46,9 +46,14 @@ public:
 
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
+	void Player::killPlayer(Player* causedBy);
 	void resetHP();
 	CarSnapshot *mSnapshots;
-
+	
+	//Increase
+	void addToScore(int amount);
+	int getRoundScore();	
+	void addToGameScore(int amount);
 private:
     const float      cameraRotationConstant;
 	int              hp;
@@ -62,6 +67,9 @@ private:
 	Ogre::SceneNode* camNode;
 	Ogre::SceneNode* camArmNode;
     CarType          mCarType;
+	
+	int roundScore;
+	int gameScore;
 };
 
 #endif // #ifndef PLAYER_H

@@ -19,6 +19,7 @@
 
 /*-------------------- Some Game Values -------------*/
 #define NUM_PLAYERS_TO_START 5
+#define NUM_TOP_PLAYERS 5
 
 /*-------------------- ENUM TYPES -------------------*/
 enum
@@ -79,6 +80,8 @@ private:
 	ScoreBoard*					mSB;
 	HUD*						mHUD;
 	std::vector<DEATH*>			deathList;
+	void						calculateRoundScores();
+	Player*						topPlayers[NUM_TOP_PLAYERS];
 };
 
 

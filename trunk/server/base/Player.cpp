@@ -55,6 +55,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
     mCar->attachCollisionTickCallback(this);
 	//Set HP. More clever damage might be implemented in the future
 	hp = INITIAL_HEALTH;
+	roundScore = 0;
 	this->setAlive(true);
 
 	//Calculate some random to spawn
@@ -238,4 +239,28 @@ void Player::killPlayer(Player* causedBy)
 {
 	this->killPlayer();
 	GameCore::mGameplay->markDeath(this,causedBy);
+
+	if(this->getVIP())
+	{
+		causedBy->addToScore(5);
+	}
+	else
+	{
+		causedBy->addToScore(1);
+	}
+}
+
+void Player::addToScore(int amount)
+{
+	roundScore += amount;
+}
+
+int Player::getRoundScore()
+{
+	return this->roundScore;
+}
+
+void Player::addToGameScore(int amount)
+{
+	this->gameScore += amount;
 }
