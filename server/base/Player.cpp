@@ -57,7 +57,10 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 	hp = INITIAL_HEALTH;
 	this->setAlive(true);
 
-    mCar->moveTo(btVector3(0,0.5,0));
+	//Calculate some random to spawn
+	int spawnX = rand() % 100 - 50;
+	int spawnZ = rand() % 100 - 50;
+    mCar->moveTo(btVector3(spawnX,0.5,spawnZ));
 }
 
 

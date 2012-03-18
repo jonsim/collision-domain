@@ -211,7 +211,6 @@ void Gameplay::preparePlayers()
 	positionPlayers();
 }
 
-//Bah this does nothing yet
 void Gameplay::resetAllHP()
 {
 	//Loop through the entire array
@@ -482,4 +481,5 @@ void Gameplay::restartGame()
 	// Loop through all players setting health to full
 	this->resetAllHP();
 	// Set game to not active
+	this->mGameActive = false;
 }
