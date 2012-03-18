@@ -175,6 +175,7 @@ int Player::getHP()
 void Player::resetHP()
 {
 	this->hp = INITIAL_HEALTH;
+	this->mAlive = true;
 }
 
 void Player::applyHealthBonus()
@@ -236,5 +237,5 @@ void Player::killPlayer()
 void Player::killPlayer(Player* causedBy)
 {
 	this->killPlayer();
-	GameCore::mGameplay->markDeath(this,causedBy);	
+	GameCore::mGameplay->markDeath(this,causedBy);
 }
