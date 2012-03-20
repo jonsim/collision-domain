@@ -228,8 +228,14 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
 	if (NetworkCore::bConnected)
 	{
-		// Process the player pool. Perform updates on other players
-		GameCore::mPlayerPool->frameEvent();
+        // Process the player pool. Perform updates on other players
+        GameCore::mPlayerPool->frameEvent();
+        if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+        {
+            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
+            GameCore::mGui->updateCounters();
+            GameCore::mGui->updateSpeedo();
+        }
 
 	}
 
@@ -261,9 +267,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	    {
 		    GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
 		    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
-            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
-            GameCore::mGui->updateCounters();
-            GameCore::mGui->updateSpeedo();
 	    }
     }
 
