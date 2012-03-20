@@ -9,6 +9,7 @@
 #include <sstream>
 
 #define INITIAL_HEALTH 100
+#define NEWCAM 1
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -73,17 +74,28 @@ void Player::attachCamera (Ogre::Camera* cam)
     camNode = mCar->attachCamNode();
     camArmNode = camNode->getParentSceneNode();
     camNode->translate(0, 0, -20); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
-	/*
-    camArmNode->translate(0, 0.5, 0); // place camera y above car node
-    camArmNode->pitch(Ogre::Degree(25));
-    camNode->yaw(Ogre::Degree(180));
-    camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
-	*/
-	
-	mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
-    //camNode->attachObject(cam);
 
-	
+#if NEWCAM
+    // Create game camera
+    mCamera = new GameCamera( cam );
+    // Set it to chase mode
+    mCamera->setCamType( CAM_CHASE );
+    mCamera->setCollidable( true );
+    // Set how much the camera 'snaps' to locations
+    // This gets multiplied by time since last frame
+    // For cinematic style camera 0.2 works quite well
+    mCamera->setTension( 2.8f );
+    // Chase the car body
+    mCamera->setTarget( getCar()->mBodyNode );
+    // Positional offset - behind and above the vehicle
+    mCamera->setOffset( btVector3( 0.f, 5.f, -10.f ) );
+    // Focus offset - slightly in front of car's local origin
+    mCamera->setLookOffset( btVector3( 0, 0, 3.0f ) );
+    // Put the camera up in the air
+    mCamera->setTransform( btVector3( 0, 20, 0 ) );
+#else
+    mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
+#endif
 }
 
 
@@ -109,7 +121,7 @@ void Player::processControlsFrameEvent(
 /// @brief  Updates the camera's rotation based on the values given.
 /// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
-void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
+void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time)
 {
     //Ogre::SceneNode *camNode = mCar->attachCamNode();
     //Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
@@ -122,8 +134,13 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
 	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
 		camNode->translate(0, 0, ZDepth * 0.02f);
 
-    mCarCam->updatePosition(XRotation, YRotation);
-
+#if NEWCAM
+    if( mCamera->getCamType() == CAM_FIXED )
+        mCamera->update( Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation) );
+    else
+        mCamera->update(time);
+#endif
+   
 	//Update the camera
 	//
 	/*

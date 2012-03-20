@@ -148,7 +148,7 @@ protected:
     btRigidBody                         *mLeftDoorBody;
     btRigidBody                         *mRightDoorBody;
 
-    Vehicle                             *mVehicle;
+    btRaycastVehicle                    *mVehicle;
     CarState                            *mState;
     btRaycastVehicle::btVehicleTuning    mTuning;
     btDefaultVehicleRaycaster           *mVehicleRayCaster;

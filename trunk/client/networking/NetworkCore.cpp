@@ -274,8 +274,6 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
 	bitStream->Read( teamNum );
-    // TODO: something with iCarType to change the model created
-    // .. which also needs changes to Player.cpp
     OutputDebugString("ClientSpawn\n");
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
