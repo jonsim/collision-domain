@@ -429,20 +429,29 @@ void Car::applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force)
 
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended
 ///         with this car's unique ID so that (forbidden) name collisions don't occur.
+///         clones the meshes which correspond to deformable items on the car.
 /// @param  entityName     Name which the imported mesh will be given.
 /// @param  meshName       Name of the mesh which is to be imported.
 /// @param  toAttachTo     The SceneNode which the mesh should be imported and attached to.
-void Car::createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo)
+/// @param  isDeformable   Whether or not the item is deformable (whether it is to be cloned or not)
+void Car::createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo, bool isDeformable)
 {
     Ogre::Entity* entity;
-    try
-    {
-        entity = GameCore::mSceneMgr->getEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID));
-    }
-    catch (Ogre::ItemIdentityException)
-    {
-        entity = GameCore::mSceneMgr->createEntity(entityName + boost::lexical_cast<std::string>(mUniqueCarID), meshName);
-    }
+	Ogre::MeshPtr disposableMeshPointer;
+	std::string nameUnique = entityName + boost::lexical_cast<std::string>(mUniqueCarID);
+	if(!isDeformable) {
+		try
+		{
+			entity = GameCore::mSceneMgr->getEntity(nameUnique);
+		}
+		catch (Ogre::ItemIdentityException)
+		{
+			entity = GameCore::mSceneMgr->createEntity(nameUnique, meshName);
+		}
+	} else {
+		disposableMeshPointer = GameCore::mSceneMgr->getEntity(entityName)->getMesh()->clone(nameUnique + "mesh");
+		entity = GameCore::mSceneMgr->createEntity(nameUnique, disposableMeshPointer->getName());
+	}
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)

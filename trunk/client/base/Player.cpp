@@ -17,6 +17,15 @@ Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mIsVIP(fals
                         mTeam(0), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
+	//processingCollision = false;
+	numCollisionDataPoints = 0;
+	//averageCollisionPoint.setZero();
+
+	// Damage Level Thresholds: how many calls to collisionTickCallback have been seen
+	//lowDamageThreshold = 25;
+	//mediumDamageThreshold = 55;
+	//highDamageThreshold = 80;
+	//btVector3::setZero(averageCollisionPoint);
 }
 
 
@@ -57,12 +66,38 @@ void Player::createPlayer (CarType carType, CarSkin skin)
     mCar->moveTo(btVector3(0,0.5,0));
 }
 
+void Player::lowDamageCallBack(std::string causedBy) {
+
+}
+
+void Player::midDamageCallBack(std::string causedBy){
+
+}
+
+void Player::highDamageCallBack(std::string causedBy){
+}
 
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
-/// @param  damage   Currently hardcoded to 1
-void Player::collisionTickCallback(int damage, Player *causedByPlayer)
-{
-    OutputDebugString("Client: Player collision\n");
+/// @param  hitPoint		Location of the collision point on the collision mesh - in world coordinates
+/// @param  speed			The speed of the impact in the direction of the normal to the collision point
+/// @param  causedByPlayer	Pointer to the other player in the collision.
+void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer) {
+	/*float hisSpeed = causedByPlayer->getCar()->getCarMph();
+	float mySpeed = getCar()->getCarMph();
+	if(depth < 
+	if(speed >= lowDamageSpeed && speed < mediumDamageSpeed) {
+		lowDamageCallBack(causedByPlayer->getGUID());
+	} else if(speed >= mediumDamageSpeed && speed < highDamageSpeed) {
+		midDamageCallBack(causedByPlayer->getGUID());
+	} else if(speed >= highDamageSpeed) {
+		highDamageCallBack(causedByPlayer->getGUID());
+	}*/
+	/*std::stringstream ss;
+	ss << "crash with " << causedByPlayer->getGUID() << " overlap: " << depth << "\n";
+	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
+	OutputDebugString(ss.str().c_str());*/
+
+	GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
 }
 
 
@@ -191,6 +226,14 @@ void Player::setAlive(bool pAlive)
 bool Player::getAlive()
 {
 	return mAlive;
+}
+
+void Player::setGUID(RakNet::RakNetGUID playerGUID) {
+	stringGUID = playerGUID.ToString();
+}
+
+std::string Player::getGUID(void) {
+	return stringGUID;
 }
 
 

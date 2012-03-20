@@ -27,7 +27,8 @@ public:
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
 	float getCameraYaw (void);
     Car* getCar (void);
-    void collisionTickCallback (int damage, Player *causedByPlayer);
+    //void collisionTickCallback (int damage, Player *causedByPlayer);
+	void collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer);
     void applyHealthBonus (void);
         
     const char *getNickname (void) { return mNickname; }
@@ -36,6 +37,9 @@ public:
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname (char *szNick) { mNickname = strdup( szNick ); }
 	int	 getHP (void);
+
+	void setGUID(RakNet::RakNetGUID playerGUID);
+	std::string getGUID(void);
 	
 	void setOverlayElement (Ogre::OverlayElement* ole);
     void setSpawned (void); //Marks the car as spawned
@@ -56,6 +60,7 @@ public:
 
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
+	RakNet::RakNetGUID playerGUID;
 	void killPlayer(Player* causedBy);
 	void resetHP();
 
@@ -80,6 +85,13 @@ private:
 
 	Ogre::OverlayElement* mOLE;
 	RakNet::RakNetGUID mPlayerGUID;
+	bool							  processingCollision;
+	std::map<std::string, float>	  collisionDamages;
+	std::map<std::string, btVector3>  collisionPositions;
+	int							      numCollisionDataPoints;
+	btVector3					      averageCollisionPoint;
+								      
+	std::string					      stringGUID;
 
 	int roundScore;
 	int gameScore;

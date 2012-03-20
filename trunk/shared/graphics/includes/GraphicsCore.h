@@ -16,6 +16,8 @@
  */
 class SpawnScreen;
 
+class MeshDeformer;
+
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
 {
 public:
@@ -30,6 +32,29 @@ public:
     Ogre::Camera*       mCamera;
     Ogre::RenderWindow* mWindow;
     SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
+
+	// These are the deformable meshes on each car, they need to be accessable to each car class so that the relevant meshes
+	// can be cloned and added to the car
+
+	Ogre::Entity *smallCarBodyMesh;
+	Ogre::Entity *smallCarLDoorMesh;
+	Ogre::Entity *smallCarRDoorMesh;
+	Ogre::Entity *smallCarFBumperMesh;
+	Ogre::Entity *smallCarRBumperMesh;
+				 
+	Ogre::Entity *bangerBodyMesh;
+	Ogre::Entity *bangerFLDoorMesh;
+	Ogre::Entity *bangerFRDoorMesh;
+	Ogre::Entity *bangerRLDoorMesh;
+	Ogre::Entity *bangerRRDoorMesh;
+	Ogre::Entity *bangerFBumperMesh;
+	Ogre::Entity *bangerRBumperMesh;
+				 
+	Ogre::Entity *truckBodyMesh;
+	Ogre::Entity *truckLDoorMesh;
+	Ogre::Entity *truckRDoorMesh;
+	Ogre::Entity *truckRBumperMesh;
+	MeshDeformer *meshDeformer;
     
 
 protected:

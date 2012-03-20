@@ -208,16 +208,16 @@ void TruckCar::initNodes()
 void TruckCar::initGraphics()
 {
     // Load the truck meshes.
-    createGeometry("CarBody",               "truck_body.mesh",        mChassisNode);
-    createGeometry("CarEntity_LDoor",       "truck_ldoor.mesh",       mLDoorNode);
-    createGeometry("CarEntity_RDoor",       "truck_rdoor.mesh",       mRDoorNode);
-    createGeometry("CarEntity_RBumper",     "truck_rbumper.mesh",     mRBumperNode);
-    createGeometry("CarEntity_LWingmirror", "truck_lwingmirror.mesh", mLWingmirrorNode);
-    createGeometry("CarEntity_RWingmirror", "truck_rwingmirror.mesh", mRWingmirrorNode);
-    createGeometry("CarEntity_FLWheel",     "truck_lwheel.mesh",      mFLWheelNode);
-    createGeometry("CarEntity_FRWheel",     "truck_rwheel.mesh",      mFRWheelNode);
-    createGeometry("CarEntity_RLWheel",     "truck_lwheel.mesh",      mRLWheelNode);
-    createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode);
+    createGeometry("UnIqUe_TruckBody",      "truck_body.mesh",        mChassisNode,     true);
+    createGeometry("UnIqUe_TruckLDoor",     "truck_ldoor.mesh",       mLDoorNode,       true);
+    createGeometry("UnIqUe_TruckRDoor",     "truck_rdoor.mesh",       mRDoorNode,       true);
+    createGeometry("UnIqUe_TruckRBumper",   "truck_rbumper.mesh",     mRBumperNode,     true);
+    createGeometry("CarEntity_LWingmirror", "truck_lwingmirror.mesh", mLWingmirrorNode, false);
+    createGeometry("CarEntity_RWingmirror", "truck_rwingmirror.mesh", mRWingmirrorNode, false);
+    createGeometry("CarEntity_FLWheel",     "truck_lwheel.mesh",      mFLWheelNode,     false);
+    createGeometry("CarEntity_FRWheel",     "truck_rwheel.mesh",      mFRWheelNode,     false);
+    createGeometry("CarEntity_RLWheel",     "truck_lwheel.mesh",      mRLWheelNode,     false);
+    createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode,     false);
 
     // Scale the loaded meshes
     PhysicsCore::auto_scale_scenenode(mChassisNode);
@@ -257,7 +257,7 @@ void TruckCar::updateTeam (int teamNumber)
 void TruckCar::loadDestroyedModel (void)
 {
     mChassisNode->detachAllObjects();
-    createGeometry("CarEntity_Burnt", "truck_burnt.mesh", mChassisNode);
+    createGeometry("CarEntity_Burnt", "truck_burnt.mesh", mChassisNode, false);
 }
 
 

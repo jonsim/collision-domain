@@ -33,15 +33,19 @@ PlayerCollisions::~PlayerCollisions()
     delete mCollisions;
 }
 
+static int numColls = 0;
 
 /// 
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
 {
+	//OutputDebugString("COLLISION!\n");
     // New damage calculations
-    Ogre::Real p1MPH = p1->getCar()->getCarMph();
-    Ogre::Real p2MPH = p2->getCar()->getCarMph();
-    Ogre::Real damage  = abs(p1MPH - p2MPH) * 0.25;  // quarter the difference in speeds
-    if (p1MPH > 15 || p2MPH > 15)
+    //Ogre::Real p1MPH = p1->getCar()->getCarMph();
+    //Ogre::Real p2MPH = p2->getCar()->getCarMph();
+    //Ogre::Real damage  = abs(p1MPH - p2MPH) * 0.25;  // quarter the difference in speeds
+
+	
+    /*if (p1MPH > 15 || p2MPH > 15)
     {
         if (p1MPH > p2MPH)
         {
@@ -53,7 +57,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
             p1->collisionTickCallback(damage, p2);
             p2->collisionTickCallback(damage * 0.4, p1);
         }
-    }
+    }*/
     
     // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION
     for (int i=0; i < contactManifold->getNumContacts(); i++)
@@ -79,36 +83,36 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
         // for sparks
 
         //btVector3 contactCenter = (worldPosOnA + worldPosOnB) / 2.0;
-        /*std::stringstream ss;
-        ss << p1 << p2 << "   " << i << "   " <<
-            combinedLateralFriction << "   " <<
-            appliedImpulse << "   " <<
-            distance << "   " <<
-            lifetime 
-            << "   x" << worldPosOnA.x()
-            << " y" << worldPosOnA.y()
-            << " z" << worldPosOnA.z()
+			/*std::stringstream ss;
+			ss << p1 << p2 << "   " << i << "   " <<
+				combinedLateralFriction << "   " <<
+				appliedImpulse << "   " <<
+				distance << "   " <<
+				lifetime 
+				<< "   x" << worldPosOnA.x()
+				<< " y" << worldPosOnA.y()
+				<< " z" << worldPosOnA.z()
 
-            << "   x" << worldPosOnB.x()
-            << " y" << worldPosOnB.y()
-            << " x" << worldPosOnB.z()
+				<< "   x" << worldPosOnB.x()
+				<< " y" << worldPosOnB.y()
+				<< " x" << worldPosOnB.z()
 
-            << "   " << lateralImpulse1
-            << "   " << lateralImpulse2
+				<< "   " << lateralImpulse1
+				<< "   " << lateralImpulse2
 
-            << "   x" << localA.x()
-            << " y" << localA.y()
-            << " z" << localA.z()
+				<< "   x" << localA.x()
+				<< " y" << localA.y()
+				<< " z" << localA.z()
 
-            << "   x" << localB.x()
-            << " y" << localB.y()
-            << " z" << localB.z()
+				<< "   x" << localB.x()
+				<< " y" << localB.y()
+				<< " z" << localB.z()
 
-            << "   x" << normalOnB.x()
-            << " y" << normalOnB.y()
-            << " z" << normalOnB.z()
-            << "\n";
-        OutputDebugString(ss.str().c_str());*/
+				<< "   x" << normalOnB.x()
+				<< " y" << normalOnB.y()
+				<< " z" << normalOnB.z()
+				<< "\n";
+			OutputDebugString(ss.str().c_str());*/
     }
 
 
@@ -166,6 +170,14 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 
         
     // append the damage dealt in this substep to what we have already
+	
+
+	btVector3 averageCollisionPointOnA(0, 0, 0);
+	btVector3 averageCollisionPointOnB(0, 0, 0);
+	btVector3 averageNormOnB(0, 0, 0);
+
+	btScalar averageOverlapDistance = 0.f;
+	
 
 	int numContacts = contactManifold->getNumContacts();
 	for (int j = 0; j < numContacts; j++)
@@ -173,11 +185,49 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 		btManifoldPoint& pt = contactManifold->getContactPoint(j);
 		if (pt.getDistance() < 0.f)
 		{
-			const btVector3& ptA = pt.getPositionWorldOnA();
-			const btVector3& ptB = pt.getPositionWorldOnB();
-			const btVector3& normalOnB = pt.m_normalWorldOnB;
+			//pt.getposition
+			//const btVector3& ptA =
+			averageCollisionPointOnA += pt.getPositionWorldOnA();
+			averageOverlapDistance += pt.getDistance();
+			//averageNormOnA += pt.m_no// pt.m_normalWorldOnA;
+			//const btVector3& ptB = pt.getPositionWorldOnB();
+			//const btVector3& normalOnB = pt.m_normalWorldOnB;
+			averageCollisionPointOnB += pt.getPositionWorldOnB();
+			averageNormOnB +=  pt.m_normalWorldOnB;
+			//std::stringstream ss;
+			//ss << "point on car A: " << ptA.x() << "\n";
+			//ss << "local in A: " << pt.m_localPointA.x() << "\n";
+			//OutputDebugString(ss.str().c_str());
 		}
 	}
+
+	averageCollisionPointOnA /= numContacts;
+	averageCollisionPointOnB /= numContacts;
+	//averageOverlapDistance   /= (btScalar)numContacts;
+	//averageNormOnB           /= numContacts;
+	//float angleBetweenNorA;
+
+
+	Ogre::Real p1MPH = p1->getCar()->getCarMph();
+    Ogre::Real p2MPH = p2->getCar()->getCarMph();
+    Ogre::Real damage  = abs(p1MPH - p2MPH) * 0.25;
+
+	if (p1MPH > 15 || p2MPH > 15)
+    {
+        if (p1MPH > p2MPH)
+        {
+			p1->collisionTickCallback(averageCollisionPointOnA, damage * 0.4, p2);
+			p2->collisionTickCallback(averageCollisionPointOnB, damage, p1);
+        }
+        else
+        {
+            p1->collisionTickCallback(averageCollisionPointOnA, damage, p2);
+			p2->collisionTickCallback(averageCollisionPointOnB, damage * 0.4, p1);
+        }
+    }
+	
+
+	
 }
 
 

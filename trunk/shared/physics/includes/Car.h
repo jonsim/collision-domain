@@ -70,7 +70,7 @@ public:
 
 
 protected:
-    void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo);
+    void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo, bool isDeformable);
     void setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo);
     
     OgreOggISound *mHornSound;

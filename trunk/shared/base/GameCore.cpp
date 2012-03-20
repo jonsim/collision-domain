@@ -36,6 +36,7 @@ void GameCore::initialise(GraphicsCore* graphicsCore)
 	GameCore::mGui          = new GameGUI();
     GameCore::mPowerupPool  = new PowerupPool();
 	GameCore::mGameplay		= new Gameplay();
+	
 }
 
 void GameCore::destroy()

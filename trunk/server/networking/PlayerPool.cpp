@@ -26,6 +26,7 @@ void PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	{
 		mPlayers[iNew] = new Player();
 		mPlayers[iNew]->setPlayerGUID(playerid);
+		mPlayers[iNew]->setGUID(playerid);
 		mGUID[iNew] = playerid;
         mPlayers[iNew]->setNickname( szNickname );
 	}

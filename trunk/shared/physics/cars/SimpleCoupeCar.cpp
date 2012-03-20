@@ -214,17 +214,19 @@ void SimpleCoupeCar::initNodes()
 void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
 {
     // Load the meshes.
-    createGeometry("CarEntity_Body",    "banger_body.mesh",   mChassisNode);
-    createGeometry("CarEntity_LDoor",   "banger_fldoor.mesh", mFLDoorNode);
-    createGeometry("CarEntity_RDoor",   "banger_frdoor.mesh", mFRDoorNode);
-    createGeometry("CarEntity_RLDoor",  "banger_rldoor.mesh", mRLDoorNode);
-    createGeometry("CarEntity_RRDoor",  "banger_rrdoor.mesh", mRRDoorNode);
-    createGeometry("CarEntity_FBumper", "banger_fbumper.mesh", mFBumperNode);
-    createGeometry("CarEntity_RBumper", "banger_rbumper.mesh", mRBumperNode);
-    createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh",  mFLWheelNode);
-    createGeometry("CarEntity_FRWheel", "banger_rwheel.mesh",  mFRWheelNode);
-    createGeometry("CarEntity_RLWheel", "banger_lwheel.mesh",  mRLWheelNode);
-    createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh",  mRRWheelNode);
+	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
+	// be used in the first parameter
+    createGeometry("UnIqUe_BangerBody",    "banger_body.mesh",    mChassisNode, true);
+    createGeometry("UnIqUe_BangerLDoor",   "banger_fldoor.mesh",  mFLDoorNode,  true);
+    createGeometry("UnIqUe_BangerRDoor",   "banger_frdoor.mesh",  mFRDoorNode,  true);
+    createGeometry("UnIqUe_BangerRLDoor",  "banger_rldoor.mesh",  mRLDoorNode,  true);
+    createGeometry("UnIqUe_BangerRRDoor",  "banger_rrdoor.mesh",  mRRDoorNode,  true);
+    createGeometry("UnIqUe_BangerFBumper", "banger_fbumper.mesh", mFBumperNode, true);
+    createGeometry("UnIqUe_BangerRBumper", "banger_rbumper.mesh", mRBumperNode, true);
+    createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh",     mFLWheelNode, false);
+    createGeometry("CarEntity_FRWheel", "banger_rwheel.mesh",     mFRWheelNode, false);
+    createGeometry("CarEntity_RLWheel", "banger_lwheel.mesh",     mRLWheelNode, false);
+    createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh",     mRRWheelNode, false);
     
     // Scale all loaded meshes.
     PhysicsCore::auto_scale_scenenode(mChassisNode);
@@ -274,7 +276,7 @@ void SimpleCoupeCar::updateTeam (int teamNumber)
 void SimpleCoupeCar::loadDestroyedModel (void)
 {
     mChassisNode->detachAllObjects();
-    createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode);
+    createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode, false);
 }
 
 
