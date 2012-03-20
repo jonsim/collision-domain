@@ -21,6 +21,7 @@ public:
     PowerupRandom(Ogre::Vector3 createAboveAt);
     ~PowerupRandom();
     void playerCollision(Player* player);
+    void playerCollision(Player* player, PowerupType pwrType);
     void frameEvent( const Ogre::FrameEvent& evt );
     bool isPendingDelete();
 

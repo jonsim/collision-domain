@@ -273,6 +273,19 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 		}
 	}
 
+    for( int j = 0; j < MAX_POWERUPS; j ++ )
+    {
+        if( GameCore::mPowerupPool->getPowerup( j ) )
+        {
+            RakNet::BitStream bsSend;
+            bsSend.Write( j );
+            bsSend.Write( GameCore::mPowerupPool->getPowerupType( j ) );
+            bsSend.Write( GameCore::mPowerupPool->getPowerup( j )->getPosition() );
+
+            m_RPC->Signal( "PowerupCreate", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  playerid, false, false );
+        }
+    }
+
 	GamestateUpdatePlayer( playerid );
 }
 
@@ -344,6 +357,31 @@ void NetworkCore::InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
 
     m_RPC->Signal( "InfoItemTransmit", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+}
+
+void NetworkCore::sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc )
+{
+    RakNet::BitStream bsSend;
+    bsSend.Write( pwrID );
+    bsSend.Write( pwrType );
+    bsSend.Write( pwrLoc );
+
+    m_RPC->Signal( "PowerupCreate", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+}
+
+void NetworkCore::sendPowerupCollect( int pwrID, Player *player )
+{
+    RakNet::BitStream bsSend;
+    bsSend.Write( pwrID );
+    if( player != NULL )
+    {
+        bsSend.Write( true );
+        bsSend.Write( player->getPlayerGUID() );
+    }
+    else
+    {
+        bsSend.Write( false );
+    }
 }
 
 	

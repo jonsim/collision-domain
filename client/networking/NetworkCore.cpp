@@ -304,13 +304,15 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 void NetworkCore::PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {	  
+    int id;
     PowerupType pwrType;
     Ogre::Vector3 pwrLoc;
 
+    bitStream->Read( id );
     bitStream->Read( pwrType );
     bitStream->Read( pwrLoc );
 
-    GameCore::mPowerupPool->createPowerup( pwrType, pwrLoc );
+    GameCore::mPowerupPool->createPowerup( pwrType, pwrLoc, id );
 }
 
 void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -326,7 +328,7 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
     if( !bPlayer )
     {
         // Remove a powerup, nobody collected it
-        
+        pwrObject->playerCollision( NULL );
     }
     else
     {
@@ -339,20 +341,16 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
             return;
 
         // Check if powerup was random
-        if( pwrID == POWERUP_RANDOM )
+        if( GameCore::mPowerupPool->getPowerupType( pwrID ) == POWERUP_RANDOM )
         {
+            // Read the type that it turned into
             PowerupType pwrType;
             bitStream->Read( pwrType );
-
-            // TODO: call collect powerup with pwrType & playerid
-            // TODO: delete original powerup
+            pwrObject->playerCollision( pPlayer, pwrType );
         }
         else
         {
-            // TODO: check if powerup is removable
-
-            // TODO: get the original powerup type
-            // TODO: delete powerup
+            pwrObject->playerCollision( pPlayer );
         }
     }
 }

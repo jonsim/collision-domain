@@ -15,8 +15,11 @@ class Powerup
 {
 public:
     virtual void playerCollision(Player* player) = 0;
+    virtual void playerCollision(Player* player, PowerupType pwrType) {} // For client removing randoms
     virtual void frameEvent( const Ogre::FrameEvent& evt ) = 0;
     virtual bool isPendingDelete() = 0;
+
+    Ogre::Vector3 getPosition() { if( mNode ) return mNode->getPosition(); }
 
     //int getPowerupType(); if you have to check this, its probably bad oo design
     //void setPowerupType( int iType ); http://stackoverflow.com/questions/500493/c-equivalent-of-instanceof

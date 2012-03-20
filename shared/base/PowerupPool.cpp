@@ -15,33 +15,41 @@ PowerupPool::PowerupPool()
 
 /// can be used if the powerup type supports creation invisibly, if not returns null
 /// returns null if no free pickup slots are available
-Powerup *PowerupPool::createPowerup( PowerupType type )
+Powerup *PowerupPool::createPowerup( PowerupType type, int id )
 {
-    return createPowerup( type, Ogre::Vector3::ZERO, false );
+    return createPowerup( type, Ogre::Vector3::ZERO, false, id );
 }
 
 /// returns null if no free pickup slots are available
-Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAboveAt )
+Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, int id )
 {
-    return createPowerup( type, createAboveAt, true );
+    return createPowerup( type, createAboveAt, true, id );
 }
 
-Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, bool spawn )
+Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, bool spawn, int id )
 {
-    int iNew = -1;
-	for( int i = 0; i < MAX_POWERUPS; i ++ )
-	{
-		if( mPowerups[i] == NULL )
-		{
-			iNew = i;
-			break;
-		}
-	}
+    // id should always be -1 for server
+    // To keep ids syncd, the client forces a powerup into a particular id
+    int iNew = id;
+    if( iNew == -1 )
+    {
+	    for( int i = 0; i < MAX_POWERUPS; i ++ )
+	    {
+		    if( mPowerups[i] == NULL )
+		    {
+			    iNew = i;
+			    break;
+		    }
+	    }
+    }
 
     if (iNew == -1) {
         log( "No Free pickup slots" );
         return NULL;
     }
+
+    // TODO: handle should-never-happen case where client told to create
+    // a powerup in a slot that already has one
 
     // Create an instance of the relevant powerup
     switch( type )
@@ -71,6 +79,10 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
 
     mPowerupTypes[iNew] = type;
 
+#ifdef COLLISION_DOMAIN_SERVER
+    if (spawn) GameCore::mNetworkCore->sendPowerupCreate(iNew, type, createAboveAt);
+#endif
+
     return mPowerups[iNew];
 }
 
@@ -78,6 +90,12 @@ Powerup *PowerupPool::getPowerup( int index )
 {
     if( index < 0 || index >= MAX_POWERUPS ) return NULL;
     return mPowerups[index];
+}
+
+PowerupType PowerupPool::getPowerupType( int index )
+{
+    if( index < 0 || index >= MAX_POWERUPS ) return POWERUP_RANDOM;
+    return mPowerupTypes[index];
 }
 
 /// @brief  Delete a powerup 
@@ -120,10 +138,13 @@ void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
 {
 	for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
+
         if( ! mPowerups[i] )
         {
             // this will fill this null index with a powerup.
+#ifdef COLLISION_DOMAIN_SERVER
             spawnSomething();
+#endif
             continue;
         }
 

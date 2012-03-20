@@ -94,6 +94,9 @@ public:
 	void sendPlayerDeath(Player* player); 
 	void declareNewVIP(Player* player);
 
+    void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
+    void sendPowerupCollect( int pwrID, Player *player );
+
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
 	// RPC Calls
