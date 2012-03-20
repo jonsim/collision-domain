@@ -52,15 +52,17 @@ void PowerupMass::playerCollision(Player* player)
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
     
-    GameCore::mAudioCore->playSoundOrRestart(mSound);
-    
     if (mHasSpawned)
     {
         removeCollideable();
         removeGraphic();
     }
 
-    // apply powerup to player
+    if( player != NULL )
+    {
+        GameCore::mAudioCore->playSoundOrRestart(mSound);
+        // apply powerup to player
+    }
 
     // IF THE POWERUP LINGERS LONGER THAN THIS METHOD,
     // isPendingDelete() NEEDS TO RETURN SOMETHING ELSE

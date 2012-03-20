@@ -54,17 +54,20 @@ void PowerupHealth::playerCollision(Player* player)
     if (mHasBeenCollected) return;
         mHasBeenCollected = true;
 
-    // play powerup reward sound
-    GameCore::mAudioCore->playSoundOrRestart(mSound);
-
     if (mHasSpawned)
     {
         removeCollideable();
         removeGraphic();
     }
 
-    // apply extra health
-    player->applyHealthBonus();
+    if( player != NULL )
+    {
+        // play powerup reward sound
+        GameCore::mAudioCore->playSoundOrRestart(mSound);
+
+        // apply extra health
+        player->applyHealthBonus();
+    }
 
     // IF THE POWERUP LINGERS LONGER THAN THIS METHOD,
     // isPendingDelete() NEEDS TO RETURN SOMETHING ELSE

@@ -98,19 +98,22 @@ void PowerupRandom::playerCollision(Player* player)
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
 
-    GameCore::mAudioCore->playSoundOrRestart(mSound);
-
-    Powerup* powerup = NULL;
+    if( player != NULL )
     {
-        // only a few of the powerup types fit as "random" rewards so here they are:
-        PowerupType mPotentialPowerups[3] = {POWERUP_HEALTH, POWERUP_MASS, POWERUP_SPEED};
+        GameCore::mAudioCore->playSoundOrRestart(mSound);
 
-        PowerupType chosen = mPotentialPowerups[
-            rand() % (sizeof(mPotentialPowerups) / sizeof(PowerupType))];
-        powerup = GameCore::mPowerupPool->createPowerup(chosen);
+        Powerup* powerup = NULL;
+        {
+            // only a few of the powerup types fit as "random" rewards so here they are:
+            PowerupType mPotentialPowerups[3] = {POWERUP_HEALTH, POWERUP_MASS, POWERUP_SPEED};
+
+            PowerupType chosen = mPotentialPowerups[
+                rand() % (sizeof(mPotentialPowerups) / sizeof(PowerupType))];
+            powerup = GameCore::mPowerupPool->createPowerup(chosen);
+        }
+
+        if (powerup) powerup->playerCollision(player);
     }
-
-    if (powerup) powerup->playerCollision(player);
 
     removeFromWorlds();
 
@@ -118,6 +121,30 @@ void PowerupRandom::playerCollision(Player* player)
     // isPendingDelete() NEEDS TO RETURN SOMETHING ELSE
 }
 
+void PowerupRandom::playerCollision(Player* player, PowerupType pwrType)
+{
+    // this collision callback could potentially be called multiple times before
+    // the collision object is removed, so give it to the first person who grabbed it
+    if (mHasBeenCollected) return;
+    mHasBeenCollected = true;
+
+    if( player != NULL )
+    {
+        GameCore::mAudioCore->playSoundOrRestart(mSound);
+
+        Powerup* powerup = NULL;
+        {
+            powerup = GameCore::mPowerupPool->createPowerup(pwrType);
+        }
+
+        if (powerup) powerup->playerCollision(player);
+    }
+
+    removeFromWorlds();
+
+    // IF THE POWERUP LINGERS LONGER THAN THIS METHOD,
+    // isPendingDelete() NEEDS TO RETURN SOMETHING ELSE
+}
 
 void PowerupRandom::frameEvent(const Ogre::FrameEvent& evt)
 {

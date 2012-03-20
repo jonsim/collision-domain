@@ -52,16 +52,18 @@ void PowerupSpeed::playerCollision(Player* player)
     if (mHasBeenCollected) return;
     mHasBeenCollected = true;
 
-    // play powerup reward sound
-    GameCore::mAudioCore->playSoundOrRestart(mSound);
-
     if (mHasSpawned)
     {
         removeCollideable();
         removeGraphic();
     }
 
-    // apply powerup to player
+    if( player != NULL )
+    {
+        // play powerup reward sound
+        GameCore::mAudioCore->playSoundOrRestart(mSound);
+        // apply powerup to player
+    }
 
 
     // IF THE POWERUP LINGERS LONGER THAN THIS METHOD,

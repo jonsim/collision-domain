@@ -29,14 +29,15 @@ class PowerupPool
 public:
     PowerupPool();
     ~PowerupPool();
-    Powerup *createPowerup( PowerupType type );
-    Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt );
+    Powerup *createPowerup( PowerupType type, int id = -1 );
+    Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, int id = -1 );
     Powerup *getPowerup( int id );
+    PowerupType getPowerupType( int index );
     void frameEvent( const Ogre::FrameEvent& evt );
     void spawnSomething();
     
 private:
-    Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, bool spawn );
+    Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, bool spawn, int id = -1 );
     void deletePowerup( int index );
     Ogre::Vector3* randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge);
 
