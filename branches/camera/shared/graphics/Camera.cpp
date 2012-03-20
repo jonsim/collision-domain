@@ -101,3 +101,52 @@ void GameCamera::update( btScalar timeStep )
     // Turn to face target object
     mCam->lookAt( lookatPos );
 }
+
+void GameCamera::update( Degree xRot, Degree yRot )
+{
+    // Special update method for fixed cameras so we can rotate around object
+    if( mCamType != CAM_FIXED )
+        return;
+
+    // Following camera, target not set yet
+    if( !mTarget )
+        return;
+
+    totalXRot += xRot;
+    if( abs( totalXRot.valueDegrees() ) >= 180 )
+        totalXRot = -totalXRot;
+    if( totalXRot.valueDegrees() >= 360 )
+        totalXRot -= Ogre::Degree(360);
+    if( totalXRot.valueDegrees() <= -360 )
+        totalXRot += Ogre::Degree(360);
+
+    totalYRot += yRot;
+    if( abs( totalYRot.valueDegrees() ) >= 180 )
+        totalYRot = -totalYRot;
+    if( totalYRot.valueDegrees() >= 360 )
+        totalYRot -= Ogre::Degree(360);
+    if( totalYRot.valueDegrees() <= -360 )
+        totalYRot += Ogre::Degree(360);
+
+    // Get the position of the object to follow
+    Ogre::Vector3 pos   =  mTarget->getPosition();
+    Ogre::Vector3 up    =  Ogre::Quaternion( 1.f, totalYRot.valueRadians(), 0.f, 0.f ) * mTarget->getLocalAxes().GetColumn(1);
+    Ogre::Vector3 fwd   =  Ogre::Quaternion( 1.f, 0.f, totalXRot.valueRadians(), 0.f ) * mTarget->getLocalAxes().GetColumn(2);
+
+    up.normalise();
+    fwd.normalise();
+
+    // Add on the camera offset to the local axes
+    Ogre::Vector3 desiredPos = pos + up * mLocalOffset.getY() + fwd * mLocalOffset.getZ();
+
+    //Ogre::Quaternion rot( 1.f, totalYRot.valueRadians(), totalXRot.valueRadians(), 0.f );
+    //desiredPos = rot * desiredPos;
+
+    mWorldPos = BtOgre::Convert::toBullet( desiredPos );
+
+    // Update the camera position
+    mCam->setPosition( BtOgre::Convert::toOgre( mWorldPos ) );
+
+    // Turn to face target object
+    mCam->lookAt( pos );
+}

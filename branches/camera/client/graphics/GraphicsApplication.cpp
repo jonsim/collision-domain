@@ -233,16 +233,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		// Process the player pool. Perform updates on other players
 		GameCore::mPlayerPool->frameEvent();
 
-		// Apply controls the player (who will be moved on frameEnd and frameStart).
-		if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
-		{
-			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
-			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
-            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
-            GameCore::mGui->updateCounters();
-            GameCore::mGui->updateSpeedo();
-		}
-
 	}
 
     /*  NOTE TO SELF (JAMIE)
@@ -257,14 +247,30 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // when a new snapshot is received, it should be in the client's future
     // interpolate based on snapshot timestamps
 
-    // Cleanup frame specific objects.
-    delete inputSnapshot;
+    
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
     GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, oneSecond);
 	
 	//Draw info items
 	GameCore::mGameplay->drawInfo();
+
+    
+	// Apply controls the player (who will be moved on frameEnd and frameStart).
+    if (NetworkCore::bConnected)
+    {
+	    if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+	    {
+		    GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
+		    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
+            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
+            GameCore::mGui->updateCounters();
+            GameCore::mGui->updateSpeedo();
+	    }
+    }
+
+    // Cleanup frame specific objects.
+    delete inputSnapshot;
 
     return true;
 }

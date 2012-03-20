@@ -234,6 +234,18 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
                     catch( boost::bad_lexical_cast &) {}
                 }
             }
+            else if( strTokens.at(0) == "setcam" )
+            {
+                if( strTokens.size() == 2 )
+                {
+                    try
+                    {
+                        CAM_TYPE t = (CAM_TYPE) boost::lexical_cast<int>(strTokens.at(1));
+                        GameCore::mPlayerPool->getLocalPlayer()->getCamera()->setCamType(t);
+                    }
+                    catch( boost::bad_lexical_cast &) {}
+                }
+            }
         }
     }
 

@@ -47,6 +47,8 @@ public:
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
 
+    GameCamera* getCamera() { return mCamera; }
+
 	CarSnapshot *mSnapshots;
 
 private:
