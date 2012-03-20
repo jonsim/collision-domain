@@ -23,7 +23,7 @@ public:
     void createPlayer (CarType carType, CarSkin skin);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
-    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
+    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time);
 	float getCameraYaw (void);
     Car* getCar (void);
     void collisionTickCallback (int damage, Player *causedByPlayer);
@@ -48,6 +48,8 @@ public:
 	void killPlayer();
 	void Player::killPlayer(Player* causedBy);
 	void resetHP();
+    GameCamera* getCamera() { return mCamera; }
+
 	CarSnapshot *mSnapshots;
 	
 	//Increase
@@ -67,7 +69,7 @@ private:
 	Ogre::SceneNode* camNode;
 	Ogre::SceneNode* camArmNode;
     CarType          mCarType;
-	
+    GameCamera*      mCamera;
 	int roundScore;
 	int gameScore;
 };

@@ -190,7 +190,7 @@ void PlayerPool::processPlayer( Player *pPlayer )
 
 #else
 
-        pPlayer->getCar()->restoreSnapshot( mLocalPlayer->mSnapshots );
+        pPlayer->getCar()->restoreSnapshot( pPlayer->mSnapshots );
 #endif
         delete( pPlayer->mSnapshots );
         pPlayer->mSnapshots = NULL;

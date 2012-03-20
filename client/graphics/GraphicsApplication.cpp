@@ -34,10 +34,10 @@ void GraphicsApplication::createCamera (void)
     // Position it looking back along -Z
     mCamera->setPosition(Ogre::Vector3(0, 3, 60));
     mCamera->lookAt(Ogre::Vector3(0, 0, -300));
-    mCamera->setNearClipDistance(5);
+    mCamera->setNearClipDistance(0.5);
     mCamera->setFarClipDistance(2500);
 
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
+    //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
 
 
@@ -206,7 +206,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		}
 
 		// rotate the camera
-        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * evt.timeSinceLastFrame, 0.0f, 0.0f);
+        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * evt.timeSinceLastFrame, 0.0f, 0.0f, evt.timeSinceLastFrame);
 
 		// update fps counter
 		float avgfps = mWindow->getAverageFPS(); // update fps
@@ -231,16 +231,6 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		// Process the player pool. Perform updates on other players
 		GameCore::mPlayerPool->frameEvent();
 
-		// Apply controls the player (who will be moved on frameEnd and frameStart).
-		if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
-		{
-			GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
-			GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel());
-            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
-            GameCore::mGui->updateCounters();
-            GameCore::mGui->updateSpeedo();
-		}
-
 	}
 
     /*  NOTE TO SELF (JAMIE)
@@ -255,14 +245,30 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // when a new snapshot is received, it should be in the client's future
     // interpolate based on snapshot timestamps
 
-    // Cleanup frame specific objects.
-    delete inputSnapshot;
+    
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
     GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, oneSecond);
 	
 	//Draw info items
 	GameCore::mGameplay->drawInfo();
+
+    
+	// Apply controls the player (who will be moved on frameEnd and frameStart).
+    if (NetworkCore::bConnected)
+    {
+	    if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+	    {
+		    GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
+		    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
+            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
+            GameCore::mGui->updateCounters();
+            GameCore::mGui->updateSpeedo();
+	    }
+    }
+
+    // Cleanup frame specific objects.
+    delete inputSnapshot;
 
     return true;
 }
