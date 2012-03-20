@@ -221,17 +221,20 @@ void SmallCar::initNodes()
 void SmallCar::initGraphics(btTransform& chassisShift)
 {
     // Load the small car meshes.
-    createGeometry("CarBody",              "small_car_body.mesh",       mChassisNode);
-    createGeometry("CarEntity_LDoor",      "small_car_ldoor.mesh",      mLDoorNode);
-    createGeometry("CarEntity_RDoor",      "small_car_rdoor.mesh",      mRDoorNode);
-    createGeometry("CarEntity_FBumper",    "small_car_fbumper.mesh",    mFBumperNode);
-    createGeometry("CarEntity_RBumper",    "small_car_rbumper.mesh",    mRBumperNode);
-    createGeometry("CarEntity_LHeadlight", "small_car_lheadlight.mesh", mLHeadlightNode);
-    createGeometry("CarEntity_RHeadlight", "small_car_rheadlight.mesh", mRHeadlightNode);
-    createGeometry("CarEntity_FLWheel",    "small_car_lwheel.mesh",     mFLWheelNode);
-    createGeometry("CarEntity_FRWheel",    "small_car_rwheel.mesh",     mFRWheelNode);
-    createGeometry("CarEntity_RLWheel",    "small_car_lwheel.mesh",     mRLWheelNode);
-    createGeometry("CarEntity_RRWheel",    "small_car_rwheel.mesh",     mRRWheelNode);
+	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
+	// be used in the first parameter
+    createGeometry("UnIqUe_SmallCarBody",    "small_car_body.mesh",       mChassisNode,    true);
+    createGeometry("UnIqUe_SmallCarLDoor",   "small_car_ldoor.mesh",      mLDoorNode,      true);
+    createGeometry("UnIqUe_SmallCarRDoor",   "small_car_rdoor.mesh",      mRDoorNode,      true);
+    createGeometry("UnIqUe_SmallCarFBumper", "small_car_fbumper.mesh",    mFBumperNode,    true);
+    createGeometry("UnIqUe_SmallCarRBumper", "small_car_rbumper.mesh",    mRBumperNode,    true);
+    createGeometry("CarEntity_LHeadlight",   "small_car_lheadlight.mesh", mLHeadlightNode, false);
+    createGeometry("CarEntity_RHeadlight",   "small_car_rheadlight.mesh", mRHeadlightNode, false);
+    createGeometry("CarEntity_FLWheel",      "small_car_lwheel.mesh",     mFLWheelNode,    false);
+    createGeometry("CarEntity_FRWheel",      "small_car_rwheel.mesh",     mFRWheelNode,    false);
+    createGeometry("CarEntity_RLWheel",      "small_car_lwheel.mesh",     mRLWheelNode,    false);
+    createGeometry("CarEntity_RRWheel",      "small_car_rwheel.mesh",     mRRWheelNode,    false);
+
 
     // Scale the loaded meshes
     PhysicsCore::auto_scale_scenenode(mChassisNode);
@@ -272,7 +275,7 @@ void SmallCar::updateTeam (int teamNumber)
 void SmallCar::loadDestroyedModel (void)
 {
     mChassisNode->detachAllObjects();
-    createGeometry("CarEntity_Burnt", "small_car_burnt.mesh", mChassisNode);
+    createGeometry("CarEntity_Burnt", "small_car_burnt.mesh", mChassisNode, false);
 }
 
 

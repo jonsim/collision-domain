@@ -26,7 +26,7 @@ public:
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time);
 	float getCameraYaw (void);
     Car* getCar (void);
-    void collisionTickCallback (int damage, Player *causedByPlayer);
+    void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
     void applyHealthBonus (void);
     
     const char *getNickname (void) { return mNickname; }
@@ -40,6 +40,9 @@ public:
     void setTeam(int newTeam) { char bob[64]; sprintf(bob, "Client car team set: %d\n", newTeam); OutputDebugString(bob); mCar->updateTeam(newTeam); mTeam = newTeam; };
     int  getTeam(void) { return mTeam; };
 
+	void setGUID(RakNet::RakNetGUID playerGUID);
+	std::string getGUID(void);
+
 	//Just some getters and setters
 	void setAlive(bool pAlive);
 	bool getAlive();
@@ -51,24 +54,50 @@ public:
     GameCamera* getCamera() { return mCamera; }
 
 	CarSnapshot *mSnapshots;
+	RakNet::RakNetGUID playerGUID;
+
 	
 	//Increase
 	void addToScore(int amount);
 	int getRoundScore();	
 	void addToGameScore(int amount);
+	void lowDamageCallBack(std::string causedBy);
+	void midDamageCallBack(std::string causedBy);
+	void highDamageCallBack(std::string causedBy);
+
+
 private:
-    const float      cameraRotationConstant;
-	int              hp;
-    int              mTeam;
-    char*            mNickname;
-    bool             mIsVIP;
-    bool             mAlive;
-    Car*             mCar;
-    CarSnapshot*     mCarSnapshot;
-	CarCam*	         mCarCam;
-	Ogre::SceneNode* camNode;
-	Ogre::SceneNode* camArmNode;
-    CarType          mCarType;
+    const float								   cameraRotationConstant;
+	int										   hp;
+    int										   mTeam;
+    char*									   mNickname;
+    bool									   mIsVIP;
+    bool									   mAlive;
+    Car*									   mCar;
+    CarSnapshot*							   mCarSnapshot;
+	CarCam*									   mCarCam;
+	Ogre::SceneNode*						   camNode;
+	Ogre::SceneNode*						   camArmNode;
+    CarType									   mCarType;
+	/*bool									   processingCollision;
+	std::map<std::string, std::vector<float> >			   collisionDamages;
+	std::map<std::string, std::vector<float> >::iterator	   collisionDamagesItr;
+	std::map<std::string, std::vector<btVector3> >		   collisionPositions;
+	std::map<std::string, std::vector<btVector3> >::iterator collisionPositionsItr;
+
+	std::vector<btVector3>                    *currentPositions;
+	std::vector<float>                        *currentDamages;*/
+
+
+
+	int									       numCollisionDataPoints;
+	//btVector3							       averageCollisionPoint;
+	std::string							   stringGUID;
+	int										   lowDamageSpeed;
+	int                                        mediumDamageSpeed;
+	int                                        highDamageSpeed;
+
+
     GameCamera*      mCamera;
 	int roundScore;
 	int gameScore;

@@ -42,6 +42,7 @@
     <ClInclude Include="..\..\shared\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h" />
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h" />
     <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h" />
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="..\..\shared\gameplay\Team.cpp" />
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp" />
+    <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp" />
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp" />
     <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp" />
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />

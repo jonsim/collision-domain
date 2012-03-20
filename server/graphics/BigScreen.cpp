@@ -169,7 +169,7 @@ inline float BigScreen::convertWorldToScreenX(float xPos)
 	xPos -= MARKER_WIDTH;
 
 	//Some fluff fixing 
-	xPos *= 0.9;
+	xPos *= 0.9f;
 	//xPos += 0.1;
 
 	return xPos;
@@ -183,8 +183,8 @@ inline float BigScreen::convertWorldToScreenY(float yPos)
 	yPos -= MARKER_HEIGHT;
 	
 	//Some fluff fixing
-	yPos *= 0.8;
-	yPos += 0.2;
+	yPos *= 0.8f;
+	yPos += 0.2f;
 
 	return yPos;
 }

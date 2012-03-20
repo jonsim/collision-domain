@@ -68,8 +68,19 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 ///         In total this will even out to 60 calls per second :-)
 /// @param  damage   0 if no damage was done to this player in the collision, else 1.
-void Player::collisionTickCallback(int damage, Player *causedByPlayer)
-{
+void Player::collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer) {
+	if(numCollisionDataPoints < 150) {
+
+		std::stringstream ss;
+        ss << "COLLISION " << causedByPlayer->getGUID() << "\n";
+        OutputDebugString(ss.str().c_str());
+		numCollisionDataPoints = 0;
+	}
+	numCollisionDataPoints++;
+	//collisionPositions[causedByPlayer->getGUID()] += hitPoint;
+	//collisionDamages[causedByPlayer->getGUID()] += damage
+    //OutputDebugString("Client: Player collision\n");
+
     // p1 and p2 might not be the only two players who collided this physics step.
     //OutputDebugString("Server: Player collision\n");
 	if(GameCore::mGameplay->mGameActive && mAlive)
@@ -233,6 +244,14 @@ void Player::killPlayer()
     // should only be called on dead cars thats not such a problem).
     // Yeah so turns out this just fucks everything up and not in a good way.
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 10, 0)); 
+}
+
+void Player::setGUID(RakNet::RakNetGUID playerGUID) {
+	stringGUID = playerGUID.ToString();
+}
+
+std::string Player::getGUID(void) {
+	return stringGUID;
 }
 
 void Player::killPlayer(Player* causedBy)

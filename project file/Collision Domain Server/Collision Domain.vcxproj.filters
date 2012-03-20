@@ -628,6 +628,9 @@
     <ClInclude Include="..\..\shared\physics\includes\Vehicle.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -1034,6 +1037,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\Vehicle.cpp">
       <Filter>shared\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp">
+      <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

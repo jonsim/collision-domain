@@ -44,6 +44,8 @@ public:
     static void initialise(GraphicsCore* graphicsCore);
     static void destroy();
 
+	static MeshDeformer meshDeformer;
+
 private:
     
 };
