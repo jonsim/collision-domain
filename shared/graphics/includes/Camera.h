@@ -24,9 +24,11 @@ class GameCamera
 public:
 
     GameCamera( Camera* cam ) : 
-      mCam(cam), mCamType(CAM_FREE), mTarget(NULL), mTension(0.2f)   {}
+        mCam(cam), mCamType(CAM_FREE), mTarget(NULL),
+        mTension(0.2f), totalXRot(0.f), totalYRot(0.f)              {}
 
     void            setCamType( CAM_TYPE t )                        { mCamType = t; }
+    CAM_TYPE        getCamType()                                    { return mCamType; }
 
     float           getTension()                                    { return mTension; }
     void            setTension( float t )                           { mTension = t; }
@@ -50,6 +52,7 @@ public:
     void            lookAtTarget();
 
     void            update( btScalar timeStep );
+    void            update( Degree xRot, Degree yRot );
 
 private:
 
@@ -63,6 +66,9 @@ private:
     btVector3       mLookOffset;
 
     Camera*         mCam;
+
+    Degree          totalXRot;
+    Degree          totalYRot;
     
 
 };

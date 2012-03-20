@@ -8,6 +8,8 @@
 #include "GameIncludes.h"
 #include <sstream>
 
+#define NEWCAM 1
+
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -72,10 +74,12 @@ void Player::attachCamera (Ogre::Camera* cam)
     camArmNode = camNode->getParentSceneNode();
     camNode->translate(0, 0, -20); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
 
+#if NEWCAM
     // Create game camera
     mCamera = new GameCamera( cam );
     // Set it to chase mode
     mCamera->setCamType( CAM_CHASE );
+    mCamera->setCollidable( true );
     // Set how much the camera 'snaps' to locations
     // This gets multiplied by time since last frame
     // For cinematic style camera 0.2 works quite well
@@ -88,7 +92,9 @@ void Player::attachCamera (Ogre::Camera* cam)
     mCamera->setLookOffset( btVector3( 0, 0, 3.0f ) );
     // Put the camera up in the air
     mCamera->setTransform( btVector3( 0, 20, 0 ) );
-
+#else
+    mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
+#endif
 }
 
 
@@ -127,8 +133,13 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
 	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
 		camNode->translate(0, 0, ZDepth * 0.02f);
 
-    mCamera->update(time);
-
+#if NEWCAM
+    if( mCamera->getCamType() == CAM_FIXED )
+        mCamera->update( Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation) );
+    else
+        mCamera->update(time);
+#endif
+   
 	//Update the camera
 	//
 	/*
