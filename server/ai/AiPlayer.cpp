@@ -66,8 +66,8 @@ void AiPlayer::Update(double timeSinceLastFrame)
 	//get angle between current heading and desired heading
 	Ogre::Quaternion heading = GetHeading();
 	Ogre::Vector3 pos = GetPos();
-	double tempDis;
-	Ogre::Vector3 tempPos;
+//  UNUSED VARIABLE    double tempDis;
+//  UNUSED VARIABLE    Ogre::Vector3 tempPos;
 
 	int aiDirection;
 

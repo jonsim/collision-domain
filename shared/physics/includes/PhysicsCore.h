@@ -26,7 +26,7 @@ public:
     virtual ~PhysicsCore (void);
 	static void auto_scale_scenenode (Ogre::SceneNode* n);
     int getUniqueEntityID (void);
-    void attachArenaCollisionMesh (Ogre::SceneNode *arenaNode);
+    void attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionName, float scaling  );
     void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
     void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
                  const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);

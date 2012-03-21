@@ -8,6 +8,7 @@
 
 // The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
 #define SHADOW_METHOD 2
+#define ARENA 1
 
 
 SceneSetup::SceneSetup (void) :
@@ -319,16 +320,30 @@ void SceneSetup::setupParticleSystem (void)
 void SceneSetup::setupArena (void)
 {
     // Load and meshes and create entities
+#if ARENA == 1
     Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena.mesh");
+#else
+    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "carpark.mesh");
+#endif
+
 #if SHADOW_METHOD == 2
     arenaEntity->setCastShadows(false);
 #else
     arenaEntity->setCastShadows(true);
 #endif
+
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode");
     arenaNode->attachObject(arenaEntity);
+#if ARENA == 1
 	GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-    GameCore::mPhysicsCore->attachArenaCollisionMesh(arenaNode);
+    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena_collision.mesh", MESH_SCALING_CONSTANT);
+#else
+	//GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+    float cpScale = 0.25f;
+    arenaNode->scale(cpScale, cpScale, cpScale);
+    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "carpark_collision.mesh", cpScale);
+    //arenaNode->translate(0, -5, 0);
+#endif
     
     // Load the extra props (ninja + tree) into the scene.
     Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");

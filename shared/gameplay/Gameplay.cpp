@@ -325,9 +325,10 @@ void Gameplay::drawInfo()
 
 void Gameplay::handleInfoItem(InfoItem* item, bool show)
 {
-	Ogre::OverlayElement* tmpOLE = 
-		Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
-	InfoItem* newGameII;
+	Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
+	#ifdef COLLISION_DOMAIN_SERVER
+	    InfoItem* newGameII;
+    #endif
 
 	if(show)
 	{

@@ -160,26 +160,28 @@ int PhysicsCore::getUniqueEntityID()
 }
 
 
-/// @brief  Create the floor plane at y = 0 and add it to the physics world.
-void PhysicsCore::attachArenaCollisionMesh( Ogre::SceneNode *arenaNode )
-{    
-    Ogre::Entity* arenaCMEntity = GameCore::mSceneMgr->createEntity("ArenaCollisionMesh" + getUniqueEntityID(), "arena_collision.mesh");
+void PhysicsCore::attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionMeshName, float scaling )
+{
+    Ogre::Entity* collisionEntity = GameCore::mSceneMgr->createEntity("CollisionMesh" + getUniqueEntityID(), collisionMeshName);
 
-    Ogre::Matrix4 arenaCMScaling(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
+    Ogre::Matrix4 collisionScaling(scaling, 0,       0,       0,
+                                   0,       scaling, 0,       0,
+                                   0,       0,       scaling, 0,
+                                   0,       0,       0,       1);
     
-    BtOgre::StaticMeshToShapeConverter converter(arenaCMEntity, arenaCMScaling);
-    btCollisionShape *arenaCMShape = converter.createTrimesh();
+    BtOgre::StaticMeshToShapeConverter collisionShapeConverter(collisionEntity, collisionScaling);
+    btCollisionShape *collisionShape = collisionShapeConverter.createTrimesh();
     
     short collisionGroup = COL_ARENA;
     short collisionMask  = COL_CAR;
 
-    BtOgre::RigidBodyState *arenaState = new BtOgre::RigidBodyState( arenaNode );
-    btRigidBody *arenaBody = new btRigidBody( 0.0f, arenaState, arenaCMShape );
+    BtOgre::RigidBodyState *collisionBodyState = new BtOgre::RigidBodyState( targetNode );
+    btRigidBody *collisionBody = new btRigidBody( 0.0f, collisionBodyState, collisionShape );
     
-    mBulletWorld->addRigidBody( arenaBody, collisionGroup, collisionMask );
+    mBulletWorld->addRigidBody( collisionBody, collisionGroup, collisionMask );
 
     // push the created objects to the deques
-    mBodies.push_back(arenaBody);
+    mBodies.push_back(collisionBody);
 }
 
 void PhysicsCore::addRigidBody( btRigidBody *body, short colGroup, short colMask )
