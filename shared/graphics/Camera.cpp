@@ -82,8 +82,8 @@ void GameCamera::update( btScalar timeStep )
 
         // Set up collision detection callback
         btCollisionWorld::ClosestConvexResultCallback cb( cameraFrom.getOrigin(), cameraTo.getOrigin() );
-        // Set to collide with everything (includes arena and cars then (and actually maybe pickups, might need to change))
-        cb.m_collisionFilterMask = btBroadphaseProxy::AllFilter;
+        // Set to collide with everything except powerups (I think)
+        cb.m_collisionFilterMask = (btBroadphaseProxy::AllFilter ^ COL_POWERUP);
 
         // Sweep test for objects
         GameCore::mPhysicsCore->getWorld()->convexSweepTest( &camSphere, cameraFrom, cameraTo, cb );
