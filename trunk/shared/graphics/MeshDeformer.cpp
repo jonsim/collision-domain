@@ -6,7 +6,7 @@ MeshDeformer::MeshDeformer(void) {
 }
 
 void MeshDeformer::deformMesh(
-		const Ogre::MeshPtr    const mesh,
+		const Ogre::MeshPtr    mesh,
 		const Ogre::Vector3    &epicentre,
         const Ogre::Vector3    &position,
         const Ogre::Quaternion &orient,
