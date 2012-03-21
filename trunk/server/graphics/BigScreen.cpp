@@ -211,7 +211,7 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 
 		// Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
         // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
-		btQuaternion q = player->getCar()->getCarSnapshot()->mRotation;
+		btQuaternion q = playerSnap->mRotation;
         Ogre::Radian rot = Ogre::Math::ATan2(      (2.0 * (q.getZ()*q.getX() + q.getY()*q.getW())),
                                              1.0 - (2.0 * (q.getX()*q.getX() + q.getY()*q.getY())) );
         //rot = (rot.valueRadians() > 0) ? rot.valueRadians() - Ogre::Math::PI : rot.valueRadians() + Ogre::Math::PI;
