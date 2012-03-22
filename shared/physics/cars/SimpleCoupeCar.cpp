@@ -288,17 +288,6 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShi
     entity->setDebugDisplayEnabled( false );
     compoundChassisShape = new btCompoundShape();
 
-    // Transformation matrix to scale the imported mesh
-    //Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
-
-    // Create a compound shape from the mesh's vertices
-    //OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-    //    new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
-
-    //OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition( 5U, 5.0F, 15.0F, 20U, 0.0F );
-
-    //delete trimeshConverter;
-
     btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
     convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
 
@@ -308,7 +297,6 @@ void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShi
     btVector3 inertia;
     compoundChassisShape->calculateLocalInertia( mChassisMass, inertia );
 
-    //BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mBodyNode );
     mState = new CarState( mBodyNode );
 
     mCarChassis = new btRigidBody( mChassisMass, mState, compoundChassisShape, inertia );
@@ -383,3 +371,9 @@ void SimpleCoupeCar::initWheels()
 	}
 }
 
+void SimpleCoupeCar::makeBitsFallOff()
+{
+    //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
+    removePiece( mFLDoorNode, mFLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.823f, 0.895f, 0.315f ) );
+    removePiece( mFRDoorNode, mFRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.823f, 0.895f, 0.315f ) );
+}

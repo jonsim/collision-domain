@@ -217,6 +217,8 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
                 GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
 			else if (!stricmp(szInput, "wireframe off"))
                 GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_SOLID);
+            else if (!stricmp(szInput, "bitsoff"))
+                GameCore::mPlayerPool->getLocalPlayer()->getCar()->makeBitsFallOff();
             else if( strTokens.at(0) == "movdbg" )
             {
                 if( strTokens.size() >= 4 )

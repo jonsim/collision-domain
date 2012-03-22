@@ -18,6 +18,8 @@ public:
     virtual void updateTeam (int teamNumber);
     virtual void loadDestroyedModel (void);
 
+    virtual void makeBitsFallOff() {}
+
 private:
     void initTuning();
     void initNodes();

@@ -18,6 +18,8 @@ public:
     virtual void updateTeam (int teamNumber);
     virtual void loadDestroyedModel (void);
 
+    virtual void makeBitsFallOff();
+
 private:
     void initTuning();
     void initNodes();
@@ -33,6 +35,14 @@ private:
     Ogre::SceneNode *mRRDoorNode;
     Ogre::SceneNode *mFBumperNode;
     Ogre::SceneNode *mRBumperNode;
+
+    btRigidBody     *mChassisBody;
+    btRigidBody     *mFLDoorBody;
+    btRigidBody     *mFRDoorBody;
+    btRigidBody     *mRLDoorBody;
+    btRigidBody     *mRRDoorBody;
+    btRigidBody     *mFBumperBody;
+    btRigidBody     *mRBumperBody;
 
     Ogre::SceneNode *mFLWheelNode;
     Ogre::SceneNode *mFRWheelNode;
