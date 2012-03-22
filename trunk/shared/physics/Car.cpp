@@ -486,6 +486,34 @@ void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )
     GameCore::mPhysicsCore->getWorld()->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs( body->getBroadphaseHandle(), GameCore::mPhysicsCore->getWorld()->getDispatcher() );
 }
 
+void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset )
+{
+    mBodyNode->removeChild( node->getName() );
+    GameCore::mSceneMgr->getRootSceneNode()->addChild( node );
+    node->setPosition( mBodyNode->getPosition() );
+
+    btBoxShape *doorShape = new btBoxShape( box );
+    //btBoxShape *doorShape = new btBoxShape( btVector3( .7f, .7f, .1f ) );
+    //btCompoundShape *leftDoor  = new btCompoundShape();
+    btTransform ltrans( btQuaternion::getIdentity(), offset );
+    //leftDoor->addChildShape( ltrans, doorShape );
+    btMotionState *lstate = new BtOgre::RigidBodyState( node, mCarChassis->getWorldTransform() * ltrans, ltrans.inverse() );
+    btVector3 linertia;
+    doorShape ->calculateLocalInertia( 30.f, linertia );
+
+    body = new btRigidBody( 30.f, lstate, doorShape, linertia );
+
+    body->setActivationState( ISLAND_SLEEPING );
+    GameCore::mPhysicsCore->addRigidBody( body,  COL_CAR, COL_ARENA | COL_CAR );
+    body->setDamping( 0.2f, 0.5f );
+    //body->setDamping( 100.2f, 100.5f );
+    body->setActivationState( ISLAND_SLEEPING );
+
+    //body->setWorldTransform( mVehicle->getChassisWorldTransform() );
+    //btTransform tr( btQuaternion::getIdentity(), btVector3( 0, 10, 0 ) );
+    //body->setWorldTransform( tr );
+}
+
 /********************************************************
  *  Wheel Constraint Class
  *  - deals with individual friction levels per wheel
