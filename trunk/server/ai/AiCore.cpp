@@ -13,6 +13,9 @@ void AiCore::createNewAiAgent()
 
 void AiCore::createNewAiAgent(int flags)
 {
+    if( GameCore::mPlayerPool->getNumberOfPlayers() >= MAX_PLAYERS )
+        return;
+
 	//first get the total number of ai agents
 	int total = getNumberOfAiPlayers();
 	//create the aiplayer's name

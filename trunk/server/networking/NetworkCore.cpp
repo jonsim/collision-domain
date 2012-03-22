@@ -305,7 +305,15 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 	
 	// Add the player to server player pool
-	GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
+	int index = GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
+    if( index == -1 )
+    {
+        // There aren't any free slots in the playerpool
+        // However, there must be some AI players because if the server was full of properly
+        // connected human players, RakNet would've already sent ID_NO_FREE_INCOMING_CONNECTIONS
+
+        return;
+    }
 
 	RakNet::BitStream bsNewPlayer;
 	RakNet::BitStream bsSend;

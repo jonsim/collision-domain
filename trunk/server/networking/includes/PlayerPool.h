@@ -24,7 +24,7 @@ public:
 	PlayerPool();
 	~PlayerPool();
 	
-	void addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
+	int addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void delPlayer( RakNet::RakNetGUID playerid );
 	int getNumberOfPlayers();
