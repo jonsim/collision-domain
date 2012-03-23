@@ -42,6 +42,12 @@ bool NetworkCore::Connect( const char *szHost, int iPort, char *szPass )
 	return false;
 }
 
+bool NetworkCore::AutoConnect( int iPort )
+{
+    m_pRak->Ping( "255.255.255.255", SERVER_PORT, true );
+    return true;
+}
+
 RakNet::RakPeerInterface* NetworkCore::getRakInterface() { return m_pRak; }
 
 
@@ -104,6 +110,9 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 
 		switch( packetid )
 		{
+            case ID_UNCONNECTED_PONG:
+                Connect( pkt->systemAddress.ToString(), SERVER_PORT, NULL );
+                break;
 			case ID_CONNECTION_REQUEST_ACCEPTED:
 			{
 				log( "Connection to server accepted" );

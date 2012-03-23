@@ -82,6 +82,7 @@ public:
 	RakNet::RakNetGUID getServerGUID();
 
 	bool Connect( const char *szHost, int iPort, char *szPass );
+    bool AutoConnect( int iPort );
 
     RakNet::RakPeerInterface* getRakInterface();
     void RegisterRPCSlots();
