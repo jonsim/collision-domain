@@ -577,5 +577,5 @@ void GameGUI::setupOverlays()
     updateSpeedo(0.0f, 0);
     
     setupDamageDisplay();
-    updateDamage();
+    //updateDamage();
 }

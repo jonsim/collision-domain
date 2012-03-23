@@ -157,6 +157,11 @@ void AiPlayer::Update(double timeSinceLastFrame)
 		else
 			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
 	}
+    else
+    {
+        mPlayer->getCar()->steerInputTick(false, false, timeSinceLastFrame, 1.0f/60.0f);
+        mPlayer->getCar()->accelInputTick(false, false, false, timeSinceLastFrame);
+    }
 }
 
 Ogre::Vector3 AiPlayer::GetPos()

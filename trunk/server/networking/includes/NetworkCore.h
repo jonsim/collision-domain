@@ -95,7 +95,7 @@ public:
 	void declareNewVIP(Player* player);
 
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
-    void sendPowerupCollect( int pwrID, Player *player );
+    void sendPowerupCollect( int pwrID, Player *player, PowerupType newtype = POWERUP_HEALTH );
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 

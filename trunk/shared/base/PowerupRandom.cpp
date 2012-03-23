@@ -110,6 +110,10 @@ void PowerupRandom::playerCollision(Player* player)
             PowerupType chosen = mPotentialPowerups[
                 rand() % (sizeof(mPotentialPowerups) / sizeof(PowerupType))];
             powerup = GameCore::mPowerupPool->createPowerup(chosen);
+
+#ifdef COLLISION_DOMAIN_SERVER
+            GameCore::mNetworkCore->sendPowerupCollect( getIndex(), player, chosen );
+#endif
         }
 
         if (powerup) powerup->playerCollision(player);

@@ -140,6 +140,11 @@ void Player::processControlsFrameEvent(
 		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
 		mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
 	}
+    else
+    {
+        mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
+        mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
+    }
 }
 
 
@@ -235,7 +240,7 @@ void Player::addToGameScore(int amount)
 
 void Player::serverSaysHealthChangedTo(float newHP)
 {
-    if (playerGUID != GameCore::mPlayerPool->getLocalPlayerID())
+    if( this != GameCore::mPlayerPool->getLocalPlayer() )
     {
         this->hp = newHP;
         return;
