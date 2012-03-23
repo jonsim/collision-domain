@@ -68,8 +68,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 	Ogre::Vector3 pos = GetPos();
 //  UNUSED VARIABLE    double tempDis;
 //  UNUSED VARIABLE    Ogre::Vector3 tempPos;
-
-	int aiDirection;
+//  UNUSED VARIABLE    int aiDirection;
 
 	double distance = pos.distance(targetPos);
 	double theta = heading.getYaw().valueRadians();

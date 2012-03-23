@@ -364,6 +364,30 @@ void SceneSetup::setupArena (void)
     treeNode->translate( 50.0f, -10.5f, -3.0f);
 }
 
+void SceneSetup::setupMeshDeformer (void)
+{
+	smallCarBodyMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarBody",     "small_car_body.mesh");
+	smallCarLDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarLDoor",    "small_car_ldoor.mesh");
+	smallCarRDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarRDoor",    "small_car_rdoor.mesh");
+	smallCarFBumperMesh = GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarFBumper",  "small_car_fbumper.mesh");
+	smallCarRBumperMesh = GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarRBumper",  "small_car_rbumper.mesh");
+
+	bangerBodyMesh	    = GameCore::mSceneMgr->createEntity("UnIqUe_BangerBody",       "banger_body.mesh");
+	bangerFLDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerLDoor",      "banger_fldoor.mesh");
+	bangerFRDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRDoor",      "banger_frdoor.mesh");
+	bangerRLDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRLDoor",     "banger_rldoor.mesh");
+	bangerRRDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRRDoor",     "banger_rrdoor.mesh");
+	bangerFBumperMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerFBumper",    "banger_fbumper.mesh");
+	bangerRBumperMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRBumper",    "banger_rbumper.mesh");
+
+	truckBodyMesh       = GameCore::mSceneMgr->createEntity("UnIqUe_TruckBody",        "truck_body.mesh");
+	truckLDoorMesh		= GameCore::mSceneMgr->createEntity("UnIqUe_TruckLDoor",       "truck_ldoor.mesh");
+	truckRDoorMesh		= GameCore::mSceneMgr->createEntity("UnIqUe_TruckRDoor",       "truck_rdoor.mesh");
+	truckRBumperMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_TruckRBumper",     "truck_rbumper.mesh");
+	
+	meshDeformer = new MeshDeformer();
+}
+
 
 void SceneSetup::setupGUI (void)
 {

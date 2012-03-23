@@ -5,6 +5,7 @@
 #ifndef SHAREDINCLUDES_H
 #define SHAREDINCLUDES_H
 
+#include "MeshDeformer.h"
 #include "AudioCore.h"
 #include "CircularBuffer.h"
 #include "InputState.h"
@@ -26,7 +27,6 @@
 #include "GameCore.h"
 #include "ScoreBoard.h"
 #include "HUD.h"
-#include "MeshDeformer.h"
 #include "Death.h"
 
 

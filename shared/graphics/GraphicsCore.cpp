@@ -47,14 +47,9 @@ GraphicsCore::~GraphicsCore (void)
 /// @return Whether or not the configuration was a success.
 bool GraphicsCore::configureRenderer (void)
 {
-    // Show the configuration dialog and initialise the system (returns true if the user clicks OK).
+    // Show the configuration dialog and returns true if the user clicks OK.
     if (mRoot->showConfigDialog())
-    {
-        // Let the system create a default rendering window by passing 'true'
-        mWindow = mRoot->initialise(true, "Collision Domain");
         return true;
-    }
-
     return false;
 }
 
@@ -178,15 +173,12 @@ void GraphicsCore::setupResources (void)
 }
 
 
-/// @brief Creates a resource listener.
-void GraphicsCore::createResourceListener (void)
-{
-}
-
-
 /// @brief  Loads resources from the resources.cfg file into the ResourceGroup.
 void GraphicsCore::loadResources (void)
 {
+    //Ogre::ResourceGroupManager  rgm = Ogre::ResourceGroupManager::getSingleton();
+    //Ogre::ResourceGroupListener rgl;
+    //rgm.addResourceGroupListener(&rgl);
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
@@ -212,11 +204,10 @@ void GraphicsCore::go (void)
 bool GraphicsCore::initApplication (void)
 {
 	// Select and load the relevant resources
+    mResourcesCfg = "../../media/resources.cfg";
 #ifdef _DEBUG
-    mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";
 #else
-    mResourcesCfg = "resources.cfg";
     mPluginsCfg = "plugins.cfg";
 #endif
     mRoot = new Ogre::Root(mPluginsCfg);
@@ -226,47 +217,34 @@ bool GraphicsCore::initApplication (void)
     if (!configureRenderer())
 		return false;
 
-    // Create the SceneManager. This should be updated to an Octree implementation, rather than a culling heirarchy.
+    // Create a window.
+    mWindow = mRoot->initialise(true, "Collision Domain");
+
+    // Create the SceneManager.
     GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-	
+    
+    // Create the camera and viewport for viewing the scene
+    createCamera();
+    createViewports();
 
-	smallCarBodyMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarBody",     "small_car_body.mesh");
-	smallCarLDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarLDoor",    "small_car_ldoor.mesh");
-	smallCarRDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarRDoor",    "small_car_rdoor.mesh");
-	smallCarFBumperMesh = GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarFBumper",  "small_car_fbumper.mesh");
-	smallCarRBumperMesh = GameCore::mSceneMgr->createEntity("UnIqUe_SmallCarRBumper",  "small_car_rbumper.mesh");
+    // Create the splash screen (preloading its required resources in the process)
+    SplashScreen splashScreen(mRoot);
+    splashScreen.draw(mWindow->getWidth(), mWindow->getHeight());
+    Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(&splashScreen);
 
-	bangerBodyMesh	    = GameCore::mSceneMgr->createEntity("UnIqUe_BangerBody",       "banger_body.mesh");
-	bangerFLDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerLDoor",      "banger_fldoor.mesh");
-	bangerFRDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRDoor",      "banger_frdoor.mesh");
-	bangerRLDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRLDoor",     "banger_rldoor.mesh");
-	bangerRRDoorMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRRDoor",     "banger_rrdoor.mesh");
-	bangerFBumperMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerFBumper",    "banger_fbumper.mesh");
-	bangerRBumperMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_BangerRBumper",    "banger_rbumper.mesh");
-
-	truckBodyMesh       = GameCore::mSceneMgr->createEntity("UnIqUe_TruckBody",        "truck_body.mesh");
-	truckLDoorMesh		= GameCore::mSceneMgr->createEntity("UnIqUe_TruckLDoor",       "truck_ldoor.mesh");
-	truckRDoorMesh		= GameCore::mSceneMgr->createEntity("UnIqUe_TruckRDoor",       "truck_rdoor.mesh");
-	truckRBumperMesh	= GameCore::mSceneMgr->createEntity("UnIqUe_TruckRBumper",     "truck_rbumper.mesh");
-	
-	meshDeformer = new MeshDeformer();
-	
-
-	//meshDeformer = new MeshDeformer();
-
-    createCamera();     // Create the cameras for rendering the scene
-    createViewports();  // Create the viewports for viewing the scene
-
+    // Load the remaining resources
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
-    createResourceListener();           // Create resource listener (for loading screens)
     loadResources();                    // Load resources
-    
+    splashScreen.updateProgressBar(90);
     GameCore::initialise(this);         // Initialise other game elements
-
+    splashScreen.updateProgressBar(95);
     createScene();                      // Build the scene
-    
+    splashScreen.updateProgressBar(100);
     mSpawnScreen = NULL;
     createFrameListener();
+
+    // Clear the splash screen
+    splashScreen.clear();
 
     return true;
 }
@@ -320,4 +298,96 @@ void GraphicsCore::windowClosed (Ogre::RenderWindow* rw)
     // Only close for window that created OIS
     if (rw == mWindow)
         mUserInput.destroyInputSystem();
+}
+
+
+
+
+SplashScreen::SplashScreen (Ogre::Root* root) : resourceTotal(0), resourceCount(0), mRoot(root)
+{
+    // Preload resources (for the splash screen)
+	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("PreLoad");
+}
+
+SplashScreen::~SplashScreen (void)
+{
+}
+
+void SplashScreen::draw (int width, int height)
+{
+    // Create the splash screen overlay
+	splashOverlay = Ogre::OverlayManager::getSingleton().create("OVERLAY_SPLASH");
+	splashOverlay->setZOrder(500);
+	splashOverlay->show();
+
+    // Create an overlay container and add the splash screen to it.
+	splashContainer = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SplashScreen"));
+	splashContainer->setMetricsMode(Ogre::GMM_PIXELS);
+	splashContainer->setHorizontalAlignment(Ogre::GHA_LEFT);
+    splashContainer->setVerticalAlignment(Ogre::GVA_TOP);
+    splashContainer->setDimensions(width, height);
+	splashContainer->setMaterialName("CollisionDomain/SplashScreen");
+	splashContainer->setPosition(0, 0);
+	splashOverlay->add2D(splashContainer);
+
+    // Add the loading bar frame to the splash screen.
+    loadingFrame = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LoadingFrame");
+	loadingFrame->setMetricsMode(Ogre::GMM_PIXELS);
+	loadingFrame->setDimensions(630, 40);
+	loadingFrame->setMaterialName("CollisionDomain/LoadingFrame");
+    loadingFrame->setPosition(width/2 - 630/2, height-50);
+    splashContainer->addChild(loadingFrame);
+
+/*    // Add the loading bar text to the splash screen.
+    loadingText = Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "LoadingText");
+    loadingText->setMetricsMode(Ogre::GMM_PIXELS);
+    loadingText->setDimensions(600, 100);
+    loadingText->setPosition(0, 0);
+    loadingText->setParameter("font_name", "DejaVuSans");
+    loadingText->setParameter("char_height", "48");
+    loadingText->setColour(Ogre::ColourValue(0, 0, 0));
+    loadingText->setCaption("Jon, you're a genius");
+    splashContainer->addChild(loadingText);*/
+
+    // Add the loading bar to the splash screen.
+    loadingBar = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LoadingBar");
+	loadingBar->setMetricsMode(Ogre::GMM_PIXELS);
+	loadingBar->setDimensions(0, 10);
+	loadingBar->setMaterialName("CollisionDomain/LoadingBar");
+    loadingBar->setPosition(width/2 - 600/2, height-35);
+    splashContainer->addChild(loadingBar);
+
+    // Render the screen.
+    forceRedraw();
+}
+
+void SplashScreen::clear (void)
+{
+    splashOverlay->clear();
+}
+
+void SplashScreen::updateProgressBar (int percent)
+{
+	loadingBar->setDimensions(percent*6, 10);
+    forceRedraw();
+}
+
+void SplashScreen::forceRedraw (void)
+{
+    mRoot->renderOneFrame();
+}
+
+void SplashScreen::resourceGroupScriptingStarted (const Ogre::String &groupName, size_t scriptCount)
+{
+    if (scriptCount > 10)
+    {
+        resourceTotal = scriptCount;
+        resourceCount = 0;
+    }
+}
+
+void SplashScreen::scriptParseEnded (const Ogre::String &scriptName, bool skipped)
+{
+    if (resourceTotal > 0)
+        updateProgressBar(++resourceCount * ((float) (100 / resourceTotal)));
 }

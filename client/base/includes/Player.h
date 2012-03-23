@@ -34,11 +34,12 @@ public:
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname (char *szNick) { mNickname = strdup( szNick ); }
+    void setHP (int newHP) { hp = newHP; }
 	int	 getHP (void);
-    void setVIP(bool newState) { mIsVIP = newState; };
-    bool getVIP(void) { return mIsVIP; };
-    void setTeam(int newTeam) { char bob[64]; sprintf(bob, "Client car team set: %d\n", newTeam); OutputDebugString(bob); mCar->updateTeam(newTeam); mTeam = newTeam; };
-    int  getTeam(void) { return mTeam; };
+    void setVIP(bool newState) { mIsVIP = newState; }
+    bool getVIP(void) { return mIsVIP; }
+    void setTeam(int newTeam) { char bob[64]; sprintf(bob, "Client car team set: %d\n", newTeam); OutputDebugString(bob); mCar->updateTeam(newTeam); mTeam = newTeam; }
+    int  getTeam(void) { return mTeam; }
 
 	void setGUID(RakNet::RakNetGUID playerGUID);
 	std::string getGUID(void);

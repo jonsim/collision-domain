@@ -206,7 +206,7 @@ void NetworkCore::BroadcastUpdates()
         {
             bitSend.Write( true );
             bitSend.Write( sendPlayer->getHP() );
-            sendPlayer->lastsenthp = sendPlayer->getHP() );
+            sendPlayer->lastsenthp = sendPlayer->getHP();
         }
         else
         {
