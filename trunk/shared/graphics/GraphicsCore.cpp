@@ -246,6 +246,10 @@ bool GraphicsCore::initApplication (void)
     // Clear the splash screen
     splashScreen.clear();
 
+#ifdef COLLISION_DOMAIN_CLIENT
+    GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
+#endif
+
     return true;
 }
 
