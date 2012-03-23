@@ -52,6 +52,7 @@ public:
 	void Player::killPlayer(Player* causedBy);
 	void resetHP();
     GameCamera* getCamera() { return mCamera; }
+    void serverSaysHealthChangedTo(float newHP);
 
 	CarSnapshot *mSnapshots;
 	RakNet::RakNetGUID playerGUID;

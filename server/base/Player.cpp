@@ -8,7 +8,7 @@
 #include "GameIncludes.h"
 
 
-#define INITIAL_HEALTH 100
+#define INITIAL_HEALTH 1200
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.

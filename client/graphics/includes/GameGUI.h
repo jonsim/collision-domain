@@ -37,8 +37,8 @@ public:
     void setupOverlays();
 
     void updateSpeedo();
-	void updateSpeedo( float fSpeed, int iGear );
-    void updateDamage();
+	void updateSpeedo(float fSpeed, int iGear);
+    void updateDamage(int part, int colour);
 
     void updateCounters();
     
