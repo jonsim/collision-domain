@@ -387,3 +387,12 @@ void SmallCar::initWheels()
 	}
 }
 
+void SmallCar::makeBitsFallOff()
+{
+    //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
+    removePiece( mLDoorNode, mLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.594f, 0.788f, 0.011f ) );
+    removePiece( mRDoorNode, mRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.594f, 0.788f, 0.011f ) );
+
+    removePiece( mFBumperNode, mFBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.392f,  1.352f ) );
+    removePiece( mRBumperNode, mRBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.410f, -1.880f ) );
+}

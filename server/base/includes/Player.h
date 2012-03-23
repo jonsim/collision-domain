@@ -68,6 +68,8 @@ public:
 	void addToScore(int amount);
 	int getRoundScore();	
 	void addToGameScore(int amount);
+    int lastsenthp;
+
 private:
     const float      cameraRotationConstant;
 	int		         hp;

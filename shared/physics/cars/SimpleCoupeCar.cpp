@@ -374,6 +374,11 @@ void SimpleCoupeCar::initWheels()
 void SimpleCoupeCar::makeBitsFallOff()
 {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
-    removePiece( mFLDoorNode, mFLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.823f, 0.895f, 0.315f ) );
-    removePiece( mFRDoorNode, mFRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.823f, 0.895f, 0.315f ) );
+    removePiece( mFLDoorNode, mFLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.773f, 0.895f, 0.315f ) );
+    removePiece( mFRDoorNode, mFRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.773f, 0.895f, 0.315f ) );
+    removePiece( mRLDoorNode, mRLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.773f, 0.900f, 0.679f ) );
+    removePiece( mRRDoorNode, mRRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.773f, 0.900f, 0.679f ) );
+
+    removePiece( mFBumperNode, mFBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.486f,  2.424f ) );
+    removePiece( mRBumperNode, mRBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.518f, -2.424f ) );
 }

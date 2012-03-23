@@ -202,6 +202,17 @@ void NetworkCore::BroadcastUpdates()
 
 		bitSend.Write( (char*)&playerState, sizeof( PLAYER_SYNC_DATA ) );
 
+        if( sendPlayer->lastsenthp != sendPlayer->getHP() )
+        {
+            bitSend.Write( true );
+            bitSend.Write( sendPlayer->getHP() );
+            sendPlayer->lastsenthp = sendPlayer->getHP() );
+        }
+        else
+        {
+            bitSend.Write( false );
+        }
+
 		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true );
 
 		delete( playerSnap );
@@ -390,6 +401,8 @@ void NetworkCore::sendPowerupCollect( int pwrID, Player *player )
     {
         bsSend.Write( false );
     }
+
+    m_RPC->Signal( "PowerupCollect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 }
 
 	

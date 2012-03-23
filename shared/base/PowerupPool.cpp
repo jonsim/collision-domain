@@ -79,6 +79,8 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
 
     mPowerupTypes[iNew] = type;
 
+    mPowerups[iNew]->setIndex( iNew );
+
 #ifdef COLLISION_DOMAIN_SERVER
     if (spawn) GameCore::mNetworkCore->sendPowerupCreate(iNew, type, createAboveAt);
 #endif
