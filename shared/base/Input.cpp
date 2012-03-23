@@ -65,11 +65,11 @@ InputState* Input::getInputState()
 {
 	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{
-        return new InputState(mKeyboard->isKeyDown(OIS::KC_W),
-                                mKeyboard->isKeyDown(OIS::KC_S),
-                                mKeyboard->isKeyDown(OIS::KC_A),
-                                mKeyboard->isKeyDown(OIS::KC_D),
-                                mKeyboard->isKeyDown(OIS::KC_SPACE) );
+        return new InputState(mKeyboard->isKeyDown(OIS::KC_UP)    || mKeyboard->isKeyDown(OIS::KC_W),
+                              mKeyboard->isKeyDown(OIS::KC_DOWN)  || mKeyboard->isKeyDown(OIS::KC_S),
+                              mKeyboard->isKeyDown(OIS::KC_LEFT)  || mKeyboard->isKeyDown(OIS::KC_A),
+                              mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D),
+                              mKeyboard->isKeyDown(OIS::KC_SPACE) );
 	}
 	else
 	{
