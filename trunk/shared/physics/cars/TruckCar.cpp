@@ -176,7 +176,6 @@ void TruckCar::initNodes()
     mLDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     //mRDoorNode       = mBodyNode->createChildSceneNode("RDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
     mRDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFBumperNode     = mBodyNode->createChildSceneNode("FBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode     = mBodyNode->createChildSceneNode("RBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     mLWingmirrorNode = mBodyNode->createChildSceneNode("LWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRWingmirrorNode = mBodyNode->createChildSceneNode("RWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -421,3 +420,11 @@ void TruckCar::initWheels()
 	}
 }
 
+void TruckCar::makeBitsFallOff()
+{
+    //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
+    removePiece( mLDoorNode, mLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  1.094f, 1.665f, 1.768f ) );
+    removePiece( mRDoorNode, mRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -1.094f, 1.665f, 1.768f ) );
+
+    removePiece( mRBumperNode, mRBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.547f, 3.035f ) );
+}

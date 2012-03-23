@@ -188,6 +188,13 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 		delete( pUpdate->mSnapshots );
 
 	pUpdate->mSnapshots = carSnapshot;
+    bool hasHP; bitStream.Read( hasHP );
+    if( hasHP )
+    {
+        int newHP;
+        bitStream.Read( newHP );
+        pUpdate->serverSaysHealthChangedTo( (float) newHP );
+    }
 
 }
 
