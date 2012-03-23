@@ -24,6 +24,8 @@ using namespace OgreOggSound;
 #define FILE_POWERUP_HEAVY     "powerup-heavy.wav"
 #define FILE_POWERUP_RANDOM    "powerup-random.wav"
 
+#define FILE_BACKING_TRACK     "rockTrack.ogg"
+
 AudioCore::AudioCore()
 {
     mSoundManager = OgreOggSound::OgreOggSoundManager::getSingletonPtr();
@@ -68,8 +70,12 @@ AudioCore::AudioCore()
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineHigh->setPitch(2.0f);
 
+    mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr, true);
+
 #ifdef COLLISION_DOMAIN_CLIENT
     mEngineHigh->play();
+    mBackingTrack->setVolume(0.5);
+    mBackingTrack->play();
 #endif
 
 }

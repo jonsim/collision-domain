@@ -520,17 +520,54 @@ void GameGUI::setupDamageDisplay()
     oleDamage->addChild( oleDamageRL );
     oleDamage->addChild( oleDamageRR );
     
-	updateDamage();
+    updateDamage(0, 0);
+    updateDamage(1, 0);
+    updateDamage(2, 0);
+    updateDamage(3, 0);
+    updateDamage(4, 0);
+    updateDamage(5, 0);
 }
 
-void GameGUI::updateDamage()
+// part 0-body, 1-engine, 2-fl, 3-fr, 4-rl, 5-rr. colour 0-green, 1-yellow, 2-red
+void GameGUI::updateDamage(int part, int colour)
 {
-	oleDamage       ->setMaterialName( "damage_y_body" );
-	oleDamageEngine ->setMaterialName( "damage_y_engine" );
-    oleDamageFL     ->setMaterialName( "damage_g_fl" );
-    oleDamageFR     ->setMaterialName( "damage_r_fr" );
-    oleDamageRL     ->setMaterialName( "damage_y_rl" );
-    oleDamageRR     ->setMaterialName( "damage_g_rr" );
+    std::string s = "damage_";
+
+    switch (colour)
+    {
+        case 0:
+            s += "g"; break;
+        case 1:
+            s += "y"; break;
+        case 2:
+            s += "r"; break;
+        default:
+            return;
+    }
+    
+    switch (part)
+    {
+        case 0:
+            oleDamage->setMaterialName( s + "_body" );
+            break;
+        case 1:
+            oleDamageEngine->setMaterialName( s + "_engine" );
+            break;
+        case 2:
+            oleDamageFL->setMaterialName( s + "_fl" );
+            break;
+        case 3:
+            oleDamageFR->setMaterialName( s + "_fr" );
+            break;
+        case 4:
+            oleDamageRL->setMaterialName( s + "_rl" );
+            break;
+        case 5:
+            oleDamageRR->setMaterialName( s + "_rr" );
+            break;
+        default:
+            return;
+    }
 }
 
 void GameGUI::setupOverlays()

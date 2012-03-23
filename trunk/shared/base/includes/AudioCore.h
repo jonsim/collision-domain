@@ -44,6 +44,7 @@ private:
     bool mInitOK;
 
     OgreOggISound *mEngineLow, *mEngineHigh;
+    OgreOggISound *mBackingTrack;
 };
 
 #endif // #ifndef AUDIOCORE_H

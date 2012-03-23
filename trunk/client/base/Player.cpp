@@ -8,7 +8,7 @@
 #include "GameIncludes.h"
 #include <sstream>
 
-#define INITIAL_HEALTH 100
+#define INITIAL_HEALTH 1200
 #define NEWCAM 1
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
@@ -66,16 +66,6 @@ void Player::createPlayer (CarType carType, CarSkin skin)
     mCar->moveTo(btVector3(0,0.5,0));
 }
 
-void Player::lowDamageCallBack(std::string causedBy) {
-
-}
-
-void Player::midDamageCallBack(std::string causedBy){
-
-}
-
-void Player::highDamageCallBack(std::string causedBy){
-}
 
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 /// @param  hitPoint		Location of the collision point on the collision mesh - in world coordinates
@@ -200,15 +190,6 @@ Car* Player::getCar()
     return mCar;
 }
 
-void Player::applyHealthBonus()
-{
-
-}
-
-int Player::getHP()
-{
-	return hp;
-}
 
 void Player::killPlayer()
 {
@@ -236,10 +217,108 @@ std::string Player::getGUID(void) {
 	return stringGUID;
 }
 
+void Player::addToScore(int amount)
+{
+	roundScore += amount;
+}
+
+int Player::getRoundScore()
+{
+	return this->roundScore;
+}
+void Player::addToGameScore(int amount)
+{
+	this->gameScore += amount;
+}
+
+// HEALTH RELATED FUNCTIONS
+
+void Player::serverSaysHealthChangedTo(float newHP)
+{
+    if (playerGUID != GameCore::mPlayerPool->getLocalPlayerID())
+    {
+        this->hp = newHP;
+        return;
+    }
+
+    // update damage HUD
+
+    float redLimit = (float) INITIAL_HEALTH / 4.0;
+    float yelLimit = (float) INITIAL_HEALTH * 0.66;
+    
+    // the last quarter is red
+    if (newHP <= redLimit)
+    {
+        if (this->hp > redLimit)
+        {
+            // set colour to red, as it was yellow previously
+
+            // leave some components randomly yellow for a "cheat" damage system on demo day :D
+            // part 0-body, 1-engine, 2-fl, 3-fr, 4-rl, 5-rr.
+            // colour 0-green, 1-yellow, 2-red
+            GameCore::mGui->updateDamage(0, 2-(rand()%2));
+            GameCore::mGui->updateDamage(1, 2-(rand()%2));
+            GameCore::mGui->updateDamage(2, 2-(rand()%2));
+            GameCore::mGui->updateDamage(3, 2-(rand()%2));
+            GameCore::mGui->updateDamage(4, 2-(rand()%2));
+            GameCore::mGui->updateDamage(5, 2-(rand()%2));
+        }
+    }
+    else if (newHP <= yelLimit)
+    {
+        if (this->hp > yelLimit)
+        {
+            // set colour to yellow, as it was green previously
+            GameCore::mGui->updateDamage(0, 1-(rand()%2));
+            GameCore::mGui->updateDamage(1, 1-(rand()%2));
+            GameCore::mGui->updateDamage(2, 1-(rand()%2));
+            GameCore::mGui->updateDamage(3, 1-(rand()%2));
+            GameCore::mGui->updateDamage(4, 1-(rand()%2));
+            GameCore::mGui->updateDamage(5, 1-(rand()%2));
+        }
+    }
+    else
+    {
+        if (this->hp <= yelLimit)
+        {
+            // change colour back to green, its been red or yellow already
+            GameCore::mGui->updateDamage(0, 0);
+            GameCore::mGui->updateDamage(1, 0);
+            GameCore::mGui->updateDamage(2, 0);
+            GameCore::mGui->updateDamage(3, 0);
+            GameCore::mGui->updateDamage(4, 0);
+            GameCore::mGui->updateDamage(5, 0);
+        }
+    }
+    
+    this->hp = newHP;
+}
+
+void Player::lowDamageCallBack(std::string causedBy) {
+
+}
+
+void Player::midDamageCallBack(std::string causedBy) {
+
+}
+
+void Player::highDamageCallBack(std::string causedBy) {
+}
+
+void Player::applyHealthBonus()
+{
+
+}
+
+int Player::getHP()
+{
+	return hp;
+}
 
 void Player::resetHP()
 {
-	this->hp = INITIAL_HEALTH;
+	//this->hp = INITIAL_HEALTH;
+    serverSaysHealthChangedTo((float) INITIAL_HEALTH);
 }
 
 void Player::killPlayer(Player* causedBy)
@@ -255,18 +334,4 @@ void Player::killPlayer(Player* causedBy)
 	{
 		causedBy->addToScore(1);
 	}
-}
-
-void Player::addToScore(int amount)
-{
-	roundScore += amount;
-}
-
-int Player::getRoundScore()
-{
-	return this->roundScore;
-}
-void Player::addToGameScore(int amount)
-{
-	this->gameScore += amount;
 }
