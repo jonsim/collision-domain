@@ -193,7 +193,7 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
     {
         int newHP;
         bitStream.Read( newHP );
-        pUpdate->setHP( newHP );
+        pUpdate->serverSaysHealthChangedTo( (float) newHP );
     }
 
 }

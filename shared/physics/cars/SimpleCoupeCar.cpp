@@ -277,6 +277,7 @@ void SimpleCoupeCar::loadDestroyedModel (void)
 {
     mChassisNode->detachAllObjects();
     createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode, false);
+    makeBitsFallOff();
 }
 
 

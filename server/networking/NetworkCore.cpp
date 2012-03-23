@@ -388,7 +388,7 @@ void NetworkCore::sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vecto
     m_RPC->Signal( "PowerupCreate", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 }
 
-void NetworkCore::sendPowerupCollect( int pwrID, Player *player )
+void NetworkCore::sendPowerupCollect( int pwrID, Player *player, PowerupType newtype )
 {
     RakNet::BitStream bsSend;
     bsSend.Write( pwrID );
@@ -396,6 +396,8 @@ void NetworkCore::sendPowerupCollect( int pwrID, Player *player )
     {
         bsSend.Write( true );
         bsSend.Write( player->getPlayerGUID() );
+        if( GameCore::mPowerupPool->getPowerupType( pwrID ) == POWERUP_RANDOM )
+            bsSend.Write( newtype );
     }
     else
     {

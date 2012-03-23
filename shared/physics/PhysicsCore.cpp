@@ -139,7 +139,9 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
             if (powerup && player)
             {
                 powerup->playerCollision(player);
-                GameCore::mNetworkCore->sendPowerupCollect( powerup->getIndex(), player );
+                // If it's a random powerup, leave the collision func to deal with the send once the replacement is decided
+                if( GameCore::mPowerupPool->getPowerupType( powerup->getIndex() ) != POWERUP_RANDOM )
+                    GameCore::mNetworkCore->sendPowerupCollect( powerup->getIndex(), player );
             }
         }
 #endif
