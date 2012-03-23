@@ -103,14 +103,14 @@ void BigScreen::setupMapView()
 	oleVIP1->setMetricsMode( Ogre::GMM_RELATIVE );
 	oleVIP2->setMetricsMode( Ogre::GMM_RELATIVE );
 
-	oleVIP1->setDimensions(0.05f,0.05f);
-	oleVIP2->setDimensions(0.05f,0.05f);
+	oleVIP1->setDimensions(0.03f,0.03f);
+	oleVIP2->setDimensions(0.03f,0.03f);
 	
-	oleVIP1->setMaterialName( "vipComponent" );
-	oleVIP2->setMaterialName( "vipComponent" );
+	oleVIP1->setMaterialName( "VIPIcon" );
+	oleVIP2->setMaterialName( "VIPIcon" );
 
-	oleVIP1->setPosition(1.0f,1.0f);
-	oleVIP2->setPosition(1.0f,1.0f);
+	oleVIP1->setPosition(0.0f,2.0f);
+	oleVIP2->setPosition(0.0f,2.0f);
 
 	olcMap->addChild(oleVIP1);
 	olcMap->addChild(oleVIP2);
@@ -233,11 +233,11 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		{
 			if(player->getTeam() == 1)
 			{
-				oleVIP1->setPosition(xPos,yPos);
+				oleVIP1->setPosition(xPos,yPos-0.03f);
 			}
 			else
 			{
-				oleVIP2->setPosition(xPos,yPos);
+				oleVIP2->setPosition(xPos,yPos-0.03f);
 			}
 		}
 

@@ -16,8 +16,6 @@
  */
 class SpawnScreen;
 
-class MeshDeformer;
-
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
 {
 public:
@@ -31,30 +29,7 @@ public:
 
     Ogre::Camera*       mCamera;
     Ogre::RenderWindow* mWindow;
-    SpawnScreen *mSpawnScreen;	// This shouldn't be here (Input.cpp is shared). Will be purged.
-
-	// These are the deformable meshes on each car, they need to be accessable to each car class so that the relevant meshes
-	// can be cloned and added to the car
-
-	Ogre::Entity *smallCarBodyMesh;
-	Ogre::Entity *smallCarLDoorMesh;
-	Ogre::Entity *smallCarRDoorMesh;
-	Ogre::Entity *smallCarFBumperMesh;
-	Ogre::Entity *smallCarRBumperMesh;
-				 
-	Ogre::Entity *bangerBodyMesh;
-	Ogre::Entity *bangerFLDoorMesh;
-	Ogre::Entity *bangerFRDoorMesh;
-	Ogre::Entity *bangerRLDoorMesh;
-	Ogre::Entity *bangerRRDoorMesh;
-	Ogre::Entity *bangerFBumperMesh;
-	Ogre::Entity *bangerRBumperMesh;
-				 
-	Ogre::Entity *truckBodyMesh;
-	Ogre::Entity *truckLDoorMesh;
-	Ogre::Entity *truckRDoorMesh;
-	Ogre::Entity *truckRBumperMesh;
-	MeshDeformer *meshDeformer;
+    SpawnScreen *mSpawnScreen;
     
 
 protected:
@@ -66,7 +41,6 @@ protected:
     virtual void destroyScene (void);
     virtual void createViewports (void) = 0;
     virtual void setupResources (void);
-    virtual void createResourceListener (void);
     virtual void loadResources (void);
     virtual void updateParticleSystems (void);
 
@@ -89,6 +63,41 @@ protected:
     bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
     bool mDebrisVisible;
     bool mShutDown;
+};
+
+
+class SplashScreen : public Ogre::ResourceGroupListener
+{
+public:
+    SplashScreen (Ogre::Root* root);
+    ~SplashScreen (void);
+    void draw (int width, int height);
+    void clear (void);
+    void updateProgressBar (int percent);
+
+    // ResourceGroupListener Methods
+    void resourceGroupScriptingStarted (const Ogre::String &groupName, size_t scriptCount);
+    void scriptParseStarted (const Ogre::String &scriptName, bool &skipThisScript) {}
+    void scriptParseEnded (const Ogre::String &scriptName, bool skipped);
+    void resourceGroupScriptingEnded (const Ogre::String &groupName) {}
+    void resourceGroupLoadStarted (const Ogre::String &groupName, size_t resourceCount) {}
+    void resourceLoadStarted (const Ogre::ResourcePtr &resource) {}
+    void resourceLoadEnded (void) {}
+    void worldGeometryStageStarted (const Ogre::String &description) {}
+    void worldGeometryStageEnded (void) {}
+    void resourceGroupLoadEnded (const Ogre::String &groupName) {}
+ 	
+private:
+    void forceRedraw (void);
+
+    int resourceTotal;
+    int resourceCount;
+    Ogre::Overlay*          splashOverlay;
+	Ogre::OverlayContainer* splashContainer;
+    Ogre::OverlayElement*   loadingFrame;
+    Ogre::OverlayElement*   loadingBar;
+    Ogre::Root* mRoot;
+    //Ogre::OverlayElement*   loadingText;
 };
 
 #endif // #ifndef GRAPHICSCORE_H

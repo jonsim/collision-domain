@@ -11,6 +11,11 @@ material DeadIcon : cd/GUIComponent
     set $texture icon_skull.png
 }
 
+material VIPIcon : cd/GUIComponent
+{
+    set $texture icon_vip.png
+}
+
 material map_top_1 : cd/GUIComponent
 {
 	set $texture map_top_1.png

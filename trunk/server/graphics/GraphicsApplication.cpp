@@ -77,6 +77,9 @@ void GraphicsApplication::createScene (void)
     setupParticleSystem();
     setupArena();
     setupGUI();
+
+    // Setup the scene resources
+    setupMeshDeformer();
 }
 
 

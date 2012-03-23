@@ -1,5 +1,5 @@
-#ifndef __MESHDEFORMER_H_
-#define __MESHDEFORMER_H_
+#ifndef MESHDEFORMER_H
+#define MESHDEFORMER_H
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
@@ -41,4 +41,4 @@ protected :
 	virtual unsigned time_seed();
 };
 
-#endif __MESHDEFORMER_H_
+#endif

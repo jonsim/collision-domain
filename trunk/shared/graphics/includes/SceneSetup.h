@@ -12,6 +12,8 @@
 /**
  *  @brief 	Will contain PlayerPool, PhysicsCore, AudioCore etc.
  */
+class MeshDeformer;
+
 class SceneSetup
 {
 public:
@@ -30,12 +32,34 @@ public:
 	float mGfxSettingMotionBlur;  // Amount of blurring of relatively moving objects.
 	float mGfxSettingRadialBlur;  // Amount of blurring encountered at high speeds.
 
+	// These are the deformable meshes on each car, they need to be accessable to each car class so that the relevant meshes
+	// can be cloned and added to the car
+	Ogre::Entity *smallCarBodyMesh;
+	Ogre::Entity *smallCarLDoorMesh;
+	Ogre::Entity *smallCarRDoorMesh;
+	Ogre::Entity *smallCarFBumperMesh;
+	Ogre::Entity *smallCarRBumperMesh;
+	Ogre::Entity *bangerBodyMesh;
+	Ogre::Entity *bangerFLDoorMesh;
+	Ogre::Entity *bangerFRDoorMesh;
+	Ogre::Entity *bangerRLDoorMesh;
+	Ogre::Entity *bangerRRDoorMesh;
+	Ogre::Entity *bangerFBumperMesh;
+	Ogre::Entity *bangerRBumperMesh;
+	Ogre::Entity *truckBodyMesh;
+	Ogre::Entity *truckLDoorMesh;
+	Ogre::Entity *truckRDoorMesh;
+	Ogre::Entity *truckRBumperMesh;
+
+	MeshDeformer *meshDeformer;
+
 protected:
 	void setupCompositorChain (Ogre::Viewport* vp);
     void setupShadowSystem (void);
     void setupLightSystem (void);
     void setupParticleSystem (void);
     void setupArena (void);
+    void setupMeshDeformer (void);
     virtual void setupGUI (void);
 
 	void createMotionBlurCompositor (void);
