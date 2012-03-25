@@ -103,42 +103,6 @@ void PlayerPool::frameEvent()
 	}
 
     processPlayer( getLocalPlayer() );
-
-/*	// Perform local client update
-	if( mLocalPlayer != NULL )
-	{
-        // Check if we've received an update from the server
-		if( mLocalPlayer->getCar() != NULL && mLocalPlayer->mSnapshots != NULL )
-		{
-#if BASIC_INTERP
-            CarSnapshot *currentSnap = mLocalPlayer->getCar()->getCarSnapshot();
-            
-            btVector3 interpPos = mLocalPlayer->mSnapshots->mPosition.lerp( currentSnap->mPosition, 0.5 );
-            btQuaternion interpRot = mLocalPlayer->mSnapshots->mRotation.slerp( currentSnap->mRotation, 0.5 );
-
-            btVector3 interpLin = mLocalPlayer->mSnapshots->mLinearVelocity.lerp( currentSnap->mLinearVelocity, 0.5 );
-            btVector3 interpAng = mLocalPlayer->mSnapshots->mAngularVelocity.lerp( currentSnap->mAngularVelocity, 0.5 );
-
-            CarSnapshot *restoreSnap = new CarSnapshot( interpPos, interpRot, interpAng, interpLin, currentSnap->mWheelPosition );
-
-			mLocalPlayer->getCar()->restoreSnapshot( restoreSnap );
-
-            delete( restoreSnap );
-            restoreSnap = NULL;
-
-            delete( currentSnap );
-            currentSnap = NULL;
-#else
-            mLocalPlayer->getCar()->restoreSnapshot( mLocalPlayer->mSnapshots );
-            delete( mLocalPlayer->mSnapshots );
-            mLocalPlayer->mSnapshots = NULL;
-#endif
-
-			//delete( mLocalPlayer->mSnapshots );
-			//mLocalPlayer->mSnapshots = NULL;
-		}
-	}*/
-
 }
 
 void PlayerPool::processPlayer( Player *pPlayer )
@@ -199,5 +163,70 @@ void PlayerPool::processPlayer( Player *pPlayer )
         
         if (pPlayer->getVIP())
             GameCore::mGraphicsCore->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
+    }
+}
+
+void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )
+{
+    if( playerid == mLocalGUID )
+    {
+        GameCamera *cam = mLocalPlayer->getCamera();
+        cam->setTarget( mLocalPlayer->getCar()->mBodyNode );
+    }
+    int idx = getPlayerIndex( playerid );
+    if( idx != -1 )
+    {
+        mSpectating = playerid;
+        setSpectating( idx );
+    }
+}
+
+void PlayerPool::setSpectating( int idx )
+{
+    // THIS IS ABSOLUTELY FILTHY
+    // TAKE THE CAMERA OUT OF PLAYER ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! 
+    GameCamera *cam = mLocalPlayer->getCamera();
+    cam->setTarget( mPlayers[idx]->getCar()->mBodyNode );
+}
+
+void PlayerPool::spectateNext()
+{
+    int curIdx = getPlayerIndex( mSpectating );
+    int nextIdx = -1;
+
+    // Check for an alive player further forward in player array
+    for( int i = ++curIdx; i < MAX_PLAYERS; i ++ )
+    {
+        if( mPlayers[i] )
+        {
+            if( mPlayers[i]->getAlive() )
+            {
+                nextIdx = i;
+                break;
+            }
+        }
+    }
+
+    // Check for an alive player wrap-around
+    if( nextIdx == -1 )
+    {
+        for( int i = 0; i < curIdx; i ++ )
+        {
+            if( mPlayers[i] )
+            {
+                if( mPlayers[i]->getAlive() )
+                {
+                    nextIdx = i;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Spectate new player if one was found
+    if( nextIdx != -1 )
+    {
+        setSpectating( nextIdx );
+        mSpectating = mGUID[nextIdx];
     }
 }

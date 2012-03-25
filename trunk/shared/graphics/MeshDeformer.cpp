@@ -55,7 +55,7 @@ void MeshDeformer::deformMesh(
 				if(pt.distance(epicentre) <= 100) {
 					diff = origin - pt;
 					diff.normalise();
-					diff *= 2.0f;
+					diff *= 1.0f;
 
 					pReal[0] += (diff.x);
 					pReal[1] += (diff.y);

@@ -110,14 +110,14 @@ void Player::attachCamera (Ogre::Camera* cam)
     // This gets multiplied by time since last frame
     // For cinematic style camera 0.2 works quite well
     mCamera->setTension( 2.8f );
-    // Chase the car body
-    mCamera->setTarget( getCar()->mBodyNode );
     // Positional offset - behind and above the vehicle
     mCamera->setOffset( btVector3( 0.f, 5.f, -10.f ) );
     // Focus offset - slightly in front of car's local origin
     mCamera->setLookOffset( btVector3( 0, 0, 3.0f ) );
     // Put the camera up in the air
     mCamera->setTransform( btVector3( 0, 20, 0 ) );
+
+    GameCore::mPlayerPool->setSpectating( GameCore::mPlayerPool->getLocalPlayerID() );
 #else
     mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
 #endif
@@ -202,6 +202,11 @@ void Player::killPlayer()
     // Place an explosion at the players position and load the burnt model
     GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
+
+    // Blast the fuck out of the car (renders it completely undriveable but since this
+    // should only be called on dead cars thats not such a problem).
+    // Yeah so turns out this just fucks everything up and not in a good way.
+    mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 500.0f, 0)); 
 }
 
 void Player::setAlive(bool pAlive)
