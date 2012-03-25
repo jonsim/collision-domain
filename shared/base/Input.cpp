@@ -107,6 +107,15 @@ void Input::processInterfaceControls()
             GameCore::mGui->toggleChatbox();
 	    else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleConsole();
+#ifdef COLLISION_DOMAIN_CLIENT
+        if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false )
+        {
+            if( mKeyboard->isKeyDown( OIS::KC_TAB ) )
+            {
+                GameCore::mPlayerPool->spectateNext();
+            }
+        }
+#endif
     }
 }
 
