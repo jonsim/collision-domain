@@ -78,6 +78,7 @@ void GraphicsApplication::setupGUI (void)
     SceneSetup::setupGUI();
 
     // Attach the GUI components
+    GameCore::mGui->setupFPSCounter();
     GameCore::mGui->setupConnectBox();
     GameCore::mGui->setupConsole();
     GameCore::mGui->setupChatbox();

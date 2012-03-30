@@ -11,7 +11,9 @@ GameGUI::~GameGUI()
 {
 }
 
-void GameGUI::initialiseGUI()
+/// @brief  Loads and sets up the resources required by CEGUI, creates a blank window layer and
+///         adds the FPS counter to it.
+void GameGUI::initialiseGUI (void)
 {
 	// Create the default font
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
@@ -34,25 +36,58 @@ void GameGUI::initialiseGUI()
 	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
 
 	// Create an empty default window layer
-	mSheet = CEGUI::WindowManager::getSingleton().
-		createWindow( "DefaultWindow", "root_wnd" );
-
-	CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().
-		createWindow( "Vanilla/StaticText", "root_wnd/mph" );
-
-	mph->setText( "MPH: " );
-	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
-    mph->setVisible( false );
-
-	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
-	createWindow( "Vanilla/StaticText", "root_wnd/fps" );
-	fps->setText( "fps: " );
-	fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
-	CEGUI::System::getSingleton().setGUISheet( mSheet );
-	mSheet->addChildWindow( fps );
-
-	mSheet->addChildWindow( mph );
+	mSheet = CEGUI::WindowManager::getSingleton().createWindow( "DefaultWindow", "root_wnd" );
 }
+
+
+
+/* lobby */
+void GameGUI::setupLobby (void)
+{
+	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
+
+	// Load the lobby's layout file
+	CEGUI::Window* pLayout = winMgr.loadWindowLayout("Lobby.layout");
+
+	// Add to gui overlay window
+	mSheet->addChildWindow(pLayout);
+    
+	// Get handles for the buttons
+	//CEGUI::Window* enterIPButton = winMgr.getWindow("/Connect/host");
+    //CEGUI::Window* refreshButton = winMgr.getWindow("/Connect/nick");
+	CEGUI::Window* connectButton = winMgr.getWindow("/Lobby/btnConnect");
+    CEGUI::Window* quitButton    = winMgr.getWindow("/Lobby/btnQuit");
+
+	// Register callbacks for the buttons
+	connectButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::lobbyConnectPressed, this));
+    quitButton->subscribeEvent(   CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::lobbyRefreshPressed, this));
+}
+
+void GameGUI::closeLobby (void)
+{
+    mSheet->removeChildWindow("/Lobby");
+	CEGUI::MouseCursor::getSingleton().hide();
+}
+
+bool GameGUI::lobbyEnterIPPressed (const CEGUI::EventArgs &args)
+{
+    return true;
+}
+
+bool GameGUI::lobbyRefreshPressed (const CEGUI::EventArgs &args)
+{
+    OutputDebugString("noobs\n");
+    return true;
+}
+
+bool GameGUI::lobbyConnectPressed (const CEGUI::EventArgs &args)
+{
+    OutputDebugString("boobs\n");
+    return true;
+}
+
+
+
 
 /*-------------------- CONNECTION BOX --------------------*/
 
@@ -347,6 +382,22 @@ void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
 	
 	lstHistory->addItem( newItem );
 	lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
+}
+
+
+
+
+/* In-game HUD */
+/* FPS Counter */
+void GameGUI::setupFPSCounter (void)
+{
+    // Setup the FPS Counter
+	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
+	createWindow( "Vanilla/StaticText", "root_wnd/fps" );
+    fps->setText( "fps: " );
+	fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
+	CEGUI::System::getSingleton().setGUISheet( mSheet );
+	mSheet->addChildWindow( fps );
 }
 
 /*-------------------- SPEEDOMETER --------------------*/

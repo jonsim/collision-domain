@@ -15,7 +15,15 @@ public:
 	GameGUI();
 	~GameGUI();
 
-	void initialiseGUI();
+	void initialiseGUI (void);
+
+    void setupFPSCounter (void);
+
+    void setupLobby (void);
+    void closeLobby (void);
+    bool lobbyEnterIPPressed (const CEGUI::EventArgs &args);
+    bool lobbyRefreshPressed (const CEGUI::EventArgs &args);
+    bool lobbyConnectPressed (const CEGUI::EventArgs &args);
 
 	void setupConnectBox();
     void closeConnectBox();
