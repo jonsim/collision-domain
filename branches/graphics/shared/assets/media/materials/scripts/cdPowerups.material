@@ -1,0 +1,42 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/SolidColour from "cdBaseMaterials.material"
+
+
+material powerup_health : cd/SolidColour
+{
+    set $specular_colour "0.93 0.64 0.64 70.0"
+    set $diffuse_colour "0.8 0.03 0.0"
+}
+
+material powerup_speed : cd/SolidColour
+{
+    set $specular_colour "1 1 0.68 50.0"
+    set $diffuse_colour "1 0.91 0.43"
+}
+
+material powerup_mass_text : cd/SolidColour
+{
+    set $specular_colour "1 1 1 100.0"
+    set $diffuse_colour "0.5 0.5 0.5"
+}
+
+material powerup_mass_weight : cd/SolidColour
+{
+    set $specular_colour "0.5 0.5 0.5 50.0"
+    set $diffuse_colour "0.2 0.2 0.2"
+}
+
+material powerup_random_uv : cd/Base
+{
+    set $diffuse_map powerup_random.jpg
+}
+
+material crate_uv : cd/Base
+{
+    set $diffuse_map crate_uv.jpg
+}
+
+material powerup_vip_uv : cd/Base
+{
+    set $diffuse_map crown_uv.png
+}

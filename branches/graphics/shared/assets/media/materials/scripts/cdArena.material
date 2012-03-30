@@ -1,0 +1,12 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Blank from "cdBaseMaterials.material"
+
+
+material arena_uv : cd/Base
+{
+    set $diffuse_map arena_uv.jpg
+}
+
+material arena_collision_default : cd/Blank
+{
+}

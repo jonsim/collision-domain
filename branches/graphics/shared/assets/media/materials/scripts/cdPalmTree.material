@@ -1,0 +1,56 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Leaf from "cdBaseMaterials.material"
+
+material plam_tree1_trunk : cd/Base
+{
+    set $diffuse_map palm_tree_trunk.jpg
+}
+
+material palm_tree1_leaf : cd/Leaf
+{
+	set $diffuse_map palm_tree_leaf.png
+}
+
+
+material plam_tree2_trunk : cd/Base
+{
+    set $diffuse_map palm_tree_trunk.jpg
+}
+
+material palm_tree2_leaf : cdLeaf
+{
+	set $diffuse_map palm_tree_leaf.png
+}
+
+
+material plam_tree3_trunk : cd/Base
+{
+    set $diffuse_map palm_tree_trunk.jpg
+}
+
+material palm_tree3_leaf : cd/Leaf
+{
+	set $diffuse_map palm_tree_leaf.png
+}
+
+
+material plam_tree4_trunk : cd/Base
+{
+    set $diffuse_map palm_tree_trunk.jpg
+}
+
+material palm_tree4_leaf : cd/Leaf
+{
+	set $diffuse_map palm_tree_leaf.png
+}
+
+
+material plam_tree5_trunk : cd/Base
+{
+    set $diffuse_map palm_tree_trunk.jpg
+}
+
+material palm_tree5_leaf : cd/Leaf
+{
+	set $diffuse_map palm_tree_leaf.png
+}

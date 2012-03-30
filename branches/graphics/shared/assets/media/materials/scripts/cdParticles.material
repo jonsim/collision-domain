@@ -1,0 +1,170 @@
+material CollisionDomain/Fire
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_fire.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/Explosion/Nucleus
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_explosion1.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+material CollisionDomain/Explosion/Debris
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_explosion3.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/Smoke
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend alpha_blend
+            depth_write off
+
+            texture_unit
+            {
+                texture particle_smoke.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/Exhaust
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_exhaust.png
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material CollisionDomain/NewExhaust
+{
+    technique
+    {
+        pass
+        {
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_newexhaust.png
+				tex_address_mode clamp
+			}
+        }
+    }
+}
+
+material CollisionDomain/Dust
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				//texture particle_dust.png
+                texture particle_sand.png
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material CollisionDomain/Spark
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_spark.jpg
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material CollisionDomain/Streak
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            scene_blend add
+            depth_write off
+            
+            texture_unit
+            {
+                texture particle_streak.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}

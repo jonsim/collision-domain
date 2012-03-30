@@ -1,0 +1,100 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/SolidColour from "cdBaseMaterials.material"
+import cd/Reflective from "cdBaseMaterials.material"
+import cd/ReflectiveSolid from "cdBaseMaterials.material"
+
+
+material banger_seat : cd/SolidColour
+{
+    set $specular_colour "0.9 0.9 0.9 20.0"
+    set $diffuse_colour "0.267 0.267 0.267"
+}
+
+
+material banger_steeringwheel_in : cd/SolidColour
+{
+    set $specular_colour "0.9 0.9 0.9 80.0"
+    set $diffuse_colour "0.83 0.83 0.83"
+}
+
+
+material banger_steeringwheel_out : cd/SolidColour
+{
+    set $specular_colour "0.9 0.9 0.9 40.0"
+    set $diffuse_colour "0.113 0.093 0.078"
+}
+
+
+material banger_bumper : cd/ReflectiveSolid
+{
+    set $diffuse_colour "0.6 0.6 0.6"
+}
+
+
+material banger_body_burnt_uv : cd/Base
+{
+    set $diffuse_map banger_body_burnt.jpg
+}
+
+
+material banger_body_uv : cd/Reflective
+{
+    set $specular_map banger_body_uv_s.jpg
+    set $diffuse_map  banger_body_uv_d.jpg
+}
+material banger_body_t1 : cd/Reflective
+{
+    set $specular_map banger_body_t1_s.jpg
+    set $diffuse_map  banger_body_t1_d.jpg
+}
+material banger_body_t2 : cd/Reflective
+{
+    set $specular_map banger_body_t2_s.jpg
+    set $diffuse_map  banger_body_t2_d.jpg
+}
+
+
+material banger_fdoor_uv : cd/Reflective
+{
+    set $specular_map banger_fdoor_uv_s.jpg
+    set $diffuse_map  banger_fdoor_uv_d.jpg
+}
+material banger_fdoor_t1 : cd/Reflective
+{
+    set $specular_map banger_fdoor_t1_s.jpg
+    set $diffuse_map  banger_fdoor_t1_d.jpg
+}
+material banger_fdoor_t2 : cd/Reflective
+{
+    set $specular_map banger_fdoor_t2_s.jpg
+    set $diffuse_map  banger_fdoor_t2_d.jpg
+}
+
+
+material banger_rdoor_uv : cd/Reflective
+{
+    set $specular_map banger_rdoor_uv_s.jpg
+    set $diffuse_map  banger_rdoor_uv_d.jpg
+}
+material banger_rdoor_t1 : cd/Reflective
+{
+    set $specular_map banger_rdoor_t1_s.jpg
+    set $diffuse_map  banger_rdoor_t1_d.jpg
+}
+material banger_rdoor_t2 : cd/Reflective
+{
+    set $specular_map banger_rdoor_t2_s.jpg
+    set $diffuse_map  banger_rdoor_t2_d.jpg
+}
+
+
+material banger_wheel_uv : cd/Base
+{
+    set $diffuse_map banger_wheel.jpg
+}
+
+
+material banger_rim_uv : cd/Base
+{
+	set $diffuse_map banger_rim.jpg
+}
