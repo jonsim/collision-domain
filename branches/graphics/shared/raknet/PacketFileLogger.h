@@ -22,12 +22,12 @@ namespace RakNet
 class RAK_DLL_EXPORT  PacketFileLogger : public PacketLogger
 {
 public:
-	PacketFileLogger();
-	virtual ~PacketFileLogger();
-	void StartLog(const char *filenamePrefix);
-	virtual void WriteLog(const char *str);
+    PacketFileLogger();
+    virtual ~PacketFileLogger();
+    void StartLog(const char *filenamePrefix);
+    virtual void WriteLog(const char *str);
 protected:
-	FILE *packetLogFile;
+    FILE *packetLogFile;
 };
 
 } // namespace RakNet

@@ -1,6 +1,6 @@
 /**
- * @file	Player.cpp
- * @brief 	Contains the player car and the related data specific to each player.
+ * @file    Player.cpp
+ * @brief     Contains the player car and the related data specific to each player.
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -17,15 +17,15 @@ Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mIsVIP(fals
                         mTeam(0), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
-	//processingCollision = false;
-	numCollisionDataPoints = 0;
-	//averageCollisionPoint.setZero();
+    //processingCollision = false;
+    numCollisionDataPoints = 0;
+    //averageCollisionPoint.setZero();
 
-	// Damage Level Thresholds: how many calls to collisionTickCallback have been seen
-	//lowDamageThreshold = 25;
-	//mediumDamageThreshold = 55;
-	//highDamageThreshold = 80;
-	//btVector3::setZero(averageCollisionPoint);
+    // Damage Level Thresholds: how many calls to collisionTickCallback have been seen
+    //lowDamageThreshold = 25;
+    //mediumDamageThreshold = 55;
+    //highDamageThreshold = 80;
+    //btVector3::setZero(averageCollisionPoint);
 }
 
 
@@ -60,7 +60,7 @@ void Player::createPlayer (CarType carType, CarSkin skin)
         break;
     }
 
-	roundScore = 0;
+    roundScore = 0;
     mCar->attachCollisionTickCallback(this);
     
     mCar->moveTo(btVector3(0,0.5,0));
@@ -68,26 +68,26 @@ void Player::createPlayer (CarType carType, CarSkin skin)
 
 
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
-/// @param  hitPoint		Location of the collision point on the collision mesh - in world coordinates
-/// @param  speed			The speed of the impact in the direction of the normal to the collision point
-/// @param  causedByPlayer	Pointer to the other player in the collision.
+/// @param  hitPoint        Location of the collision point on the collision mesh - in world coordinates
+/// @param  speed            The speed of the impact in the direction of the normal to the collision point
+/// @param  causedByPlayer    Pointer to the other player in the collision.
 void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer) {
-	/*float hisSpeed = causedByPlayer->getCar()->getCarMph();
-	float mySpeed = getCar()->getCarMph();
-	if(depth < 
-	if(speed >= lowDamageSpeed && speed < mediumDamageSpeed) {
-		lowDamageCallBack(causedByPlayer->getGUID());
-	} else if(speed >= mediumDamageSpeed && speed < highDamageSpeed) {
-		midDamageCallBack(causedByPlayer->getGUID());
-	} else if(speed >= highDamageSpeed) {
-		highDamageCallBack(causedByPlayer->getGUID());
-	}*/
-	/*std::stringstream ss;
-	ss << "crash with " << causedByPlayer->getGUID() << " overlap: " << depth << "\n";
-	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
-	OutputDebugString(ss.str().c_str());*/
+    /*float hisSpeed = causedByPlayer->getCar()->getCarMph();
+    float mySpeed = getCar()->getCarMph();
+    if(depth < 
+    if(speed >= lowDamageSpeed && speed < mediumDamageSpeed) {
+        lowDamageCallBack(causedByPlayer->getGUID());
+    } else if(speed >= mediumDamageSpeed && speed < highDamageSpeed) {
+        midDamageCallBack(causedByPlayer->getGUID());
+    } else if(speed >= highDamageSpeed) {
+        highDamageCallBack(causedByPlayer->getGUID());
+    }*/
+    /*std::stringstream ss;
+    ss << "crash with " << causedByPlayer->getGUID() << " overlap: " << depth << "\n";
+    //ss << "local in A: " << pt.m_localPointA.x() << "\n";
+    OutputDebugString(ss.str().c_str());*/
 
-	GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
+    GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
 }
 
 
@@ -133,13 +133,13 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
-	//Only take input if the player is alive
-	if(this->mAlive)
-	{
-		// process steering and apply acceleration
-		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
-		mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
-	}
+    //Only take input if the player is alive
+    if(this->mAlive)
+    {
+        // process steering and apply acceleration
+        mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+        mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
+    }
     else
     {
         mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
@@ -157,12 +157,12 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
     //Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
     
     camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
+    camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
 
-	Ogre::Vector3 camPosition = camNode->getPosition();
-	ZDepth = -ZDepth;
-	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
-		camNode->translate(0, 0, ZDepth * 0.02f);
+    Ogre::Vector3 camPosition = camNode->getPosition();
+    ZDepth = -ZDepth;
+    if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
+        camNode->translate(0, 0, ZDepth * 0.02f);
 
 #if NEWCAM
     if( mCamera->getCamType() == CAM_FIXED )
@@ -171,20 +171,20 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
         mCamera->update(time);
 #endif
    
-	//Update the camera
-	//
-	/*
-	std::stringstream ssTmp;
-	ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
-	OutputDebugString(ssTmp.str().c_str());
-	*/
+    //Update the camera
+    //
+    /*
+    std::stringstream ssTmp;
+    ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
+    OutputDebugString(ssTmp.str().c_str());
+    */
 }
 
 /// @brief Returns the camera current yawing around the player.
 /// @return The yawing, in degrees, around the player. 0 is directly in front of the player, +/-180 is behind.
 float Player::getCameraYaw ()
 {
-	return camArmNode->getOrientation().getYaw().valueDegrees();
+    return camArmNode->getOrientation().getYaw().valueDegrees();
 }
 
 
@@ -198,7 +198,7 @@ Car* Player::getCar()
 
 void Player::killPlayer()
 {
-	this->mAlive = false;
+    this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
     GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
@@ -211,34 +211,34 @@ void Player::killPlayer()
 
 void Player::setAlive(bool pAlive)
 {
-	mAlive = pAlive;
+    mAlive = pAlive;
 }
 
 bool Player::getAlive()
 {
-	return mAlive;
+    return mAlive;
 }
 
 void Player::setGUID(RakNet::RakNetGUID playerGUID) {
-	stringGUID = playerGUID.ToString();
+    stringGUID = playerGUID.ToString();
 }
 
 std::string Player::getGUID(void) {
-	return stringGUID;
+    return stringGUID;
 }
 
 void Player::addToScore(int amount)
 {
-	roundScore += amount;
+    roundScore += amount;
 }
 
 int Player::getRoundScore()
 {
-	return this->roundScore;
+    return this->roundScore;
 }
 void Player::addToGameScore(int amount)
 {
-	this->gameScore += amount;
+    this->gameScore += amount;
 }
 
 // HEALTH RELATED FUNCTIONS
@@ -322,26 +322,26 @@ void Player::applyHealthBonus()
 
 int Player::getHP()
 {
-	return hp;
+    return hp;
 }
 
 void Player::resetHP()
 {
-	//this->hp = INITIAL_HEALTH;
+    //this->hp = INITIAL_HEALTH;
     serverSaysHealthChangedTo((float) INITIAL_HEALTH);
 }
 
 void Player::killPlayer(Player* causedBy)
 {
-	this->killPlayer();
-	GameCore::mGameplay->markDeath(this,causedBy);
+    this->killPlayer();
+    GameCore::mGameplay->markDeath(this,causedBy);
 
-	if(this->getVIP())
-	{
-		causedBy->addToScore(5);
-	}
-	else
-	{
-		causedBy->addToScore(1);
-	}
+    if(this->getVIP())
+    {
+        causedBy->addToScore(5);
+    }
+    else
+    {
+        causedBy->addToScore(1);
+    }
 }

@@ -26,51 +26,51 @@ namespace RakNet
 class RakPeerInterface;
 struct Packet;
 
-	/// \brief Client code for NatTypeDetection
-	/// \details See NatTypeDetectionServer.h for algorithm
-	/// To use, just connect to the server, and call DetectNAT
-	/// You will get back ID_NAT_TYPE_DETECTION_RESULT with one of the enumerated values of NATTypeDetectionResult found in NATTypeDetectionCommon.h
-	/// See also http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
-	/// \sa NatPunchthroughClient
-	/// \sa NatTypeDetectionServer
-	/// \ingroup NAT_TYPE_DETECTION_GROUP
-	class RAK_DLL_EXPORT NatTypeDetectionClient : public PluginInterface2
-	{
-	public:
+    /// \brief Client code for NatTypeDetection
+    /// \details See NatTypeDetectionServer.h for algorithm
+    /// To use, just connect to the server, and call DetectNAT
+    /// You will get back ID_NAT_TYPE_DETECTION_RESULT with one of the enumerated values of NATTypeDetectionResult found in NATTypeDetectionCommon.h
+    /// See also http://www.jenkinssoftware.com/raknet/manual/natpunchthrough.html
+    /// \sa NatPunchthroughClient
+    /// \sa NatTypeDetectionServer
+    /// \ingroup NAT_TYPE_DETECTION_GROUP
+    class RAK_DLL_EXPORT NatTypeDetectionClient : public PluginInterface2
+    {
+    public:
 
-		// GetInstance() and DestroyInstance(instance*)
-		STATIC_FACTORY_DECLARATIONS(NatTypeDetectionClient)
+        // GetInstance() and DestroyInstance(instance*)
+        STATIC_FACTORY_DECLARATIONS(NatTypeDetectionClient)
 
-		// Constructor
-		NatTypeDetectionClient();
+        // Constructor
+        NatTypeDetectionClient();
 
-		// Destructor
-		virtual ~NatTypeDetectionClient();
+        // Destructor
+        virtual ~NatTypeDetectionClient();
 
-		/// Send the message to the server to detect the nat type
-		/// Server must be running NatTypeDetectionServer
-		/// We must already be connected to the server
-		/// \param[in] serverAddress address of the server
-		void DetectNATType(SystemAddress _serverAddress);
+        /// Send the message to the server to detect the nat type
+        /// Server must be running NatTypeDetectionServer
+        /// We must already be connected to the server
+        /// \param[in] serverAddress address of the server
+        void DetectNATType(SystemAddress _serverAddress);
 
-		/// \internal For plugin handling
-		virtual void Update(void);
+        /// \internal For plugin handling
+        virtual void Update(void);
 
-		/// \internal For plugin handling
-		virtual PluginReceiveResult OnReceive(Packet *packet);
+        /// \internal For plugin handling
+        virtual PluginReceiveResult OnReceive(Packet *packet);
 
-		virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+        virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
-	protected:
-		SOCKET c2;
-		unsigned short c2Port;
-		void Shutdown(void);
-		void OnCompletion(NATTypeDetectionResult result);
-		bool IsInProgress(void) const;
+    protected:
+        SOCKET c2;
+        unsigned short c2Port;
+        void Shutdown(void);
+        void OnCompletion(NATTypeDetectionResult result);
+        bool IsInProgress(void) const;
 
-		void OnTestPortRestricted(Packet *packet);
-		SystemAddress serverAddress;
-	};
+        void OnTestPortRestricted(Packet *packet);
+        SystemAddress serverAddress;
+    };
 
 
 }

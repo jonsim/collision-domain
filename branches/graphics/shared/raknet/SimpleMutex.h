@@ -33,17 +33,17 @@ class RAK_DLL_EXPORT SimpleMutex
 {
 public:
 
-	// Constructor
-	SimpleMutex();
+    // Constructor
+    SimpleMutex();
 
-	// Destructor
-	~SimpleMutex();
+    // Destructor
+    ~SimpleMutex();
 
-	// Locks the mutex.  Slow!
-	void Lock(void);
+    // Locks the mutex.  Slow!
+    void Lock(void);
 
-	// Unlocks the mutex.
-	void Unlock(void);
+    // Unlocks the mutex.
+    void Unlock(void);
 
 
 
@@ -52,16 +52,16 @@ public:
 
 
 private:
-	void Init(void);
+    void Init(void);
 #ifdef _WIN32
-	CRITICAL_SECTION criticalSection; /// Docs say this is faster than a mutex for single process access
+    CRITICAL_SECTION criticalSection; /// Docs say this is faster than a mutex for single process access
 
 
 #else
-	pthread_mutex_t hMutex;
+    pthread_mutex_t hMutex;
 #endif
-	// Not threadsafe
-	//	bool isInitialized;
+    // Not threadsafe
+    //    bool isInitialized;
 };
 
 } // namespace RakNet

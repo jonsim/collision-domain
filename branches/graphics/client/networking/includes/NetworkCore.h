@@ -1,6 +1,6 @@
 /**
- * @file	NetworkCore.h
- * @brief 	Takes notifications and deals with them however networking needs to
+ * @file    NetworkCore.h
+ * @brief     Takes notifications and deals with them however networking needs to
  */
 #ifndef NETWORKCORE_H
 #define NETWORKCORE_H
@@ -79,9 +79,9 @@ public:
     NetworkCore();
     ~NetworkCore (void);
 
-	RakNet::RakNetGUID getServerGUID();
+    RakNet::RakNetGUID getServerGUID();
 
-	bool Connect( const char *szHost, int iPort, char *szPass );
+    bool Connect( const char *szHost, int iPort, char *szPass );
     bool AutoConnect( int iPort );
 
     RakNet::RakPeerInterface* getRakInterface();
@@ -92,7 +92,7 @@ public:
 
     void sendSpawnRequest( CarType iCarType );
     void sendChatMessage( char *szMessage );
-	//void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
+    //void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
 
     // RPC Calls
     static void GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
@@ -102,9 +102,9 @@ public:
     static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-	static void DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static bool bConnected;
 
 };

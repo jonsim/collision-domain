@@ -1,6 +1,6 @@
 /**
- * @file	PowerupRandom.h
- * @brief 	Random powerup.
+ * @file    PowerupRandom.h
+ * @brief     Random powerup.
  */
 #ifndef POWERUPRANDOM_H
 #define POWERUPRANDOM_H
@@ -13,7 +13,7 @@ class GameCore;
 enum PowerupType;
 
 /**
- *  @brief 	Random powerup
+ *  @brief     Random powerup
  */
 class PowerupRandom : public Powerup
 {

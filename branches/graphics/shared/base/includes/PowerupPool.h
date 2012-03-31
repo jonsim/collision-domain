@@ -1,6 +1,6 @@
 /**
- * @file	PowerupPool.h
- * @brief 	Handles creation, management and deletion of powerups
+ * @file    PowerupPool.h
+ * @brief     Handles creation, management and deletion of powerups
  */
 #ifndef POWERUPPOOL_H
 #define POWERUPPOOL_H

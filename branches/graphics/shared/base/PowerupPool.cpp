@@ -33,14 +33,14 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
     int iNew = id;
     if( iNew == -1 )
     {
-	    for( int i = 0; i < MAX_POWERUPS; i ++ )
-	    {
-		    if( mPowerups[i] == NULL )
-		    {
-			    iNew = i;
-			    break;
-		    }
-	    }
+        for( int i = 0; i < MAX_POWERUPS; i ++ )
+        {
+            if( mPowerups[i] == NULL )
+            {
+                iNew = i;
+                break;
+            }
+        }
     }
 
     if (iNew == -1) {
@@ -138,7 +138,7 @@ void PowerupPool::spawnSomething()
 /// @brief  Process state changes for powerups and delete collected ones
 void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
 {
-	for( int i = 0; i < MAX_POWERUPS; i ++ )
+    for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
 
         if( ! mPowerups[i] )
@@ -158,7 +158,8 @@ void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
         }
         else
         {
-            mPowerups[i]->frameEvent(evt);
+            // dont rotate any of the powerups.
+            //mPowerups[i]->frameEvent(evt);
         }
     }
 }

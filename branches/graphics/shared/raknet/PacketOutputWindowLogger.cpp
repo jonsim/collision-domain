@@ -23,16 +23,16 @@ void PacketOutputWindowLogger::WriteLog(const char *str)
 {
 #if defined(_WIN32) && !defined(X360__) 
 
-	#if defined(UNICODE)
-		RakNet::RakWString str2 = str;
-		str2+="\n";
-		OutputDebugString(str2.C_String());
-	#else
-		RakNet::RakString str2 = str;
-		str2+="\n";
-		OutputDebugString(str2.C_String());
-	#endif
-	
+    #if defined(UNICODE)
+        RakNet::RakWString str2 = str;
+        str2+="\n";
+        OutputDebugString(str2.C_String());
+    #else
+        RakNet::RakString str2 = str;
+        str2+="\n";
+        OutputDebugString(str2.C_String());
+    #endif
+    
 #endif
 }
 

@@ -12,7 +12,7 @@
 
 
 static DataStructures::List< _findinfo_t* > fileInfo;
-	
+    
 #include "RakMemoryOverride.h"
 #include "RakAssert.h"
 
@@ -21,34 +21,34 @@ static DataStructures::List< _findinfo_t* > fileInfo;
 */
 long _findfirst(const char *name, _finddata_t *f)
 {
-	RakNet::RakString nameCopy = name;
+    RakNet::RakString nameCopy = name;
         RakNet::RakString filter;
 
         // This is linux only, so don't bother with '\'
-	const char* lastSep = strrchr(name,'/');
-	if(!lastSep)
-	{
+    const char* lastSep = strrchr(name,'/');
+    if(!lastSep)
+    {
             // filter pattern only is given, search current directory.
             filter = nameCopy;
             nameCopy = ".";
-	} else
-	{
+    } else
+    {
             // strip filter pattern from directory name, leave
             // trailing '/' intact.
             filter = lastSep+1;
             unsigned sepIndex = lastSep - name;
             nameCopy.Erase(sepIndex+1, nameCopy.GetLength() - sepIndex-1);
-	}
+    }
 
-	DIR* dir = opendir(nameCopy);
+    DIR* dir = opendir(nameCopy);
         
-	if(!dir) return -1;
+    if(!dir) return -1;
 
-	_findinfo_t* fi = RakNet::OP_NEW<_findinfo_t>( _FILE_AND_LINE_ );
-	fi->filter    = filter;
-	fi->dirName   = nameCopy;  // we need to remember this for stat()
-	fi->openedDir = dir;
-	fileInfo.Insert(fi, _FILE_AND_LINE_);
+    _findinfo_t* fi = RakNet::OP_NEW<_findinfo_t>( _FILE_AND_LINE_ );
+    fi->filter    = filter;
+    fi->dirName   = nameCopy;  // we need to remember this for stat()
+    fi->openedDir = dir;
+    fileInfo.Insert(fi, _FILE_AND_LINE_);
 
         long ret = fileInfo.Size()-1;
 
@@ -90,15 +90,15 @@ long _findfirst(const char *name, _finddata_t *f)
 
 int _findnext(long h, _finddata_t *f)
 {
-	RakAssert(h >= 0 && h < (long)fileInfo.Size());
-	if (h < 0 || h >= (long)fileInfo.Size()) return -1;
+    RakAssert(h >= 0 && h < (long)fileInfo.Size());
+    if (h < 0 || h >= (long)fileInfo.Size()) return -1;
         
-	_findinfo_t* fi = fileInfo[h];
+    _findinfo_t* fi = fileInfo[h];
 
-	while(true)
-	{
-		dirent* entry = readdir(fi->openedDir);
-		if(entry == 0) return -1;
+    while(true)
+    {
+        dirent* entry = readdir(fi->openedDir);
+        if(entry == 0) return -1;
 
                 // Only report stuff matching our filter
                 if (fnmatch(fi->filter, entry->d_name, FNM_PATHNAME) != 0) continue;
@@ -128,9 +128,9 @@ int _findnext(long h, _finddata_t *f)
                 strncpy(f->name, entry->d_name, STRING_BUFFER_SIZE);
                 
                 return 0;
-	}
+    }
 
-	return -1;
+    return -1;
 }
 
 

@@ -47,35 +47,35 @@ RakNet::TimeUS lastNormalizedInputValue=0;
 /// This also has the effect where debugging a sending system won't treat the time spent halted past 1 second as elapsed network time
 RakNet::TimeUS NormalizeTime(RakNet::TimeUS timeIn)
 {
-	RakNet::TimeUS diff, lastNormalizedReturnedValueCopy;
-	static RakNet::SimpleMutex mutex;
-	
-	mutex.Lock();
-	if (timeIn>=lastNormalizedInputValue)
-	{
-		diff = timeIn-lastNormalizedInputValue;
-		if (diff > GET_TIME_SPIKE_LIMIT)
-			lastNormalizedReturnedValue+=GET_TIME_SPIKE_LIMIT;
-		else
-			lastNormalizedReturnedValue+=diff;
-	}
-	else
-		lastNormalizedReturnedValue+=GET_TIME_SPIKE_LIMIT;
+    RakNet::TimeUS diff, lastNormalizedReturnedValueCopy;
+    static RakNet::SimpleMutex mutex;
+    
+    mutex.Lock();
+    if (timeIn>=lastNormalizedInputValue)
+    {
+        diff = timeIn-lastNormalizedInputValue;
+        if (diff > GET_TIME_SPIKE_LIMIT)
+            lastNormalizedReturnedValue+=GET_TIME_SPIKE_LIMIT;
+        else
+            lastNormalizedReturnedValue+=diff;
+    }
+    else
+        lastNormalizedReturnedValue+=GET_TIME_SPIKE_LIMIT;
 
-	lastNormalizedInputValue=timeIn;
-	lastNormalizedReturnedValueCopy=lastNormalizedReturnedValue;
-	mutex.Unlock();
+    lastNormalizedInputValue=timeIn;
+    lastNormalizedReturnedValueCopy=lastNormalizedReturnedValue;
+    mutex.Unlock();
 
-	return lastNormalizedReturnedValueCopy;
+    return lastNormalizedReturnedValueCopy;
 }
 #endif // #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
 RakNet::Time RakNet::GetTime( void )
 {
-	return (RakNet::Time)(GetTimeUS()/1000);
+    return (RakNet::Time)(GetTimeUS()/1000);
 }
 RakNet::TimeMS RakNet::GetTimeMS( void )
 {
-	return (RakNet::TimeMS)(GetTimeUS()/1000);
+    return (RakNet::TimeMS)(GetTimeUS()/1000);
 }
 
 
@@ -128,66 +128,66 @@ RakNet::TimeMS RakNet::GetTimeMS( void )
 #if   defined(_WIN32) 
 RakNet::TimeUS GetTimeUS_Windows( void )
 {
-	if ( initialized == false)
-	{
-		initialized = true;
+    if ( initialized == false)
+    {
+        initialized = true;
 
-		// Save the current process
+        // Save the current process
 #if !defined(_WIN32_WCE)
-		HANDLE mProc = GetCurrentProcess();
+        HANDLE mProc = GetCurrentProcess();
 
-		// Get the current Affinity
+        // Get the current Affinity
 #if _MSC_VER >= 1400 && defined (_M_X64)
-		GetProcessAffinityMask(mProc, (PDWORD_PTR)&mProcMask, (PDWORD_PTR)&mSysMask);
+        GetProcessAffinityMask(mProc, (PDWORD_PTR)&mProcMask, (PDWORD_PTR)&mSysMask);
 #else
-		GetProcessAffinityMask(mProc, &mProcMask, &mSysMask);
+        GetProcessAffinityMask(mProc, &mProcMask, &mSysMask);
 #endif
-		mThread = GetCurrentThread();
+        mThread = GetCurrentThread();
 
 #endif // _WIN32_WCE
-	}	
+    }    
 
-	// 9/26/2010 In China running LuDaShi, QueryPerformanceFrequency has to be called every time because CPU clock speeds can be different
-	RakNet::TimeUS curTime;
-	LARGE_INTEGER PerfVal;
-	LARGE_INTEGER yo1;
+    // 9/26/2010 In China running LuDaShi, QueryPerformanceFrequency has to be called every time because CPU clock speeds can be different
+    RakNet::TimeUS curTime;
+    LARGE_INTEGER PerfVal;
+    LARGE_INTEGER yo1;
 
-	QueryPerformanceFrequency( &yo1 );
-	QueryPerformanceCounter( &PerfVal );
+    QueryPerformanceFrequency( &yo1 );
+    QueryPerformanceCounter( &PerfVal );
 
-	__int64 quotient, remainder;
-	quotient=((PerfVal.QuadPart) / yo1.QuadPart);
-	remainder=((PerfVal.QuadPart) % yo1.QuadPart);
-	curTime = (RakNet::TimeUS) quotient*(RakNet::TimeUS)1000000 + (remainder*(RakNet::TimeUS)1000000 / yo1.QuadPart);
+    __int64 quotient, remainder;
+    quotient=((PerfVal.QuadPart) / yo1.QuadPart);
+    remainder=((PerfVal.QuadPart) % yo1.QuadPart);
+    curTime = (RakNet::TimeUS) quotient*(RakNet::TimeUS)1000000 + (remainder*(RakNet::TimeUS)1000000 / yo1.QuadPart);
 
 #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
-	return NormalizeTime(curTime);
+    return NormalizeTime(curTime);
 #else
-	return curTime;
+    return curTime;
 #endif // #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
 }
 #elif defined(__GNUC__)  || defined(__GCCXML__) ||  defined(__S3E__)
 RakNet::TimeUS GetTimeUS_Linux( void )
 {
-	timeval tp;
-	if ( initialized == false)
-	{
-		gettimeofday( &tp, 0 );
-		initialized=true;
-		// I do this because otherwise RakNet::Time in milliseconds won't work as it will underflow when dividing by 1000 to do the conversion
-		initialTime = ( tp.tv_sec ) * (RakNet::TimeUS) 1000000 + ( tp.tv_usec );
-	}
+    timeval tp;
+    if ( initialized == false)
+    {
+        gettimeofday( &tp, 0 );
+        initialized=true;
+        // I do this because otherwise RakNet::Time in milliseconds won't work as it will underflow when dividing by 1000 to do the conversion
+        initialTime = ( tp.tv_sec ) * (RakNet::TimeUS) 1000000 + ( tp.tv_usec );
+    }
 
-	// GCC
-	RakNet::TimeUS curTime;
-	gettimeofday( &tp, 0 );
+    // GCC
+    RakNet::TimeUS curTime;
+    gettimeofday( &tp, 0 );
 
-	curTime = ( tp.tv_sec ) * (RakNet::TimeUS) 1000000 + ( tp.tv_usec );
+    curTime = ( tp.tv_sec ) * (RakNet::TimeUS) 1000000 + ( tp.tv_usec );
 
 #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
-	return NormalizeTime(curTime - initialTime);
+    return NormalizeTime(curTime - initialTime);
 #else
-	return curTime - initialTime;
+    return curTime - initialTime;
 #endif // #if defined(GET_TIME_SPIKE_LIMIT) && GET_TIME_SPIKE_LIMIT>0
 }
 #endif
@@ -201,20 +201,20 @@ RakNet::TimeUS RakNet::GetTimeUS( void )
 
 
 #if   defined(_WIN32)
-	return GetTimeUS_Windows();
+    return GetTimeUS_Windows();
 #else
-	return GetTimeUS_Linux();
+    return GetTimeUS_Linux();
 #endif
 }
 bool RakNet::GreaterThan(RakNet::Time a, RakNet::Time b)
 {
-	// a > b?
-	const RakNet::Time halfSpan =(RakNet::Time) (((RakNet::Time)(const RakNet::Time)-1)/(RakNet::Time)2);
-	return b!=a && b-a>halfSpan;
+    // a > b?
+    const RakNet::Time halfSpan =(RakNet::Time) (((RakNet::Time)(const RakNet::Time)-1)/(RakNet::Time)2);
+    return b!=a && b-a>halfSpan;
 }
 bool RakNet::LessThan(RakNet::Time a, RakNet::Time b)
 {
-	// a < b?
-	const RakNet::Time halfSpan = ((RakNet::Time)(const RakNet::Time)-1)/(RakNet::Time)2;
-	return b!=a && b-a<halfSpan;
+    // a < b?
+    const RakNet::Time halfSpan = ((RakNet::Time)(const RakNet::Time)-1)/(RakNet::Time)2;
+    return b!=a && b-a<halfSpan;
 }

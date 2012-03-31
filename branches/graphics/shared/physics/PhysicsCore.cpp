@@ -1,6 +1,6 @@
 /**
- * @file	PhysicsCore.cpp
- * @brief 	Contains the physics world and methods relating to it (currently there are not many such methods)
+ * @file    PhysicsCore.cpp
+ * @brief     Contains the physics world and methods relating to it (currently there are not many such methods)
  */
 #include "stdafx.h"
 #include "SharedIncludes.h"
@@ -107,16 +107,16 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
     //OutputDebugString("Post Tick\n");
     //defaultPlaneBody->getBulletObject()->setCollisionFlags(btCollisionObject::CF_STATIC_OBJECT | btCollisionObject::CF_NO_CONTACT_RESPONSE);
 
-	// This function is called *within* stepSimulation. Let's build a list of the cars which collided so
+    // This function is called *within* stepSimulation. Let's build a list of the cars which collided so
     // that once the stepSim finishes all its substeps (this multiple times) that list can be read off
     
-	int numManifolds = world->getDispatcher()->getNumManifolds();
-	for (int i = 0; i < numManifolds; i++)
-	{
-		btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
+    int numManifolds = world->getDispatcher()->getNumManifolds();
+    for (int i = 0; i < numManifolds; i++)
+    {
+        btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
 
-		btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-		btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
+        btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
+        btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
 
         short groupA = obA->getBroadphaseHandle()->m_collisionFilterGroup;
         short groupB = obB->getBroadphaseHandle()->m_collisionFilterGroup;
@@ -155,7 +155,7 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         {
             continue;
         }
-	}
+    }
 }
 
 

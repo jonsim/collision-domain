@@ -56,78 +56,78 @@ class IncrementalReadInterface;
 class RAK_DLL_EXPORT DirectoryDeltaTransfer : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(DirectoryDeltaTransfer)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(DirectoryDeltaTransfer)
 
-	// Constructor
-	DirectoryDeltaTransfer();
+    // Constructor
+    DirectoryDeltaTransfer();
 
-	// Destructor
-	virtual ~DirectoryDeltaTransfer();
+    // Destructor
+    virtual ~DirectoryDeltaTransfer();
 
-	/// \brief This plugin has a dependency on the FileListTransfer plugin, which it uses to actually send the files.
-	/// \details So you need an instance of that plugin registered with RakPeerInterface, and a pointer to that interface should be passed here.
-	/// \param[in] flt A pointer to a registered instance of FileListTransfer
-	void SetFileListTransferPlugin(FileListTransfer *flt);
+    /// \brief This plugin has a dependency on the FileListTransfer plugin, which it uses to actually send the files.
+    /// \details So you need an instance of that plugin registered with RakPeerInterface, and a pointer to that interface should be passed here.
+    /// \param[in] flt A pointer to a registered instance of FileListTransfer
+    void SetFileListTransferPlugin(FileListTransfer *flt);
 
-	/// \brief Set the local root directory to base all file uploads and downloads off of.
-	/// \param[in] pathToApplication This path will be prepended to \a applicationSubdirectory in AddUploadsFromSubdirectory to find the actual path on disk.
-	void SetApplicationDirectory(const char *pathToApplication);
+    /// \brief Set the local root directory to base all file uploads and downloads off of.
+    /// \param[in] pathToApplication This path will be prepended to \a applicationSubdirectory in AddUploadsFromSubdirectory to find the actual path on disk.
+    void SetApplicationDirectory(const char *pathToApplication);
 
-	/// \brief What parameters to use for the RakPeerInterface::Send() call when uploading files.
-	/// \param[in] _priority See RakPeerInterface::Send()
-	/// \param[in] _orderingChannel See RakPeerInterface::Send()
-	void SetUploadSendParameters(PacketPriority _priority, char _orderingChannel);
+    /// \brief What parameters to use for the RakPeerInterface::Send() call when uploading files.
+    /// \param[in] _priority See RakPeerInterface::Send()
+    /// \param[in] _orderingChannel See RakPeerInterface::Send()
+    void SetUploadSendParameters(PacketPriority _priority, char _orderingChannel);
 
-	/// \brief Add all files in the specified subdirectory recursively.
-	/// \details \a subdir is appended to \a pathToApplication in SetApplicationDirectory().
-	/// All files in the resultant directory and subdirectories are then hashed so that users can download them.
-	/// \pre You must call SetFileListTransferPlugin with a valid FileListTransfer plugin
-	/// \param[in] subdir Concatenated with pathToApplication to form the final path from which to allow uploads.
-	void AddUploadsFromSubdirectory(const char *subdir);
+    /// \brief Add all files in the specified subdirectory recursively.
+    /// \details \a subdir is appended to \a pathToApplication in SetApplicationDirectory().
+    /// All files in the resultant directory and subdirectories are then hashed so that users can download them.
+    /// \pre You must call SetFileListTransferPlugin with a valid FileListTransfer plugin
+    /// \param[in] subdir Concatenated with pathToApplication to form the final path from which to allow uploads.
+    void AddUploadsFromSubdirectory(const char *subdir);
 
-	/// \brief Downloads files from the matching parameter \a subdir in AddUploadsFromSubdirectory.
-	/// \details \a subdir must contain all starting characters in \a subdir in AddUploadsFromSubdirectory
-	/// Therefore,
-	/// AddUploadsFromSubdirectory("Levels/Level1/"); would allow you to download using DownloadFromSubdirectory("Levels/Level1/Textures/"...
-	/// but it would NOT allow you to download from DownloadFromSubdirectory("Levels/"... or DownloadFromSubdirectory("Levels/Level2/"...
-	/// \pre You must call SetFileListTransferPlugin with a valid FileListTransfer plugin
-	/// \param[in] subdir A directory passed to AddUploadsFromSubdirectory on the remote system.  The passed dir can be more specific than the remote dir.
-	/// \param[in] outputSubdir The directory to write the output to.  Usually this will match \a subdir but it can be different if you want.
-	/// \param[in] prependAppDirToOutputSubdir True to prepend outputSubdir with pathToApplication when determining the final output path.  Usually you want this to be true.
-	/// \param[in] host The address of the remote system to send the message to.
-	/// \param[in] onFileCallback Callback to call per-file (optional).  When fileIndex+1==setCount in the callback then the download is done
-	/// \param[in] _priority See RakPeerInterface::Send()
-	/// \param[in] _orderingChannel See RakPeerInterface::Send()
-	/// \param[in] cb Callback to get progress updates. Pass 0 to not use.
-	/// \return A set ID, identifying this download set.  Returns 65535 on host unreachable.
-	unsigned short DownloadFromSubdirectory(const char *subdir, const char *outputSubdir, bool prependAppDirToOutputSubdir, SystemAddress host, FileListTransferCBInterface *onFileCallback, PacketPriority _priority, char _orderingChannel, FileListProgress *cb);
+    /// \brief Downloads files from the matching parameter \a subdir in AddUploadsFromSubdirectory.
+    /// \details \a subdir must contain all starting characters in \a subdir in AddUploadsFromSubdirectory
+    /// Therefore,
+    /// AddUploadsFromSubdirectory("Levels/Level1/"); would allow you to download using DownloadFromSubdirectory("Levels/Level1/Textures/"...
+    /// but it would NOT allow you to download from DownloadFromSubdirectory("Levels/"... or DownloadFromSubdirectory("Levels/Level2/"...
+    /// \pre You must call SetFileListTransferPlugin with a valid FileListTransfer plugin
+    /// \param[in] subdir A directory passed to AddUploadsFromSubdirectory on the remote system.  The passed dir can be more specific than the remote dir.
+    /// \param[in] outputSubdir The directory to write the output to.  Usually this will match \a subdir but it can be different if you want.
+    /// \param[in] prependAppDirToOutputSubdir True to prepend outputSubdir with pathToApplication when determining the final output path.  Usually you want this to be true.
+    /// \param[in] host The address of the remote system to send the message to.
+    /// \param[in] onFileCallback Callback to call per-file (optional).  When fileIndex+1==setCount in the callback then the download is done
+    /// \param[in] _priority See RakPeerInterface::Send()
+    /// \param[in] _orderingChannel See RakPeerInterface::Send()
+    /// \param[in] cb Callback to get progress updates. Pass 0 to not use.
+    /// \return A set ID, identifying this download set.  Returns 65535 on host unreachable.
+    unsigned short DownloadFromSubdirectory(const char *subdir, const char *outputSubdir, bool prependAppDirToOutputSubdir, SystemAddress host, FileListTransferCBInterface *onFileCallback, PacketPriority _priority, char _orderingChannel, FileListProgress *cb);
 
-	/// \brief Clear all allowed uploads previously set with AddUploadsFromSubdirectory
-	void ClearUploads(void);
+    /// \brief Clear all allowed uploads previously set with AddUploadsFromSubdirectory
+    void ClearUploads(void);
 
-	/// \brief Returns how many files are available for upload
-	/// \return How many files are available for upload
-	unsigned GetNumberOfFilesForUpload(void) const;
+    /// \brief Returns how many files are available for upload
+    /// \return How many files are available for upload
+    unsigned GetNumberOfFilesForUpload(void) const;
 
-	/// \brief Normally, if a remote system requests files, those files are all loaded into memory and sent immediately.
-	/// \details This function allows the files to be read in incremental chunks, saving memory
-	/// \param[in] _incrementalReadInterface If a file in \a fileList has no data, filePullInterface will be used to read the file in chunks of size \a chunkSize
-	/// \param[in] _chunkSize How large of a block of a file to send at once
-	void SetDownloadRequestIncrementalReadInterface(IncrementalReadInterface *_incrementalReadInterface, unsigned int _chunkSize);
-	
-	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
+    /// \brief Normally, if a remote system requests files, those files are all loaded into memory and sent immediately.
+    /// \details This function allows the files to be read in incremental chunks, saving memory
+    /// \param[in] _incrementalReadInterface If a file in \a fileList has no data, filePullInterface will be used to read the file in chunks of size \a chunkSize
+    /// \param[in] _chunkSize How large of a block of a file to send at once
+    void SetDownloadRequestIncrementalReadInterface(IncrementalReadInterface *_incrementalReadInterface, unsigned int _chunkSize);
+    
+    /// \internal For plugin handling
+    virtual PluginReceiveResult OnReceive(Packet *packet);
 protected:
-	void OnDownloadRequest(Packet *packet);
+    void OnDownloadRequest(Packet *packet);
 
-	char applicationDirectory[512];
-	FileListTransfer *fileListTransfer;
-	FileList *availableUploads;
-	PacketPriority priority;
-	char orderingChannel;
-	IncrementalReadInterface *incrementalReadInterface;
-	unsigned int chunkSize;
+    char applicationDirectory[512];
+    FileListTransfer *fileListTransfer;
+    FileList *availableUploads;
+    PacketPriority priority;
+    char orderingChannel;
+    IncrementalReadInterface *incrementalReadInterface;
+    unsigned int chunkSize;
 };
 
 } // namespace RakNet

@@ -41,18 +41,18 @@ namespace RakNet {
 class RAK_DLL_EXPORT RakNetRandom
 {
 public:
-	RakNetRandom();
-	~RakNetRandom();
-	void SeedMT( unsigned int seed );
-	unsigned int ReloadMT( void );
-	unsigned int RandomMT( void );
-	float FrandomMT( void );
-	void FillBufferMT( void *buffer, unsigned int bytes );
+    RakNetRandom();
+    ~RakNetRandom();
+    void SeedMT( unsigned int seed );
+    unsigned int ReloadMT( void );
+    unsigned int RandomMT( void );
+    float FrandomMT( void );
+    void FillBufferMT( void *buffer, unsigned int bytes );
 
 protected:
-	unsigned int state[ 624 + 1 ];
-	unsigned int *next;
-	int left;
+    unsigned int state[ 624 + 1 ];
+    unsigned int *next;
+    int left;
 };
 
 } // namespace RakNet

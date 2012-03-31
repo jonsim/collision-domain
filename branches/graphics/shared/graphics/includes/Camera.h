@@ -1,6 +1,6 @@
 /**
- * @file	Camera.h
- * @brief 	Contains the controls for implementing various cameras
+ * @file    Camera.h
+ * @brief     Contains the controls for implementing various cameras
  * @details Tried to keep this as abstracted as possible - nothing specific to players,
             just a scene node to follow if you wish
  */

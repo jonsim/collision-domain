@@ -1,6 +1,6 @@
 /**
- * @file	Input.cpp
- * @brief 	Controls the users input.
+ * @file    Input.cpp
+ * @brief     Controls the users input.
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -63,19 +63,19 @@ void Input::capture ()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getInputState()
 {
-	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
-	{
+    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+    {
         return new InputState(mKeyboard->isKeyDown(OIS::KC_UP)    || mKeyboard->isKeyDown(OIS::KC_W),
                               mKeyboard->isKeyDown(OIS::KC_DOWN)  || mKeyboard->isKeyDown(OIS::KC_S),
                               mKeyboard->isKeyDown(OIS::KC_LEFT)  || mKeyboard->isKeyDown(OIS::KC_A),
                               mKeyboard->isKeyDown(OIS::KC_RIGHT) || mKeyboard->isKeyDown(OIS::KC_D),
                               mKeyboard->isKeyDown(OIS::KC_SPACE) );
-	}
-	else
-	{
-		// Don't want to capture any keys (typing things) or at the select car screen
-		return new InputState( false, false, false, false, false );
-	}
+    }
+    else
+    {
+        // Don't want to capture any keys (typing things) or at the select car screen
+        return new InputState( false, false, false, false, false );
+    }
 }
 
 
@@ -83,8 +83,8 @@ InputState* Input::getInputState()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getFreeCamInputState()
 {
-	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
-	{
+    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+    {
         return new InputState(mKeyboard->isKeyDown(OIS::KC_T),
                               mKeyboard->isKeyDown(OIS::KC_G),
                               mKeyboard->isKeyDown(OIS::KC_F),
@@ -103,9 +103,9 @@ void Input::processInterfaceControls()
     // Check for console and chatbox - NB: they cannot be displayed simultaneously.
     if (NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
     {
-	    if (mKeyboard->isKeyDown(OIS::KC_T))
+        if (mKeyboard->isKeyDown(OIS::KC_T))
             GameCore::mGui->toggleChatbox();
-	    else if (mKeyboard->isKeyDown(OIS::KC_C))
+        else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleConsole();
 #ifdef COLLISION_DOMAIN_CLIENT
         if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false )
@@ -139,7 +139,7 @@ int Input::getMouseYRel()
 /// @return The amount the mouse has moved in the Z direction (via the scroll wheel).
 int Input::getMouseZRel()
 {
-	return mMouse->getMouseState().Z.rel;
+    return mMouse->getMouseState().Z.rel;
 }
 
 
@@ -148,12 +148,12 @@ int Input::getMouseZRel()
 /// @return Whether the event has been serviced.
 bool Input::keyPressed (const OIS::KeyEvent &evt)
 {
-	// Get the GUI system and inject the key press
-	CEGUI::System &sys = CEGUI::System::getSingleton();
-	sys.injectKeyDown(evt.key);
+    // Get the GUI system and inject the key press
+    CEGUI::System &sys = CEGUI::System::getSingleton();
+    sys.injectKeyDown(evt.key);
 
-	// Inject text seperately (for multi-lang keyboards)
-	sys.injectChar(evt.text);
+    // Inject text seperately (for multi-lang keyboards)
+    sys.injectChar(evt.text);
 
     if (evt.key == OIS::KC_K) {
         //GameCore::mAudioCore->playCarCrash();
@@ -184,7 +184,7 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::keyReleased (const OIS::KeyEvent &evt)
 {
-	CEGUI::System::getSingleton().injectKeyUp(evt.key);
+    CEGUI::System::getSingleton().injectKeyUp(evt.key);
 
     return true;
 }
@@ -194,11 +194,11 @@ bool Input::keyReleased (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::mouseMoved (const OIS::MouseEvent& evt)
 {
-	CEGUI::System &sys = CEGUI::System::getSingleton();
-	sys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
-	// Scroll wheel.
-	if (evt.state.Z.rel)
-		sys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+    CEGUI::System &sys = CEGUI::System::getSingleton();
+    sys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
+    // Scroll wheel.
+    if (evt.state.Z.rel)
+        sys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
 
     return true;
 }
@@ -232,7 +232,7 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     //    GameCore::mPowerupPool->spawnSomething();
     //}
 
-	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
+    CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
 
     return true;
 }
@@ -244,7 +244,7 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 /// @return Whether the event has been serviced.
 bool Input::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
-	CEGUI::System::getSingleton().injectMouseButtonUp(convertButton(id));
+    CEGUI::System::getSingleton().injectMouseButtonUp(convertButton(id));
     return true;
 }
 

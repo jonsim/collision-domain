@@ -2,26 +2,26 @@
 
 ViewCamera::ViewCamera(Ogre::Camera* cam)
 {
-	mCam = cam;
-	mLastUpdate = RakNet::GetTimeMS(); //Set it to the current time
+    mCam = cam;
+    mLastUpdate = RakNet::GetTimeMS(); //Set it to the current time
 }
 
 Ogre::Camera* ViewCamera::getCamera()
 {
-	return mCam;
+    return mCam;
 }
 
 RakNet::TimeMS ViewCamera::getLastUpdateTime()
 {
-	return mLastUpdate;
+    return mLastUpdate;
 }
 
 void ViewCamera::setLastUpdateTime(RakNet::TimeMS lastUpdate)
 {
-	mLastUpdate = lastUpdate;
+    mLastUpdate = lastUpdate;
 }
 
 void ViewCamera::setLastUpdateTime()
 {
-	mLastUpdate = RakNet::GetTimeMS();
+    mLastUpdate = RakNet::GetTimeMS();
 }

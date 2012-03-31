@@ -21,11 +21,11 @@ namespace RakNet
 class RAK_DLL_EXPORT DataCompressor
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(DataCompressor)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(DataCompressor)
 
-	static void Compress( unsigned char *userData, unsigned sizeInBytes, RakNet::BitStream * output );
-	static unsigned DecompressAndAllocate( RakNet::BitStream * input, unsigned char **output );
+    static void Compress( unsigned char *userData, unsigned sizeInBytes, RakNet::BitStream * output );
+    static unsigned DecompressAndAllocate( RakNet::BitStream * input, unsigned char **output );
 };
 
 } // namespace RakNet

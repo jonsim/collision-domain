@@ -1,6 +1,6 @@
 /**
- * @file	PowerupMass.h
- * @brief 	Random powerup.
+ * @file    PowerupMass.h
+ * @brief     Random powerup.
  */
 #ifndef POWERUPMASS_H
 #define POWERUPMASS_H
@@ -12,7 +12,7 @@ class Player;
 class GameCore;
 
 /**
- *  @brief 	Random powerup
+ *  @brief     Random powerup
  */
 class PowerupMass : public Powerup
 {

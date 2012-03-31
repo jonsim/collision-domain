@@ -35,60 +35,60 @@ class UDPProxyClient;
 /// \ingroup UDP_PROXY_GROUP
 struct UDPProxyClientResultHandler
 {
-	UDPProxyClientResultHandler() {}
-	virtual ~UDPProxyClientResultHandler() {}
+    UDPProxyClientResultHandler() {}
+    virtual ~UDPProxyClientResultHandler() {}
 
-	/// Called when our forwarding request was completed. We can now connect to \a targetAddress by using \a proxyAddress instead
-	/// \param[out] proxyIPAddress IP Address of the proxy server, which will forward messages to targetAddress
-	/// \param[out] proxyPort Remote port to use on the proxy server, which will forward messages to targetAddress
-	/// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
-	/// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] proxyClient The plugin that is calling this callback
-	virtual void OnForwardingSuccess(const char *proxyIPAddress, unsigned short proxyPort,
-		SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
+    /// Called when our forwarding request was completed. We can now connect to \a targetAddress by using \a proxyAddress instead
+    /// \param[out] proxyIPAddress IP Address of the proxy server, which will forward messages to targetAddress
+    /// \param[out] proxyPort Remote port to use on the proxy server, which will forward messages to targetAddress
+    /// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
+    /// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] proxyClient The plugin that is calling this callback
+    virtual void OnForwardingSuccess(const char *proxyIPAddress, unsigned short proxyPort,
+        SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
 
-	/// Called when another system has setup forwarding, with our system as the target address.
-	/// Plugin automatically sends a datagram to proxyIPAddress before this callback, to open our router if necessary.
-	/// \param[out] proxyIPAddress IP Address of the proxy server, which will forward messages to targetAddress
-	/// \param[out] proxyPort Remote port to use on the proxy server, which will forward messages to targetAddress
-	/// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. This is originating source IP address of the remote system that will be sending to us.
-	/// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding. This is our external IP address.
-	/// \param[out] proxyClient The plugin that is calling this callback
-	virtual void OnForwardingNotification(const char *proxyIPAddress, unsigned short proxyPort,
-		SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
+    /// Called when another system has setup forwarding, with our system as the target address.
+    /// Plugin automatically sends a datagram to proxyIPAddress before this callback, to open our router if necessary.
+    /// \param[out] proxyIPAddress IP Address of the proxy server, which will forward messages to targetAddress
+    /// \param[out] proxyPort Remote port to use on the proxy server, which will forward messages to targetAddress
+    /// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. This is originating source IP address of the remote system that will be sending to us.
+    /// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding. This is our external IP address.
+    /// \param[out] proxyClient The plugin that is calling this callback
+    virtual void OnForwardingNotification(const char *proxyIPAddress, unsigned short proxyPort,
+        SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
 
-	/// Called when our forwarding request failed, because no UDPProxyServers are connected to UDPProxyCoordinator
-	/// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
-	/// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] proxyClient The plugin that is calling this callback
-	virtual void OnNoServersOnline(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
+    /// Called when our forwarding request failed, because no UDPProxyServers are connected to UDPProxyCoordinator
+    /// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
+    /// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] proxyClient The plugin that is calling this callback
+    virtual void OnNoServersOnline(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
 
-	/// Called when our forwarding request failed, because no UDPProxyServers are connected to UDPProxyCoordinator
-	/// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
-	/// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] targetGuid \a targetGuid parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] proxyClient The plugin that is calling this callback
-	virtual void OnRecipientNotConnected(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNetGUID targetGuid, RakNet::UDPProxyClient *proxyClientPlugin)=0;
+    /// Called when our forwarding request failed, because no UDPProxyServers are connected to UDPProxyCoordinator
+    /// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
+    /// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] targetGuid \a targetGuid parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] proxyClient The plugin that is calling this callback
+    virtual void OnRecipientNotConnected(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNetGUID targetGuid, RakNet::UDPProxyClient *proxyClientPlugin)=0;
 
-	/// Called when our forwarding request failed, because all UDPProxyServers that are connected to UDPProxyCoordinator are at their capacity
-	/// Either add more servers, or increase capacity via UDPForwarder::SetMaxForwardEntries()
-	/// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
-	/// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] proxyClient The plugin that is calling this callback
-	virtual void OnAllServersBusy(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
+    /// Called when our forwarding request failed, because all UDPProxyServers that are connected to UDPProxyCoordinator are at their capacity
+    /// Either add more servers, or increase capacity via UDPForwarder::SetMaxForwardEntries()
+    /// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
+    /// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] proxyClient The plugin that is calling this callback
+    virtual void OnAllServersBusy(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
 
-	/// Called when our forwarding request is already in progress on the \a proxyCoordinator.
-	/// This can be ignored, but indicates an unneeded second request
-	/// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
-	/// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
-	/// \param[out] proxyClient The plugin that is calling this callback
-	virtual void OnForwardingInProgress(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
+    /// Called when our forwarding request is already in progress on the \a proxyCoordinator.
+    /// This can be ignored, but indicates an unneeded second request
+    /// \param[out] proxyCoordinator \a proxyCoordinator parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] sourceAddress \a sourceAddress parameter passed to UDPProxyClient::RequestForwarding. If it was UNASSIGNED_SYSTEM_ADDRESS, it is now our external IP address.
+    /// \param[out] targetAddress \a targetAddress parameter originally passed to UDPProxyClient::RequestForwarding
+    /// \param[out] proxyClient The plugin that is calling this callback
+    virtual void OnForwardingInProgress(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddress, RakNet::UDPProxyClient *proxyClientPlugin)=0;
 };
 
 
@@ -102,65 +102,65 @@ struct UDPProxyClientResultHandler
 class RAK_DLL_EXPORT UDPProxyClient : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(UDPProxyClient)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(UDPProxyClient)
 
-	UDPProxyClient();
-	~UDPProxyClient();
+    UDPProxyClient();
+    ~UDPProxyClient();
 
-	/// Receives the results of calling RequestForwarding()
-	/// Set before calling RequestForwarding or you won't know what happened
-	/// \param[in] resultHandler 
-	void SetResultHandler(UDPProxyClientResultHandler *rh);
+    /// Receives the results of calling RequestForwarding()
+    /// Set before calling RequestForwarding or you won't know what happened
+    /// \param[in] resultHandler 
+    void SetResultHandler(UDPProxyClientResultHandler *rh);
 
-	/// Sends a request to proxyCoordinator to find a server and have that server setup UDPForwarder::StartForwarding() on our address to \a targetAddressAsSeenFromCoordinator
-	/// The forwarded datagrams can be from any UDP source, not just RakNet
-	/// \pre Must be connected to \a proxyCoordinator
-	/// \pre Systems running UDPProxyServer must be connected to \a proxyCoordinator and logged in via UDPProxyCoordinator::LoginServer() or UDPProxyServer::LoginToCoordinator()
-	/// \note May still fail, if all proxy servers have no open connections.
-	/// \note RakNet's protocol will ensure a message is sent at least every 5 seconds, so if routing RakNet messages, it is a reasonable value for timeoutOnNoDataMS, plus an extra few seconds for latency.
-	/// \param[in] proxyCoordinator System we are connected to that is running the UDPProxyCoordinator plugin
-	/// \param[in] sourceAddress External IP address of the system we want to forward messages from. This does not have to be our own system. To specify our own system, you can pass UNASSIGNED_SYSTEM_ADDRESS which the coordinator will treat as our external IP address.
-	/// \param[in] targetAddressAsSeenFromCoordinator External IP address of the system we want to forward messages to. If this system is connected to UDPProxyCoordinator at this address using RakNet, that system will ping the server and thus open the router for incoming communication. In any other case, you are responsible for doing your own network communication to have that system ping the server. See also targetGuid in the other version of RequestForwarding(), to avoid the need to know the IP address to the coordinator of the destination.
-	/// \param[in] timeoutOnNoData If no data is sent by the forwarded systems, how long before removing the forward entry from UDPForwarder? UDP_FORWARDER_MAXIMUM_TIMEOUT is the maximum value. Recommended high enough to not drop valid connections, but low enough to not waste forwarding slots on the proxy server.
-	/// \param[in] serverSelectionBitstream If you want to send data to UDPProxyCoordinator::GetBestServer(), write it here
-	/// \return true if the request was sent, false if we are not connected to proxyCoordinator
-	bool RequestForwarding(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddressAsSeenFromCoordinator, RakNet::TimeMS timeoutOnNoDataMS, RakNet::BitStream *serverSelectionBitstream=0);
+    /// Sends a request to proxyCoordinator to find a server and have that server setup UDPForwarder::StartForwarding() on our address to \a targetAddressAsSeenFromCoordinator
+    /// The forwarded datagrams can be from any UDP source, not just RakNet
+    /// \pre Must be connected to \a proxyCoordinator
+    /// \pre Systems running UDPProxyServer must be connected to \a proxyCoordinator and logged in via UDPProxyCoordinator::LoginServer() or UDPProxyServer::LoginToCoordinator()
+    /// \note May still fail, if all proxy servers have no open connections.
+    /// \note RakNet's protocol will ensure a message is sent at least every 5 seconds, so if routing RakNet messages, it is a reasonable value for timeoutOnNoDataMS, plus an extra few seconds for latency.
+    /// \param[in] proxyCoordinator System we are connected to that is running the UDPProxyCoordinator plugin
+    /// \param[in] sourceAddress External IP address of the system we want to forward messages from. This does not have to be our own system. To specify our own system, you can pass UNASSIGNED_SYSTEM_ADDRESS which the coordinator will treat as our external IP address.
+    /// \param[in] targetAddressAsSeenFromCoordinator External IP address of the system we want to forward messages to. If this system is connected to UDPProxyCoordinator at this address using RakNet, that system will ping the server and thus open the router for incoming communication. In any other case, you are responsible for doing your own network communication to have that system ping the server. See also targetGuid in the other version of RequestForwarding(), to avoid the need to know the IP address to the coordinator of the destination.
+    /// \param[in] timeoutOnNoData If no data is sent by the forwarded systems, how long before removing the forward entry from UDPForwarder? UDP_FORWARDER_MAXIMUM_TIMEOUT is the maximum value. Recommended high enough to not drop valid connections, but low enough to not waste forwarding slots on the proxy server.
+    /// \param[in] serverSelectionBitstream If you want to send data to UDPProxyCoordinator::GetBestServer(), write it here
+    /// \return true if the request was sent, false if we are not connected to proxyCoordinator
+    bool RequestForwarding(SystemAddress proxyCoordinator, SystemAddress sourceAddress, SystemAddress targetAddressAsSeenFromCoordinator, RakNet::TimeMS timeoutOnNoDataMS, RakNet::BitStream *serverSelectionBitstream=0);
 
-	/// Same as above, but specify the target with a GUID, in case you don't know what its address is to the coordinator
-	/// If requesting forwarding to a RakNet enabled system, then it is easier to use targetGuid instead of targetAddressAsSeenFromCoordinator
-	bool RequestForwarding(SystemAddress proxyCoordinator, SystemAddress sourceAddress, RakNetGUID targetGuid, RakNet::TimeMS timeoutOnNoDataMS, RakNet::BitStream *serverSelectionBitstream=0);
+    /// Same as above, but specify the target with a GUID, in case you don't know what its address is to the coordinator
+    /// If requesting forwarding to a RakNet enabled system, then it is easier to use targetGuid instead of targetAddressAsSeenFromCoordinator
+    bool RequestForwarding(SystemAddress proxyCoordinator, SystemAddress sourceAddress, RakNetGUID targetGuid, RakNet::TimeMS timeoutOnNoDataMS, RakNet::BitStream *serverSelectionBitstream=0);
 
-	/// \internal
-	virtual void Update(void);
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnRakPeerShutdown(void);
-	
-	struct ServerWithPing
-	{
-		unsigned short ping;
-		SystemAddress serverAddress;
-	};
-	struct SenderAndTargetAddress
-	{
-		SystemAddress senderClientAddress;
-		SystemAddress targetClientAddress;
-	};
-	struct PingServerGroup
-	{
-		SenderAndTargetAddress sata;
-		RakNet::TimeMS startPingTime;
-		SystemAddress coordinatorAddressForPings;
-		DataStructures::Multilist<ML_UNORDERED_LIST, ServerWithPing> serversToPing;
-		bool AreAllServersPinged(void) const;
-		void SendPingedServersToCoordinator(RakPeerInterface *rakPeerInterface);
-	};
-	DataStructures::Multilist<ML_UNORDERED_LIST, PingServerGroup*> pingServerGroups;
+    /// \internal
+    virtual void Update(void);
+    virtual PluginReceiveResult OnReceive(Packet *packet);
+    virtual void OnRakPeerShutdown(void);
+    
+    struct ServerWithPing
+    {
+        unsigned short ping;
+        SystemAddress serverAddress;
+    };
+    struct SenderAndTargetAddress
+    {
+        SystemAddress senderClientAddress;
+        SystemAddress targetClientAddress;
+    };
+    struct PingServerGroup
+    {
+        SenderAndTargetAddress sata;
+        RakNet::TimeMS startPingTime;
+        SystemAddress coordinatorAddressForPings;
+        DataStructures::Multilist<ML_UNORDERED_LIST, ServerWithPing> serversToPing;
+        bool AreAllServersPinged(void) const;
+        void SendPingedServersToCoordinator(RakPeerInterface *rakPeerInterface);
+    };
+    DataStructures::Multilist<ML_UNORDERED_LIST, PingServerGroup*> pingServerGroups;
 protected:
 
-	void OnPingServers(Packet *packet);
-	void Clear(void);
-	UDPProxyClientResultHandler *resultHandler;
+    void OnPingServers(Packet *packet);
+    void Clear(void);
+    UDPProxyClientResultHandler *resultHandler;
 
 };
 

@@ -41,13 +41,13 @@
 
 
 
-	#if   defined(_WIN32)
-		#define closesocket__ closesocket
-		#define select__ select
-	#else
-		#define closesocket__ close
-		#define select__ select
-	#endif
+    #if   defined(_WIN32)
+        #define closesocket__ closesocket
+        #define select__ select
+    #else
+        #define closesocket__ close
+        #define select__ select
+    #endif
 #define accept__ accept
 #define connect__ connect
 #define socket__ socket

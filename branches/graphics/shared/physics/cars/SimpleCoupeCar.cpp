@@ -1,6 +1,6 @@
 /**
- * @file	SimpleCoupeCar.cpp
- * @brief 	A Car object with specific mesh and texture to create a simple coupe car
+ * @file    SimpleCoupeCar.cpp
+ * @brief     A Car object with specific mesh and texture to create a simple coupe car
  */
 #include "stdafx.h"
 #include "SharedIncludes.h"
@@ -70,11 +70,11 @@ void SimpleCoupeCar::initTuning()
     mSuspensionRestLength   =    0.3f;
     mMaxSuspensionTravelCm  =   15.0f;
     mFrictionSlip           =    2.0f;
-	mChassisLinearDamping   =    0.2f;
-	mChassisAngularDamping  =    0.2f;
-	mChassisRestitution		=    0.6f;
-	mChassisFriction        =    0.6f;
-	mChassisMass            = 1451.0f;
+    mChassisLinearDamping   =    0.2f;
+    mChassisAngularDamping  =    0.2f;
+    mChassisRestitution        =    0.6f;
+    mChassisFriction        =    0.6f;
+    mChassisMass            = 1451.0f;
 
     mWheelRadius      =  0.345f; // this is actually diameter!!
     mWheelWidth       =  0.176f;
@@ -87,9 +87,9 @@ void SimpleCoupeCar::initTuning()
 
     mMaxAccelForce = 8000.0f;
     mMaxBrakeForce = 100.0f;
-	
-	mFrontWheelDrive = false;
-	mRearWheelDrive  = true;
+    
+    mFrontWheelDrive = false;
+    mRearWheelDrive  = true;
 
     mGearCount = 5;
     mCurrentGear = 1;
@@ -110,7 +110,7 @@ void SimpleCoupeCar::initTuning()
     mRevTick  = 1800;
     mRevLimit = 6000;
 
-	mMaxSpeed = 80.0;
+    mMaxSpeed = 80.0;
 
     readTuning( "spec_banger.txt" );
 }
@@ -189,14 +189,14 @@ void SimpleCoupeCar::initNodes()
     mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-	
-	// Setup particles.
+    
+    // Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
+    mBodyNode->attachObject(mExhaustSystem);
     //Ogre::ParticleSystem* foo = GameCore::mSceneMgr->createParticleSystem("TestEffect" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Sparks");
-	//mBodyNode->attachObject(foo);
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	mBodyNode->attachObject(mDustSystem);
+    //mBodyNode->attachObject(foo);
+    mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+    mBodyNode->attachObject(mDustSystem);
     // The dust emitters should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
     mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.8f, 0.2f,  1.6f));  // FL
@@ -214,8 +214,8 @@ void SimpleCoupeCar::initNodes()
 void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
 {
     // Load the meshes.
-	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
-	// be used in the first parameter
+    // true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
+    // be used in the first parameter
     createGeometry("UnIqUe_BangerBody",    "banger_body.mesh",    mChassisNode, true);
     createGeometry("UnIqUe_BangerLDoor",   "banger_fldoor.mesh",  mFLDoorNode,  true);
     createGeometry("UnIqUe_BangerRDoor",   "banger_frdoor.mesh",  mFRDoorNode,  true);
@@ -361,15 +361,15 @@ void SimpleCoupeCar::initWheels()
     mState->setWheel( 3, mRLWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
 
     for( int i=0; i < mVehicle->getNumWheels(); i++ )
-	{
-		btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
-		wheel.m_suspensionStiffness         = mSuspensionStiffness;
-		wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
-		wheel.m_wheelsDampingCompression    = mSuspensionCompression;
+    {
+        btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
+        wheel.m_suspensionStiffness         = mSuspensionStiffness;
+        wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
+        wheel.m_wheelsDampingCompression    = mSuspensionCompression;
         wheel.m_maxSuspensionForce          = mMaxSuspensionForce;
-		wheel.m_frictionSlip                = mWheelFriction;
-		wheel.m_rollInfluence               = mRollInfluence;
-	}
+        wheel.m_frictionSlip                = mWheelFriction;
+        wheel.m_rollInfluence               = mRollInfluence;
+    }
 }
 
 void SimpleCoupeCar::makeBitsFallOff()

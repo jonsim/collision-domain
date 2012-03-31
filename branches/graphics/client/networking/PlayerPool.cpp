@@ -6,75 +6,75 @@
 
 PlayerPool::PlayerPool() : mLocalPlayer(0)
 {
-	// Initialize the pool
-	for( int i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		mPlayers[i] = NULL;
-	}
+    // Initialize the pool
+    for( int i = 0; i < MAX_PLAYERS; i ++ )
+    {
+        mPlayers[i] = NULL;
+    }
 }
 
 void PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
-	int i = 0, iNew = -1;
-	for( i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		if( mPlayers[i] == NULL )
-		{
-			iNew = i;
-			break;
-		}
-	}
+    int i = 0, iNew = -1;
+    for( i = 0; i < MAX_PLAYERS; i ++ )
+    {
+        if( mPlayers[i] == NULL )
+        {
+            iNew = i;
+            break;
+        }
+    }
 
-	if( iNew != -1 )
-	{
-		mPlayers[iNew] = new Player();
-		mPlayers[iNew]->setGUID(playerid);
-		mGUID[iNew] = playerid;
+    if( iNew != -1 )
+    {
+        mPlayers[iNew] = new Player();
+        mPlayers[iNew]->setGUID(playerid);
+        mGUID[iNew] = playerid;
         mPlayers[iNew]->setNickname( szNickname );
-	}
+    }
 }
 
 int PlayerPool::getNumberOfPlayers()
 {
-	int i = 0, count = 0;
-	for( i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		if( mPlayers[i] != NULL )
-		{
-			count++;
-		}
-	}
+    int i = 0, count = 0;
+    for( i = 0; i < MAX_PLAYERS; i ++ )
+    {
+        if( mPlayers[i] != NULL )
+        {
+            count++;
+        }
+    }
 
-	return count;
+    return count;
 }
 
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
-	mLocalPlayer = new Player();
-	mLocalGUID = playerid;
+    mLocalPlayer = new Player();
+    mLocalGUID = playerid;
     mLocalPlayer->setNickname( szNickname );
 }
 
 void PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
 {
-	int iRemove = getPlayerIndex( playerid );
-	if( iRemove != -1 )
-	{
-		delete mPlayers[iRemove];
-		mPlayers[iRemove] = NULL;
-	}
+    int iRemove = getPlayerIndex( playerid );
+    if( iRemove != -1 )
+    {
+        delete mPlayers[iRemove];
+        mPlayers[iRemove] = NULL;
+    }
 }
 
 int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 {
-	int i = 0;
-	for (int i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		if( mGUID[i] == playerid )
-			return i;
-	}
+    int i = 0;
+    for (int i = 0; i < MAX_PLAYERS; i ++ )
+    {
+        if( mGUID[i] == playerid )
+            return i;
+    }
 
-	return -1;
+    return -1;
 }
 
 Player* PlayerPool::getLocalPlayer() { return mLocalPlayer; }
@@ -85,22 +85,22 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
     if( playerid == mLocalGUID )
         return mLocalPlayer;
 
-	int index = getPlayerIndex( playerid );
-	if( index != -1 )
-		return mPlayers[index];
+    int index = getPlayerIndex( playerid );
+    if( index != -1 )
+        return mPlayers[index];
 
-	return NULL;
+    return NULL;
 }
 
 void PlayerPool::frameEvent()
 {
-	int i = 0;
+    int i = 0;
 
-	for( i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		processPlayer( mPlayers[i] );
-		// TODO: add timestamps to snapshots
-	}
+    for( i = 0; i < MAX_PLAYERS; i ++ )
+    {
+        processPlayer( mPlayers[i] );
+        // TODO: add timestamps to snapshots
+    }
 
     processPlayer( getLocalPlayer() );
 }
@@ -108,10 +108,10 @@ void PlayerPool::frameEvent()
 void PlayerPool::processPlayer( Player *pPlayer )
 {
     if( pPlayer == NULL )
-		return;
+        return;
 
-	if( pPlayer->mSnapshots != NULL && pPlayer->getCar() != NULL )
-	{
+    if( pPlayer->mSnapshots != NULL && pPlayer->getCar() != NULL )
+    {
 #if BASIC_INTERP
 
         CarSnapshot *currentSnap = pPlayer->getCar()->getCarSnapshot();
@@ -144,7 +144,7 @@ void PlayerPool::processPlayer( Player *pPlayer )
 
         if( restoreSnap != NULL )
         {
-	        pPlayer->getCar()->restoreSnapshot( restoreSnap );
+            pPlayer->getCar()->restoreSnapshot( restoreSnap );
 
             delete( restoreSnap );
             restoreSnap = NULL;

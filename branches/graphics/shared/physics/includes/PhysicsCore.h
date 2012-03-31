@@ -1,6 +1,6 @@
 /**
- * @file	PhysicsCore.h
- * @brief 	Contains the physics world and methods relating to it (currently there are not many such methods)
+ * @file    PhysicsCore.h
+ * @brief     Contains the physics world and methods relating to it (currently there are not many such methods)
  */
 #ifndef __PhysicsCore_h_
 #define __PhysicsCore_h_
@@ -24,7 +24,7 @@ class PhysicsCore
 public:
     PhysicsCore (void);
     virtual ~PhysicsCore (void);
-	static void auto_scale_scenenode (Ogre::SceneNode* n);
+    static void auto_scale_scenenode (Ogre::SceneNode* n);
     int getUniqueEntityID (void);
     void attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionName, float scaling  );
     void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);

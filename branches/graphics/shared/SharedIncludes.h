@@ -1,6 +1,6 @@
 /**
- * @file	Player.h
- * @brief 	Contains the player car and the related data specific to each player.
+ * @file    Player.h
+ * @brief     Contains the player car and the related data specific to each player.
  */
 #ifndef SHAREDINCLUDES_H
 #define SHAREDINCLUDES_H

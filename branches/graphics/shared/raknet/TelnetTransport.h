@@ -28,40 +28,40 @@ struct TelnetClient;
 class RAK_DLL_EXPORT TelnetTransport : public TransportInterface
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(TelnetTransport)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(TelnetTransport)
 
-	TelnetTransport();
-	virtual ~TelnetTransport();
-	bool Start(unsigned short port, bool serverMode);
-	void Stop(void);
-	void Send( SystemAddress systemAddress, const char *data, ... );
-	void CloseConnection( SystemAddress systemAddress );
-	Packet* Receive( void );
-	void DeallocatePacket( Packet *packet );
-	SystemAddress HasNewIncomingConnection(void);
-	SystemAddress HasLostConnection(void);
-	CommandParserInterface* GetCommandParser(void);
-	void SetSendSuffix(const char *suffix);
-	void SetSendPrefix(const char *prefix);
+    TelnetTransport();
+    virtual ~TelnetTransport();
+    bool Start(unsigned short port, bool serverMode);
+    void Stop(void);
+    void Send( SystemAddress systemAddress, const char *data, ... );
+    void CloseConnection( SystemAddress systemAddress );
+    Packet* Receive( void );
+    void DeallocatePacket( Packet *packet );
+    SystemAddress HasNewIncomingConnection(void);
+    SystemAddress HasLostConnection(void);
+    CommandParserInterface* GetCommandParser(void);
+    void SetSendSuffix(const char *suffix);
+    void SetSendPrefix(const char *prefix);
 protected:
 
-	struct TelnetClient
-	{
-		SystemAddress systemAddress;
-		char textInput[REMOTE_MAX_TEXT_INPUT];
-		char lastSentTextInput[REMOTE_MAX_TEXT_INPUT];
-		unsigned cursorPosition;
-	};
+    struct TelnetClient
+    {
+        SystemAddress systemAddress;
+        char textInput[REMOTE_MAX_TEXT_INPUT];
+        char lastSentTextInput[REMOTE_MAX_TEXT_INPUT];
+        unsigned cursorPosition;
+    };
 
-	TCPInterface *tcpInterface;
-	void AutoAllocate(void);
-	bool ReassembleLine(TelnetTransport::TelnetClient* telnetClient, unsigned char c);
+    TCPInterface *tcpInterface;
+    void AutoAllocate(void);
+    bool ReassembleLine(TelnetTransport::TelnetClient* telnetClient, unsigned char c);
 
-	// Crap this sucks but because windows telnet won't send line at a time, I have to reconstruct the lines at the server per player
-	DataStructures::List<TelnetClient*> remoteClients;
+    // Crap this sucks but because windows telnet won't send line at a time, I have to reconstruct the lines at the server per player
+    DataStructures::List<TelnetClient*> remoteClients;
 
-	char *sendSuffix, *sendPrefix;
+    char *sendSuffix, *sendPrefix;
 
 };
 

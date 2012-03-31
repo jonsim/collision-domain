@@ -14,18 +14,18 @@ class AiPlayer;
 class AiCore
 {
 public:
-	AiCore() { srand(time(NULL)); };
-	~AiCore() {};
-	void createNewAiAgent();
-	void createNewAiAgent(int flags);
-	int getNumberOfAiPlayers() { return mAiPlayers.size(); } ;
-	void frameEvent(double timeSinceLastFrame);
-	AiPlayer* getPlayer(string name);
+    AiCore() { srand(time(NULL)); };
+    ~AiCore() {};
+    void createNewAiAgent();
+    void createNewAiAgent(int flags);
+    int getNumberOfAiPlayers() { return mAiPlayers.size(); } ;
+    void frameEvent(double timeSinceLastFrame);
+    AiPlayer* getPlayer(string name);
 
 
 private:
-	int numAgents;
-	std::vector<AiPlayer> mAiPlayers;
+    int numAgents;
+    std::vector<AiPlayer> mAiPlayers;
 };
 
 #endif

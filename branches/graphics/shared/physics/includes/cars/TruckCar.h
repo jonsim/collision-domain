@@ -1,6 +1,6 @@
 /**
- * @file	SimpleCoupeCar.h
- * @brief 	A Car object with specific mesh and texture to create a simple coupe car
+ * @file    SimpleCoupeCar.h
+ * @brief     A Car object with specific mesh and texture to create a simple coupe car
  */
 #ifndef __TRUCKCAR_H
 #define __TRUCKCAR_H

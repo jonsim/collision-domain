@@ -21,9 +21,9 @@ namespace RakNet
 class RAK_DLL_EXPORT  PacketOutputWindowLogger : public PacketLogger
 {
 public:
-	PacketOutputWindowLogger();
-	virtual ~PacketOutputWindowLogger();
-	virtual void WriteLog(const char *str);
+    PacketOutputWindowLogger();
+    virtual ~PacketOutputWindowLogger();
+    virtual void WriteLog(const char *str);
 protected:
 };
 

@@ -32,29 +32,29 @@ class UDPProxyServer;
 /// \ingroup UDP_PROXY_GROUP
 struct UDPProxyServerResultHandler
 {
-	UDPProxyServerResultHandler() {}
-	virtual ~UDPProxyServerResultHandler() {}
+    UDPProxyServerResultHandler() {}
+    virtual ~UDPProxyServerResultHandler() {}
 
-	/// Called when our login succeeds
-	/// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
-	/// \param[out] proxyServer The plugin calling this callback
-	virtual void OnLoginSuccess(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
+    /// Called when our login succeeds
+    /// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
+    /// \param[out] proxyServer The plugin calling this callback
+    virtual void OnLoginSuccess(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
 
-	/// We are already logged in.
-	/// This login failed, but the system is operational as if it succeeded
-	/// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
-	/// \param[out] proxyServer The plugin calling this callback
-	virtual void OnAlreadyLoggedIn(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
+    /// We are already logged in.
+    /// This login failed, but the system is operational as if it succeeded
+    /// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
+    /// \param[out] proxyServer The plugin calling this callback
+    virtual void OnAlreadyLoggedIn(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
 
-	/// The coordinator operator forgot to call UDPProxyCoordinator::SetRemoteLoginPassword()
-	/// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
-	/// \param[out] proxyServer The plugin calling this callback
-	virtual void OnNoPasswordSet(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
+    /// The coordinator operator forgot to call UDPProxyCoordinator::SetRemoteLoginPassword()
+    /// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
+    /// \param[out] proxyServer The plugin calling this callback
+    virtual void OnNoPasswordSet(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
 
-	/// The coordinator operator set a different password in UDPProxyCoordinator::SetRemoteLoginPassword() than what we passed
-	/// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
-	/// \param[out] proxyServer The plugin calling this callback
-	virtual void OnWrongPassword(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
+    /// The coordinator operator set a different password in UDPProxyCoordinator::SetRemoteLoginPassword() than what we passed
+    /// \param[out] usedPassword The password we passed to UDPProxyServer::LoginToCoordinator()
+    /// \param[out] proxyServer The plugin calling this callback
+    virtual void OnWrongPassword(RakNet::RakString usedPassword, RakNet::UDPProxyServer *proxyServerPlugin)=0;
 };
 
 /// \brief UDPProxyServer to control our instance of UDPForwarder
@@ -65,50 +65,50 @@ struct UDPProxyServerResultHandler
 class RAK_DLL_EXPORT UDPProxyServer : public PluginInterface2
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(UDPProxyServer)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(UDPProxyServer)
 
-	UDPProxyServer();
-	~UDPProxyServer();
+    UDPProxyServer();
+    ~UDPProxyServer();
 
-	/// Sets the socket family to use, either IPV4 or IPV6
-	/// \param[in] socketFamily For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
-	void SetSocketFamily(unsigned short _socketFamily);
+    /// Sets the socket family to use, either IPV4 or IPV6
+    /// \param[in] socketFamily For IPV4, use AF_INET (default). For IPV6, use AF_INET6. To autoselect, use AF_UNSPEC.
+    void SetSocketFamily(unsigned short _socketFamily);
 
-	/// Receives the results of calling LoginToCoordinator()
-	/// Set before calling LoginToCoordinator or you won't know what happened
-	/// \param[in] resultHandler 
-	void SetResultHandler(UDPProxyServerResultHandler *rh);
+    /// Receives the results of calling LoginToCoordinator()
+    /// Set before calling LoginToCoordinator or you won't know what happened
+    /// \param[in] resultHandler 
+    void SetResultHandler(UDPProxyServerResultHandler *rh);
 
-	/// Before the coordinator will register the UDPProxyServer, you must login
-	/// \pre Must be connected to the coordinator
-	/// \pre Coordinator must have set a password with UDPProxyCoordinator::SetRemoteLoginPassword()
-	/// \returns false if already logged in, or logging in. Returns true otherwise
-	bool LoginToCoordinator(RakNet::RakString password, SystemAddress coordinatorAddress);
+    /// Before the coordinator will register the UDPProxyServer, you must login
+    /// \pre Must be connected to the coordinator
+    /// \pre Coordinator must have set a password with UDPProxyCoordinator::SetRemoteLoginPassword()
+    /// \returns false if already logged in, or logging in. Returns true otherwise
+    bool LoginToCoordinator(RakNet::RakString password, SystemAddress coordinatorAddress);
 
-	/// Operative class that performs the forwarding
-	/// Exposed so you can call UDPForwarder::SetMaxForwardEntries() if you want to change away from the default
-	/// UDPForwarder::Startup(), UDPForwarder::Shutdown(), and UDPForwarder::Update() are called automatically by the plugin
-	UDPForwarder udpForwarder;
+    /// Operative class that performs the forwarding
+    /// Exposed so you can call UDPForwarder::SetMaxForwardEntries() if you want to change away from the default
+    /// UDPForwarder::Startup(), UDPForwarder::Shutdown(), and UDPForwarder::Update() are called automatically by the plugin
+    UDPForwarder udpForwarder;
 
-	virtual void OnAttach(void);
-	virtual void OnDetach(void);
+    virtual void OnAttach(void);
+    virtual void OnDetach(void);
 
-	/// \internal
-	virtual void Update(void);
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
-	virtual void OnRakPeerStartup(void);
-	virtual void OnRakPeerShutdown(void);
+    /// \internal
+    virtual void Update(void);
+    virtual PluginReceiveResult OnReceive(Packet *packet);
+    virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+    virtual void OnRakPeerStartup(void);
+    virtual void OnRakPeerShutdown(void);
 
 protected:
-	void OnForwardingRequestFromCoordinatorToServer(Packet *packet);
+    void OnForwardingRequestFromCoordinatorToServer(Packet *packet);
 
-	DataStructures::Multilist<ML_ORDERED_LIST, SystemAddress> loggingInCoordinators;
-	DataStructures::Multilist<ML_ORDERED_LIST, SystemAddress> loggedInCoordinators;
+    DataStructures::Multilist<ML_ORDERED_LIST, SystemAddress> loggingInCoordinators;
+    DataStructures::Multilist<ML_ORDERED_LIST, SystemAddress> loggedInCoordinators;
 
-	UDPProxyServerResultHandler *resultHandler;
-	unsigned short socketFamily;
+    UDPProxyServerResultHandler *resultHandler;
+    unsigned short socketFamily;
 
 };
 

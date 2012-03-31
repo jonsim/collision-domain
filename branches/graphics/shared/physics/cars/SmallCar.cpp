@@ -1,6 +1,6 @@
 /**
- * @file	SimpleCoupeCar.cpp
- * @brief 	A Car object with specific mesh and texture to create a simple coupe car
+ * @file    SimpleCoupeCar.cpp
+ * @brief     A Car object with specific mesh and texture to create a simple coupe car
  */
 #include "stdafx.h"
 #include "SharedIncludes.h"
@@ -23,20 +23,20 @@ using namespace Ogre;
 #define SMALLCAR_VTX_COUNT 20
 
 /*static btScalar SmallCarVtx[] = {
-    -0.46733353f, 	-0.50000006f, 	0.47412637f,
-	0.46733356f, 	-0.50000006f, 	0.47412637f,
-	-0.46733353f, 	0.31162921f, 	0.47412637f,
-	0.46733356f, 	0.31162921f, 	0.47412637f,
-	-0.5f, 			0.46859881f, 	0.19854486f,
-	0.5f, 			0.46859881f, 	0.19854486f,
-	-0.47566596f, 	-0.50000006f, 	-0.69251001f,
-	0.47566596f, 	-0.50000006f, 	-0.69251001f,
-	0.0f, 			-0.50000006f, 	0.50817901f,
-	0.0f, 			0.26104462f, 	0.5016675f,
-	0.0f, 			0.61385989f, 	0.19854486f,
-	0.0f, 			0.46093348f, 	0.43777251f,
-	0.47566596f, 	0.16506362f, 	-0.68763894f,
-	-0.47566596f, 	0.16506362f, 	-0.68763894f,
+    -0.46733353f,     -0.50000006f,     0.47412637f,
+    0.46733356f,     -0.50000006f,     0.47412637f,
+    -0.46733353f,     0.31162921f,     0.47412637f,
+    0.46733356f,     0.31162921f,     0.47412637f,
+    -0.5f,             0.46859881f,     0.19854486f,
+    0.5f,             0.46859881f,     0.19854486f,
+    -0.47566596f,     -0.50000006f,     -0.69251001f,
+    0.47566596f,     -0.50000006f,     -0.69251001f,
+    0.0f,             -0.50000006f,     0.50817901f,
+    0.0f,             0.26104462f,     0.5016675f,
+    0.0f,             0.61385989f,     0.19854486f,
+    0.0f,             0.46093348f,     0.43777251f,
+    0.47566596f,     0.16506362f,     -0.68763894f,
+    -0.47566596f,     0.16506362f,     -0.68763894f,
 };*/
 
 
@@ -81,11 +81,11 @@ void SmallCar::initTuning()
     mMaxSuspensionTravelCm  =   10.0f;
     mMaxSuspensionForce     =   6000.0f;
     mFrictionSlip           =   4.0f;
-	mChassisLinearDamping   =   0.2f;
-	mChassisAngularDamping  =   0.2f;
-	mChassisRestitution		=   0.6f;
-	mChassisFriction        =   0.6f;
-	mChassisMass            = 585.0f;
+    mChassisLinearDamping   =   0.2f;
+    mChassisAngularDamping  =   0.2f;
+    mChassisRestitution        =   0.6f;
+    mChassisFriction        =   0.6f;
+    mChassisMass            = 585.0f;
 
     mWheelRadius            =  0.2775f; // this is actually diameter!!
     mWheelWidth             =  0.153f;
@@ -99,8 +99,8 @@ void SmallCar::initTuning()
     mMaxAccelForce = 4000.0f;
     mMaxBrakeForce = 300.0f;
 
-	mFrontWheelDrive = true;
-	mRearWheelDrive  = false;
+    mFrontWheelDrive = true;
+    mRearWheelDrive  = false;
 
     mGearCount = 6;
     mCurrentGear = 1;
@@ -199,11 +199,11 @@ void SmallCar::initNodes()
     mRLWheelNode    = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode    = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
-	// Setup particles.
+    // Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	mBodyNode->attachObject(mDustSystem);
+    mBodyNode->attachObject(mExhaustSystem);
+    mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+    mBodyNode->attachObject(mDustSystem);
     // The dust emitters should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
     mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.6f, 0.2f,  1.1f));  // FL
@@ -221,8 +221,8 @@ void SmallCar::initNodes()
 void SmallCar::initGraphics(btTransform& chassisShift)
 {
     // Load the small car meshes.
-	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
-	// be used in the first parameter
+    // true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
+    // be used in the first parameter
     createGeometry("UnIqUe_SmallCarBody",    "small_car_body.mesh",       mChassisNode,    true);
     createGeometry("UnIqUe_SmallCarLDoor",   "small_car_ldoor.mesh",      mLDoorNode,      true);
     createGeometry("UnIqUe_SmallCarRDoor",   "small_car_rdoor.mesh",      mRDoorNode,      true);
@@ -377,15 +377,15 @@ void SmallCar::initWheels()
     mState->setWheel( 3, mRLWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
 
     for( int i=0; i < mVehicle->getNumWheels(); i++ )
-	{
-		btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
-		wheel.m_suspensionStiffness         = mSuspensionStiffness;
-		wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
-		wheel.m_wheelsDampingCompression    = mSuspensionCompression;
+    {
+        btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
+        wheel.m_suspensionStiffness         = mSuspensionStiffness;
+        wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
+        wheel.m_wheelsDampingCompression    = mSuspensionCompression;
         wheel.m_maxSuspensionForce          = mMaxSuspensionForce;
-		wheel.m_frictionSlip                = mWheelFriction;
-		wheel.m_rollInfluence               = mRollInfluence;
-	}
+        wheel.m_frictionSlip                = mWheelFriction;
+        wheel.m_rollInfluence               = mRollInfluence;
+    }
 }
 
 void SmallCar::makeBitsFallOff()
