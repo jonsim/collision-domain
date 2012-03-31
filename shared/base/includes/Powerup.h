@@ -1,6 +1,6 @@
 /**
- * @file	Powerup.h
- * @brief 	Powerups, with callbacks from collisions.
+ * @file    Powerup.h
+ * @brief     Powerups, with callbacks from collisions.
  */
 #ifndef POWERUP_H
 #define POWERUP_H
@@ -9,7 +9,7 @@
 #include "SharedIncludes.h"
 
 /**
- *  @brief 	Headers for powerup
+ *  @brief     Headers for powerup
  */
 class Powerup
 {

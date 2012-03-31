@@ -1,6 +1,6 @@
 /**
- * @file	stdafx.h
- * @brief 	Centralizes headers and allows precompilation.
+ * @file    stdafx.h
+ * @brief     Centralizes headers and allows precompilation.
  *          See http://www.ogre3d.org/tikiwiki/Precompiled+headers for a tutorial on how to set this up.
  */
 

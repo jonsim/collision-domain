@@ -1,6 +1,6 @@
 /**
-* @file		HUD.h
-* @brief	Manages the view ports for a window
+* @file        HUD.h
+* @brief    Manages the view ports for a window
 */
 #ifndef HUD_H
 #define HUD_H
@@ -13,16 +13,16 @@
 class HUD
 {
 public:
-			HUD();
-	void	HUD::initialize();
-	void	HUD::drawDeathMessage(Player* killer, Player* killed);
-	
+            HUD();
+    void    HUD::initialize();
+    void    HUD::drawDeathMessage(Player* killer, Player* killed);
+    
 private:
-	void HUD::setupWOD(); // Setup wall of DEATH
+    void HUD::setupWOD(); // Setup wall of DEATH
 
-	Ogre::Overlay*			wodOverlay;
-	Ogre::OverlayContainer* wodContainer;
-	Ogre::OverlayElement*   wodTextArea;
+    Ogre::Overlay*            wodOverlay;
+    Ogre::OverlayContainer* wodContainer;
+    Ogre::OverlayElement*   wodTextArea;
 };
 
 

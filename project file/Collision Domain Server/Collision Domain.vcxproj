@@ -19,7 +19,7 @@
     <ClInclude Include="..\..\server\GameIncludes.h" />
     <ClInclude Include="..\..\server\graphics\includes\BigScreen.h" />
     <ClInclude Include="..\..\server\graphics\includes\GameGUI.h" />
-    <ClInclude Include="..\..\server\graphics\includes\GraphicsApplication.h" />
+    <ClInclude Include="..\..\server\graphics\includes\ServerGraphics.h" />
     <ClInclude Include="..\..\server\graphics\includes\ViewportManager.h" />
     <ClInclude Include="..\..\server\networking\includes\NetworkCore.h" />
     <ClInclude Include="..\..\server\networking\includes\PlayerPool.h" />
@@ -41,7 +41,6 @@
     <ClInclude Include="..\..\shared\gameplay\includes\ScoreBoard.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
-    <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h" />
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h" />
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h" />
     <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h" />
@@ -217,7 +216,7 @@
     <ClCompile Include="..\..\server\base\Player.cpp" />
     <ClCompile Include="..\..\server\graphics\BigScreen.cpp" />
     <ClCompile Include="..\..\server\graphics\GameGUI.cpp" />
-    <ClCompile Include="..\..\server\graphics\GraphicsApplication.cpp" />
+    <ClCompile Include="..\..\server\graphics\ServerGraphics.cpp" />
     <ClCompile Include="..\..\server\graphics\ViewportManager.cpp" />
     <ClCompile Include="..\..\server\networking\NetworkCore.cpp" />
     <ClCompile Include="..\..\server\networking\PlayerPool.cpp" />
@@ -239,7 +238,6 @@
     <ClCompile Include="..\..\shared\gameplay\ScoreBoard.cpp" />
     <ClCompile Include="..\..\shared\gameplay\Team.cpp" />
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
-    <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp" />
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp" />
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp" />
     <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp" />

@@ -26,79 +26,79 @@
 
 namespace RakNet
 {
-	/// When NAT Punchthrough fails, it is possible to use a non-NAT system to forward messages from us to the recipient, and vice-versa
-	/// The class to forward messages is UDPForwarder, and it is triggered over the network via the UDPProxyServer plugin.
-	/// The UDPProxyClient connects to UDPProxyCoordinator to get a list of servers running UDPProxyServer, and the coordinator will relay our forwarding request
-	/// \brief Middleman between UDPProxyServer and UDPProxyClient, maintaining a list of UDPProxyServer, and managing state for clients to find an available forwarding server.
-	/// \ingroup NAT_PUNCHTHROUGH_GROUP
-	class RAK_DLL_EXPORT UDPProxyCoordinator : public PluginInterface2
-	{
-	public:
-		// GetInstance() and DestroyInstance(instance*)
-		STATIC_FACTORY_DECLARATIONS(UDPProxyCoordinator)
+    /// When NAT Punchthrough fails, it is possible to use a non-NAT system to forward messages from us to the recipient, and vice-versa
+    /// The class to forward messages is UDPForwarder, and it is triggered over the network via the UDPProxyServer plugin.
+    /// The UDPProxyClient connects to UDPProxyCoordinator to get a list of servers running UDPProxyServer, and the coordinator will relay our forwarding request
+    /// \brief Middleman between UDPProxyServer and UDPProxyClient, maintaining a list of UDPProxyServer, and managing state for clients to find an available forwarding server.
+    /// \ingroup NAT_PUNCHTHROUGH_GROUP
+    class RAK_DLL_EXPORT UDPProxyCoordinator : public PluginInterface2
+    {
+    public:
+        // GetInstance() and DestroyInstance(instance*)
+        STATIC_FACTORY_DECLARATIONS(UDPProxyCoordinator)
 
-		UDPProxyCoordinator();
-		virtual ~UDPProxyCoordinator();
+        UDPProxyCoordinator();
+        virtual ~UDPProxyCoordinator();
 
-		/// For UDPProxyServers logging in remotely, they must pass a password to UDPProxyServer::LoginToCoordinator(). It must match the password set here.
-		/// If no password is set, they cannot login remotely.
-		/// By default, no password is set
-		void SetRemoteLoginPassword(RakNet::RakString password);
+        /// For UDPProxyServers logging in remotely, they must pass a password to UDPProxyServer::LoginToCoordinator(). It must match the password set here.
+        /// If no password is set, they cannot login remotely.
+        /// By default, no password is set
+        void SetRemoteLoginPassword(RakNet::RakString password);
 
-		/// \internal
-		virtual void Update(void);
-		virtual PluginReceiveResult OnReceive(Packet *packet);
-		virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+        /// \internal
+        virtual void Update(void);
+        virtual PluginReceiveResult OnReceive(Packet *packet);
+        virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
-		struct SenderAndTargetAddress
-		{
-			SystemAddress senderClientAddress;
-			SystemAddress targetClientAddress;
-		};
+        struct SenderAndTargetAddress
+        {
+            SystemAddress senderClientAddress;
+            SystemAddress targetClientAddress;
+        };
 
-		struct ServerWithPing
-		{
-			unsigned short ping;
-			SystemAddress serverAddress;
-		};
+        struct ServerWithPing
+        {
+            unsigned short ping;
+            SystemAddress serverAddress;
+        };
 
-		struct ForwardingRequest
-		{
-			RakNet::TimeMS timeoutOnNoDataMS;
-			RakNet::TimeMS timeoutAfterSuccess;
-			SenderAndTargetAddress sata;
-			SystemAddress requestingAddress; // Which system originally sent the network message to start forwarding
-			SystemAddress currentlyAttemptedServerAddress;
-			DataStructures::Multilist<ML_QUEUE, SystemAddress> remainingServersToTry;
-			RakNet::BitStream serverSelectionBitstream;
+        struct ForwardingRequest
+        {
+            RakNet::TimeMS timeoutOnNoDataMS;
+            RakNet::TimeMS timeoutAfterSuccess;
+            SenderAndTargetAddress sata;
+            SystemAddress requestingAddress; // Which system originally sent the network message to start forwarding
+            SystemAddress currentlyAttemptedServerAddress;
+            DataStructures::Multilist<ML_QUEUE, SystemAddress> remainingServersToTry;
+            RakNet::BitStream serverSelectionBitstream;
 
-			DataStructures::Multilist<ML_STACK, ServerWithPing, unsigned short> sourceServerPings, targetServerPings;
-			RakNet::TimeMS timeRequestedPings;
-			// Order based on sourceServerPings and targetServerPings
-			void OrderRemainingServersToTry(void);
-		
-		};
+            DataStructures::Multilist<ML_STACK, ServerWithPing, unsigned short> sourceServerPings, targetServerPings;
+            RakNet::TimeMS timeRequestedPings;
+            // Order based on sourceServerPings and targetServerPings
+            void OrderRemainingServersToTry(void);
+        
+        };
 
-	protected:
-		void OnForwardingRequestFromClientToCoordinator(Packet *packet);
-		void OnLoginRequestFromServerToCoordinator(Packet *packet);
-		void OnForwardingReplyFromServerToCoordinator(Packet *packet);
-		void OnPingServersReplyFromClientToCoordinator(Packet *packet);
-		void TryNextServer(SenderAndTargetAddress sata, ForwardingRequest *fw);
-		void SendAllBusy(SystemAddress senderClientAddress, SystemAddress targetClientAddress, SystemAddress requestingAddress);
-		void Clear(void);
+    protected:
+        void OnForwardingRequestFromClientToCoordinator(Packet *packet);
+        void OnLoginRequestFromServerToCoordinator(Packet *packet);
+        void OnForwardingReplyFromServerToCoordinator(Packet *packet);
+        void OnPingServersReplyFromClientToCoordinator(Packet *packet);
+        void TryNextServer(SenderAndTargetAddress sata, ForwardingRequest *fw);
+        void SendAllBusy(SystemAddress senderClientAddress, SystemAddress targetClientAddress, SystemAddress requestingAddress);
+        void Clear(void);
 
-		void SendForwardingRequest(SystemAddress sourceAddress, SystemAddress targetAddress, SystemAddress serverAddress, RakNet::TimeMS timeoutOnNoDataMS);
+        void SendForwardingRequest(SystemAddress sourceAddress, SystemAddress targetAddress, SystemAddress serverAddress, RakNet::TimeMS timeoutOnNoDataMS);
 
-		// Logged in servers
-		DataStructures::Multilist<ML_UNORDERED_LIST, SystemAddress> serverList;
+        // Logged in servers
+        DataStructures::Multilist<ML_UNORDERED_LIST, SystemAddress> serverList;
 
-		// Forwarding requests in progress
-		DataStructures::Multilist<ML_ORDERED_LIST, ForwardingRequest*, SenderAndTargetAddress> forwardingRequestList;
+        // Forwarding requests in progress
+        DataStructures::Multilist<ML_ORDERED_LIST, ForwardingRequest*, SenderAndTargetAddress> forwardingRequestList;
 
-		RakNet::RakString remoteLoginPassword;
+        RakNet::RakString remoteLoginPassword;
 
-	};
+    };
 
 } // End namespace
 

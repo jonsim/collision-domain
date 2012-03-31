@@ -1,6 +1,6 @@
 /**
- * @file	PlayerCollisions.cpp
- * @brief 	Manages collisions (which gradually build up each substep).
+ * @file    PlayerCollisions.cpp
+ * @brief     Manages collisions (which gradually build up each substep).
             Hopefully this class will be clever enough to trigger only one crash sound per
             "group" of cars involved in each crash, and also not repeat crash noises over
             seperate frames. It will also dispatch noteable crashes to the big screen.

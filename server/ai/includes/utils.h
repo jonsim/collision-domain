@@ -38,55 +38,55 @@ const double QuarterPi = Pi/4;
 /**@brief Truncates a vector to a maximum value */
 inline Vector3 Truncate(Ogre::Vector3 vec, double max)
 {
-	Vector3 retVec = Ogre::Vector3::ZERO;
-	if(vec.length() > max)
-	{
-		retVec = vec.normalisedCopy();
-		retVec *= max;
-		return retVec;
-	}
+    Vector3 retVec = Ogre::Vector3::ZERO;
+    if(vec.length() > max)
+    {
+        retVec = vec.normalisedCopy();
+        retVec *= max;
+        return retVec;
+    }
 
-	return vec;
+    return vec;
 }
 
 //returns trye if the value is a NaN
 template <typename T>
 inline bool isNaN(T val)
 {
-	return val != val;
+    return val != val;
 }
 
 //Returns true if the third parameter is in the range described by the first two
 inline bool InRange(double start, double end, double val)
 {
-	  if(start < end)
-	  {
-		  if( (val > start) && (val < end) )
-			  return true;
-		  else
-		  	return false;
-	  }
-	  else
-	  {
-		  if( (val < start) && (val > end) )
-			  return true;
-		  else
-			  return false;
-	  }
+      if(start < end)
+      {
+          if( (val > start) && (val < end) )
+              return true;
+          else
+              return false;
+      }
+      else
+      {
+          if( (val < start) && (val > end) )
+              return true;
+          else
+              return false;
+      }
 }
 
 //Returns the bigger of 2 values
 template <class T>
 T Maximum(const T& v1, const T& v2)
 {
-	return v1 > v2 ? v1: v2;
+    return v1 > v2 ? v1: v2;
 }
 
 //Returns an integer between x and y
 inline int RandomInteger(int x, int y)
 {
-	assert(y>=x && "<RandInt>: y is less than x");
-	return rand()%(y-x+1)+x;
+    assert(y>=x && "<RandInt>: y is less than x");
+    return rand()%(y-x+1)+x;
 }
 
 //Returns a random double between 0 and 1
@@ -104,16 +104,16 @@ inline double RandomFloatInRange(float x, float y)
 //Returns a random boolean value
 inline bool RandBool()
 {
-	if(RandomFloat() > 0.5)
-		return true;
+    if(RandomFloat() > 0.5)
+        return true;
 
-	return false;
+    return false;
 }
 
 //Returns a random double in the range -1 < n < 1
 inline double RandomClamped()
 {
-	return RandomFloat() - RandomFloat();
+    return RandomFloat() - RandomFloat();
 }
 
 //Returns a random number with a normal distribution.

@@ -1,6 +1,6 @@
 /**
- * @file	Car.h
- * @brief 	Contains the core methods and variables common to all different types of car.
+ * @file    Car.h
+ * @brief     Contains the core methods and variables common to all different types of car.
                 Extend or implement this class as required to create a functioning car.
                 This class and its subclasses deal with the physics and the graphics which are
                 car related and expose an interface to do stuff to the cars.
@@ -48,7 +48,7 @@ public:
     virtual void moveTo(const btVector3 &position);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();
-	float getCarMph();
+    float getCarMph();
     float getGear() { return mCurrentGear; }
     btRaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
@@ -57,17 +57,17 @@ public:
     void readTuning( char *szFile );
     float getRPM();
 
-	float getMaxSpeed() { return mMaxSpeed; }
+    float getMaxSpeed() { return mMaxSpeed; }
 
     virtual void updateTeam (int teamNumber) = 0;
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );
 
-	Ogre::Vector3 GetPos();
-	Ogre::Quaternion GetHeading();
+    Ogre::Vector3 GetPos();
+    Ogre::Quaternion GetHeading();
 
-	Ogre::SceneNode *mBodyNode;
+    Ogre::SceneNode *mBodyNode;
     Ogre::SceneNode *mPlayerNode;
 
 
@@ -81,12 +81,12 @@ protected:
     Ogre::SceneNode *mCamArmNode;
     Ogre::SceneNode *mCamNode;
 
-	// Wheel node
+    // Wheel node
     Ogre::SceneNode *mWheelsNode;
 
-	// Particle systems
-	Ogre::ParticleSystem* mExhaustSystem;
-	Ogre::ParticleSystem* mDustSystem;
+    // Particle systems
+    Ogre::ParticleSystem* mExhaustSystem;
+    Ogre::ParticleSystem* mDustSystem;
 
     // Friction constraint
     WheelFrictionConstraint *fricConst;
@@ -108,11 +108,11 @@ protected:
     float mSuspensionRestLength;
     float mMaxSuspensionTravelCm;
     float mFrictionSlip;
-	float mChassisLinearDamping;
-	float mChassisAngularDamping;
-	float mChassisRestitution;
-	float mChassisFriction;
-	float mChassisMass;
+    float mChassisLinearDamping;
+    float mChassisAngularDamping;
+    float mChassisRestitution;
+    float mChassisFriction;
+    float mChassisMass;
 
     float mWheelRadius;
     float mWheelWidth;
@@ -126,8 +126,8 @@ protected:
     float mMaxAccelForce;
     float mMaxBrakeForce;
 
-	bool  mFrontWheelDrive;
-	bool  mRearWheelDrive;
+    bool  mFrontWheelDrive;
+    bool  mRearWheelDrive;
 
     int   mGearCount;
     int   mCurrentGear;
@@ -139,7 +139,7 @@ protected:
     float mRevTick;
     float mRevLimit;
 
-	float mMaxSpeed;
+    float mMaxSpeed;
 
     // Car physics objects
 
@@ -183,11 +183,11 @@ public:
     virtual void getInfo1( btTypedConstraint::btConstraintInfo1* info );
     virtual void getInfo2( btTypedConstraint::btConstraintInfo2* info );
 
-	///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
-	///If no axis is provided, it uses the default axis for this constraint.
-    virtual	void setParam(int num, btScalar value, int axis = -1);
-	///return the local value of parameter
-    virtual	btScalar getParam(int num, int axis = -1) const;
+    ///override the default global value of a parameter (such as ERP or CFM), optionally provide the axis (0..5). 
+    ///If no axis is provided, it uses the default axis for this constraint.
+    virtual    void setParam(int num, btScalar value, int axis = -1);
+    ///return the local value of parameter
+    virtual    btScalar getParam(int num, int axis = -1) const;
 
     btRaycastVehicle    *mVehicle;
     btRigidBody         *mbtRigidBody;

@@ -12,36 +12,36 @@ class Player;
 class PlayerPool
 {
 private:
-	Player*             mPlayers[MAX_PLAYERS];
-	Player*             mLocalPlayer;
-	RakNet::RakNetGUID  mLocalGUID;
-	RakNet::RakNetGUID  mGUID[MAX_PLAYERS];
-	int                 getPlayerIndex( RakNet::RakNetGUID playerid );
+    Player*             mPlayers[MAX_PLAYERS];
+    Player*             mLocalPlayer;
+    RakNet::RakNetGUID  mLocalGUID;
+    RakNet::RakNetGUID  mGUID[MAX_PLAYERS];
+    int                 getPlayerIndex( RakNet::RakNetGUID playerid );
     RakNet::RakNetGUID  mSpectating;
     void                setSpectating( int idx );
 
 public:
-	PlayerPool();
-	~PlayerPool();
-	
-	void                addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
-	void                addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
-	void                delPlayer( RakNet::RakNetGUID playerid );
-	int                 getNumberOfPlayers();
+    PlayerPool();
+    ~PlayerPool();
+    
+    void                addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
+    void                addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
+    void                delPlayer( RakNet::RakNetGUID playerid );
+    int                 getNumberOfPlayers();
 
-	Player*             getPlayer( int index );
-	Player*             getPlayer( RakNet::RakNetGUID playerid );
-	Player*             getLocalPlayer();
-	RakNet::RakNetGUID  getLocalPlayerID();
+    Player*             getPlayer( int index );
+    Player*             getPlayer( RakNet::RakNetGUID playerid );
+    Player*             getLocalPlayer();
+    RakNet::RakNetGUID  getLocalPlayerID();
 
     RakNet::RakNetGUID  getSpectating() { return mSpectating; }
     void                setSpectating( RakNet::RakNetGUID playerid );
     void                spectateNext();
 
-	void                frameEvent();
+    void                frameEvent();
 
     void                processPlayer( Player *pPlayer );
-	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
+    //LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
 };
 
 #endif

@@ -1,6 +1,6 @@
 /**
- * @file	Camera.cpp
- * @brief 	Contains the controls for implementing various cameras
+ * @file    Camera.cpp
+ * @brief     Contains the controls for implementing various cameras
  * @details Tried to keep this as abstracted as possible - nothing specific to players,
             just a physics object to follow if so desired.
  */

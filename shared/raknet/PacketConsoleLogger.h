@@ -23,12 +23,12 @@ class LogCommandParser;
 class RAK_DLL_EXPORT  PacketConsoleLogger : public PacketLogger
 {
 public:
-	PacketConsoleLogger();
-	// Writes to the command parser used for logging, which is accessed through a secondary communication layer (such as Telnet or RakNet) - See ConsoleServer.h
-	virtual void SetLogCommandParser(LogCommandParser *lcp);
-	virtual void WriteLog(const char *str);
+    PacketConsoleLogger();
+    // Writes to the command parser used for logging, which is accessed through a secondary communication layer (such as Telnet or RakNet) - See ConsoleServer.h
+    virtual void SetLogCommandParser(LogCommandParser *lcp);
+    virtual void WriteLog(const char *str);
 protected:
-	LogCommandParser *logCommandParser;
+    LogCommandParser *logCommandParser;
 };
 
 } // namespace RakNet

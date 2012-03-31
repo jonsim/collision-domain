@@ -1,6 +1,6 @@
 /**
- * @file	InputState.h
- * @brief 	An uneditable snapshot of the player's input state 
+ * @file    InputState.h
+ * @brief     An uneditable snapshot of the player's input state 
  */
 #ifndef INPUTSTATE_H
 #define INPUTSTATE_H
@@ -13,7 +13,7 @@
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
- *  @brief 	An uneditable snapshot of the player's input state 
+ *  @brief     An uneditable snapshot of the player's input state 
  */
 class InputState
 {

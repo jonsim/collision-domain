@@ -27,27 +27,27 @@ class TCPInterface;
 class RAK_DLL_EXPORT EmailSender
 {
 public:
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(EmailSender)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(EmailSender)
 
-	/// \brief Sends an email.
-	/// \param[in] hostAddress The address of the email server.
-	/// \param[in] hostPort The port of the email server (usually 25)
-	/// \param[in] sender The email address you are sending from.
-	/// \param[in] recipient The email address you are sending to.
-	/// \param[in] senderName The email address you claim to be sending from
-	/// \param[in] recipientName The email address you claim to be sending to
-	/// \param[in] subject Email subject
-	/// \param[in] body Email body
-	/// \param[in] attachedFiles List of files to attach to the email. (Can be 0 to send none).
-	/// \param[in] doPrintf true to output SMTP info to console(for debugging?)
-	/// \param[in] password Used if the server uses AUTHENTICATE PLAIN over TLS (such as gmail)
-	/// \return 0 on success, otherwise a string indicating the error message
-	const char *Send(const char *hostAddress, unsigned short hostPort, const char *sender, const char *recipient, const char *senderName, const char *recipientName, const char *subject, const char *body, FileList *attachedFiles, bool doPrintf, const char *password);
+    /// \brief Sends an email.
+    /// \param[in] hostAddress The address of the email server.
+    /// \param[in] hostPort The port of the email server (usually 25)
+    /// \param[in] sender The email address you are sending from.
+    /// \param[in] recipient The email address you are sending to.
+    /// \param[in] senderName The email address you claim to be sending from
+    /// \param[in] recipientName The email address you claim to be sending to
+    /// \param[in] subject Email subject
+    /// \param[in] body Email body
+    /// \param[in] attachedFiles List of files to attach to the email. (Can be 0 to send none).
+    /// \param[in] doPrintf true to output SMTP info to console(for debugging?)
+    /// \param[in] password Used if the server uses AUTHENTICATE PLAIN over TLS (such as gmail)
+    /// \return 0 on success, otherwise a string indicating the error message
+    const char *Send(const char *hostAddress, unsigned short hostPort, const char *sender, const char *recipient, const char *senderName, const char *recipientName, const char *subject, const char *body, FileList *attachedFiles, bool doPrintf, const char *password);
 
 protected:
-	const char *GetResponse(TCPInterface *tcpInterface, const SystemAddress &emailServer, bool doPrintf);
-	RakNetRandom rakNetRandom;
+    const char *GetResponse(TCPInterface *tcpInterface, const SystemAddress &emailServer, bool doPrintf);
+    RakNetRandom rakNetRandom;
 };
 
 } // namespace RakNet

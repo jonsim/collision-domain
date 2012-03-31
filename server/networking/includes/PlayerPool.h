@@ -14,30 +14,30 @@ class Player;
 class PlayerPool
 {
 private:
-	Player* mPlayers[MAX_PLAYERS];
-	Player* mLocalPlayer;
-	RakNet::RakNetGUID mLocalGUID;
-	RakNet::RakNetGUID mGUID[MAX_PLAYERS];
-	int getPlayerIndex( RakNet::RakNetGUID playerid );
+    Player* mPlayers[MAX_PLAYERS];
+    Player* mLocalPlayer;
+    RakNet::RakNetGUID mLocalGUID;
+    RakNet::RakNetGUID mGUID[MAX_PLAYERS];
+    int getPlayerIndex( RakNet::RakNetGUID playerid );
 
 public:
-	PlayerPool();
-	~PlayerPool();
-	
-	int addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
-	void addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
-	void delPlayer( RakNet::RakNetGUID playerid );
-	int getNumberOfPlayers();
+    PlayerPool();
+    ~PlayerPool();
+    
+    int addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
+    void addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
+    void delPlayer( RakNet::RakNetGUID playerid );
+    int getNumberOfPlayers();
 
-	Player* getPlayer( int index );
-	Player* getPlayer( RakNet::RakNetGUID playerid );
-	Player* getLocalPlayer();
-	RakNet::RakNetGUID getLocalPlayerID();
-	RakNet::RakNetGUID getPlayerGUID( int index );
+    Player* getPlayer( int index );
+    Player* getPlayer( RakNet::RakNetGUID playerid );
+    Player* getLocalPlayer();
+    RakNet::RakNetGUID getLocalPlayerID();
+    RakNet::RakNetGUID getPlayerGUID( int index );
 
 
-	void frameEvent( const Ogre::FrameEvent& evt );
-	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
+    void frameEvent( const Ogre::FrameEvent& evt );
+    //LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
 };
 
 #endif

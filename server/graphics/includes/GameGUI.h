@@ -1,6 +1,6 @@
 /**
- * @file	GameGUI.h
- * @brief 	Functions to create and display GUI elements on-screen, and handle call-backs
+ * @file    GameGUI.h
+ * @brief     Functions to create and display GUI elements on-screen, and handle call-backs
  */
 #ifndef GAMEGUI_H
 #define GAMEGUI_H
@@ -12,25 +12,25 @@
 class GameGUI
 {
 private:
-	CEGUI::Window *mSheet;
+    CEGUI::Window *mSheet;
 
 public:
 
-	GameGUI();
-	~GameGUI();
+    GameGUI();
+    ~GameGUI();
 
-	void initialiseGUI();
+    void initialiseGUI();
 
-	void setupChatbox();
-	void toggleChatbox();
-	bool chatboxVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Chatbox/input" )->isVisible(); }
-	bool Chatbox_Send( const CEGUI::EventArgs &args );
+    void setupChatbox();
+    void toggleChatbox();
+    bool chatboxVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Chatbox/input" )->isVisible(); }
+    bool Chatbox_Send( const CEGUI::EventArgs &args );
 
-	void setupConsole();
-	void toggleConsole();
-	bool consoleVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Console" )->isVisible(); }
-	bool Console_Send( const CEGUI::EventArgs &args );
-	bool Console_Off( const CEGUI::EventArgs &args );
+    void setupConsole();
+    void toggleConsole();
+    bool consoleVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Console" )->isVisible(); }
+    bool Console_Send( const CEGUI::EventArgs &args );
+    bool Console_Off( const CEGUI::EventArgs &args );
 };
 
 #endif

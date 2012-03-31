@@ -55,9 +55,6 @@
     <ClInclude Include="..\..\server\graphics\includes\BigScreen.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\server\graphics\includes\GraphicsApplication.h">
-      <Filter>server\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\server\graphics\includes\ViewportManager.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
@@ -604,9 +601,6 @@
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h">
-      <Filter>shared\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\gameplay\includes\ScoreBoard.h">
       <Filter>shared\gameplay</Filter>
     </ClInclude>
@@ -631,6 +625,9 @@
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\server\graphics\includes\ServerGraphics.h">
+      <Filter>server\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -640,9 +637,6 @@
       <Filter>server\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\BigScreen.cpp">
-      <Filter>server\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\server\graphics\GraphicsApplication.cpp">
       <Filter>server\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\ViewportManager.cpp">
@@ -1017,9 +1011,6 @@
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp">
       <Filter>shared\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp">
-      <Filter>shared\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\ScoreBoard.cpp">
       <Filter>shared\gameplay</Filter>
     </ClCompile>
@@ -1040,6 +1031,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp">
       <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\server\graphics\ServerGraphics.cpp">
+      <Filter>server\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

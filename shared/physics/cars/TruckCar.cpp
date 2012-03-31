@@ -1,6 +1,6 @@
 /**
- * @file	SimpleCoupeCar.cpp
- * @brief 	A Car object with specific mesh and texture to create a simple coupe car
+ * @file    SimpleCoupeCar.cpp
+ * @brief     A Car object with specific mesh and texture to create a simple coupe car
  */
 #include "stdafx.h"
 #include "SharedIncludes.h"
@@ -64,11 +64,11 @@ void TruckCar::initTuning()
     mSuspensionRestLength   =   0.25f;
     mMaxSuspensionTravelCm  =   7.5f;
     mFrictionSlip           =   3.0f;
-	mChassisLinearDamping   =   0.2f;
-	mChassisAngularDamping  =   0.2f;
-	mChassisRestitution		=   0.6f;
-	mChassisFriction        =   0.6f;
-	mChassisMass            =   7000.0f;
+    mChassisLinearDamping   =   0.2f;
+    mChassisAngularDamping  =   0.2f;
+    mChassisRestitution        =   0.6f;
+    mChassisFriction        =   0.6f;
+    mChassisMass            =   7000.0f;
 
     mWheelRadius      =  0.523f; // this is actually diameter!!
     mWheelWidth       =  0.243f;
@@ -82,8 +82,8 @@ void TruckCar::initTuning()
     mMaxAccelForce = 15000.0f;
     mMaxBrakeForce = 300.0f;
 
-	mFrontWheelDrive = true;
-	mRearWheelDrive  = true;
+    mFrontWheelDrive = true;
+    mRearWheelDrive  = true;
     
     mGearCount = 9;
     mCurrentGear = 1;
@@ -184,12 +184,12 @@ void TruckCar::initNodes()
     mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-	
-	// Setup particles.
+    
+    // Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	mBodyNode->attachObject(mDustSystem);
+    mBodyNode->attachObject(mExhaustSystem);
+    mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+    mBodyNode->attachObject(mDustSystem);
     // The dust emitters should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
     mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 1.2f, 0.2f,  1.7f));  // FL
@@ -410,15 +410,15 @@ void TruckCar::initWheels()
     mState->setWheel( 3, mRLWheelNode, BtOgre::Convert::toOgre( connectionPointCS0 ) );
 
     for( int i=0; i < mVehicle->getNumWheels(); i++ )
-	{
-		btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
-		wheel.m_suspensionStiffness         = mSuspensionStiffness;
-		wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
-		wheel.m_wheelsDampingCompression    = mSuspensionCompression;
+    {
+        btWheelInfo& wheel                  = mVehicle->getWheelInfo( i );
+        wheel.m_suspensionStiffness         = mSuspensionStiffness;
+        wheel.m_wheelsDampingRelaxation     = mSuspensionDamping;
+        wheel.m_wheelsDampingCompression    = mSuspensionCompression;
         wheel.m_maxSuspensionForce          = mMaxSuspensionForce;
-		wheel.m_frictionSlip                = mWheelFriction;
-		wheel.m_rollInfluence               = mRollInfluence;
-	}
+        wheel.m_frictionSlip                = mWheelFriction;
+        wheel.m_rollInfluence               = mRollInfluence;
+    }
 }
 
 void TruckCar::makeBitsFallOff()

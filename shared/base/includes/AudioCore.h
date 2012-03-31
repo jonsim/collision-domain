@@ -1,6 +1,6 @@
 /**
- * @file	InputState.h
- * @brief 	An interface for firing off sounds
+ * @file    InputState.h
+ * @brief     An interface for firing off sounds
  */
 #ifndef AUDIOCORE_H
 #define AUDIOCORE_H
@@ -23,7 +23,7 @@ enum SoundType
 };
 
 /**
- *  @brief 	An uneditable snapshot of the player's input state 
+ *  @brief     An uneditable snapshot of the player's input state 
  */
 class AudioCore
 {

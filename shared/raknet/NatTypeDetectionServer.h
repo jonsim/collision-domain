@@ -49,68 +49,68 @@ class RAK_DLL_EXPORT NatTypeDetectionServer : public PluginInterface2
 {
 public:
 
-	// GetInstance() and DestroyInstance(instance*)
-	STATIC_FACTORY_DECLARATIONS(NatTypeDetectionServer)
+    // GetInstance() and DestroyInstance(instance*)
+    STATIC_FACTORY_DECLARATIONS(NatTypeDetectionServer)
 
-	// Constructor
-	NatTypeDetectionServer();
+    // Constructor
+    NatTypeDetectionServer();
 
-	// Destructor
-	virtual ~NatTypeDetectionServer();
+    // Destructor
+    virtual ~NatTypeDetectionServer();
 
-	/// Start the system, binding to 3 external IPs not already in useS
-	/// \param[in] nonRakNetIP2 First unused external IP
-	/// \param[in] nonRakNetIP3 Second unused external IP
-	/// \param[in] nonRakNetIP4 Third unused external IP
-	void Startup(
-		const char *nonRakNetIP2,
-		const char *nonRakNetIP3,
-		const char *nonRakNetIP4);
+    /// Start the system, binding to 3 external IPs not already in useS
+    /// \param[in] nonRakNetIP2 First unused external IP
+    /// \param[in] nonRakNetIP3 Second unused external IP
+    /// \param[in] nonRakNetIP4 Third unused external IP
+    void Startup(
+        const char *nonRakNetIP2,
+        const char *nonRakNetIP3,
+        const char *nonRakNetIP4);
 
-	// Releases the sockets created in Startup();
-	void Shutdown(void);
+    // Releases the sockets created in Startup();
+    void Shutdown(void);
 
-	/// \internal For plugin handling
-	virtual void Update(void);
+    /// \internal For plugin handling
+    virtual void Update(void);
 
-	/// \internal For plugin handling
-	virtual PluginReceiveResult OnReceive(Packet *packet);
-	virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
+    /// \internal For plugin handling
+    virtual PluginReceiveResult OnReceive(Packet *packet);
+    virtual void OnClosedConnection(const SystemAddress &systemAddress, RakNetGUID rakNetGUID, PI2_LostConnectionReason lostConnectionReason );
 
-	enum NATDetectionState
-	{
-		STATE_NONE,
-		STATE_TESTING_NONE_1,
-		STATE_TESTING_NONE_2,
-		STATE_TESTING_FULL_CONE_1,
-		STATE_TESTING_FULL_CONE_2,
-		STATE_TESTING_ADDRESS_RESTRICTED_1,
-		STATE_TESTING_ADDRESS_RESTRICTED_2,
-		STATE_TESTING_PORT_RESTRICTED_1,
-		STATE_TESTING_PORT_RESTRICTED_2,
-		STATE_DONE,
-	};
+    enum NATDetectionState
+    {
+        STATE_NONE,
+        STATE_TESTING_NONE_1,
+        STATE_TESTING_NONE_2,
+        STATE_TESTING_FULL_CONE_1,
+        STATE_TESTING_FULL_CONE_2,
+        STATE_TESTING_ADDRESS_RESTRICTED_1,
+        STATE_TESTING_ADDRESS_RESTRICTED_2,
+        STATE_TESTING_PORT_RESTRICTED_1,
+        STATE_TESTING_PORT_RESTRICTED_2,
+        STATE_DONE,
+    };
 
-	struct NATDetectionAttempt
-	{
-		SystemAddress systemAddress;
-		NATDetectionState detectionState;
-		RakNet::TimeMS nextStateTime;
-		RakNet::TimeMS timeBetweenAttempts;
-		unsigned short c2Port;
-		RakNetGUID guid;
-	};
+    struct NATDetectionAttempt
+    {
+        SystemAddress systemAddress;
+        NATDetectionState detectionState;
+        RakNet::TimeMS nextStateTime;
+        RakNet::TimeMS timeBetweenAttempts;
+        unsigned short c2Port;
+        RakNetGUID guid;
+    };
 
 protected:
-	void OnDetectionRequest(Packet *packet);
-	DataStructures::List<NATDetectionAttempt> natDetectionAttempts;
-	unsigned int GetDetectionAttemptIndex(const SystemAddress &sa);
-	unsigned int GetDetectionAttemptIndex(RakNetGUID guid);
+    void OnDetectionRequest(Packet *packet);
+    DataStructures::List<NATDetectionAttempt> natDetectionAttempts;
+    unsigned int GetDetectionAttemptIndex(const SystemAddress &sa);
+    unsigned int GetDetectionAttemptIndex(RakNetGUID guid);
 
-	// s1p1 is rakpeer itself
-	SOCKET s1p2,s2p3,s3p4,s4p5;
-	unsigned short s1p2Port, s2p3Port, s3p4Port, s4p5Port;
-	char s3p4Address[64];
+    // s1p1 is rakpeer itself
+    SOCKET s1p2,s2p3,s3p4,s4p5;
+    unsigned short s1p2Port, s2p3Port, s3p4Port, s4p5Port;
+    char s3p4Address[64];
 };
 }
 

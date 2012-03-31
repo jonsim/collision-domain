@@ -1,6 +1,6 @@
 /**
- * @file	PowerupHealth.h
- * @brief 	Health powerup.
+ * @file    PowerupHealth.h
+ * @brief     Health powerup.
  */
 #ifndef POWERUPHEALTH_H
 #define POWERUPHEALTH_H
@@ -12,7 +12,7 @@ class Player;
 class GameCore;
 
 /**
- *  @brief 	Random powerup
+ *  @brief     Random powerup
  */
 class PowerupHealth : public Powerup
 {

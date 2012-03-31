@@ -22,15 +22,15 @@ namespace RakNet
 class RAK_DLL_EXPORT ThreadsafePacketLogger : public PacketLogger
 {
 public:
-	ThreadsafePacketLogger();
-	virtual ~ThreadsafePacketLogger();
+    ThreadsafePacketLogger();
+    virtual ~ThreadsafePacketLogger();
 
-	virtual void Update(void);
+    virtual void Update(void);
 
 protected:
-	virtual void AddToLog(const char *str);
+    virtual void AddToLog(const char *str);
 
-	DataStructures::SingleProducerConsumer<char*> logMessages;
+    DataStructures::SingleProducerConsumer<char*> logMessages;
 };
 
 } // namespace RakNet

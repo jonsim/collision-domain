@@ -1,6 +1,6 @@
 /**
- * @file	PowerupRandom.cpp
- * @brief 	Random powerup
+ * @file    PowerupRandom.cpp
+ * @brief     Random powerup
  */
 
 #include "stdafx.h"

@@ -11,11 +11,11 @@
 
 struct HuffmanEncodingTreeNode
 {
-	unsigned char value;
-	unsigned weight;
-	HuffmanEncodingTreeNode *left;
-	HuffmanEncodingTreeNode *right;
-	HuffmanEncodingTreeNode *parent;
+    unsigned char value;
+    unsigned weight;
+    HuffmanEncodingTreeNode *left;
+    HuffmanEncodingTreeNode *right;
+    HuffmanEncodingTreeNode *parent;
 };
 
 #endif

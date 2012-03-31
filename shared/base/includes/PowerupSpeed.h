@@ -1,6 +1,6 @@
 /**
- * @file	PowerupSpeed.h
- * @brief 	Random powerup.
+ * @file    PowerupSpeed.h
+ * @brief     Random powerup.
  */
 #ifndef POWERUPSPEED_H
 #define POWERUPSPEED_H
@@ -12,7 +12,7 @@ class Player;
 class GameCore;
 
 /**
- *  @brief 	Random powerup
+ *  @brief     Random powerup
  */
 class PowerupSpeed : public Powerup
 {

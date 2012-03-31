@@ -21,8 +21,8 @@
 /// Forward declaration
 namespace RakNet
 {
-	class BitStream;
-	class RakString;
+    class BitStream;
+    class RakString;
 };
 
 
@@ -38,66 +38,66 @@ class HuffmanEncodingTree;
 class RAK_DLL_EXPORT StringCompressor
 {
 public:
-	
-	// Destructor	
-	~StringCompressor();
-	
-	/// static function because only static functions can access static members
-	/// The RakPeer constructor adds a reference to this class, so don't call this until an instance of RakPeer exists, or unless you call AddReference yourself.
-	/// \return the unique instance of the StringCompressor 
-	static StringCompressor* Instance(void);
+    
+    // Destructor    
+    ~StringCompressor();
+    
+    /// static function because only static functions can access static members
+    /// The RakPeer constructor adds a reference to this class, so don't call this until an instance of RakPeer exists, or unless you call AddReference yourself.
+    /// \return the unique instance of the StringCompressor 
+    static StringCompressor* Instance(void);
 
-	/// Given an array of strings, such as a chat log, generate the optimal encoding tree for it.
-	/// This function is optional and if it is not called a default tree will be used instead.
-	/// \param[in] input An array of bytes which should point to text.
-	/// \param[in] inputLength Length of \a input
-	/// \param[in] languageID An identifier for the language / string table to generate the tree for.  English is automatically created with ID 0 in the constructor.
-	void GenerateTreeFromStrings( unsigned char *input, unsigned inputLength, uint8_t languageId );
-	
- 	/// Writes input to output, compressed.  Takes care of the null terminator for you.
-	/// \param[in] input Pointer to an ASCII string
-	/// \param[in] maxCharsToWrite The max number of bytes to write of \a input.  Use 0 to mean no limit.
-	/// \param[out] output The bitstream to write the compressed string to
-	/// \param[in] languageID Which language to use
-	void EncodeString( const char *input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
-	
-	/// Writes input to output, uncompressed.  Takes care of the null terminator for you.
-	/// \param[out] output A block of bytes to receive the output
-	/// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A NULL terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
-	/// \param[in] input The bitstream containing the compressed string
-	/// \param[in] languageID Which language to use
-	bool DecodeString( char *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
+    /// Given an array of strings, such as a chat log, generate the optimal encoding tree for it.
+    /// This function is optional and if it is not called a default tree will be used instead.
+    /// \param[in] input An array of bytes which should point to text.
+    /// \param[in] inputLength Length of \a input
+    /// \param[in] languageID An identifier for the language / string table to generate the tree for.  English is automatically created with ID 0 in the constructor.
+    void GenerateTreeFromStrings( unsigned char *input, unsigned inputLength, uint8_t languageId );
+    
+     /// Writes input to output, compressed.  Takes care of the null terminator for you.
+    /// \param[in] input Pointer to an ASCII string
+    /// \param[in] maxCharsToWrite The max number of bytes to write of \a input.  Use 0 to mean no limit.
+    /// \param[out] output The bitstream to write the compressed string to
+    /// \param[in] languageID Which language to use
+    void EncodeString( const char *input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
+    
+    /// Writes input to output, uncompressed.  Takes care of the null terminator for you.
+    /// \param[out] output A block of bytes to receive the output
+    /// \param[in] maxCharsToWrite Size, in bytes, of \a output .  A NULL terminator will always be appended to the output string.  If the maxCharsToWrite is not large enough, the string will be truncated.
+    /// \param[in] input The bitstream containing the compressed string
+    /// \param[in] languageID Which language to use
+    bool DecodeString( char *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 
 #ifdef _CSTRING_COMPRESSOR
-	void EncodeString( const CString &input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
-	bool DecodeString( CString &output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
+    void EncodeString( const CString &input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
+    bool DecodeString( CString &output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 #endif
 
 #ifdef _STD_STRING_COMPRESSOR
-	void EncodeString( const std::string &input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
-	bool DecodeString( std::string *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
+    void EncodeString( const std::string &input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
+    bool DecodeString( std::string *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 #endif
 
-	void EncodeString( const RakNet::RakString *input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
-	bool DecodeString( RakNet::RakString *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
+    void EncodeString( const RakNet::RakString *input, int maxCharsToWrite, RakNet::BitStream *output, uint8_t languageId=0 );
+    bool DecodeString( RakNet::RakString *output, int maxCharsToWrite, RakNet::BitStream *input, uint8_t languageId=0 );
 
-	/// Used so I can allocate and deallocate this singleton at runtime
-	static void AddReference(void);
-	
-	/// Used so I can allocate and deallocate this singleton at runtime
-	static void RemoveReference(void);
+    /// Used so I can allocate and deallocate this singleton at runtime
+    static void AddReference(void);
+    
+    /// Used so I can allocate and deallocate this singleton at runtime
+    static void RemoveReference(void);
 
-	StringCompressor();
+    StringCompressor();
 
 private:
-	
-	/// Singleton instance
-	static StringCompressor *instance;
-	
-	/// Pointer to the huffman encoding trees.
-	DataStructures::Map<int, HuffmanEncodingTree *> huffmanEncodingTrees;
-	
-	static int referenceCount;
+    
+    /// Singleton instance
+    static StringCompressor *instance;
+    
+    /// Pointer to the huffman encoding trees.
+    DataStructures::Map<int, HuffmanEncodingTree *> huffmanEncodingTrees;
+    
+    static int referenceCount;
 };
 
 } // namespace RakNet

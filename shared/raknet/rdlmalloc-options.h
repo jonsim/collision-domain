@@ -11,7 +11,7 @@
 #define MSPACES 1
 #define ONLY_MSPACES 1
 #define USE_DL_PREFIX 1
-#define NO_MALLINFO	1
+#define NO_MALLINFO    1
 // Make it threadsafe
 #define USE_LOCKS 1
 

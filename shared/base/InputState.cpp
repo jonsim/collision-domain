@@ -1,6 +1,6 @@
 /**
- * @file	InputState.cpp
- * @brief 	An uneditable snapshot of the player's input state 
+ * @file    InputState.cpp
+ * @brief     An uneditable snapshot of the player's input state 
  */
 
 /*-------------------- INCLUDES --------------------*/

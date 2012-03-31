@@ -11,28 +11,28 @@
 
 struct FileListNodeContext
 {
-	FileListNodeContext() {dataPtr=0; dataLength=0;}
-	FileListNodeContext(unsigned char o, unsigned int f) : op(o), fileId(f) {dataPtr=0; dataLength=0;}
-	~FileListNodeContext() {}
+    FileListNodeContext() {dataPtr=0; dataLength=0;}
+    FileListNodeContext(unsigned char o, unsigned int f) : op(o), fileId(f) {dataPtr=0; dataLength=0;}
+    ~FileListNodeContext() {}
 
-	unsigned char op;
-	unsigned int fileId;
-	void *dataPtr;
-	unsigned int dataLength;
+    unsigned char op;
+    unsigned int fileId;
+    void *dataPtr;
+    unsigned int dataLength;
 };
 
 inline RakNet::BitStream& operator<<(RakNet::BitStream& out, FileListNodeContext& in)
 {
-	out.Write(in.op);
-	out.Write(in.fileId);
-	return out;
+    out.Write(in.op);
+    out.Write(in.fileId);
+    return out;
 }
 inline RakNet::BitStream& operator>>(RakNet::BitStream& in, FileListNodeContext& out)
 {
-	in.Read(out.op);
-	bool success = in.Read(out.fileId);
-	assert(success);
-	return in;
+    in.Read(out.op);
+    bool success = in.Read(out.fileId);
+    assert(success);
+    return in;
 }
 
 #endif
