@@ -34,20 +34,19 @@ enum
 class Gameplay
 {
 public:
-    Gameplay();
-    ~Gameplay();
-    void                        setNumberOfTeams(int num);
-    Ogre::Real                    getScorePercentage(std::string identifier);
-    int                            getScoreValue(std::string identifier);
-    Team*                        createTeam(std::string teamName, int teamNumber);
-    void                        addPlayerToTeam(Team* team, Player* player);
-    bool                        gameOver();
-    bool                        hasWon(Team* team);
-    Team*                        checkIfGameOver();
-    void                        setGameplayMode(int gameplayMode);
-    Player*                        setNewVIP(Team* team);
-    void                        setAllNewVIP();
-    Team*                        declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
+                Gameplay() : mGameActive(false), mNumberOfTeams(0) {}
+                ~Gameplay() {}
+    Team*       createTeam(int teamNumber);
+    void        createTeams(int nummberOfTeams);
+    float       getScorePercentage(int teamNumber);
+    int         getScoreValue(int teamNuber);
+    //void        gameOver();
+    //bool        hasWon(Team* team);
+    //Team*       checkIfGameOver();
+    void        setGameplayMode(int gameplayMode) { mGameplayMode = gameplayMode; }
+    void        setNewVIP(Team* team);
+    void        setNewVIPs();
+    Team*       addPlayer( RakNet::RakNetGUID playerid, int requestedTeamNumber ); //Returns true if the player has been added to big screen
     void                        notifyDamage(Player* player);
     void                        preparePlayers(); //Place the palyers in the correct place
     void                        resetAllHP();
@@ -55,20 +54,22 @@ public:
     void                        startGame();
     void                        drawInfo(); //Draws any info that we require
     void                        setupOverlay();
-    Team*                        getTeam(int i);
+    Team*                       getTeam(int i);
     void                        drawDeathInfo();
     void                        initialize();
 
-    std::vector<InfoItem*>        mInfoItems;
-    int                            numberOfTeams;
+    std::vector<InfoItem*>      mInfoItems;
+    int                         mNumberOfTeams;
     bool                        mGameActive; //True = Game underway, False = Game not yet started
     void                        markDeath(Player* deadPlayer, Player* causedBy);
-    std::vector<DEATH*>            getDeathList();
+    std::vector<DEATH*>         getDeathList();
     void                        restartGame();
+
 private:
     //Methods
-    bool                        vipModeGameWon();
-    Team*                        getTeamToJoin();
+    void                        vipModeGameWon();
+    Team*                       autoAssignTeam();
+    bool                        validateTeamChoice(int requestedTeamNumber);
     void                        printTeamStats();
     void                        scheduleCountDown();
     //Variabels

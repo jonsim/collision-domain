@@ -11,51 +11,43 @@
 
 
 
-Gameplay::Gameplay() : mGameActive(false)
+/*Gameplay::Gameplay() : mGameActive(false)
 {
     //mSB = new ScoreBoard();
     //mHUD = new HUD();
-    this->setNumberOfTeams(2);
-}
+}*/
 
-void Gameplay::setNumberOfTeams(int num)
+void Gameplay::createTeams(int numberOfTeams)
 {
-    numberOfTeams = num;
+    mNumberOfTeams = numberOfTeams;
     //Create the new teams
-    for(int i=1;i<=num;i++)
+    for(int i=1;i<=numberOfTeams;i++)
     {
-        this->createTeam("", i);
+        this->createTeam(i);
     }
 }
 
-Team* Gameplay::createTeam(std::string teamName, int teamNumber)
+Team* Gameplay::createTeam(int teamNumber)
 {
-    Team* tmpTeam = new Team(teamName, teamNumber);
+    Team* tmpTeam = new Team(teamNumber);
     teams.push_back(tmpTeam);
-    return tmpTeam;
 }
-
-Ogre::Real Gameplay::getScorePercentage(std::string identifier)
+/*
+float Gameplay::getScorePercentage(int teamNumber)
 {
     return 0.0;
 }
 
-int    Gameplay::getScoreValue(std::string identifier)
+int Gameplay::getScoreValue(int teamNumber)
 {
     return 0;
 }
 
-void Gameplay::addPlayerToTeam(Team* team, Player* player)
-{
-    team->addPlayer(player);
-}
-
-bool Gameplay::gameOver()
+void Gameplay::gameOver()
 {
     if(mGameplayMode == VIP_MODE) {
         vipModeGameWon();
     }
-    return false;
 }
 
 bool Gameplay::hasWon(Team* team)
@@ -63,10 +55,29 @@ bool Gameplay::hasWon(Team* team)
     return false;
 }
 
-void Gameplay::setGameplayMode(int gameplayMode)
+Team* Gameplay::checkIfGameOver()
 {
-    mGameplayMode = gameplayMode;
-}
+    Team* winningTeam = NULL;
+    //Loop through 
+    std::vector<Team*>::iterator itr;
+    for(itr = teams.begin(); itr<teams.end(); ++itr)
+    {
+        Team* tmpTeam = *itr;
+        if(tmpTeam->getTotalTeamHP() > 0)
+        {
+            //If we already had a winning team it means we didn't as there are two
+            if(winningTeam != NULL)
+            {
+                return NULL;
+            }
+            else
+            {
+                winningTeam = tmpTeam;
+            }
+        }
+    }
+
+    return winningTeam;
 
 bool Gameplay::vipModeGameWon()
 {
@@ -77,50 +88,51 @@ bool Gameplay::vipModeGameWon()
     }
     return false;
 }
+}*/
 
-Player* Gameplay::setNewVIP(Team* team)
+void Gameplay::setNewVIP(Team* team)
 {
     Player* pPlayer = team->getRandomPlayer();
+    team->setVIP(pPlayer);
     
-        // Manage and assign VIP Cameras for the server
-#ifdef COLLISION_DOMAIN_SERVER
+    // Manage and assign VIP Cameras for the server
+/*#ifdef COLLISION_DOMAIN_SERVER
     if(team == teams[0])
         pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
     else if(team == teams[1])
         pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
-#endif
-
-    return team->setNewVIP(pPlayer);
+#endif*/
 }
 
-void Gameplay::setAllNewVIP()
+void Gameplay::setNewVIPs()
 {
     std::vector<Team*>::iterator itr;
     for(itr = teams.begin(); itr<teams.end(); ++itr)
     {
-        Team* team = *itr;
-        Player* vipPlayer = team->getRandomPlayer();
-
-        // Manage and assign VIP Cameras for the server
-#ifdef COLLISION_DOMAIN_SERVER
-        //Clear the previous assignments
-        GameCore::mGraphicsApplication->mViewCam1->detachFromParent();
-        GameCore::mGraphicsApplication->mViewCam2->detachFromParent();
-        //Assign to the new VIPS
-        if(team == teams[0])
-            vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
-        else if(team == teams[1])
-            vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
-#endif
-        team->setNewVIP(vipPlayer);
+        setNewVIP(*itr);
     }
 }
 
-Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
+Team* Gameplay::addPlayer( RakNet::RakNetGUID playerid, int requestedTeamNumber )
 {
-    Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
-    Team* teamToJoin = getTeamToJoin();
-    teamToJoin->addPlayer(tmpPlayer);
+    Team* teamToJoin;
+    Player* pPlayer = GameCore::mPlayerPool->getPlayer(playerid);
+
+    // First decide which team to join (if any).
+    if (requestedTeamNumber <= 0 || requestedTeamNumber > teams.size())
+    {
+        teamToJoin = autoAssignTeam();
+    }
+    else
+    {
+        if (validateTeamChoice(requestedTeamNumber))
+            teamToJoin = teams[requestedTeamNumber-1];
+        else
+            return NULL;
+    }
+    
+    // Join the team.
+    teamToJoin->addPlayer(pPlayer);
 
     //Check to see if we need to start game
     if(this->mGameActive == false && GameCore::mPlayerPool->getNumberOfPlayers() >= NUM_PLAYERS_TO_START)
@@ -132,10 +144,10 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 }
 
 //Gets which team makes sense to join (Aims to balance)
-Team* Gameplay::getTeamToJoin()
+Team* Gameplay::autoAssignTeam()
 {
-    Team*    lowestTeam;
-    int        lowestNumOfPlayers;
+    Team* lowestTeam;
+    int   lowestNumOfPlayers;
 
     //Check to see that there is some teams to join
     if(teams.size() > 0)
@@ -168,8 +180,7 @@ void Gameplay::notifyDamage(Player* player)
 void Gameplay::printTeamStats()
 {
     std::stringstream tmpOutputString;
-    tmpOutputString << "Team Stats \n";
-    //Loop through all teams and find the one with the lowest value
+    tmpOutputString << "Team Stats:\n";
     std::vector<Team*>::iterator itr;
     int i=0;
     for(itr = teams.begin(); itr<teams.end(); ++itr)
@@ -179,31 +190,6 @@ void Gameplay::printTeamStats()
         i++;
     }
     OutputDebugString(tmpOutputString.str().c_str());
-}
-
-Team* Gameplay::checkIfGameOver()
-{
-    Team* winningTeam = NULL;
-    //Loop through 
-    std::vector<Team*>::iterator itr;
-    for(itr = teams.begin(); itr<teams.end(); ++itr)
-    {
-        Team* tmpTeam = *itr;
-        if(tmpTeam->getTotalTeamHP() > 0)
-        {
-            //If we already had a winning team it means we didn't as there are two
-            if(winningTeam != NULL)
-            {
-                return NULL;
-            }
-            else
-            {
-                winningTeam = tmpTeam;
-            }
-        }
-    }
-
-    return winningTeam;
 }
 
 void Gameplay::preparePlayers()
@@ -268,9 +254,9 @@ void Gameplay::positionPlayers()
             }
 
             //TODO - Move cars to correct positions
-            std::stringstream debugString;
-            debugString << "Alignment Car Pos X: "<< x << " Y: "<<y<<"\n";
-            OutputDebugString(debugString.str().c_str());
+            //std::stringstream debugString;
+            //debugString << "Alignment Car Pos X: "<< x << " Y: "<<y<<"\n";
+            //OutputDebugString(debugString.str().c_str());
             tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
         }
     }    
