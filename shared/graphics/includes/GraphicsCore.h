@@ -16,6 +16,14 @@
  */
 class SpawnScreen;
 
+enum GraphicsState
+{
+    LOBBY,
+    PLAYER,
+    SPECTATOR,
+    PROJECTOR
+};
+
 class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
 {
 public:
@@ -33,15 +41,25 @@ public:
     
 
 protected:
-    virtual bool initApplication (void); // This shouldn't be here. Will be purged.
-    virtual bool configureRenderer (void);
+    // Called when the application is first started.
+    virtual bool initApplication (void);    // Determines flow from startup
+    virtual bool configureRenderer (void);  // Displays the configuration screen - will be removed from the final program.
+
+    // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
+    virtual bool loadLobby (void);
+    virtual bool unloadLobby (void);
+
+    // Called when the 3D graphics are loaded (and a game has been entered).
+    virtual bool loadGame (void);
+    virtual bool unloadGame (void);
+    
     virtual void createCamera (void) = 0;
-    virtual void createFrameListener (void);
-    virtual void createScene (void) = 0;     // This needs to be overridden to display anything
-    virtual void destroyScene (void);
     virtual void createViewports (void) = 0;
     virtual void setupResources (void);
     virtual void loadResources (void);
+    virtual void createFrameListener (void);
+    virtual void createScene (void) = 0;     // This needs to be overridden to display anything
+    virtual void destroyScene (void);
     virtual void updateParticleSystems (void);
 
     // Ogre::FrameListener overrides.

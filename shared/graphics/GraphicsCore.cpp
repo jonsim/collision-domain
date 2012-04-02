@@ -147,7 +147,7 @@ void GraphicsCore::destroyScene (void)
 }
 
 
-/// @brief  Loads and configures all resources from an external file.
+/// @brief  Locates the resources using an external file. No resources are loaded at this stage.
 void GraphicsCore::setupResources (void)
 {
     // Load resource paths from config file
@@ -307,6 +307,7 @@ void GraphicsCore::windowClosed (Ogre::RenderWindow* rw)
 
 
 
+/*------------------------------ SPLASH SCREEN CLASS ------------------------------*/
 SplashScreen::SplashScreen (Ogre::Root* root) : resourceTotal(0), resourceCount(0), mRoot(root)
 {
     // Preload resources (for the splash screen)
