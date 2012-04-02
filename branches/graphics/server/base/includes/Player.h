@@ -12,16 +12,21 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+enum TeamID;
+enum CarType;
+class Car;
+
 /**
  *  @brief     Contains the Player nodes and the related data.
  */
+
 class Player
 {
  
 public:
     Player (void);
     ~Player (void);
-    void createPlayer (CarType carType, CarSkin skin);
+    void createPlayer (CarType carType, TeamID team);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
@@ -55,8 +60,8 @@ public:
     bool getAlive();
     void setVIP(bool newState) { mIsVIP = newState; };
     bool getVIP(void) { return mIsVIP; };
-    void setTeam(int newTeam) { mTeam = newTeam; };
-    int  getTeam(void) { return mTeam; };
+    void setTeam(TeamID newTeam) { mTeam = newTeam; };
+    TeamID getTeam(void) { return mTeam; };
 
     //Now have a "Kill" method that will also set the call backs
     void killPlayer();
@@ -72,8 +77,8 @@ public:
 
 private:
     const float      cameraRotationConstant;
-    int                 hp;
-    int              mTeam;
+    int              hp;
+    TeamID           mTeam;
     bool             mAlive;
     bool             mIsVIP;
     bool             mSpawned;

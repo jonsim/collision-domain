@@ -12,6 +12,11 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+enum TeamID;
+enum CarType;
+class Car;
+class GameCamera;
+
 /**
  *  @brief     Contains the Player nodes and the related data.
  */
@@ -20,7 +25,7 @@ class Player
 public:
     Player (void);
     ~Player (void);
-    void createPlayer (CarType carType, CarSkin skin);
+    void createPlayer (CarType carType, TeamID team);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time);
@@ -38,8 +43,8 @@ public:
     int     getHP (void);
     void setVIP(bool newState) { mIsVIP = newState; }
     bool getVIP(void) { return mIsVIP; }
-    void setTeam(int newTeam) { mTeam = newTeam; mCar->updateTeam(newTeam); }
-    int  getTeam(void) { return mTeam; }
+    void setTeam(TeamID newTeam) { mTeam = newTeam; mCar->updateTeam(newTeam); }
+    TeamID getTeam(void) { return mTeam; }
 
     void setGUID(RakNet::RakNetGUID playerGUID);
     std::string getGUID(void);
@@ -71,7 +76,7 @@ public:
 private:
     const float                                   cameraRotationConstant;
     int                                           hp;
-    int                                           mTeam;
+    TeamID                                           mTeam;
     char*                                       mNickname;
     bool                                       mIsVIP;
     bool                                       mAlive;

@@ -19,7 +19,7 @@ public:
     /// @brief  Constructor.
     /// @param  teamNumber   The number which uniquely identifies this team. Should be >= 1
     ///                     (0 is reserved for no-team or free-for-all).
-    Team(int teamNumber) : mTeamNumber(teamNumber), mVIPPlayer(NULL) {}
+    Team(TeamID id) : mTeamID(id), mVIPPlayer(NULL) {}
 
     /// @brief  Deconstructor.
     ~Team() {}
@@ -54,8 +54,8 @@ public:
 
 private:
     std::vector<Player*>    mPlayers;
-    int                     mTeamNumber;
-    Player*                    mVIPPlayer;
+    TeamID                  mTeamID;
+    Player*                 mVIPPlayer;
 };
 
 

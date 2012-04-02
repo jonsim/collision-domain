@@ -14,6 +14,7 @@
 /**
  *  @brief  Adds objects to the graphics interface.
  */
+class GraphicsCore;
 class GraphicsApplication : public GraphicsCore
 {
 public:

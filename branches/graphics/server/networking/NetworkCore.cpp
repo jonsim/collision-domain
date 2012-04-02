@@ -419,11 +419,12 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     // TODO: something with iCarType
 
     Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
-    pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
+    pPlayer->createPlayer( iCarType, NO_TEAM );
 
     // Alert the BigScreen we've had a player spawned
     //GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
-    GameCore::mGameplay->declareNewPlayer(pkt->guid);
+//    GameCore::mGameplay->declareNewPlayer(pkt->guid);
+    GameCore::mGameplay->addPlayer(pkt->guid, NO_TEAM);
 
     RakNet::BitStream bsSpawn;
     bsSpawn.Write( pkt->guid );

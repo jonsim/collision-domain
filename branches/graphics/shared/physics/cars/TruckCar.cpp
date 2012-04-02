@@ -109,7 +109,7 @@ void TruckCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-TruckCar::TruckCar(int uniqueCarID, CarSkin skin)
+TruckCar::TruckCar(int uniqueCarID, TeamID team)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -118,7 +118,7 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin)
 
     initTuning();
     initNodes();
-    initGraphics();
+    initGraphics(team);
     initBody(carPosition, chassisShift);
     initWheels();
     initDoors(chassisShift);
@@ -204,7 +204,7 @@ void TruckCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void TruckCar::initGraphics()
+void TruckCar::initGraphics(TeamID team)
 {
     // Load the truck meshes.
     createGeometry("UnIqUe_TruckBody",      "truck_body.mesh",        mChassisNode,     true);
@@ -229,25 +229,30 @@ void TruckCar::initGraphics()
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+
+    updateTeam(team);
 }
 
 
-void TruckCar::updateTeam (int teamNumber)
+void TruckCar::updateTeam (TeamID team)
 {
     // Load the team coloured items
-    switch (teamNumber)
+    switch (team)
     {
-    case 1:
+    case BLUE_TEAM:
         setMaterial("truck_body_t1",  mChassisNode);
         setMaterial("truck_door_t1", mLDoorNode);
         setMaterial("truck_door_t1", mRDoorNode);
         break;
-    case 2:
+    case RED_TEAM:
         setMaterial("truck_body_t2",  mChassisNode);
         setMaterial("truck_door_t2", mLDoorNode);
         setMaterial("truck_door_t2", mRDoorNode);
         break;
     default:
+        setMaterial("truck_body_uv",  mChassisNode);
+        setMaterial("truck_door_uv", mLDoorNode);
+        setMaterial("truck_door_uv", mRDoorNode);
         break;
     }
 }

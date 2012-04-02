@@ -15,6 +15,8 @@
 #include "GetTime.h"
 #include <sstream>
 
+class ViewCamera;
+
 class BigScreen
 {
 public:

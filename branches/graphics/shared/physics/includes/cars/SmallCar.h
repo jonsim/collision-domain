@@ -12,10 +12,10 @@
 class SmallCar : public Car
 {
 public:
-    SmallCar(int uniqueCarID, CarSkin skin);
+    SmallCar(int uniqueCarID, TeamID team);
     virtual ~SmallCar(void);
     void playCarHorn();
-    virtual void updateTeam (int teamNumber);
+    virtual void updateTeam (TeamID team);
     virtual void loadDestroyedModel (void);
 
     virtual void makeBitsFallOff();
@@ -23,7 +23,7 @@ public:
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(btTransform& chassisShift);
+    void initGraphics(btTransform& chassisShift, TeamID team);
     void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
     void initWheels();
     

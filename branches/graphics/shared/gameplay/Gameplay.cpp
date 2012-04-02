@@ -17,20 +17,17 @@
     //mHUD = new HUD();
 }*/
 
-void Gameplay::createTeams(int numberOfTeams)
+void Gameplay::createTeams()
 {
-    mNumberOfTeams = numberOfTeams;
-    //Create the new teams
-    for(int i=1;i<=numberOfTeams;i++)
-    {
-        this->createTeam(i);
-    }
-}
-
-Team* Gameplay::createTeam(int teamNumber)
-{
-    Team* tmpTeam = new Team(teamNumber);
-    teams.push_back(tmpTeam);
+    // As it is pretty much guarenteed we will have 2 players, a safer method is provided for
+    // creating them, however a general purpose method is also available.
+#if NUM_TEAMS == 2
+    teams[0] = new Team(BLUE_TEAM);
+    teams[1] = new Team(RED_TEAM);
+#else
+    for (int i = 0; i < NUM_TEAMS; i++)
+        teams[i] = new Team(i+1);
+#endif
 }
 /*
 float Gameplay::getScorePercentage(int teamNumber)
@@ -90,10 +87,12 @@ bool Gameplay::vipModeGameWon()
 }
 }*/
 
-void Gameplay::setNewVIP(Team* team)
+void Gameplay::setNewVIP(TeamID id)
 {
-    Player* pPlayer = team->getRandomPlayer();
-    team->setVIP(pPlayer);
+    if (id == NO_TEAM)
+        return;
+    Team* team = getTeam(id);
+    team->setVIP(team->getRandomPlayer());
     
     // Manage and assign VIP Cameras for the server
 /*#ifdef COLLISION_DOMAIN_SERVER
@@ -106,29 +105,34 @@ void Gameplay::setNewVIP(Team* team)
 
 void Gameplay::setNewVIPs()
 {
-    std::vector<Team*>::iterator itr;
-    for(itr = teams.begin(); itr<teams.end(); ++itr)
-    {
-        setNewVIP(*itr);
-    }
+    // As it is pretty much guarenteed we will have 2 players, a safer method is provided for
+    // accessing them, however a general purpose method is also available.
+#if NUM_TEAMS == 2
+    setNewVIP(BLUE_TEAM);
+    setNewVIP(RED_TEAM);
+#else
+    for (int i = 1; i <= NUM_TEAMS; i++)
+        setNewVIP((TeamID) i);
+#endif
 }
 
-Team* Gameplay::addPlayer( RakNet::RakNetGUID playerid, int requestedTeamNumber )
+bool Gameplay::addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam )
 {
     Team* teamToJoin;
     Player* pPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 
-    // First decide which team to join (if any).
-    if (requestedTeamNumber <= 0 || requestedTeamNumber > teams.size())
+    // If the requested team number is invalid autoassign the team, otherwise check 
+    // the team choice and join the team if possible or report an error.
+    if (requestedTeam == NO_TEAM)
     {
         teamToJoin = autoAssignTeam();
     }
     else
     {
-        if (validateTeamChoice(requestedTeamNumber))
-            teamToJoin = teams[requestedTeamNumber-1];
+        if (validateTeamChoice(requestedTeam))
+            teamToJoin = getTeam(requestedTeam);
         else
-            return NULL;
+            return false;
     }
     
     // Join the team.
@@ -140,12 +144,17 @@ Team* Gameplay::addPlayer( RakNet::RakNetGUID playerid, int requestedTeamNumber 
         this->startGame();
     }
 
-    return teamToJoin;
+    return true;
 }
 
-//Gets which team makes sense to join (Aims to balance)
 Team* Gameplay::autoAssignTeam()
 {
+#if NUM_TEAMS == 2
+    if (teams[0]->getTeamSize() > teams[1]->getTeamSize())
+        return teams[1];
+    return teams[0];
+#else
+    #error "Code not updated for !2 teams."
     Team* lowestTeam;
     int   lowestNumOfPlayers;
 
@@ -170,6 +179,19 @@ Team* Gameplay::autoAssignTeam()
     }
 
     return lowestTeam;
+#endif
+}
+
+bool Gameplay::validateTeamChoice(TeamID requestedTeam)
+{
+#if NUM_TEAMS != 2
+    #error "Code not written for !2 teams."
+#endif
+    TeamID otherTeam = (requestedTeam == BLUE_TEAM) ? RED_TEAM : BLUE_TEAM;
+
+    if (getTeam(requestedTeam)->getTeamSize() > getTeam(otherTeam)->getTeamSize())
+        return false;
+    return true;
 }
 
 void Gameplay::notifyDamage(Player* player)
@@ -181,14 +203,13 @@ void Gameplay::printTeamStats()
 {
     std::stringstream tmpOutputString;
     tmpOutputString << "Team Stats:\n";
-    std::vector<Team*>::iterator itr;
-    int i=0;
-    for(itr = teams.begin(); itr<teams.end(); ++itr)
-    {
-        Team* tmpTeam = *itr;
-        tmpOutputString << "Team " << i << ": " << tmpTeam->getTotalTeamHP() << "\n";
-        i++;
-    }
+#if NUM_TEAMS == 2
+    tmpOutputString << "  Blue Team: " << getTeam(BLUE_TEAM)->getTotalTeamHP() << " health\n";
+    tmpOutputString << "  Red Team: " << getTeam(RED_TEAM)->getTotalTeamHP() << " health\n";
+#else
+    for (int i = 0; i < NUM_TEAMS; i++)
+        tmpOutputString << "  teams[" << i << "]: " << teams[i]->getTotalTeamHP() << " health\n";
+#endif
     OutputDebugString(tmpOutputString.str().c_str());
 }
 
@@ -264,12 +285,25 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
-    this->positionPlayers();
-    this->setAllNewVIP(); //TODO - Change this once we have multiple game modes
-    this->scheduleCountDown();
+    startRound();
     mGameActive = true;
 }
 
+void Gameplay::startRound()
+{
+    positionPlayers();
+    switch (mGamemode)
+    {
+        case VIP_MODE:
+            setNewVIPs();
+            break;
+        default:
+            OutputDebugString("startRound called with an unrecognised gamemode.\n");
+            break;
+    }
+    scheduleCountDown();
+}
+/*
 void Gameplay::drawInfo()
 {
     std::vector<InfoItem*>::iterator itr;
@@ -449,11 +483,6 @@ void Gameplay::setupOverlay()
     olContainer->addChild(tmpOLE);
 }
 
-Team* Gameplay::getTeam(int i)
-{
-    return teams[i];
-}
-
 void Gameplay::drawDeathInfo()
 {
     mHUD->drawDeathMessage(NULL,NULL);
@@ -528,3 +557,4 @@ void Gameplay::calculateRoundScores()
         
     }
 }
+*/
