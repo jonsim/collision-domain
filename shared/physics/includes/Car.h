@@ -17,6 +17,7 @@ class WheelFrictionConstraint;
 class CarState;
 
 /// CarType represents the type of car used as the player object (i.e. the model).
+enum TeamID;
 enum CarType
 {
     CAR_BANGER = 0,
@@ -25,9 +26,6 @@ enum CarType
 
     CAR_COUNT
 };
-
-/// CarSkin represents the texture applied to the player object.
-enum CarSkin {SKIN_DEFAULT, SKIN_TEAM1, SKIN_TEAM2};
 
 
 class Car
@@ -59,7 +57,7 @@ public:
 
     float getMaxSpeed() { return mMaxSpeed; }
 
-    virtual void updateTeam (int teamNumber) = 0;
+    virtual void updateTeam (TeamID team) = 0;
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );

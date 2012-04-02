@@ -10,7 +10,7 @@
 void Team::addPlayer(Player *player)
 {
     // Update the player's team (and graphics if neceesary) and add to the player list.
-    player->setTeam(mTeamNumber);
+    player->setTeam(mTeamID);
     mPlayers.push_back(player);
 }
 

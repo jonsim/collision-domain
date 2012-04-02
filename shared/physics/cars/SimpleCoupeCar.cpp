@@ -120,7 +120,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
+SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID team)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -129,7 +129,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
 
     initTuning();
     initNodes();
-    initGraphics(chassisShift, skin);
+    initGraphics(chassisShift, team);
     initBody(carPosition, chassisShift);
     initWheels();
 
@@ -211,7 +211,7 @@ void SimpleCoupeCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
+void SimpleCoupeCar::initGraphics(btTransform& chassisShift, TeamID team)
 {
     // Load the meshes.
     // true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
@@ -241,26 +241,23 @@ void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
 
-    if (skin == SKIN_TEAM1)
-        updateTeam(1);
-    else if (skin == SKIN_TEAM2)
-        updateTeam(2);
+    updateTeam(team);
 }
 
 
-void SimpleCoupeCar::updateTeam (int teamNumber)
+void SimpleCoupeCar::updateTeam (TeamID team)
 {
     // Load the team coloured items
-    switch (teamNumber)
+    switch (team)
     {
-    case 1:
+    case BLUE_TEAM:
         setMaterial("banger_body_t1",  mChassisNode);
         setMaterial("banger_fdoor_t1", mFLDoorNode);
         setMaterial("banger_fdoor_t1", mFRDoorNode);
         setMaterial("banger_rdoor_t1", mRLDoorNode);
         setMaterial("banger_rdoor_t1", mRRDoorNode);
         break;
-    case 2:
+    case RED_TEAM:
         setMaterial("banger_body_t2",  mChassisNode);
         setMaterial("banger_fdoor_t2", mFLDoorNode);
         setMaterial("banger_fdoor_t2", mFRDoorNode);
@@ -268,6 +265,11 @@ void SimpleCoupeCar::updateTeam (int teamNumber)
         setMaterial("banger_rdoor_t2", mRRDoorNode);
         break;
     default:
+        setMaterial("banger_body_uv",  mChassisNode);
+        setMaterial("banger_fdoor_uv", mFLDoorNode);
+        setMaterial("banger_fdoor_uv", mFRDoorNode);
+        setMaterial("banger_rdoor_uv", mRLDoorNode);
+        setMaterial("banger_rdoor_uv", mRRDoorNode);
         break;
     }
 }

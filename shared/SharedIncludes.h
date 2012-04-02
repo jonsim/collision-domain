@@ -13,6 +13,8 @@
 #include "CarSnapshot.h"
 #include "Vehicle.h"
 #include "Car.h"
+#include "Gameplay.h"
+#include "Team.h"
 #include "PowerupPool.h"
 #include "PlayerCollisions.h"
 #include "PhysicsCore.h"

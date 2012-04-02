@@ -8,6 +8,7 @@
 using namespace Ogre;
 
 class AiPlayer;
+class Car;
 
 enum behaviour_type
     {

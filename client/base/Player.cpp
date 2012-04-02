@@ -14,7 +14,7 @@
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
 Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mIsVIP(false), 
-                        mTeam(0), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
+                        mTeam(NO_TEAM), mCarSnapshot(NULL), mSnapshots(NULL), mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
     //processingCollision = false;
@@ -40,23 +40,23 @@ Player::~Player (void)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (CarType carType, CarSkin skin)
+void Player::createPlayer (CarType carType, TeamID team)
 {
     mCarType = carType;
 
     switch (carType)
     {
     case CAR_BANGER:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), team);
         break;
     case CAR_SMALL:
-        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
+        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), team);
         break;
     case CAR_TRUCK:
-        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
+        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), team);
         break;
     default:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), team);
         break;
     }
 

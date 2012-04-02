@@ -343,6 +343,7 @@ void Car::updateRPM()
 
 void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame)
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     static float oldRPM = 0;
 
     // Calculate the new exhaust emission rate (from engine RPM).
@@ -375,7 +376,7 @@ void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame
         mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
     for (int i = 0; i < 4; i++)
         mDustSystem->getEmitter(i)->setEmissionRate(dustRate[i]);
-    
+#endif
 }
 
 void Car::updateCompositors (void)
