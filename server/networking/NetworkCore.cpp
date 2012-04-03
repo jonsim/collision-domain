@@ -47,9 +47,9 @@ void NetworkCore::init( char *szPass )
 
 	bConnected = true;
 	// Add the local player
-	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "MRSERVERMAN" );	
-	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN_DEFAULT);
-	GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
+	//GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "MRSERVERMAN" );	
+	//GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN_DEFAULT);
+	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
 }
 
 
@@ -71,7 +71,7 @@ NetworkCore::~NetworkCore()
 
 /// @brief  Called once a frame with the latest user keypresses.
 /// @param  inputSnapshot  The object containing the latest user keypresses.
-void NetworkCore::frameEvent(InputState *inputSnapshot)
+void NetworkCore::frameEvent()
 {
     // Called once every frame (each time controls are sampled)
     // Do with this data as you wish - bundle them off in a little packet of joy to the server
@@ -420,7 +420,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
 
 	// Alert the BigScreen we've had a player spawned
-	GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
+	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
     GameCore::mGameplay->declareNewPlayer(pkt->guid);
 
 	RakNet::BitStream bsSpawn;

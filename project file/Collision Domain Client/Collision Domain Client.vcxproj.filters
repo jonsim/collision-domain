@@ -46,9 +46,6 @@
     <ClInclude Include="..\..\client\base\includes\Player.h">
       <Filter>client\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h">
-      <Filter>client\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\client\networking\includes\NetworkCore.h">
       <Filter>client\networking</Filter>
     </ClInclude>
@@ -592,13 +589,7 @@
     <ClInclude Include="..\..\shared\physics\includes\BtOgrePG.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
-      <Filter>shared\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h">
-      <Filter>shared\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\shared\gameplay\includes\ScoreBoard.h">
@@ -616,13 +607,19 @@
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\GraphicsCore.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\SceneSetup.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
       <Filter>client\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp">
-      <Filter>client\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\client\networking\NetworkCore.cpp">
       <Filter>client\networking</Filter>
@@ -990,13 +987,7 @@
     <ClCompile Include="..\..\shared\physics\BtOgre.cpp">
       <Filter>shared\physics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
-      <Filter>shared\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp">
-      <Filter>shared\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp">
       <Filter>shared\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\ScoreBoard.cpp">
@@ -1013,6 +1004,15 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp">
       <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\GraphicsCore.cpp">
+      <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\SceneSetup.cpp">
+      <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp">
+      <Filter>client\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

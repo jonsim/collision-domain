@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GameGUI.h"
-#include "GraphicsCore.h"
 
 GameGUI::GameGUI()
 {

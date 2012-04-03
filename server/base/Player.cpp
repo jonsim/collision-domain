@@ -241,13 +241,6 @@ void Player::killPlayer()
 
 	GameCore::mNetworkCore->sendPlayerDeath(this);
 
-    // Place an explosion at the players position and load the burnt model
-    GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
-    mCar->loadDestroyedModel();
-
-    // Blast the fuck out of the car (renders it completely undriveable but since this
-    // should only be called on dead cars thats not such a problem).
-    // Yeah so turns out this just fucks everything up and not in a good way.
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 500.0f, 0)); 
 }
 

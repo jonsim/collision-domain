@@ -12,12 +12,15 @@
 class AiCore;
 class PlayerPool;
 class NetworkCore;
+#ifdef COLLISION_DOMAIN_CLIENT
 class GraphicsCore;
 class GraphicsApplication;
+#endif
 class AudioCore;
 class GameGUI;
 class PowerupPool;
 class Gameplay;
+class MeshDeformer;
 
 #define MESH_SCALING_CONSTANT 0.01f
 
@@ -32,8 +35,10 @@ public:
     static PlayerPool*  mPlayerPool;
 
 	static AiCore* mAiCore;
+#ifdef COLLISION_DOMAIN_CLIENT
     static GraphicsCore* mGraphicsCore;
 	static GraphicsApplication* mGraphicsApplication;
+#endif
     static NetworkCore* mNetworkCore;
     static PhysicsCore* mPhysicsCore;
     static AudioCore* mAudioCore;
@@ -41,7 +46,11 @@ public:
     static PowerupPool* mPowerupPool;
 	static Gameplay* mGameplay;
 
+#ifdef COLLISION_DOMAIN_CLIENT
     static void initialise(GraphicsCore* graphicsCore);
+#else
+    static void initialise();
+#endif
     static void destroy();
 
 	static MeshDeformer meshDeformer;
