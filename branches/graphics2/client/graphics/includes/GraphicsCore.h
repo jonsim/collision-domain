@@ -1,20 +1,21 @@
 /**
- * @file	GraphicsCore.h
- * @brief 	Configures the graphical settings and provides the common graphical functionality.
+ * @file    GraphicsCore.h
+ * @brief     Configures the graphical settings and provides the common graphical functionality.
  */
 #ifndef GRAPHICSCORE_H
 #define GRAPHICSCORE_H
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "GameIncludes.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
- * @brief 	Builds the window and provides the necessary low level functions.
+ * @brief     Builds the window and provides the necessary low level functions.
  */
 class SpawnScreen;
+class SceneSetup;
 
 enum GraphicsState
 {
@@ -30,7 +31,7 @@ public:
     GraphicsCore (void);
     virtual ~GraphicsCore (void);
     virtual void go (void);
-	void shutdown() { mShutDown = true; }
+    void shutdown() { mShutDown = true; }
     void generateExplosion (Ogre::Vector3 location);
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
     void updateVIPLocation (int teamNumber, Ogre::Vector3 location);
@@ -44,7 +45,7 @@ protected:
     // Called when the application is first started.
     virtual bool initApplication (void);    // Determines flow from startup
     virtual bool configureRenderer (void);  // Displays the configuration screen - will be removed from the final program.
-
+    /*
     // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
     virtual bool loadLobby (void);
     virtual bool unloadLobby (void);
@@ -52,7 +53,7 @@ protected:
     // Called when the 3D graphics are loaded (and a game has been entered).
     virtual bool loadGame (void);
     virtual bool unloadGame (void);
-    
+    */
     virtual void createCamera (void) = 0;
     virtual void createViewports (void) = 0;
     virtual void setupResources (void);
@@ -104,14 +105,14 @@ public:
     void worldGeometryStageStarted (const Ogre::String &description) {}
     void worldGeometryStageEnded (void) {}
     void resourceGroupLoadEnded (const Ogre::String &groupName) {}
- 	
+     
 private:
     void forceRedraw (void);
 
     int resourceTotal;
     int resourceCount;
     Ogre::Overlay*          splashOverlay;
-	Ogre::OverlayContainer* splashContainer;
+    Ogre::OverlayContainer* splashContainer;
     Ogre::OverlayElement*   loadingFrame;
     Ogre::OverlayElement*   loadingBar;
     Ogre::Root* mRoot;

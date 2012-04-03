@@ -83,13 +83,13 @@ Player* Gameplay::setNewVIP(Team* team)
 {
 	Player* pPlayer = team->getRandomPlayer();
     
-        // Manage and assign VIP Cameras for the server
+        /*// Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
 	if(team == teams[0])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
 	else if(team == teams[1])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
-#endif
+#endif*/
 
 	return team->setNewVIP(pPlayer);
 }
@@ -101,8 +101,8 @@ void Gameplay::setAllNewVIP()
 	{
 		Team* team = *itr;
 		Player* vipPlayer = team->getRandomPlayer();
-
-        // Manage and assign VIP Cameras for the server
+        
+/*        // Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
 		//Clear the previous assignments
 		GameCore::mGraphicsApplication->mViewCam1->detachFromParent();
@@ -112,7 +112,7 @@ void Gameplay::setAllNewVIP()
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
 		else if(team == teams[1])
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
-#endif
+#endif*/
 		team->setNewVIP(vipPlayer);
 	}
 }

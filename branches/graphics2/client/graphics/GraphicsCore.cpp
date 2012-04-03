@@ -1,11 +1,11 @@
 /**
- * @file	GraphicsCore.h
- * @brief 	Configures the graphical settings and provides the common graphical functionality.
+ * @file    GraphicsCore.h
+ * @brief     Configures the graphical settings and provides the common graphical functionality.
  */
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "GameIncludes.h"
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -29,9 +29,9 @@ GraphicsCore::GraphicsCore (void)
 /// @brief  Deconstructor.
 GraphicsCore::~GraphicsCore (void)
 {
-	// Destroy camera manager.
+    // Destroy camera manager.
     if (mCameraMan)
-		delete mCameraMan;
+        delete mCameraMan;
 
     //Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
@@ -64,7 +64,7 @@ void GraphicsCore::createFrameListener (void)
     mWindow->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
     pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-	
+    
     // Setup User Input, setting initial mouse clipping area.
     mUserInput.createInputSystem(pl);
     windowResized(mWindow);
@@ -72,7 +72,7 @@ void GraphicsCore::createFrameListener (void)
     // Register as a Window listener.
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
     
-	// Register as a Frame listener.
+    // Register as a Frame listener.
     mRoot->addFrameListener(this);
 }
 
@@ -176,9 +176,6 @@ void GraphicsCore::setupResources (void)
 /// @brief  Loads resources from the resources.cfg file into the ResourceGroup.
 void GraphicsCore::loadResources (void)
 {
-    //Ogre::ResourceGroupManager  rgm = Ogre::ResourceGroupManager::getSingleton();
-    //Ogre::ResourceGroupListener rgl;
-    //rgm.addResourceGroupListener(&rgl);
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
@@ -188,14 +185,14 @@ void GraphicsCore::go (void)
 {
     srand(time(NULL));
 
-	if (!initApplication())
-		return;
+    if (!initApplication())
+        return;
 
     mRoot->startRendering();
 
     // clean up
     destroyScene();
-	GameCore::destroy();
+    GameCore::destroy();
 }
 
 
@@ -203,7 +200,7 @@ void GraphicsCore::go (void)
 /// @return Whether or not the setup was successful (if a configuration was provided).
 bool GraphicsCore::initApplication (void)
 {
-	// Select and load the relevant resources
+    // Select and load the relevant resources
     mResourcesCfg = "../../media/resources.cfg";
 #ifdef _DEBUG
     mPluginsCfg = "plugins_d.cfg";
@@ -213,9 +210,9 @@ bool GraphicsCore::initApplication (void)
     mRoot = new Ogre::Root(mPluginsCfg);
     setupResources();
     
-	// Configure the renderer and exit if not configuration was provided (via the config dialog).
+    // Configure the renderer and exit if not configuration was provided (via the config dialog).
     if (!configureRenderer())
-		return false;
+        return false;
 
     // Create a window.
     mWindow = mRoot->initialise(true, "Collision Domain");
@@ -259,17 +256,17 @@ bool GraphicsCore::initApplication (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsCore::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-	// Check for exit conditions.
+    // Check for exit conditions.
     if (mWindow->isClosed())
         return false;
     if (mShutDown)
         return false;
     mUserInput.capture();
     if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
-		return false;
+        return false;
 
-	// Feed the GUI the timestamping information.
-	CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+    // Feed the GUI the timestamping information.
+    CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 
     // Update the particle systems
     updateParticleSystems();
@@ -311,7 +308,7 @@ void GraphicsCore::windowClosed (Ogre::RenderWindow* rw)
 SplashScreen::SplashScreen (Ogre::Root* root) : resourceTotal(0), resourceCount(0), mRoot(root)
 {
     // Preload resources (for the splash screen)
-	Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("PreLoad");
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("PreLoad");
 }
 
 SplashScreen::~SplashScreen (void)
@@ -321,25 +318,25 @@ SplashScreen::~SplashScreen (void)
 void SplashScreen::draw (int width, int height)
 {
     // Create the splash screen overlay
-	splashOverlay = Ogre::OverlayManager::getSingleton().create("OVERLAY_SPLASH");
-	splashOverlay->setZOrder(500);
-	splashOverlay->show();
+    splashOverlay = Ogre::OverlayManager::getSingleton().create("OVERLAY_SPLASH");
+    splashOverlay->setZOrder(500);
+    splashOverlay->show();
 
     // Create an overlay container and add the splash screen to it.
-	splashContainer = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SplashScreen"));
-	splashContainer->setMetricsMode(Ogre::GMM_PIXELS);
-	splashContainer->setHorizontalAlignment(Ogre::GHA_LEFT);
+    splashContainer = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SplashScreen"));
+    splashContainer->setMetricsMode(Ogre::GMM_PIXELS);
+    splashContainer->setHorizontalAlignment(Ogre::GHA_LEFT);
     splashContainer->setVerticalAlignment(Ogre::GVA_TOP);
     splashContainer->setDimensions(width, height);
-	splashContainer->setMaterialName("CollisionDomain/SplashScreen");
-	splashContainer->setPosition(0, 0);
-	splashOverlay->add2D(splashContainer);
+    splashContainer->setMaterialName("CollisionDomain/SplashScreen");
+    splashContainer->setPosition(0, 0);
+    splashOverlay->add2D(splashContainer);
 
     // Add the loading bar frame to the splash screen.
     loadingFrame = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LoadingFrame");
-	loadingFrame->setMetricsMode(Ogre::GMM_PIXELS);
-	loadingFrame->setDimensions(630, 40);
-	loadingFrame->setMaterialName("CollisionDomain/LoadingFrame");
+    loadingFrame->setMetricsMode(Ogre::GMM_PIXELS);
+    loadingFrame->setDimensions(630, 40);
+    loadingFrame->setMaterialName("CollisionDomain/LoadingFrame");
     loadingFrame->setPosition(width/2 - 630/2, height-50);
     splashContainer->addChild(loadingFrame);
 
@@ -356,9 +353,9 @@ void SplashScreen::draw (int width, int height)
 
     // Add the loading bar to the splash screen.
     loadingBar = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LoadingBar");
-	loadingBar->setMetricsMode(Ogre::GMM_PIXELS);
-	loadingBar->setDimensions(0, 10);
-	loadingBar->setMaterialName("CollisionDomain/LoadingBar");
+    loadingBar->setMetricsMode(Ogre::GMM_PIXELS);
+    loadingBar->setDimensions(0, 10);
+    loadingBar->setMaterialName("CollisionDomain/LoadingBar");
     loadingBar->setPosition(width/2 - 600/2, height-35);
     splashContainer->addChild(loadingBar);
 
@@ -373,7 +370,7 @@ void SplashScreen::clear (void)
 
 void SplashScreen::updateProgressBar (int percent)
 {
-	loadingBar->setDimensions(percent*6, 10);
+    loadingBar->setDimensions(percent*6, 10);
     forceRedraw();
 }
 

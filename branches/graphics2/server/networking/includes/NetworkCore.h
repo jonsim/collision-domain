@@ -83,7 +83,7 @@ public:
 	RakNet::RakPeerInterface* getRakInterface();
 	void RegisterRPCSlots();
 
-    void frameEvent(InputState *inputSnapshot);
+    void frameEvent();
 	void ProcessPlayerState( RakNet::Packet *pkt );
 	void BroadcastUpdates();
 	void BroadcastRPC( char *rpcName, RakNet::BitStream *bsData );

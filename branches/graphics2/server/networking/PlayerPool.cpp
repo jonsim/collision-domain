@@ -121,8 +121,10 @@ void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
 		}
 		// TODO: add timestamps to snapshots
         
+#ifdef COLLISION_DOMAIN_CLIENT
         if (pPlayer->getVIP())
             GameCore::mGraphicsCore->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
+#endif
 	}
 
 }
