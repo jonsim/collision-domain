@@ -20,6 +20,32 @@ ScoreBoard::ScoreBoard()
 	//Took me quite a while to track down this stupid bug
 	Ogre::ResourceManager::ResourceMapIterator iter = Ogre::FontManager::getSingleton().getResourceIterator();
 	while (iter.hasMoreElements()) { iter.getNext()->load(); }
+	
+	isInitialized = false;
+}
+
+void ScoreBoard::show()
+{
+	OutputDebugString("Showing ScoreBoard");
+	//Make sure it's been setup
+	if(!isInitialized)
+		this->initialize();
+
+	sbOverlay->show();
+
+	this->isShown = true;
+}
+
+void ScoreBoard::hide()
+{
+	//Make sure it's been setup
+	if(!isInitialized)
+		this->initialize();
+
+	if(isShown) {
+		this->sbOverlay->hide();
+		this->isShown = false;
+	}
 }
 
 void ScoreBoard::initialize()
@@ -35,7 +61,11 @@ void ScoreBoard::initialize()
 			createOverlayElement( "Panel", "SCOREBOARD_CONTAINER" ) );
 	sbOverlay->add2D(sbContainer);
 	sbContainer->setPosition(0.0f,0.0f);
+	sbContainer->setMaterialName("ConstructionScreen");
+	
+	sbOverlay->hide();
 
+	/*
 	//Create a textarea
 	Ogre::OverlayElement *textArea = 
 		Ogre::OverlayManager::getSingleton().
@@ -53,6 +83,9 @@ void ScoreBoard::initialize()
 	textArea->show();
 	sbContainer->addChild(textArea);	
 	sbOverlay->show();
+	*/
+	isShown = false;
+	isInitialized = true;
 }
 
 std::string ScoreBoard::buildScoreText()

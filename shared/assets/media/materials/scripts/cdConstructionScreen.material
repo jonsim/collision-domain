@@ -1,0 +1,7 @@
+import cd/GUIComponent from "cdBaseMaterials.material"
+
+
+material ConstructionScreen: cd/GUIComponent
+{
+	set $texture ConstructionScreen.png
+}

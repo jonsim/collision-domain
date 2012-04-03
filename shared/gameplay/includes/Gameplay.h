@@ -58,6 +58,7 @@ public:
 	void						drawDeathInfo();
 	void						initialize();
 
+	ScoreBoard*					mSB;
 	std::vector<InfoItem*>		mInfoItems;
 	int							numberOfTeams;
 	bool						mGameActive; //True = Game underway, False = Game not yet started
@@ -77,7 +78,6 @@ private:
 	Ogre::OverlayContainer* olContainer;
 	void						handleInfoItem(InfoItem* item, bool show);
 
-	ScoreBoard*					mSB;
 	HUD*						mHUD;
 	std::vector<DEATH*>			deathList;
 	void						calculateRoundScores();

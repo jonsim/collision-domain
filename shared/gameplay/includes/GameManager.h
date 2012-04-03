@@ -11,6 +11,7 @@
 #include "Death.h"
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
+/*
 class GameManager
 {
 public:
@@ -20,5 +21,5 @@ private:
 	std::vector<std::vector<DEATH*>>	deathLists;
 };
 
-
+*/
 #endif
