@@ -18,6 +18,7 @@ public:
 	void	initialize();
 	void	show();
 	void	hide();
+	void	update();
 private:
 	void			displayScreen();
 	std::string		buildScoreText();
@@ -25,6 +26,9 @@ private:
 	Ogre::OverlayContainer *sbContainer;
 	bool isInitialized;
 	bool isShown;
+
+	Ogre::OverlayElement *textAreaT1;
+	Ogre::OverlayElement *textAreaT2;
 };
 
 
