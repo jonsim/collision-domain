@@ -92,11 +92,6 @@ void GraphicsApplication::setupGUI (void)
 void GraphicsApplication::createFrameListener (void)
 {
     GraphicsCore::createFrameListener();
-
-	// Handle Game play (this isn't the place to do this, this will be moved).
-	GameCore::mGameplay = new Gameplay();
-	Team* t1 = GameCore::mGameplay->createTeam("Team1Name", 1);
-	Team* t2 = GameCore::mGameplay->createTeam("Team2Name", 2);
 }
 
 

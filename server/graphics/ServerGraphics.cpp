@@ -71,19 +71,20 @@ bool ServerGraphics::initApplication (void)
         return false;
 
     // Create the window and viewport to go in it.
-    mWindow = mRoot->initialise(true, "Collision Domain");
+    mWindow = mRoot->initialise(true, "Collision Domain Server");
     GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
     createCamera();
     createViewports();
     
     // Load the required resources
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
+
     loadResources();                    // Load resources
-    OutputDebugString("Resources loaded\n");
-    GameCore::initialise();         // Initialise other game elements
-    OutputDebugString("GameCore initialised\n");
-    createFrameListener();
-    OutputDebugString("Frame listener created\n");
+
+    GameCore::initialise();             // Initialise other game elements
+    GameCore::mNetworkCore->init(NULL); // Initialise the server networking
+    setupGUI();                         // Initialise the GUI
+    createFrameListener();              // Create the frame listener to be used during rendering
     return true;
 }
 
@@ -141,6 +142,22 @@ void ServerGraphics::loadResources (void)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+/// @brief  Loads and sets up the resources required by CEGUI, creates a blank window layer and
+///         adds the FPS counter to it.
+void ServerGraphics::setupGUI (void)
+{
+    // Bootstrap the GUI
+    OutputDebugString("Bootstrapping CEGUI\n");
+    mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+    OutputDebugString("Initialising GUI\n");
+    GameCore::mGui->initialiseGUI();
+    OutputDebugString("Setting console\n");
+
+    // go balls out and add the console
+	GameCore::mGui->setupConsole();
+	GameCore::mGui->toggleConsole();
+}
+
 void ServerGraphics::createFrameListener (void)
 {
     OIS::ParamList     pl;
@@ -157,13 +174,6 @@ void ServerGraphics::createFrameListener (void)
     // Listener registration
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);  // Register as a Window listener.
     mRoot->addFrameListener(this);                                      // Register as a Frame listener.
-
-    // Neither of the next two statements should really be here, they will be moved later.
-    OutputDebugString("oogly\n");
-    GameCore::mNetworkCore->init(NULL);     // Initialise the networking
-    OutputDebugString("boogly\n");
-    GameCore::mGameplay = new Gameplay();   // Initialise the gameplay
-    OutputDebugString("woogly\n");
 }
 
 bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
@@ -178,7 +188,7 @@ bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 
     // Update the GUI.
-    //CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+    CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
     
     // Check if the network core is online
     if (!NetworkCore::bConnected)
