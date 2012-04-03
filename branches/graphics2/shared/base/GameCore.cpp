@@ -35,14 +35,13 @@ void GameCore::initialise()
 #else
     GameCore::mGraphicsCore = graphicsCore;
 #endif
+	GameCore::mGui          = new GameGUI();
     GameCore::mPlayerPool   = new PlayerPool();
     GameCore::mNetworkCore  = new NetworkCore();
     GameCore::mPhysicsCore  = new PhysicsCore();
     GameCore::mAudioCore    = new AudioCore();
-	GameCore::mGui          = new GameGUI();
     GameCore::mPowerupPool  = new PowerupPool();
 	GameCore::mGameplay		= new Gameplay();
-	
 }
 
 void GameCore::destroy()

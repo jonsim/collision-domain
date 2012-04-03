@@ -34,6 +34,7 @@ protected:
     virtual void createViewports (void);
     virtual void setupResources (void);
     virtual void loadResources (void);
+    virtual void setupGUI (void);
     virtual void createFrameListener (void);
     
     // Ogre::FrameListener overrides
@@ -49,6 +50,7 @@ protected:
     Input mUserInput;
     
     // GUI Elements
+	CEGUI::Window* mSheet;
     CEGUI::OgreRenderer* mGUIRenderer;
 
     // Ogre elements

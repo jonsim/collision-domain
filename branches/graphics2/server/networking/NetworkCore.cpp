@@ -38,13 +38,7 @@ NetworkCore::NetworkCore()
 void NetworkCore::init( char *szPass )
 {
 	// Allow incoming connections, turn on occasional ping
-    char bob[64];
-    sprintf(bob, "all good (MAX_PLAYERS=%d)\n", MAX_PLAYERS);
-    OutputDebugString(bob);
-    if (m_pRak == NULL)
-        OutputDebugString("uh oh\n");
 	m_pRak->SetMaximumIncomingConnections( MAX_PLAYERS );
-    OutputDebugString("still all good\n");
 	m_pRak->SetOccasionalPing( true );
 
 	// Set the server password if one is specified
