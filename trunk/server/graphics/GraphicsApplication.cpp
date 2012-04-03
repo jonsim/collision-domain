@@ -59,10 +59,16 @@ void GraphicsApplication::createViewports (void)
 {
 	// Add viewports to the viewport manager.
 	vp = vpm->addViewport(mCamera,   true);
+
+}
+
+/// @brief Adds the remaining viewports, should only be called after
+///		   Splash screen has finished showing.
+void GraphicsApplication::addRemainingViewports()
+{
 	vpm->addViewport(mViewCam1, false);
 	vpm->addViewport(mViewCam2, false);
 }
-
 
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)

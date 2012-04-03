@@ -21,7 +21,7 @@ public:
     virtual ~GraphicsApplication (void);
     
 	Ogre::Viewport* getMainViewPort();
-
+	void addRemainingViewports();
 	// Extra server gameplay shit. This shouldn't be here. Will be purged.
     Ogre::Camera* mViewCam1;
     Ogre::Camera* mViewCam2;

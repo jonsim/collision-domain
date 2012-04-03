@@ -368,6 +368,9 @@ void SplashScreen::draw (int width, int height)
 void SplashScreen::clear (void)
 {
     splashOverlay->clear();
+	#ifdef COLLISION_DOMAIN_SERVER
+		GameCore::mGraphicsApplication->addRemainingViewports();
+	#endif
 }
 
 void SplashScreen::updateProgressBar (int percent)
