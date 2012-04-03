@@ -58,7 +58,7 @@ void GraphicsApplication::createCamera (void)
 void GraphicsApplication::createViewports (void)
 {
 	// Add viewports to the viewport manager.
-	vpm->addViewport(mCamera,   true);
+	vp = vpm->addViewport(mCamera,   true);
 	vpm->addViewport(mViewCam1, false);
 	vpm->addViewport(mViewCam2, false);
 }
@@ -237,6 +237,11 @@ bool GraphicsApplication::frameStarted (const Ogre::FrameEvent& evt)
 bool GraphicsApplication::frameEnded (const Ogre::FrameEvent& evt)
 {
     return true;
+}
+
+Ogre::Viewport* GraphicsApplication::getMainViewPort()
+{
+	return this->vp;
 }
 
 

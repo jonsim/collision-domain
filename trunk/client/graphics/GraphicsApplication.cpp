@@ -45,7 +45,7 @@ void GraphicsApplication::createCamera (void)
 void GraphicsApplication::createViewports (void)
 {
     // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
+    vp = mWindow->addViewport(mCamera);
 
 	// Set the background colour and match the aspect ratio to the window's.
     vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
@@ -297,6 +297,10 @@ bool GraphicsApplication::frameEnded (const Ogre::FrameEvent& evt)
     return true;
 }
 
+Ogre::Viewport* GraphicsApplication::getMainViewPort()
+{
+	return this->vp;
+}
 
 // Main function. Bootstraps the application.
 #ifdef __cplusplus

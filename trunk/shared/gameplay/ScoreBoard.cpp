@@ -26,10 +26,11 @@ ScoreBoard::ScoreBoard()
 
 void ScoreBoard::show()
 {
-	OutputDebugString("Showing ScoreBoard");
 	//Make sure it's been setup
 	if(!isInitialized)
 		this->initialize();
+
+	this->update();
 
 	sbOverlay->show();
 
@@ -48,6 +49,11 @@ void ScoreBoard::hide()
 	}
 }
 
+void ScoreBoard::update()
+{
+	this->textAreaT1->setCaption(this->buildScoreText());
+}
+
 void ScoreBoard::initialize()
 {
 	OutputDebugString("Starting the scoreboard");
@@ -62,28 +68,38 @@ void ScoreBoard::initialize()
 	sbOverlay->add2D(sbContainer);
 	sbContainer->setPosition(0.0f,0.0f);
 	sbContainer->setMaterialName("ConstructionScreen");
-	
-	sbOverlay->hide();
-
-	/*
+		
 	//Create a textarea
-	Ogre::OverlayElement *textArea = 
-		Ogre::OverlayManager::getSingleton().
-			createOverlayElement("TextArea","SCOREBOARD_ELEMENT");
+	Ogre::OverlayElement *textAreaHeader = 
+			Ogre::OverlayManager::getSingleton().
+				createOverlayElement("TextArea","SCOREBOARD_HEADER");
+	textAreaHeader->setDimensions(0.9,0.3);
+	textAreaHeader->setMetricsMode(Ogre::GMM_PIXELS);
+	textAreaHeader->setPosition(40,40);
+	textAreaHeader->setParameter("font_name","StarWars");
+	textAreaHeader->setParameter("char_height", "30");
+	textAreaHeader->setColour(Ogre::ColourValue::White);
+	textAreaHeader->setCaption("Team 1 \t\t\t\t\t\t\t Team 2");
+	sbContainer->addChild(textAreaHeader);
 
-	textArea->setDimensions(1.0,1.0);
-	textArea->setMetricsMode(Ogre::GMM_PIXELS);
-	textArea->setPosition(0,0);
+	this->textAreaT1 = Ogre::OverlayManager::getSingleton().
+		createOverlayElement("TextArea","SCOREBOARD_ELEMENT");
+
+	int screenWidth = GameCore::mGraphicsApplication->getMainViewPort()->getActualWidth();
+	int screenHeight = GameCore::mGraphicsApplication->getMainViewPort()->getActualHeight();
+
+	this->textAreaT1->setDimensions(0.9,0.6);
+	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
+	this->textAreaT1->setPosition(40,100);
 	
-	textArea->setParameter("font_name","StarWars");
-	textArea->setParameter("char_height", "42");
-	textArea->setColour(Ogre::ColourValue::Green);
+	this->textAreaT1->setParameter("font_name","StarWars");
+	this->textAreaT1->setParameter("char_height", "15");
+	this->textAreaT1->setColour(Ogre::ColourValue::White);
 
-	textArea->setCaption(this->buildScoreText());
-	textArea->show();
-	sbContainer->addChild(textArea);	
-	sbOverlay->show();
-	*/
+	this->textAreaT1->setCaption(this->buildScoreText());
+	sbContainer->addChild(this->textAreaT1);	
+	sbOverlay->hide();
+	
 	isShown = false;
 	isInitialized = true;
 }
@@ -91,10 +107,6 @@ void ScoreBoard::initialize()
 std::string ScoreBoard::buildScoreText()
 {
 	std::stringstream buildingStream;
-
-	//Header
-	buildingStream << "Score Board\n\n";
-	buildingStream << "Team 1 \t\t\t Team 2\n\n";
 
 	//Can only do the scoreboard like this
 	/*
@@ -117,7 +129,7 @@ std::string ScoreBoard::buildScoreText()
 	for(int i=0;i<numberOfPlayers;i++)
 	{
 		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-		buildingStream << tmpPlayer->getNickname() << "\n";
+		buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
 	}
 
 	return buildingStream.str();

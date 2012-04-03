@@ -20,6 +20,8 @@ public:
     GraphicsApplication (void);
     virtual ~GraphicsApplication (void);
     
+	Ogre::Viewport* getMainViewPort();
+
 	// Extra server gameplay shit. This shouldn't be here. Will be purged.
     Ogre::Camera* mViewCam1;
     Ogre::Camera* mViewCam2;
@@ -40,6 +42,8 @@ protected:
 private:
 	// Setup functions.
 	virtual void setupGUI (void);
+
+	Ogre::Viewport* vp;
 };
 
 #endif // #ifndef GRAPHICSAPPLICATION_H

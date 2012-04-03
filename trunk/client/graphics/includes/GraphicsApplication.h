@@ -22,6 +22,8 @@ public:
 	
 	void startBenchmark (uint8_t stage);
 
+	Ogre::Viewport* getMainViewPort();
+
 protected:
     virtual void createCamera (void);
     virtual void createViewports (void);
@@ -38,7 +40,8 @@ private:
 	virtual void setupGUI (void);
 
 	void finishBenchmark (uint8_t stage, float averageTriangles);
-
+	
+	Ogre::Viewport* vp;
 	bool    mBenchmarkRunning;
 	uint8_t mBenchmarkStage;
 };
