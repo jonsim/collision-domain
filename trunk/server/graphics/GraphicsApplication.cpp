@@ -130,7 +130,13 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	// Update the big screen.
 	bigScreen->updateMapView();
         
-    // Process keyboard input and produce an InputState object from this.
+    // Show the big screen
+	if(mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))
+		GameCore::mGameplay->mSB->show();
+	else
+		GameCore::mGameplay->mSB->hide();
+
+	// Process keyboard input and produce an InputState object from this.
     InputState* inputSnapshot;
 	
 	if( !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )

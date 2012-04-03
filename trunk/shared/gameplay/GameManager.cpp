@@ -7,6 +7,7 @@
 #include "stdafx.h"
 #include "GameIncludes.h"
 
+/*
 GameManager::GameManager()
 {
 	
@@ -16,3 +17,4 @@ void GameManager::fetchCurrentGameInfo()
 {
 	deathLists.push_back(GameCore::mGameplay->getDeathList());
 }
+*/

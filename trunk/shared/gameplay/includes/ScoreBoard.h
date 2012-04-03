@@ -16,12 +16,15 @@ class ScoreBoard
 public:
 			ScoreBoard();
 	void	initialize();
+	void	show();
+	void	hide();
 private:
 	void			displayScreen();
 	std::string		buildScoreText();
 	Ogre::Overlay *sbOverlay;
 	Ogre::OverlayContainer *sbContainer;
-	
+	bool isInitialized;
+	bool isShown;
 };
 
 
