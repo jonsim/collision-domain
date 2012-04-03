@@ -36,6 +36,22 @@ ServerGraphics::~ServerGraphics (void)
     delete mRoot;
 }
 
+/// @brief  Entry point for the application
+void ServerGraphics::go (void)
+{
+    srand(time(NULL));
+
+    // Initialise the application.
+    if (!initApplication())
+        return;
+
+    // Enter the render loop.
+    mRoot->startRendering();
+
+    // Exit the render loop and clean up.
+    GameCore::destroy();
+}
+
 /// @brief  Initialises the application.
 /// @return Returns true if the initialisation was successful, false otherwise.
 bool ServerGraphics::initApplication (void)
@@ -63,9 +79,11 @@ bool ServerGraphics::initApplication (void)
     // Load the required resources
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
     loadResources();                    // Load resources
-    //GameCore::initialise(this);         // Initialise other game elements
+    OutputDebugString("Resources loaded\n");
+    GameCore::initialise();         // Initialise other game elements
+    OutputDebugString("GameCore initialised\n");
     createFrameListener();
-
+    OutputDebugString("Frame listener created\n");
     return true;
 }
 
@@ -76,22 +94,6 @@ bool ServerGraphics::configureRenderer (void)
     if (mRoot->showConfigDialog())
         return true;
     return false;
-}
-
-/// @brief  Entry point for the application
-void ServerGraphics::go (void)
-{
-    srand(time(NULL));
-
-    // Initialise the application.
-    if (!initApplication())
-        return;
-
-    // Enter the render loop.
-    mRoot->startRendering();
-
-    // Exit the render loop and clean up.
-    GameCore::destroy();
 }
 
 void ServerGraphics::createCamera (void)
@@ -157,12 +159,16 @@ void ServerGraphics::createFrameListener (void)
     mRoot->addFrameListener(this);                                      // Register as a Frame listener.
 
     // Neither of the next two statements should really be here, they will be moved later.
+    OutputDebugString("oogly\n");
     GameCore::mNetworkCore->init(NULL);     // Initialise the networking
+    OutputDebugString("boogly\n");
     GameCore::mGameplay = new Gameplay();   // Initialise the gameplay
+    OutputDebugString("woogly\n");
 }
 
 bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
+    OutputDebugString("frq\n");
     static const float oneSecond = 1.0f / 60.0f;
 
     // Check for exit conditions.
@@ -172,7 +178,7 @@ bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
 
     // Update the GUI.
-    CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+    //CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
     
     // Check if the network core is online
     if (!NetworkCore::bConnected)
