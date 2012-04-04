@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<GUILayout>		
+	<Window Type="Vanilla/FrameWindow" Name="/Lobby" >
+		<Property Name="Text" Value="Lobby" />
+		<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+		<Property Name="TitlebarEnabled" Value="True" />
+		<Property Name="SizingEnabled" Value="True" />
+		<Property Name="DragMovingEnabled" Value="False" />
+		<Property Name="CloseButtonEnabled" Value="False" />
+		<Property Name="UnifiedAreaRect" Value="{{0.38,0},{0.4,0},{0.62,0},{0.63,0}}" />
+		<Property Name="Font" Value="DejaVuSans-10"/>
+
+		<Window Type="Vanilla/StaticText" Name="/Lobby/lblText" >
+			<Property Name="Text" Value="Hello, this is some test text" />
+			<Property Name="FrameEnabled" Value="False" />
+			<Property Name="BackgroundEnabled" Value="False" />
+			<Property Name="UnifiedMaxSize" Value="{{1,0},{1,0}}" />
+			<Property Name="UnifiedAreaRect" Value="{{0.01,0},{0.01,0},{1,0},{0.2,0}}" />
+		</Window>
+		
+		<Window Type="Vanilla/Button" Name="/Lobby/btnConnect">
+			<Property Name="VerticalAlignment" Value="Bottom" />
+			<Property Name="UnifiedPosition" Value="{{0.01,0},{0,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.3,0},{0.2,-5}}" />
+			<Property Name="Text" Value="Connect" />
+			<Property Name="Font" Value="DejaVuSans-10"/>
+		</Window>
+		
+		<Window Type="Vanilla/Button" Name="/Lobby/btnQuit">
+			<Property Name="VerticalAlignment" Value="Bottom" />
+			<Property Name="UnifiedPosition" Value="{{0.3,15},{0,0}}" />
+			<Property Name="UnifiedSize" Value="{{0.3,0},{0.2,-5}}" />
+			<Property Name="Text" Value="Quit" />
+			<Property Name="Font" Value="DejaVuSans-10"/>
+		</Window>
+	</Window>
+</GUILayout>

@@ -63,6 +63,7 @@ void Input::capture ()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getInputState()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
 	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{
         return new InputState(mKeyboard->isKeyDown(OIS::KC_UP)    || mKeyboard->isKeyDown(OIS::KC_W),
@@ -76,6 +77,9 @@ InputState* Input::getInputState()
 		// Don't want to capture any keys (typing things) or at the select car screen
 		return new InputState( false, false, false, false, false );
 	}
+#else
+    return NULL;
+#endif
 }
 
 
@@ -83,6 +87,7 @@ InputState* Input::getInputState()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getFreeCamInputState()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
 	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{
         return new InputState(mKeyboard->isKeyDown(OIS::KC_T),
@@ -95,11 +100,15 @@ InputState* Input::getFreeCamInputState()
     {
         return new InputState( false, false, false, false, false );
     }
+#else
+    return NULL;
+#endif
 }
 
 /// @brief  Processes the interface controls, performing the correct actions if they are found pressed.
 void Input::processInterfaceControls()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     // Check for console and chatbox - NB: they cannot be displayed simultaneously.
     if (NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
     {
@@ -107,7 +116,7 @@ void Input::processInterfaceControls()
             GameCore::mGui->toggleChatbox();
 	    else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleConsole();
-#ifdef COLLISION_DOMAIN_CLIENT
+//#ifdef COLLISION_DOMAIN_CLIENT
         if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false )
         {
             if( mKeyboard->isKeyDown( OIS::KC_TAB ) )
@@ -115,8 +124,9 @@ void Input::processInterfaceControls()
                 GameCore::mPlayerPool->spectateNext();
             }
         }
-#endif
+//#endif
     }
+#endif
 }
 
 /// @brief  Deals with mouse input.

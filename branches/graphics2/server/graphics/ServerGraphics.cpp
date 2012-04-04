@@ -155,7 +155,7 @@ void ServerGraphics::setupGUI (void)
 
     // go balls out and add the console
 	GameCore::mGui->setupConsole();
-	GameCore::mGui->toggleConsole();
+	//GameCore::mGui->toggleConsole();
 }
 
 void ServerGraphics::createFrameListener (void)

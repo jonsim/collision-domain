@@ -11,21 +11,23 @@ GameGUI::~GameGUI()
 
 void GameGUI::initialiseGUI()
 {
-	// Create the default font
+	// Load the fonts and set their sizes.
+    CEGUI::Font* pFont;
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	CEGUI::Font *pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
-
-	// Set font size
+	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
 	pFont->setProperty( "PointSize", "6" );
+	pFont = &CEGUI::FontManager::getSingleton().create("monospace-10.font");
+	pFont->setProperty( "PointSize", "8" );
 	//pFont->setAutoScaled( false );
 
 	// Register font as default
     if(CEGUI::FontManager::getSingleton().isDefined("DejaVuSans-10"))
 		CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
 
-	// Create skin scheme outlining widget (window) parameters
+	// Create skin scheme window parameters
 	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
 	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
+	CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
 	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
 	// Register skin's default image set and cursor icon
@@ -37,8 +39,7 @@ void GameGUI::initialiseGUI()
 	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
 
 	// Create an empty default window layer
-	mSheet = CEGUI::WindowManager::getSingleton().
-		createWindow( "DefaultWindow", "root_wnd" );
+	mSheet = CEGUI::WindowManager::getSingleton().createWindow( "DefaultWindow", "root_wnd" );
 
 	CEGUI::System::getSingleton().setGUISheet( mSheet );
 }
@@ -46,94 +47,100 @@ void GameGUI::initialiseGUI()
 /*-------------------- DEV CONSOLE --------------------*/
 void GameGUI::setupConsole()
 {
-	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
 
-	// Load the layout file for connect box
-	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Console.layout" );
-
-	// Add to gui overlay window
+	// Load the layout file for connect box and add it to the overlay
+	CEGUI::Window *pLayout = winMgr.loadWindowLayout("Server.layout");
 	mSheet->addChildWindow( pLayout );
 
 	// Get handles to some of the objects
-	CEGUI::Window *consoleFrame = winMgr.getWindow( "/Console" );
-	CEGUI::Window *inputText = winMgr.getWindow( "/Console/input" );
-	CEGUI::Window *cmdInput = winMgr.getWindow( "/Console/cmdInput" );
+	CEGUI::Window *inputText = winMgr.getWindow( "/Server/input" );
+	inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber( &GameGUI::receiveFromConsole, this ) );
 
-	consoleFrame->subscribeEvent( CEGUI::FrameWindow::EventDeactivated,
-		CEGUI::Event::Subscriber( &GameGUI::Console_Off, this ) );
-	inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Console_Send, this ) );
-	cmdInput->subscribeEvent( CEGUI::PushButton::EventClicked,  
-		CEGUI::Event::Subscriber( &GameGUI::Console_Send, this ) );
-
+    // Display the mouse and give the input box focus.
 	CEGUI::MouseCursor::getSingleton().show();
-
-	// Don't actually show the dev console yet
-	consoleFrame->hide();
+	winMgr.getWindow( "/Server/input" )->activate();
 }
 
-void GameGUI::toggleConsole()
+bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
 {
-	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-	// Get handles to some of the objects
-	CEGUI::Window *consoleFrame = winMgr.getWindow( "/Console" );
-	if( consoleFrame->isVisible() )
-		consoleFrame->hide();
-	else
-	{
-		// Show the console frame and give the inputbox focus
-		consoleFrame->show();
-		winMgr.getWindow( "/Console/input" )->activate();
-	}
-}
+	CEGUI::WindowManager&    winMgr        = CEGUI::WindowManager::getSingleton();
+	CEGUI::Editbox*          inputText     = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
+	CEGUI::MultiLineEditbox* consoleBuffer = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("/Server/buffer"));
 
-bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
-{
-	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::String inputString  = inputText->getText();
+    CEGUI::String outputString = inputText->getText();
+    outputString.insert(0, "> ", 2);
+	char* inputChars = (char*) inputString.c_str();
 
-	CEGUI::Editbox *inputText = 
-		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Console/input" ) );
-
-	char *szInput = (char*)inputText->getText().c_str();
-
-	CEGUI::MultiLineEditbox *consoleBuffer = 
-		static_cast<CEGUI::MultiLineEditbox*> ( mWinMgr.getWindow( "/Console/buffer" ) );
-
-	consoleBuffer->appendText( inputText->getText() );
-
-	inputText->setText( "" );
-
-	if( !stricmp( szInput, "exit" ) )
-		mWinMgr.getWindow( "/Console" )->hide();
-	if( !stricmp( szInput, "prep" ) )
+	consoleBuffer->appendText(outputString);
+	inputText->setText("");
+    
+    if ( !stricmp( inputChars,  "help" ) )
+    {
+        outputToConsole("List of server commands:");
+        outputToConsole("prep            Prepares the players, organising them in a ring and resetting health.");
+        outputToConsole("start           Starts the game.");
+        outputToConsole("ddinfo          Draws the death info.");
+        outputToConsole("kill x          Kills player x (where x is an integer representing their player index).");
+        outputToConsole("spawn wander x  Spawns x AI players with the wander mechanic.");
+        outputToConsole("spawn seek x    Spawns x AI players with the seek mechanic.");
+        outputToConsole("spawn flee x    Spawns x AI players with the flee mechanic.");
+    }
+	else if( !stricmp( inputChars,  "prep" ) )
+    {
 		GameCore::mGameplay->preparePlayers();
-	if( !stricmp( szInput, "start" ) )
+        outputToConsole("Prepared players.");
+    }
+	else if( !stricmp( inputChars,  "start" ) )
+    {
 		GameCore::mGameplay->startGame();
-	if( !stricmp( szInput, "ddinfo" ) )
+        outputToConsole("Game started.");
+    }
+	else if( !stricmp( inputChars,  "ddinfo" ) )
+    {
 		GameCore::mGameplay->drawDeathInfo();
-    if( !strnicmp( szInput, "kill", 4) )
-        GameCore::mPlayerPool->getPlayer(atoi((szInput+5)))->killPlayer();
-    if( !strnicmp( szInput, "spawn wander", 12) )
-        for (int i = 0; i < atoi((szInput+13)); i++)
+        outputToConsole("Drawn death info.");
+    }
+    else if( !strnicmp( inputChars, "kill", 4) )
+    {
+        GameCore::mPlayerPool->getPlayer(atoi((inputChars+5)))->killPlayer();
+        outputToConsole("Killed player.");
+    }
+    else if( !strnicmp( inputChars, "spawn wander", 12) )
+    {
+        for (int i = 0; i < atoi((inputChars+13)); i++)
 		    GameCore::mAiCore->createNewAiAgent(wander);
-    if( !strnicmp( szInput, "spawn seek", 10) )
-        for (int i = 0; i < atoi((szInput+11)); i++)
+        outputToConsole("Spawned AI.");
+    }
+    else if( !strnicmp( inputChars, "spawn seek", 10) )
+    {
+        for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(seek);
-    if( !strnicmp( szInput, "spawn flee", 10) )
-        for (int i = 0; i < atoi((szInput+11)); i++)
+        outputToConsole("Spawned AI.");
+    }
+    else if( !strnicmp( inputChars, "spawn flee", 10) )
+    {
+        for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(flee);
+        outputToConsole("Spawned AI.");
+    }
+    else
+    {
+        outputToConsole("Unrecognised command.");
+    }
 
 	return true;
 }
 
-bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
+void GameGUI::outputToConsole( const char* str )
 {
-	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
-	mWinMgr.getWindow( "/Console" )->hide();
-	return true;
+	CEGUI::WindowManager&    winMgr        = CEGUI::WindowManager::getSingleton();
+	CEGUI::MultiLineEditbox* consoleBuffer = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("/Server/buffer"));
+	consoleBuffer->appendText(CEGUI::String(str));
 }
 
-/*-------------------- DEV Chatbox --------------------*/
+/*-------------------- DEV Chatbox --------------------*
 void GameGUI::setupChatbox()
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
@@ -205,4 +212,4 @@ bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
 	mWinMgr.getWindow( "/Chatbox/input" )->hide();
 
 	return true;
-}
+}*/
