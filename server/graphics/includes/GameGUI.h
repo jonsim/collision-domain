@@ -11,26 +11,19 @@
 
 class GameGUI
 {
-private:
-	CEGUI::Window *mSheet;
-
 public:
 
 	GameGUI();
 	~GameGUI();
 
 	void initialiseGUI();
-
-	void setupChatbox();
-	void toggleChatbox();
-	bool chatboxVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Chatbox/input" )->isVisible(); }
-	bool Chatbox_Send( const CEGUI::EventArgs &args );
-
+    
 	void setupConsole();
-	void toggleConsole();
-	bool consoleVisible() { return CEGUI::WindowManager::getSingleton().getWindow( "/Console" )->isVisible(); }
-	bool Console_Send( const CEGUI::EventArgs &args );
-	bool Console_Off( const CEGUI::EventArgs &args );
+    bool receiveFromConsole( const CEGUI::EventArgs &args );
+    void outputToConsole( const char* str );
+
+private:
+	CEGUI::Window* mSheet;
 };
 
 #endif
