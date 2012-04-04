@@ -129,7 +129,9 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
 
     initTuning();
     initNodes();
+#ifdef COLLISION_DOMAIN_CLIENT
     initGraphics(chassisShift, skin);
+#endif
     initBody(carPosition, chassisShift);
     initWheels();
 
@@ -173,9 +175,15 @@ void SimpleCoupeCar::playCarHorn()
 void SimpleCoupeCar::initNodes()
 {
     mPlayerNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    
     mBodyNode    = mPlayerNode->createChildSceneNode("BodyNode"   + boost::lexical_cast<std::string>(mUniqueCarID));
     mWheelsNode  = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+
+    mFLWheelNode = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+
+#ifdef COLLISION_DOMAIN_CLIENT
 
     mChassisNode = mBodyNode->createChildSceneNode("ChassisNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mFLDoorNode  = mBodyNode->createChildSceneNode("FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -184,11 +192,6 @@ void SimpleCoupeCar::initNodes()
     mRRDoorNode  = mBodyNode->createChildSceneNode("RRDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID));
     mFBumperNode = mBodyNode->createChildSceneNode("FBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode = mBodyNode->createChildSceneNode("RBumperNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
-    mFLWheelNode = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 	
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
@@ -207,6 +210,7 @@ void SimpleCoupeCar::initNodes()
     // The variables which aren't yet to be used
     mCamArmNode  = NULL;
     mCamNode     = NULL;
+#endif
 }
 
 

@@ -137,19 +137,6 @@ void Player::processControlsFrameEvent(
         mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
         mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
     }
-    // TELEPORT TESTING
-    /*if (userInput->isLeft() && userInput->isRight())
-    {
-        // teleport to the previously set point!
-        if (mCarSnapshot != NULL) mCar->restoreSnapshot(mCarSnapshot);
-    }
-    
-    if (userInput->isLeft() && !userInput->isRight())
-    {
-        // set the new teleport point
-        if (mCarSnapshot != NULL) delete mCarSnapshot;
-        mCarSnapshot = mCar->getCarSnapshot();
-    }*/
 }
 
 
