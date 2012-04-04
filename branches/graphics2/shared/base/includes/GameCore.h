@@ -9,12 +9,14 @@
 
 // needed for non-shared variables like GraphicsCore and NetworkCore
 #include "GameIncludes.h"
-class AiCore;
 class PlayerPool;
 class NetworkCore;
 #ifdef COLLISION_DOMAIN_CLIENT
 class GraphicsCore;
 class GraphicsApplication;
+#else
+class AiCore;
+class ServerGraphics;
 #endif
 class AudioCore;
 class GameGUI;
@@ -34,10 +36,12 @@ public:
     static Ogre::SceneManager* mSceneMgr;
     static PlayerPool*  mPlayerPool;
 
-	static AiCore* mAiCore;
 #ifdef COLLISION_DOMAIN_CLIENT
     static GraphicsCore* mGraphicsCore;
 	static GraphicsApplication* mGraphicsApplication;
+#else
+	static AiCore* mAiCore;
+    static ServerGraphics* mServerGraphics;
 #endif
     static NetworkCore* mNetworkCore;
     static PhysicsCore* mPhysicsCore;

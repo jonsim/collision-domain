@@ -204,12 +204,34 @@ bool Input::keyReleased (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::mouseMoved (const OIS::MouseEvent& evt)
 {
-	CEGUI::System &sys = CEGUI::System::getSingleton();
-	sys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
+	CEGUI::System& guiSys = CEGUI::System::getSingleton();
+#ifdef COLLISION_DOMAIN_CLIENT
+	guiSys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
 	// Scroll wheel.
 	if (evt.state.Z.rel)
-		sys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
-
+		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+#else
+    guiSys.injectMousePosition(evt.state.X.abs, evt.state.Y.abs);
+    if (evt.state.X.abs <= 0 || evt.state.X.abs >= evt.state.width ||
+        evt.state.Y.abs <= 0 || evt.state.Y.abs >= evt.state.height)
+    {
+        CEGUI::MouseCursor::getSingleton().hide();
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        ShowCursor(true);
+#else
+        #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+#endif
+    }
+    else
+    {
+	    CEGUI::MouseCursor::getSingleton().show();
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        ShowCursor(false);
+#else
+        #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+#endif
+    }
+#endif
     return true;
 }
 
