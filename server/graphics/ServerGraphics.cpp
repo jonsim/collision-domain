@@ -79,10 +79,14 @@ bool ServerGraphics::initApplication (void)
     // Load the required resources
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
 
+    OutputDebugString("Loading resources.\n");
     loadResources();                    // Load resources
+    OutputDebugString("Resources loaded.\n");
 
     GameCore::initialise();             // Initialise other game elements
+    OutputDebugString("Game core initialised.\n");
     GameCore::mNetworkCore->init(NULL); // Initialise the server networking
+    OutputDebugString("Network core initialised.\n");
     setupGUI();                         // Initialise the GUI
     createFrameListener();              // Create the frame listener to be used during rendering
     return true;
@@ -258,7 +262,7 @@ bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
     */
 
     // Step physics. Minimum of 20 FPS (maxSubsteps=3) before physics becomes wrong.
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, (1.0f / 60.0f));
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, oneSecond);
 
     return true;
 }

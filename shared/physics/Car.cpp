@@ -216,12 +216,10 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
                 {
                     mVehicle->applyEngineForce( mEngineForce, i );                      // Press accel & moving forwards - accelerate
                     doBrake = 1;
-                    //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );       // and apply the brake if had been pressed
                 }
                 else
                 {
                     mVehicle->applyEngineForce( 0, i );                                 // Press accell & moving backwards - turn off accel
-                    //mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );      // and apply the brake if had been pressed
                     doBrake = 2;
                 }
             }
@@ -237,8 +235,6 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
                 mVehicle->applyEngineForce( 0, i );                                     // Turn off accel if you're pressing brake temporarily
             else
                 mVehicle->applyEngineForce( mEngineForce, i );                          // otherwise normal force (simulate accel & brake together)
-
-            //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );               // Set brake on if we're pressing it
             doBrake = 1;
         }
     }
@@ -256,19 +252,12 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
     }
 	
     updateRPM();
-    updateParticleSystems(isForward, secondsSinceLastFrame);
-    updateCompositors();
-}
-
-float Car::getRPM()
-{
-    return mEngineRPM;
 }
 
 /*
 mph = (rpm * cir) / (gear * final * 88)
 where rpm = engine rpm
-cir = tire cicumference, in feet
+cir = tyre cicumference, in feet
 gear = gear ratio of your car
 final = final drive ratio of your car
 88 = combines several conversion factors
@@ -376,23 +365,6 @@ void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame
     
 }
 
-void Car::updateCompositors (void)
-{
-#ifdef COLLISION_DOMAIN_CLIENT
-	float speedmph    = getCarMph();
-	// Update radial blur (from vehicle speed).
-	float blurAmount = 0;
-	if (speedmph > 40.0f)
-	{
-		// calculate blurring as a function of speed, then scale it back depending on where you
-		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
-		// +/-180 and 0, hence the double abs() reduction)).
-		blurAmount = (speedmph - 40) / 28;
-		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
-	}
-    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
-#endif
-}
 
 /// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
 /// @return The node onto which a camera can be attached to observe the car. The parent of this node is

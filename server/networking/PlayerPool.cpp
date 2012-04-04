@@ -100,31 +100,15 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 
 void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
 {
-	int i = 0;
-	Player *pPlayer;
-
-	for( i = 0; i < MAX_PLAYERS; i ++ )
+	for( int i = 0; i < MAX_PLAYERS; i ++ )
 	{
 		// Local player physics in GraphicsApplication
 		if( mGUID[i] == mLocalGUID )
 			continue;
-
-		pPlayer = mPlayers[i];
-		if( pPlayer == NULL )
+		if( mPlayers[i] == NULL )
 			return;
-		if( pPlayer->newInput != NULL )
-		{
-			// This might cause problems.
-			// and it did, beautifully.
-			// Unhandled exception at 0x7798e653 in collision_server.exe: 0xC0000374: A heap has been corrupted.
-			pPlayer->processControlsFrameEvent( pPlayer->newInput, evt.timeSinceLastFrame, (1.0f / 60.0f));
-		}
-		// TODO: add timestamps to snapshots
-        
-#ifdef COLLISION_DOMAIN_CLIENT
-        if (pPlayer->getVIP())
-            GameCore::mGraphicsCore->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
-#endif
+		if( mPlayers[i]->newInput != NULL )
+			mPlayers[i]->processControlsFrameEvent( mPlayers[i]->newInput, evt.timeSinceLastFrame, (1.0f / 60.0f));
 	}
 
 }

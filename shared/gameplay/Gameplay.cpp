@@ -121,6 +121,10 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
 	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 	Team* teamToJoin = getTeamToJoin();
+    if (tmpPlayer == NULL)
+        OutputDebugString("uh oh\n");
+    if (teamToJoin == NULL)
+        OutputDebugString("uh oh 2\n");
 	teamToJoin->addPlayer(tmpPlayer);
 
 	//Check to see if we need to start game

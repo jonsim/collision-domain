@@ -55,7 +55,8 @@ public:
     void applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force);
     
     void readTuning( char *szFile );
-    float getRPM();
+    float getRPM() { return mEngineRPM; }
+    float getRevLimit() { return mRevLimit; }
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
@@ -63,6 +64,7 @@ public:
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );
+    virtual void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();
@@ -166,8 +168,6 @@ private:
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
 
     void updateRPM();
-    void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
-    void updateCompositors();
 
     void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );
     

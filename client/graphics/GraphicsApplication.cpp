@@ -228,9 +228,10 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	if (NetworkCore::bConnected)
 	{
         // Process the player pool. Perform updates on other players
-        GameCore::mPlayerPool->frameEvent();
+        GameCore::mPlayerPool->frameEvent(evt);
         if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
         {
+            GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
             GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
             GameCore::mGui->updateCounters();
             GameCore::mGui->updateSpeedo();

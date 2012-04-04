@@ -180,6 +180,32 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
 	*/
 }
 
+/// @brief  Updates graphics for the local player (with effects that should only be applied from that, for example
+///         radial blur, screen cracks etc.
+void Player::updateLocalGraphics (void)
+{
+	// Update radial blur (from vehicle speed).
+	float speedmph = mCar->getCarMph();
+	float blurAmount = 0;
+
+	if (speedmph > 40.0f)
+	{
+		// calculate blurring as a function of speed, then scale it back depending on where you
+		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
+		// +/-180 and 0, hence the double abs() reduction)).
+		blurAmount = (speedmph - 40) / 28;
+		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
+	}
+    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
+}
+
+/// @brief  Updates graphics for all players (called individually for each player in player pool), contains graphical
+///         effects all players will have.
+void Player::updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame)
+{
+    mCar->updateParticleSystems(isForward, secondsSinceLastFrame);
+}
+
 /// @brief Returns the camera current yawing around the player.
 /// @return The yawing, in degrees, around the player. 0 is directly in front of the player, +/-180 is behind.
 float Player::getCameraYaw ()

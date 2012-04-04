@@ -24,6 +24,8 @@ public:
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time);
+    void updateLocalGraphics (void);
+    void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);
 	float getCameraYaw (void);
     Car* getCar (void);
     void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);

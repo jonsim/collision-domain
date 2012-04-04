@@ -38,7 +38,7 @@ public:
     void                setSpectating( RakNet::RakNetGUID playerid );
     void                spectateNext();
 
-	void                frameEvent();
+	void                frameEvent( const Ogre::FrameEvent& evt );
 
     void                processPlayer( Player *pPlayer );
 	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }

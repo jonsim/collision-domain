@@ -92,13 +92,17 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 	return NULL;
 }
 
-void PlayerPool::frameEvent()
+void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
 {
 	int i = 0;
 
 	for( i = 0; i < MAX_PLAYERS; i ++ )
 	{
+        if (mPlayers[i] == NULL)
+            continue;
 		processPlayer( mPlayers[i] );
+        // Since we don't have access to other player's input we won't do this for now.
+        //mPlayers[i]->updateGlobalGraphics( mPlayers[i]->newInput, evt.timeSinceLastFrame );
 		// TODO: add timestamps to snapshots
 	}
 
@@ -107,9 +111,6 @@ void PlayerPool::frameEvent()
 
 void PlayerPool::processPlayer( Player *pPlayer )
 {
-    if( pPlayer == NULL )
-		return;
-
 	if( pPlayer->mSnapshots != NULL && pPlayer->getCar() != NULL )
 	{
 #if BASIC_INTERP
