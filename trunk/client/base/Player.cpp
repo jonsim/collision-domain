@@ -251,6 +251,9 @@ void Player::serverSaysHealthChangedTo(float newHP)
         return;
     }
 
+    OutputDebugString("SHIT\n");
+
+
     // update damage HUD
 
     float redLimit = (float) INITIAL_HEALTH / 4.0;

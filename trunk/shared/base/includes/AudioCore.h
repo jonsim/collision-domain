@@ -31,15 +31,16 @@ public:
     AudioCore();
     ~AudioCore();
     void            playSoundOrRestart(OgreOggISound *sound);
-    OgreOggISound*  getSoundInstance(SoundType h,   int uniqueID);
-    OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID);
+    OgreOggISound*  getSoundInstance(SoundType h,   int uniqueID, Ogre::SceneNode *attachTo);
+    OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID, Ogre::SceneNode *attachTo);
     void            deleteSoundInstance(OgreOggISound* sound);
-    void            frameEvent(float rpm);
-
+    void            frameEvent(float rpm, Ogre::Real timeSinceLastFrame);
+    
+    OgreOggSoundManager* mSoundManager;
 private:
     void processSoundDeletesPending();
 
-    OgreOggSoundManager* mSoundManager;
+    //OgreOggSoundManager* mSoundManager;
     std::list<OgreOggISound*> *mSoundDeletesPending;
     bool mInitOK;
 

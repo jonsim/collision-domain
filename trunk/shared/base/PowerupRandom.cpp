@@ -65,7 +65,7 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
     mNode->translate( createAboveAt );
     mRigidBody->translate(BtOgre::Convert::toBullet(createAboveAt));
 
-    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_RANDOM, uniqueID);
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_RANDOM, uniqueID, NULL);
 }
 
 

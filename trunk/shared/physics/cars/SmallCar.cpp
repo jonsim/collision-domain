@@ -152,7 +152,7 @@ SmallCar::SmallCar(int uniqueCarID, CarSkin skin)
 
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
-    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID);
+    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID, NULL);
 }
 
 

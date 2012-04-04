@@ -17,7 +17,7 @@ PowerupMass::PowerupMass()
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "MassPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
-    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_MASS, mUniqueID);
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_MASS, mUniqueID, NULL);
 }
 
 

@@ -17,7 +17,7 @@ PowerupSpeed::PowerupSpeed()
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "SpeedPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
-    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_SPEED, mUniqueID);
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_SPEED, mUniqueID, NULL);
 }
 
 
