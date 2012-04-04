@@ -13,6 +13,7 @@ PlayerPool*  GameCore::mPlayerPool = NULL;
 
 #ifdef COLLISION_DOMAIN_SERVER
 AiCore*					GameCore::mAiCore				= NULL;
+ServerGraphics*         GameCore::mServerGraphics       = NULL;
 #else
 GraphicsCore*			GameCore::mGraphicsCore			= NULL;
 GraphicsApplication*	GameCore::mGraphicsApplication	= NULL;

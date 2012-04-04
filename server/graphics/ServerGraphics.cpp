@@ -155,7 +155,6 @@ void ServerGraphics::setupGUI (void)
 
     // go balls out and add the console
 	GameCore::mGui->setupConsole();
-	//GameCore::mGui->toggleConsole();
 }
 
 void ServerGraphics::createFrameListener (void)
@@ -167,7 +166,10 @@ void ServerGraphics::createFrameListener (void)
     // Setup User Input, setting initial mouse clipping area.
     mWindow->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
-    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
+    pl.insert(make_pair("WINDOW", windowHndStr.str()));
+    pl.insert(make_pair("w32_mouse", "DISCL_FOREGROUND"));    // Remove windows mouse exclusivity.
+    pl.insert(make_pair("w32_mouse", "DISCL_NONEXCLUSIVE"));  // Remove windows mouse exclusivity.
+    pl.insert(make_pair("x11_mouse_grab", "false"));          // Remove linux mouse exclusivity.
     mUserInput.createInputSystem(pl);
     windowResized(mWindow);
 
@@ -283,6 +285,13 @@ void ServerGraphics::windowResized (Ogre::RenderWindow* rw)
     const OIS::MouseState &ms = mUserInput.mMouse->getMouseState();
     ms.width = width;
     ms.height = height;
+
+    CEGUI::MouseCursor::getSingleton().hide();
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+    ShowCursor(true);
+#else
+    #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+#endif
 }
 
 
