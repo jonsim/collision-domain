@@ -19,7 +19,7 @@ PowerupHealth::PowerupHealth()
     mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
             "HealthPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
-    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID);
+    mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID, NULL);
 }
 
 

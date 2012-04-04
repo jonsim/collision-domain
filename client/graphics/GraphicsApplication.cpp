@@ -235,7 +235,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         GameCore::mPlayerPool->frameEvent();
         if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
         {
-            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
+            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM(), evt.timeSinceLastFrame);
             GameCore::mGui->updateCounters();
             GameCore::mGui->updateSpeedo();
         }
@@ -272,6 +272,18 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 		    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
 	    }
     }
+
+    /*Ogre::Vector3 listenerPos = GameCore::mAudioCore->mSoundManager->getListener()->getPosition();
+    std::string s = "x" + boost::lexical_cast<std::string>(listenerPos.x)
+        + "   y" + boost::lexical_cast<std::string>(listenerPos.y)
+        + "   z" + boost::lexical_cast<std::string>(listenerPos.z) + "\n";
+    OutputDebugString(s.c_str());
+    Ogre::SceneNode *camNode = GameCore::mGraphicsCore->mCamera->getParentSceneNode();
+    if (camNode == NULL)
+    {
+        OutputDebugString("NULL\n");
+    }
+    else OutputDebugString("NOT\n");*/
 
     // Cleanup frame specific objects.
     delete inputSnapshot;

@@ -8,6 +8,8 @@
 
 using namespace OgreOggSound;
 
+#define OUTPUT_ENABLED         true
+
 #define FILE_HORN_LOW          "car-horn-low.wav"
 #define FILE_HORN_MID          "car-horn-mid.wav"
 #define FILE_HORN_HIGH         "car-horn-high.wav"
@@ -31,38 +33,36 @@ AudioCore::AudioCore()
     mSoundManager = OgreOggSound::OgreOggSoundManager::getSingletonPtr();
     mSoundDeletesPending = new std::list<OgreOggISound*>;
     
-    mInitOK = mSoundManager->init();
+    mInitOK = mSoundManager->init() && OUTPUT_ENABLED;
+
+    // don't bother with some stuff unless we have openal
+    if (!mInitOK) return;
 
     // force the soundManager to buffer immediate sounds
-    if (mInitOK)
+    std::string tempName = "hello";
+    OgreOggISound* preload;
+    for (int i=0; i < 10; i++)
     {
-        std::string tempName = "hello";
-        OgreOggISound* preload;
-        for (int i=0; i < 10; i++)
-        {
-            //                                               name      file                 stream loop   preBuffer scenemgr         immediate
+        //                                               name      file                 stream loop   preBuffer scenemgr         immediate
 
-            if (i == 0) preload = mSoundManager->createSound(tempName, FILE_POWERUP_HEAVY,  false, false, true, GameCore::mSceneMgr, true);
-            if (i == 1) preload = mSoundManager->createSound(tempName, FILE_POWERUP_HEALTH, false, false, true, GameCore::mSceneMgr, true);
-            if (i == 2) preload = mSoundManager->createSound(tempName, FILE_POWERUP_SPEED,  false, false, true, GameCore::mSceneMgr, true);
-            if (i == 3) preload = mSoundManager->createSound(tempName, FILE_POWERUP_RANDOM, false, false, true, GameCore::mSceneMgr, true);
+        if (i == 0) preload = mSoundManager->createSound(tempName, FILE_POWERUP_HEAVY,  false, false, true, GameCore::mSceneMgr);
+        if (i == 1) preload = mSoundManager->createSound(tempName, FILE_POWERUP_HEALTH, false, false, true, GameCore::mSceneMgr);
+        if (i == 2) preload = mSoundManager->createSound(tempName, FILE_POWERUP_SPEED,  false, false, true, GameCore::mSceneMgr);
+        if (i == 3) preload = mSoundManager->createSound(tempName, FILE_POWERUP_RANDOM, false, false, true, GameCore::mSceneMgr);
 
-            if (i == 4) preload = mSoundManager->createSound(tempName, FILE_HORN_LOW,       false, false, true, GameCore::mSceneMgr, true);
-            if (i == 5) preload = mSoundManager->createSound(tempName, FILE_HORN_MID,       false, false, true, GameCore::mSceneMgr, true);
-            if (i == 6) preload = mSoundManager->createSound(tempName, FILE_HORN_HIGH,      false, false, true, GameCore::mSceneMgr, true);
+        if (i == 4) preload = mSoundManager->createSound(tempName, FILE_HORN_LOW,       false, false, true, GameCore::mSceneMgr);
+        if (i == 5) preload = mSoundManager->createSound(tempName, FILE_HORN_MID,       false, false, true, GameCore::mSceneMgr);
+        if (i == 6) preload = mSoundManager->createSound(tempName, FILE_HORN_HIGH,      false, false, true, GameCore::mSceneMgr);
 
-            if (i == 7) preload = mSoundManager->createSound(tempName, FILE_1_ENGINE_IDLE,  false, true,  true, GameCore::mSceneMgr, true);
-            if (i == 8) preload = mSoundManager->createSound(tempName, FILE_CAR_CRASH,      false, false, true, GameCore::mSceneMgr, false);
-            if (i == 9) preload = mSoundManager->createSound(tempName, FILE_EXPLOSION,      false, false, true, GameCore::mSceneMgr, false);
+        if (i == 7) preload = mSoundManager->createSound(tempName, FILE_1_ENGINE_IDLE,  false, true,  true, GameCore::mSceneMgr);
+        if (i == 8) preload = mSoundManager->createSound(tempName, FILE_CAR_CRASH,      false, false, true, GameCore::mSceneMgr);
+        if (i == 9) preload = mSoundManager->createSound(tempName, FILE_EXPLOSION,      false, false, true, GameCore::mSceneMgr);
 
-            mSoundManager->destroySound(preload);
-        }
-
-        // init some more stuff here (don't do it unless we have openAL)
+        mSoundManager->destroySound(preload);
     }
 
-    mEngineLow = mSoundManager->createSound("enginelow", FILE_TRUCK_ENGINE_LOW,  false, true, true, GameCore::mSceneMgr, false);
-    mEngineHigh = mSoundManager->createSound("enginehigh", FILE_TRUCK_ENGINE_HIGH,  false, true, true, GameCore::mSceneMgr, false);
+    mEngineLow = mSoundManager->createSound("enginelow", FILE_TRUCK_ENGINE_LOW,  false, true, true, GameCore::mSceneMgr);
+    mEngineHigh = mSoundManager->createSound("enginehigh", FILE_TRUCK_ENGINE_HIGH,  false, true, true, GameCore::mSceneMgr);
 
     mEngineLow->setVolume(0.5f);
     mEngineHigh->setVolume(0.6f);
@@ -70,7 +70,7 @@ AudioCore::AudioCore()
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineHigh->setPitch(2.0f);
 
-    mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr, true);
+    mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
 
 #ifdef COLLISION_DOMAIN_CLIENT
     mEngineHigh->play();
@@ -78,6 +78,14 @@ AudioCore::AudioCore()
     mBackingTrack->play();
 #endif
 
+    /*Ogre::SceneNode *parentSNode = mSoundManager->getListener()->getParentSceneNode();
+    mSoundManager->getListener()->getPosition()->setVe
+
+    OgreOggListener
+    mSoundManager->
+
+    GameCore::mSceneMgr->getRootSceneNode()->create
+    mBackingTrack->set*/
 }
 
 /// @brief  Deconstructor.
@@ -100,17 +108,9 @@ void AudioCore::playSoundOrRestart(OgreOggISound *sound)
     sound->play();
 }
 
-/*OgreOggISound* AudioCore::getSoundInstance(EngineType e, int uniqueID)
-{
-    return mSoundManager->createSound("engine-idle-1", FILE_1_ENGINE_IDLE, false, true, true, GameCore::mSceneMgr, true);
-    
-    // sounds which don't need to load immediately (background thread them)
-    mCarCrashSound = mSoundManager->createSound("car-crash-1", FILE_1_CRASH, false, false, true, GameCore::mSceneMgr, false);
-}*/
-
 /// it is quite possible mInitOK is false, so this may return null.
 /// the ID needs to be unique to the sound type (can be same for different sounds)
-OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID)
+OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::SceneNode *attachTo)
 {
     if (!mInitOK) return NULL;
 
@@ -143,14 +143,23 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID)
     }
     
     std::string name = file + boost::lexical_cast<std::string>(uniqueID);
+
+    OgreOggISound *soundObject = mSoundManager->createSound(name, file,  false, false, true, GameCore::mSceneMgr, false);
+    //Ogre::SceneNode *attachTo = NULL;
+    if (attachTo != NULL)
+    {
+        attachTo->attachObject(soundObject);
+        soundObject->setRolloffFactor(2.f);
+        soundObject->setReferenceDistance(10.f);
+    }
     
-    // prebuffer + immediate
-    return mSoundManager->createSound(name, file,  false, false, true, GameCore::mSceneMgr, true);
+    // prebuffer + non-immediate
+    return soundObject;
 }
 
 /// it is quite possible mInitOK is false, so this may return null.
 /// the ID needs to be unique to the sound type (can be same for different sounds)
-OgreOggISound* AudioCore::getSoundInstance(PowerupType p, int uniqueID)
+OgreOggISound* AudioCore::getSoundInstance(PowerupType p, int uniqueID, Ogre::SceneNode *attachTo)
 {
     if (!mInitOK) return NULL;
 
@@ -180,8 +189,17 @@ OgreOggISound* AudioCore::getSoundInstance(PowerupType p, int uniqueID)
     
     std::string name = file + boost::lexical_cast<std::string>(uniqueID);
 
+    OgreOggISound *soundObject = mSoundManager->createSound(name, file, false, false, true, GameCore::mSceneMgr, true);
+    //Ogre::SceneNode *attachTo = NULL;
+    if (attachTo != NULL)
+    {
+        attachTo->attachObject(soundObject);
+        soundObject->setRolloffFactor(2.f);
+        soundObject->setReferenceDistance(10.f);
+    }
+
     // prebuffer + immediate
-    return mSoundManager->createSound(name, file, false, false, true, GameCore::mSceneMgr, true);
+    return soundObject;
 }
 
 void AudioCore::deleteSoundInstance(OgreOggISound* sound)
@@ -191,8 +209,10 @@ void AudioCore::deleteSoundInstance(OgreOggISound* sound)
     mSoundDeletesPending->insert(mSoundDeletesPending->end(), sound);
 }
 
-void AudioCore::frameEvent(float rpm)
+void AudioCore::frameEvent(float rpm, Ogre::Real timeSinceLastFrame)
 {
+    if (!mInitOK) return;
+
     processSoundDeletesPending();
 
     float pitch = (rpm / 3200.0f) * 2.7;
@@ -200,6 +220,13 @@ void AudioCore::frameEvent(float rpm)
     if (pitch < 1.0f) pitch = 1.0f;
 
     mEngineHigh->setPitch(pitch);
+
+    // In an ideal world the camera would be attached to a scene node
+    // But that's not how we've done things, so manually set listener
+    mSoundManager->getListener()->setPosition(GameCore::mGraphicsCore->mCamera->getPosition());
+    mSoundManager->getListener()->setOrientation(GameCore::mGraphicsCore->mCamera->getOrientation());
+
+    mSoundManager->update(timeSinceLastFrame);
 }
 
 void AudioCore::processSoundDeletesPending()

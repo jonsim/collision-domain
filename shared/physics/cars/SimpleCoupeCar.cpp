@@ -143,7 +143,11 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
 
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
-    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID);
+    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
+    
+    mHornSound->setPosition(Ogre::Vector3(0,0,0));
+    mHornSound->setRolloffFactor(2.f);
+    mHornSound->setReferenceDistance(10.f);
 }
 
 
