@@ -65,16 +65,17 @@ AudioCore::AudioCore()
     mEngineHigh = mSoundManager->createSound("enginehigh", FILE_TRUCK_ENGINE_HIGH,  false, true, true, GameCore::mSceneMgr);
 
     mEngineLow->setVolume(0.5f);
-    mEngineHigh->setVolume(0.6f);
+    mEngineHigh->setVolume(0.2f);
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineHigh->setPitch(2.0f);
+    mEngineHigh->setRelativeToListener(true);
 
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
 
 #ifdef COLLISION_DOMAIN_CLIENT
     mEngineHigh->play();
-    mBackingTrack->setVolume(0.5);
+    mBackingTrack->setVolume(0.2f);
     mBackingTrack->play();
 #endif
 
@@ -221,12 +222,12 @@ void AudioCore::frameEvent(float rpm, Ogre::Real timeSinceLastFrame)
 
     mEngineHigh->setPitch(pitch);
 
-    // In an ideal world the camera would be attached to a scene node
-    // But that's not how we've done things, so manually set listener
+    // In an ideal world the camera would be attached to a scene node so the listener would update
+    // automatically. But that's not how we've done things, so manually set listener.
     mSoundManager->getListener()->setPosition(GameCore::mGraphicsCore->mCamera->getPosition());
     mSoundManager->getListener()->setOrientation(GameCore::mGraphicsCore->mCamera->getOrientation());
 
-    mSoundManager->update(timeSinceLastFrame);
+    //mSoundManager->update(timeSinceLastFrame);
 }
 
 void AudioCore::processSoundDeletesPending()
