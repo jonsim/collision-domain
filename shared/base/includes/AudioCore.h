@@ -36,11 +36,10 @@ public:
     void            deleteSoundInstance(OgreOggISound* sound);
     void            frameEvent(float rpm, Ogre::Real timeSinceLastFrame);
     
-    OgreOggSoundManager* mSoundManager;
 private:
     void processSoundDeletesPending();
 
-    //OgreOggSoundManager* mSoundManager;
+    OgreOggSoundManager* mSoundManager;
     std::list<OgreOggISound*> *mSoundDeletesPending;
     bool mInitOK;
 
