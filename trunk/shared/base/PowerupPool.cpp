@@ -33,7 +33,8 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
     int iNew = id;
     if( iNew == -1 )
     {
-	    for( int i = 0; i < MAX_POWERUPS; i ++ )
+        // used to be < MAX_POWERUPS but thats ridiculous
+	    for( int i = 0; i < 4; i ++ )
 	    {
 		    if( mPowerups[i] == NULL )
 		    {
@@ -44,7 +45,7 @@ Powerup *PowerupPool::createPowerup( PowerupType type, Ogre::Vector3 createAbove
     }
 
     if (iNew == -1) {
-        log( "No Free pickup slots" );
+        //log( "No Free pickup slots" ); - this gets called a lot ...
         return NULL;
     }
 

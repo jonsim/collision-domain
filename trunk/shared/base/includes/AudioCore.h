@@ -48,7 +48,6 @@ private:
     bool mInitOK;
 
     OgreOggISound *mBackingTrack;
-    Ogre::Vector3 lastFrameCameraPosition, latestCameraPosition;
 };
 
 #endif // #ifndef AUDIOCORE_H

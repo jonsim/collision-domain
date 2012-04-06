@@ -67,7 +67,10 @@ public:
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();
-
+    inline Ogre::Vector3 getLinearVelocity() {
+        btVector3 vel = mCarChassis->getLinearVelocity();
+        return Ogre::Vector3(vel.x(), vel.y(), vel.z());
+    }
 	Ogre::SceneNode *mBodyNode;
     Ogre::SceneNode *mPlayerNode;
 

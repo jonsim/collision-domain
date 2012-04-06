@@ -143,10 +143,12 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_TRUCK, mUniqueCarID, NULL, true);
     mEngineSound->setVolume(0.35f);
     mEngineSound->setPitch(2.0f);
-    mEngineSound->setRolloffFactor(2.f);
-    mEngineSound->setReferenceDistance(11.f);
-    mEngineSound->setRelativeToListener(false);
-    if (!silentCar) mEngineSound->play();
+    mEngineSound->setRolloffFactor(1.5f);
+    mEngineSound->setReferenceDistance(14.f);
+    //mEngineSound->setRelativeToListener(false);
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if (!silentCar) mEngineSound->play();
+    #endif
 
     //mBodyNode->attachObject(mEngineSound);
 }
@@ -176,6 +178,7 @@ void TruckCar::frameEvent()
     mEngineSound->setPitch(pitch);
     
     mEngineSound->setPosition(mBodyNode->getPosition());
+    mEngineSound->setVelocity(Car::getLinearVelocity());
 }
 
 
