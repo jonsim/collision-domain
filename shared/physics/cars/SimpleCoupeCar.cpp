@@ -152,11 +152,13 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
     mEngineSound->setVolume(0.35f);
     mEngineSound->setPitch(2.0f);
-    mEngineSound->setRolloffFactor(2.f);
-    mEngineSound->setReferenceDistance(11.f);
-    mEngineSound->setRelativeToListener(false);
+    mEngineSound->setRolloffFactor(1.5f);
+    mEngineSound->setReferenceDistance(14.f);
+    //mEngineSound->setRelativeToListener(false);
     
-    if (!silentCar) mEngineSound->play();
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if (!silentCar) mEngineSound->play();
+    #endif
 
     //mBodyNode->attachObject(mEngineSound);
 }
@@ -190,8 +192,9 @@ void SimpleCoupeCar::frameEvent()
                     + "    " + boost::lexical_cast<std::string>(mBodyNode->getPosition().z) + "\n";
     OutputDebugString(str.c_str());*/
 
+    // can also setDirection
     mEngineSound->setPosition(mBodyNode->getPosition());
-    //mEngineSound->setDirection(0,0.1,0);
+    mEngineSound->setVelocity(Car::getLinearVelocity());
 }
 
 

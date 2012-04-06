@@ -30,7 +30,7 @@ using namespace OgreOggSound;
 #define FILE_BACKING_TRACK     "rockTrack.ogg"
 
 AudioCore::AudioCore()
-    : mInitOK(false), lastFrameCameraPosition(0,0,0), latestCameraPosition(0,0,0)
+    : mInitOK(false)
 {
     mSoundManager = OgreOggSound::OgreOggSoundManager::getSingletonPtr();
     mSoundDeletesPending = new std::list<OgreOggISound*>;
@@ -66,6 +66,10 @@ AudioCore::AudioCore()
         mBackingTrack->setVolume(0.2f);
         //mBackingTrack->play();
     #endif
+
+    // doppler effect is unnoticeable at the default 1.0
+    //mSoundManager->setSpeedOfSound();
+    //mSoundManager->setDopplerFactor(6000.0);
 }
 
 /// @brief  Deconstructor.
@@ -166,26 +170,20 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     // automatically. But that's not how we've done things, so manually set listener.
     
     // Attach ears to the car instead of the camera. Otherwise it just sounds weird!
-    //GameCore::mGraphicsCore->mCamera->getPosition(), GameCore::mGraphicsCore->mCamera->getOrientation()
+    //GameCore::mGraphicsCore->mCamera->getPosition(),
+    //GameCore::mGraphicsCore->mCamera->getOrientation()
     Ogre::Vector3 earsPosition
         = GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->getPosition();
     Ogre::Quaternion earsOrientation
         = GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->getOrientation();
-    
-    // latestCameraPosition is initialised to 0,0,0
-    Vector3 lastFrameCameraPosition = latestCameraPosition;
-    Vector3 latestCameraPosition = GameCore::mGraphicsCore->mCamera->getPosition();
 
     // if framerate is low, timeSinceLastFrame is larger.                   if framerate is high, timeSinceLastFrame is lower.
     // if framerate is low, unscaled Velocity will be higher than expected. if framerate is high, unscaled velocity will be lower than expected.
     mSoundManager->getListener()->setPosition(earsPosition);
     mSoundManager->getListener()->setOrientation(earsOrientation);
 
-    Ogre::Vector3 &velocity = (latestCameraPosition - lastFrameCameraPosition) * timeSinceLastFrame;
-    //mSoundManager->getListener()->setVelocity(velocity);
-
-    std::string str = "" + boost::lexical_cast<std::string>(velocity.length()) + "\n";
-    //OutputDebugString(str.c_str());
+    mSoundManager->getListener()->setVelocity(
+        GameCore::mPlayerPool->getLocalPlayer()->getCar()->getLinearVelocity());
 }
 
 void AudioCore::processSoundDeletesPending()
