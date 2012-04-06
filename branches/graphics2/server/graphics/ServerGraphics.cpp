@@ -66,7 +66,7 @@ bool ServerGraphics::initApplication (void)
     mRoot = new Ogre::Root(mPluginsCfg);
     setupResources();
     
-    // Configure the renderer and exit if no configuration was provided (via the config dialog).
+    // Configure the renderer and exit if no configuration was provided.
     if (!configureRenderer())
         return false;
 
@@ -84,22 +84,49 @@ bool ServerGraphics::initApplication (void)
     //Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
     //loadResources();                    // Load resources
 
-    GameCore::initialise(&splashScreen, 0);             // Initialise other game elements
-    GameCore::mNetworkCore->init(NULL); // Initialise the server networking
+    GameCore::initialise(&splashScreen, 0); // Initialise other game elements
+    GameCore::mNetworkCore->init(NULL);     // Initialise the server networking
 
-    createScene();
-    createFrameListener();              // Create the frame listener to be used during rendering
+    createScene();                          // Create the scene (in the server's case loading physics meshes)
+    createFrameListener();                  // Create the frame listener to be used during rendering
 
     return true;
 }
 
-/// @brief  Shows the configuration dialog
-/// @return Returns true if the user enters a valid configuration, false otherwise.
+/// @brief  Configures the render system ogre uses.
+/// @return Returns true if a valid configuration was selected, false otherwise.
 bool ServerGraphics::configureRenderer (void)
 {
-    if (mRoot->showConfigDialog())
-        return true;
-    return false;
+    // Automatically initialise with the config dialog
+    //if (mRoot->showConfigDialog())
+        //return true;
+    //return false;
+
+    // Manually initialise
+    RenderSystem* rs = NULL;
+    RenderSystemList systems = Root::getSingleton().getAvailableRenderers();
+
+    // Check if any render systems exist
+    if (systems.empty())
+        return false;
+    // Check if OpenGL is one of those rendering systems (should be)
+    for (RenderSystemList::iterator itr = systems.begin(); itr != systems.end(); itr++)
+        if (!strcmp((*itr)->getName().c_str(), "OpenGL Rendering Subsystem"))
+            rs = *itr;
+    // If it wasn't, default to the first renderer
+    if (rs == NULL)
+    {
+        OutputDebugString("OpenGL not found, defaulting to the first item.\n");
+        rs = *systems.begin();
+    }
+
+    Root::getSingleton().setRenderSystem(rs);
+    rs->setConfigOption("Video Mode", "640 x 480");
+    rs->setConfigOption("Colour Depth", "32");
+    rs->setConfigOption("Full Screen", "No");
+    rs->setConfigOption("FSAA", "0");
+
+    return true;
 }
 
 void ServerGraphics::createCamera (void)
@@ -155,6 +182,9 @@ void ServerGraphics::createScene (void)
 
     // Setup the GUI
     setupGUI();
+
+    // Setup Input
+    setupUserInput();
 }
 
 /// @brief  Loads and sets up the resources required by CEGUI, creates a blank window layer and
@@ -168,7 +198,7 @@ void ServerGraphics::setupGUI (void)
     GameCore::mGui->setupConsole();
 }
 
-void ServerGraphics::createFrameListener (void)
+void ServerGraphics::setupUserInput (void)
 {
     OIS::ParamList     pl;
     size_t             windowHnd = 0;
@@ -182,8 +212,13 @@ void ServerGraphics::createFrameListener (void)
     pl.insert(make_pair("w32_mouse", "DISCL_NONEXCLUSIVE"));  // Remove windows mouse exclusivity.
     pl.insert(make_pair("x11_mouse_grab", "false"));          // Remove linux mouse exclusivity.
     mUserInput.createInputSystem(pl);
-    windowResized(mWindow);
 
+    // Force the mouse clipping area to be recalculated.
+    windowResized(mWindow);
+}
+
+void ServerGraphics::createFrameListener (void)
+{
     // Listener registration
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);  // Register as a Window listener.
     mRoot->addFrameListener(this);                                      // Register as a Frame listener.
