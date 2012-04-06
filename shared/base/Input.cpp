@@ -243,29 +243,15 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     // Play the car horn on left or right button press
-    {
-        Car* localCar;
-    #ifdef COLLISION_DOMAIN_CLIENT
-        Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-        SpawnScreen* spawnScreen = GameCore::mGraphicsCore->mSpawnScreen;
-        
-        if (spawnScreen)        localCar = spawnScreen->getCar();
-        else if (localPlayer)   localCar = localPlayer->getCar();
-        else                    localCar = NULL;
-    #else
-        Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-        localCar = localPlayer ? localPlayer->getCar() : NULL;
-    #endif
-        if (localCar) localCar->playCarHorn();
-    }
-
-    //if (id == OIS::MB_Right)
-    //{
-    //    GameCore::mPowerupPool->spawnSomething();
-    //}
+#ifdef COLLISION_DOMAIN_CLIENT
+    Player*      localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    SpawnScreen* spawnScreen = GameCore::mGraphicsCore->mSpawnScreen;
+    
+    if (!spawnScreen && localPlayer && localPlayer->getCar())
+        localPlayer->getCar()->playCarHorn();
+#endif
 
 	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
-
     return true;
 }
 

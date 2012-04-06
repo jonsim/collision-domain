@@ -33,13 +33,35 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 		mSteeringBehaviour->WanderOn();
 	if((flags & flee) == flee)
 	{
-		mSteeringBehaviour->FleeOn();
-		mSteeringBehaviour->SetFleeTarget(GameCore::mPlayerPool->getLocalPlayer());
+        // Check for player 1 and set them as the flee target, otherwise give up and make them wander instead.
+        // As this is only temporary it doesn't matter it's a bit of a hack.
+        Player* fleeTarget = GameCore::mPlayerPool->getPlayer(0);
+        if (fleeTarget && fleeTarget->getCar())
+        {
+		    mSteeringBehaviour->FleeOn();
+		    mSteeringBehaviour->SetFleeTarget(fleeTarget);
+        }
+        else
+        {
+            GameCore::mGui->outputToConsole("AI could not find a player to flee from, wandering instead.");
+		    mSteeringBehaviour->WanderOn();
+        }
 	}
 	if((flags & seek) == seek)
 	{
-		mSteeringBehaviour->SeekOn();
-		mSteeringBehaviour->SetSeekTarget(GameCore::mPlayerPool->getLocalPlayer());
+        // Check for player 1 and set them as the seek target, otherwise give up and make them wander instead.
+        // As this is only temporary it doesn't matter it's a bit of a hack.
+        Player* seekTarget = GameCore::mPlayerPool->getPlayer(0);
+        if (seekTarget && seekTarget->getCar())
+        {
+		    mSteeringBehaviour->SeekOn();
+		    mSteeringBehaviour->SetSeekTarget(seekTarget);
+        }
+        else
+        {
+            GameCore::mGui->outputToConsole("AI could not find a player to seek, wandering instead.");
+		    mSteeringBehaviour->WanderOn();
+        }
 	}
 
 	mFeelerDectionLength = 40.0;

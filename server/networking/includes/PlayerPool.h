@@ -31,8 +31,8 @@ public:
 
 	Player* getPlayer( int index );
 	Player* getPlayer( RakNet::RakNetGUID playerid );
-	Player* getLocalPlayer();
-	RakNet::RakNetGUID getLocalPlayerID();
+	//Player* getLocalPlayer();
+	//RakNet::RakNetGUID getLocalPlayerID();
 	RakNet::RakNetGUID getPlayerGUID( int index );
 
 

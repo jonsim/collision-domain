@@ -14,10 +14,11 @@ PowerupSpeed::PowerupSpeed()
     mUniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
 
     mHasBeenCollected = false;
-    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "SpeedPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("SpeedPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_SPEED, mUniqueID);
+#endif
 }
 
 
@@ -39,8 +40,10 @@ PowerupSpeed::~PowerupSpeed()
         delete mRigidBody;
         delete collisionShape;
     }
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -61,7 +64,9 @@ void PowerupSpeed::playerCollision(Player* player)
     if( player != NULL )
     {
         // play powerup reward sound
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
         // apply powerup to player
     }
 

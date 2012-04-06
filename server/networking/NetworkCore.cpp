@@ -47,8 +47,8 @@ void NetworkCore::init( char *szPass )
 
 	bConnected = true;
 	// Add the local player
-	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "MRSERVERMAN" );	
-	GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN_DEFAULT);
+	//GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), "MRSERVERMAN" );	
+	//GameCore::mPlayerPool->getLocalPlayer()->createPlayer(CAR_BANGER, SKIN_DEFAULT);
 	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(m_pRak->GetMyGUID());
 }
 
@@ -213,7 +213,7 @@ void NetworkCore::BroadcastUpdates()
             bitSend.Write( false );
         }
 
-		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true );
+		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, m_pRak->GetMyGUID(), true );
 
 		delete( playerSnap );
 	}
@@ -313,10 +313,8 @@ CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
 void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	char szNickname[128];
-    char consoleOutput[196];
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
-    sprintf(consoleOutput, "Player '%s' connected.", szNickname);
-	GameCore::mGui->outputToConsole(consoleOutput);
+	GameCore::mGui->outputToConsole("Player '%s' connected.", szNickname);
 
 	// Add the player to server player pool
 	int index = GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
@@ -367,7 +365,7 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
     bsSend.Write( pkt->guid );
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
 
-    m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+    m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
 void NetworkCore::InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -378,7 +376,7 @@ void NetworkCore::InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet
     bsSend.Write( pkt->guid );
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
 
-    m_RPC->Signal( "InfoItemTransmit", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+    m_RPC->Signal( "InfoItemTransmit", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
 void NetworkCore::sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc )
@@ -388,7 +386,7 @@ void NetworkCore::sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vecto
     bsSend.Write( pwrType );
     bsSend.Write( pwrLoc );
 
-    m_RPC->Signal( "PowerupCreate", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+    m_RPC->Signal( "PowerupCreate", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
 void NetworkCore::sendPowerupCollect( int pwrID, Player *player, PowerupType newtype )
@@ -407,7 +405,15 @@ void NetworkCore::sendPowerupCollect( int pwrID, Player *player, PowerupType new
         bsSend.Write( false );
     }
 
-    m_RPC->Signal( "PowerupCollect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+    m_RPC->Signal( "PowerupCollect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
+}
+
+void NetworkCore::sendChatMessage( char *szMessage )
+{
+    RakNet::BitStream bsSend;
+    bsSend.Write( m_pRak->GetMyGUID() );
+    RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
+    m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
 	
@@ -423,9 +429,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
     GameCore::mGameplay->declareNewPlayer(pkt->guid);
 
-    char consoleOutput[196];
-    sprintf(consoleOutput, "Player '%s' spawned.", pPlayer->getNickname());
-	GameCore::mGui->outputToConsole(consoleOutput);
+    GameCore::mGui->outputToConsole("Player '%s' spawned.", pPlayer->getNickname());
 
 	// Alert the BigScreen we've had a player spawned
 	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
@@ -433,8 +437,9 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
     bsSpawn.Write( iCarType );
-	bsSpawn.Write( GameCore::mPlayerPool->getLocalPlayer()->getTeam());
-	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
+    bsSpawn.Write( pPlayer->getTeam() );
+//	bsSpawn.Write( GameCore::mPlayerPool->getLocalPlayer()->getTeam());
+	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
 	for( int i = 0; i < MAX_PLAYERS; i ++ )
@@ -512,8 +517,7 @@ void NetworkCore::sendInfoItem(InfoItem* ii)
 	bs.Write(ii->getOverlayType());
 	bs.Write(ii->getStartTime());
 	bs.Write(ii->getEndTime());
-	m_RPC->Signal("InfoItemReceive",&bs,HIGH_PRIORITY,
-		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
+	m_RPC->Signal( "InfoItemReceive", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 
 void NetworkCore::sendPlayerDeath(Player* player)
@@ -521,8 +525,7 @@ void NetworkCore::sendPlayerDeath(Player* player)
 	OutputDebugString("Send Player Death\n");
 	RakNet::BitStream bs;
 	bs.Write(player->getPlayerGUID());
-	m_RPC->Signal("PlayerDeath",&bs,HIGH_PRIORITY,
-		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
+	m_RPC->Signal( "PlayerDeath", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 
 void NetworkCore::declareNewVIP(Player* player)
@@ -530,6 +533,5 @@ void NetworkCore::declareNewVIP(Player* player)
 	OutputDebugString("Sending new VIP decleartion\n");
 	RakNet::BitStream bs;
 	bs.Write(player->getPlayerGUID());
-	m_RPC->Signal("DeclareVIP",&bs,HIGH_PRIORITY,
-		RELIABLE_ORDERED,0,GameCore::mPlayerPool->getLocalPlayerID(),true,false);
+	m_RPC->Signal( "DeclareVIP", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }

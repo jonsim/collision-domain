@@ -83,8 +83,6 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 	return -1;
 }
 
-Player* PlayerPool::getLocalPlayer() { return mLocalPlayer; }
-RakNet::RakNetGUID PlayerPool::getLocalPlayerID() { return mLocalGUID; }
 RakNet::RakNetGUID PlayerPool::getPlayerGUID( int index ) { return mGUID[index]; }
 
 Player* PlayerPool::getPlayer( int index ) { return mPlayers[index]; }
