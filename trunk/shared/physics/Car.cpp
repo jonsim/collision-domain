@@ -336,7 +336,6 @@ void Car::updateRPM()
     sprintf( szFPS,   "RPM: %f    Gear: %i", mEngineRPM, mCurrentGear );
     fps->setText( szFPS );
 #endif
-
 }
 
 void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame)

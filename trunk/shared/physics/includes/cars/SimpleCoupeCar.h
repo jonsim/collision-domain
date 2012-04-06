@@ -12,8 +12,9 @@
 class SimpleCoupeCar : Car
 {
 public:
-    SimpleCoupeCar(int uniqueCarID, CarSkin skin);
+    SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
     virtual ~SimpleCoupeCar(void);
+    void frameEvent();
     void playCarHorn();
     virtual void updateTeam (int teamNumber);
     virtual void loadDestroyedModel (void);
@@ -48,6 +49,9 @@ private:
     Ogre::SceneNode *mFRWheelNode;
     Ogre::SceneNode *mRLWheelNode;
     Ogre::SceneNode *mRRWheelNode;
+    
+    OgreOggISound *mHornSound;
+    OgreOggISound *mEngineSound;
 };
 
 #endif // #ifndef __SimpleCoupeCar_h_

@@ -129,7 +129,7 @@ void SmallCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SmallCar::SmallCar(int uniqueCarID, CarSkin skin)
+SmallCar::SmallCar(int uniqueCarID, CarSkin skin, bool silentCar)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -153,6 +153,17 @@ SmallCar::SmallCar(int uniqueCarID, CarSkin skin)
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID, NULL);
+
+    // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
+    mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_SMALL, mUniqueCarID, NULL, true);
+    mEngineSound->setVolume(0.35f);
+    mEngineSound->setPitch(2.0f);
+    mEngineSound->setRolloffFactor(2.f);
+    mEngineSound->setReferenceDistance(11.f);
+    mEngineSound->setRelativeToListener(false);
+    if (!silentCar) mEngineSound->play();
+
+    //mBodyNode->attachObject(mEngineSound);
 }
 
 
@@ -169,6 +180,17 @@ SmallCar::~SmallCar(void)
     delete chassisShape;
 
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+}
+
+
+void SmallCar::frameEvent()
+{
+    updateRPM();
+    float pitch = (this->getRPM() / 3200.0f) * 2.7;
+    if (pitch < 1.0f) pitch = 1.0f;
+    mEngineSound->setPitch(pitch);
+    
+    mEngineSound->setPosition(mBodyNode->getPosition());
 }
 
 

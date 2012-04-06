@@ -235,7 +235,8 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         GameCore::mPlayerPool->frameEvent();
         if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
         {
-            GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM(), evt.timeSinceLastFrame);
+            // moved to after the stepsim and camera moving
+            //GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM(), evt.timeSinceLastFrame);
             GameCore::mGui->updateCounters();
             GameCore::mGui->updateSpeedo();
         }
@@ -273,22 +274,39 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	    }
     }
 
-    /*Ogre::Vector3 listenerPos = GameCore::mAudioCore->mSoundManager->getListener()->getPosition();
-    std::string s = "x" + boost::lexical_cast<std::string>(listenerPos.x)
-        + "   y" + boost::lexical_cast<std::string>(listenerPos.y)
-        + "   z" + boost::lexical_cast<std::string>(listenerPos.z) + "\n";
-    OutputDebugString(s.c_str());
-    Ogre::SceneNode *camNode = GameCore::mGraphicsCore->mCamera->getParentSceneNode();
-    if (camNode == NULL)
-    {
-        OutputDebugString("NULL\n");
-    }
-    else OutputDebugString("NOT\n");*/
+
+    // Grab the camera position for audio "ears" manually. GameCore::mGraphicsCore->mCamera->getParentSceneNode() is null.
+	if (NetworkCore::bConnected && GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+	    GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
+
+
+    triggerAllPlayersFrameEvent(evt);
+    
 
     // Cleanup frame specific objects.
     delete inputSnapshot;
 
     return true;
+}
+
+
+void GraphicsApplication::triggerAllPlayersFrameEvent(const Ogre::FrameEvent& evt)
+{
+    // fire a frameevent for each car
+    int numPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
+    for (int i = 0; i < numPlayers; i++)
+    {
+        Player *player = GameCore::mPlayerPool->getPlayer(i);
+        if (player == NULL) continue;
+        Car *car = player->getCar();
+        if (car == NULL) continue;
+        car->frameEvent();
+    }
+    
+    // fire a frameevent for the local player
+    Player *localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    if (localPlayer != NULL && localPlayer->getCar() != NULL)
+        localPlayer->getCar()->frameEvent();
 }
 
 

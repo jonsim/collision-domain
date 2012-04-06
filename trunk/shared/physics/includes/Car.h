@@ -43,6 +43,7 @@ public:
 
     // Overrideable methods, but you can use the generic Car method with all cars
     virtual Ogre::SceneNode *attachCamNode();
+    virtual void frameEvent() = 0;
     virtual void steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     virtual void accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real secondsSinceLastFrame);
     virtual void moveTo(const btVector3 &position);
@@ -72,10 +73,9 @@ public:
 
 
 protected:
+    void updateRPM();
     void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo, bool isDeformable);
     void setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo);
-    
-    OgreOggISound *mHornSound;
 
     // Camera node (if not null its attached to bodyNode) (attachCamNode())
     Ogre::SceneNode *mCamArmNode;
@@ -165,7 +165,6 @@ private:
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
 
-    void updateRPM();
     void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
     void updateCompositors();
 

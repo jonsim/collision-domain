@@ -40,6 +40,7 @@ private:
 	virtual void setupGUI (void);
 
 	void finishBenchmark (uint8_t stage, float averageTriangles);
+    void triggerAllPlayersFrameEvent(const Ogre::FrameEvent& evt);
 	
 	Ogre::Viewport* vp;
 	bool    mBenchmarkRunning;

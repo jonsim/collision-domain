@@ -18,6 +18,9 @@ enum SoundType
     HORN_LOW,
     HORN_MID,
     HORN_HIGH,
+    ENGINE_SMALL,
+    ENGINE_COUPE,
+    ENGINE_TRUCK,
     CAR_CRASH,
     EXPLOSION
 };
@@ -31,20 +34,21 @@ public:
     AudioCore();
     ~AudioCore();
     void            playSoundOrRestart(OgreOggISound *sound);
-    OgreOggISound*  getSoundInstance(SoundType h,   int uniqueID, Ogre::SceneNode *attachTo);
+    OgreOggISound*  getSoundInstance(SoundType h,   int uniqueID, Ogre::SceneNode *attachTo, bool loop = false);
     OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID, Ogre::SceneNode *attachTo);
     void            deleteSoundInstance(OgreOggISound* sound);
-    void            frameEvent(float rpm, Ogre::Real timeSinceLastFrame);
+    void            frameEvent(Ogre::Real timeSinceLastFrame);
     
 private:
     void processSoundDeletesPending();
+    OgreOggISound* getNamedSoundInstance(std::string name, std::string file, Ogre::SceneNode *attachTo, bool loop = false);
 
     OgreOggSoundManager* mSoundManager;
     std::list<OgreOggISound*> *mSoundDeletesPending;
     bool mInitOK;
 
-    OgreOggISound *mEngineLow, *mEngineHigh;
     OgreOggISound *mBackingTrack;
+    Ogre::Vector3 lastFrameCameraPosition, latestCameraPosition;
 };
 
 #endif // #ifndef AUDIOCORE_H
