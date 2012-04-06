@@ -17,7 +17,6 @@
     <ClInclude Include="..\..\client\graphics\includes\GameGUI.h" />
     <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h" />
     <ClInclude Include="..\..\client\graphics\includes\GraphicsCore.h" />
-    <ClInclude Include="..\..\client\graphics\includes\SceneSetup.h" />
     <ClInclude Include="..\..\client\networking\includes\Config.h" />
     <ClInclude Include="..\..\client\networking\includes\NetworkCore.h" />
     <ClInclude Include="..\..\client\networking\includes\PlayerPool.h" />
@@ -42,6 +41,7 @@
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h" />
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h" />
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
     <ClInclude Include="..\..\shared\physics\includes\BtOgreExtras.h" />
     <ClInclude Include="..\..\shared\physics\includes\BtOgreGP.h" />
@@ -210,7 +210,6 @@
     <ClCompile Include="..\..\client\graphics\GameGUI.cpp" />
     <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp" />
     <ClCompile Include="..\..\client\graphics\GraphicsCore.cpp" />
-    <ClCompile Include="..\..\client\graphics\SceneSetup.cpp" />
     <ClCompile Include="..\..\client\networking\NetworkCore.cpp" />
     <ClCompile Include="..\..\client\networking\PlayerPool.cpp" />
     <ClCompile Include="..\..\shared\base\AudioCore.cpp" />
@@ -234,6 +233,7 @@
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp" />
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp" />
+    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp" />
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
     <ClCompile Include="..\..\shared\physics\BtOgre.cpp" />
     <ClCompile Include="..\..\shared\physics\Car.cpp" />

@@ -43,6 +43,7 @@
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h" />
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h" />
+    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h" />
     <ClInclude Include="..\..\shared\graphics\includes\ViewCamera.h" />
     <ClInclude Include="..\..\shared\physics\includes\BtOgreExtras.h" />
     <ClInclude Include="..\..\shared\physics\includes\BtOgreGP.h" />
@@ -239,6 +240,7 @@
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp" />
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp" />
+    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp" />
     <ClCompile Include="..\..\shared\graphics\ViewCamera.cpp" />
     <ClCompile Include="..\..\shared\physics\BtOgre.cpp" />
     <ClCompile Include="..\..\shared\physics\Car.cpp" />

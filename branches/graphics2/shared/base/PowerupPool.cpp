@@ -7,9 +7,6 @@ PowerupPool::PowerupPool()
     for( int i = 0; i < MAX_POWERUPS; i ++ )
         mPowerups[i] = NULL;
 
-    // Random seed
-    srand( time(NULL));//(unsigned int) RakNet::GetTimeMS() );
-
     createPowerup(POWERUP_SPEED);
 }
 

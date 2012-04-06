@@ -15,9 +15,9 @@ void GameGUI::initialiseGUI()
     CEGUI::Font* pFont;
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
 	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
-	pFont->setProperty( "PointSize", "6" );
+	pFont->setProperty( "PointSize", "10" );
 	pFont = &CEGUI::FontManager::getSingleton().create("monospace-10.font");
-	pFont->setProperty( "PointSize", "8" );
+	pFont->setProperty( "PointSize", "12" );
 	//pFont->setAutoScaled( false );
 
 	// Register font as default
@@ -67,6 +67,7 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
 	CEGUI::WindowManager&    winMgr        = CEGUI::WindowManager::getSingleton();
 	CEGUI::Editbox*          inputText     = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
 	CEGUI::MultiLineEditbox* consoleBuffer = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("/Server/buffer"));
+    CEGUI::Scrollbar*        cbScroll      = consoleBuffer->getVertScrollbar();
 
     CEGUI::String inputString  = inputText->getText();
     CEGUI::String outputString = inputText->getText();
@@ -129,6 +130,9 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
     {
         outputToConsole("Unrecognised command.");
     }
+
+    // Scroll to the bottom of the pane.
+    cbScroll->setScrollPosition(cbScroll->getDocumentSize());
 
 	return true;
 }

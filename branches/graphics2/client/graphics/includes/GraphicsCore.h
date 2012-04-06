@@ -93,6 +93,7 @@ public:
     void draw (int width, int height);
     void clear (void);
     void updateProgressBar (int percent);
+    void updateProgressBar (int percent, const Ogre::DisplayString& text);
 
     // ResourceGroupListener Methods
     void resourceGroupScriptingStarted (const Ogre::String &groupName, size_t scriptCount);
@@ -115,8 +116,8 @@ private:
     Ogre::OverlayContainer* splashContainer;
     Ogre::OverlayElement*   loadingFrame;
     Ogre::OverlayElement*   loadingBar;
+    Ogre::OverlayElement*   loadingText;
     Ogre::Root* mRoot;
-    //Ogre::OverlayElement*   loadingText;
 };
 
 #endif // #ifndef GRAPHICSCORE_H

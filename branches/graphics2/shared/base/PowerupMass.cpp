@@ -85,7 +85,7 @@ bool PowerupMass::isPendingDelete()
 
 void PowerupMass::createGraphic()
 {
-    entity = GameCore::mSceneMgr->createEntity("MassPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_mass.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("MassPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_mass.mesh");
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK);
@@ -136,7 +136,9 @@ void PowerupMass::spawn(Ogre::Vector3 createAboveAt)
     if (mHasSpawned) return;
     mHasSpawned = true;
 
+#ifdef COLLISION_DOMAIN_CLIENT
     createGraphic();
+#endif
     createCollideable();
 
     mNode->translate(createAboveAt);
@@ -145,7 +147,7 @@ void PowerupMass::spawn(Ogre::Vector3 createAboveAt)
 
 void PowerupMass::removeGraphic()
 {
-    mNode->detachObject(entity);
+    mNode->detachAllObjects();
 }
 
 

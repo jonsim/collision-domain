@@ -91,7 +91,9 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
     if (mHasSpawned) return;
     mHasSpawned = true;
 
+#ifdef COLLISION_DOMAIN_CLIENT
     createGraphic();
+#endif
     createCollideable();
     
     mNode->translate( createAboveAt );
@@ -101,7 +103,7 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
 
 void PowerupHealth::createGraphic()
 {
-    entity = GameCore::mSceneMgr->createEntity("HealthPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_health.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("HealthPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_health.mesh");
     
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK);
@@ -157,7 +159,7 @@ void PowerupHealth::createCollideable()
 
 void PowerupHealth::removeGraphic()
 {
-    mNode->detachObject(entity);
+    mNode->detachAllObjects();
 }
 
 

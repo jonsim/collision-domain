@@ -26,7 +26,6 @@ public:
     bool isPendingDelete();
 
 private:
-    Ogre::Entity *entity;
     void removeFromWorlds();
 };
 

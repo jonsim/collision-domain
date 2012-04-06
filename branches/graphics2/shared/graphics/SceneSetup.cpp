@@ -4,7 +4,7 @@
  */
 
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "SharedIncludes.h"
 
 // The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
 #define SHADOW_METHOD 2
@@ -317,51 +317,72 @@ void SceneSetup::setupParticleSystem (void)
 }
 
 
-void SceneSetup::setupArena (void)
+void SceneSetup::setupArenaNodes (void)
 {
-    // Load and meshes and create entities
+    // Create the node
+    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode");
+    
+    // Scale the node
+#if ARENA == 1
+    GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+#else
+    //GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+    float cpScale = 0.25f;
+    arenaNode->scale(cpScale, cpScale, cpScale);
+#endif
+}
+
+void SceneSetup::setupArenaGraphics (void)
+{
+    // Load the arena node and create the graphics only nodes (nodes also required for physics should be created
+    // in setupArenaNodes) and scale them (loaded nodes have already been scaled).
+    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getSceneNode("ArenaNode");
+    Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
+    Ogre::SceneNode* treeNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("TreeNode");
+    GameCore::mPhysicsCore->auto_scale_scenenode(ninjaNode);
+    GameCore::mPhysicsCore->auto_scale_scenenode(treeNode);
+
+    // Load the arena mesh.
 #if ARENA == 1
     Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena.mesh");
 #else
     Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "carpark.mesh");
 #endif
-
 #if SHADOW_METHOD == 2
     arenaEntity->setCastShadows(false);
 #else
     arenaEntity->setCastShadows(true);
 #endif
 
-    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode");
-    arenaNode->attachObject(arenaEntity);
-#if ARENA == 1
-    GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena_collision.mesh", MESH_SCALING_CONSTANT);
-#else
-    //GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-    float cpScale = 0.25f;
-    arenaNode->scale(cpScale, cpScale, cpScale);
-    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "carpark_collision.mesh", cpScale);
-    //arenaNode->translate(0, -5, 0);
-#endif
-    
-    // Load the extra props (ninja + tree) into the scene.
+    // Load the graphics only props (ninja + tree) into the scene.
     Ogre::Entity* ninjaEntity = GameCore::mSceneMgr->createEntity("Ninja", "ninja.mesh");
-    Ogre::Entity* treeEntity  = GameCore::mSceneMgr->createEntity("Tree",  "palm_tree1.mesh");    // alternatively use basic_tree.mesh
+    Ogre::Entity* treeEntity  = GameCore::mSceneMgr->createEntity("Tree",  "palm_tree1.mesh");  // alternatively use basic_tree.mesh
     ninjaEntity->setCastShadows(true);
 #if SHADOW_METHOD == 1
     treeEntity->setCastShadows(false);
 #else
     treeEntity->setCastShadows(true);
 #endif
-    Ogre::SceneNode* ninjaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("NinjaNode");
-    Ogre::SceneNode* treeNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("TreeNode");
+
+    // Attach the entities to their respective nodes.
+    arenaNode->attachObject(arenaEntity);
     ninjaNode->attachObject(ninjaEntity);
     treeNode->attachObject(treeEntity);
-    GameCore::mPhysicsCore->auto_scale_scenenode(ninjaNode);
-    GameCore::mPhysicsCore->auto_scale_scenenode(treeNode);
     ninjaNode->translate(50.0f, -10.5f,  3.0f);
     treeNode->translate( 50.0f, -10.5f, -3.0f);
+}
+
+void SceneSetup::setupArenaPhysics (void)
+{
+    // Load the arena node
+    Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getSceneNode("ArenaNode");
+
+    // Construct the collision meshes
+#if ARENA == 1
+    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena_collision.mesh", MESH_SCALING_CONSTANT);
+#else
+    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "carpark_collision.mesh", cpScale);
+#endif
 }
 
 void SceneSetup::setupMeshDeformer (void)

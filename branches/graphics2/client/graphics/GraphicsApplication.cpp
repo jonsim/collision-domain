@@ -59,12 +59,18 @@ void GraphicsApplication::createScene (void)
 	// Save reference
 	GameCore::mGraphicsApplication = this;
     
-	// Setup the scene
+	// Setup the scene environment
     setupCompositorChain(mCamera->getViewport());
 	setupShadowSystem();
     setupLightSystem();
     setupParticleSystem();
-    setupArena();
+
+    // Add objects to the scene
+    setupArenaNodes();
+    setupArenaPhysics();
+    setupArenaGraphics();
+
+    // Setup the GUI
     setupGUI();
 
     // Setup the scene resources
