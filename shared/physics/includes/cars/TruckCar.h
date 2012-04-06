@@ -12,8 +12,9 @@
 class TruckCar : public Car
 {
 public:
-    TruckCar(int uniqueCarID, CarSkin skin);
+    TruckCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
     virtual ~TruckCar(void);
+    void frameEvent();
     void playCarHorn();
     virtual void updateTeam (int teamNumber);
     virtual void loadDestroyedModel (void);
@@ -46,6 +47,9 @@ private:
     Ogre::SceneNode *mFRWheelNode;
     Ogre::SceneNode *mRLWheelNode;
     Ogre::SceneNode *mRRWheelNode;
+    
+    OgreOggISound *mHornSound;
+    OgreOggISound *mEngineSound;
 };
 
 #endif // #ifndef __TRUCKCAR_H

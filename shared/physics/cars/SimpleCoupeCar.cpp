@@ -120,7 +120,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
+SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -144,10 +144,21 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin)
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
+    //mHornSound->setPosition(Ogre::Vector3(0,0,0));
+    //mHornSound->setRolloffFactor(2.f);
+    //mHornSound->setReferenceDistance(10.f);
+
+    // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
+    mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
+    mEngineSound->setVolume(0.35f);
+    mEngineSound->setPitch(2.0f);
+    mEngineSound->setRolloffFactor(2.f);
+    mEngineSound->setReferenceDistance(11.f);
+    mEngineSound->setRelativeToListener(false);
     
-    mHornSound->setPosition(Ogre::Vector3(0,0,0));
-    mHornSound->setRolloffFactor(2.f);
-    mHornSound->setReferenceDistance(10.f);
+    if (!silentCar) mEngineSound->play();
+
+    //mBodyNode->attachObject(mEngineSound);
 }
 
 
@@ -164,6 +175,23 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     delete chassisShape;
 
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+}
+
+
+void SimpleCoupeCar::frameEvent()
+{
+    updateRPM();
+    float pitch = (this->getRPM() / 3200.0f) * 2.7;
+    if (pitch < 1.0f) pitch = 1.0f;
+    mEngineSound->setPitch(pitch);
+
+    /*std::string str = "" + boost::lexical_cast<std::string>(mBodyNode->getPosition().x)
+                    + "    " + boost::lexical_cast<std::string>(mBodyNode->getPosition().y)
+                    + "    " + boost::lexical_cast<std::string>(mBodyNode->getPosition().z) + "\n";
+    OutputDebugString(str.c_str());*/
+
+    mEngineSound->setPosition(mBodyNode->getPosition());
+    //mEngineSound->setDirection(0,0.1,0);
 }
 
 
