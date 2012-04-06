@@ -6,7 +6,7 @@
 #define SCENESETUP_H
 
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "SharedIncludes.h"
 
 
 /**
@@ -58,7 +58,9 @@ protected:
     void setupShadowSystem (void);
     void setupLightSystem (void);
     void setupParticleSystem (void);
-    void setupArena (void);
+    void setupArenaNodes (void);
+    void setupArenaPhysics (void);
+    void setupArenaGraphics (void);
     void setupMeshDeformer (void);
     virtual void setupGUI (void);
 

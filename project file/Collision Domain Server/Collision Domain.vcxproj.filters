@@ -625,6 +625,9 @@
     <ClInclude Include="..\..\server\graphics\includes\ServerGraphics.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -1028,6 +1031,9 @@
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\ServerGraphics.cpp">
       <Filter>server\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
+      <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

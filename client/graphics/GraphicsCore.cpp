@@ -227,16 +227,14 @@ bool GraphicsCore::initApplication (void)
     // Create the splash screen (preloading its required resources in the process)
     SplashScreen splashScreen(mRoot);
     splashScreen.draw(mWindow->getWidth(), mWindow->getHeight());
+    splashScreen.updateProgressBar(0, "Loading Resources...");
     Ogre::ResourceGroupManager::getSingleton().addResourceGroupListener(&splashScreen);
 
     // Load the remaining resources
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
     loadResources();                    // Load resources
-    splashScreen.updateProgressBar(90);
-    GameCore::initialise(this);         // Initialise other game elements
-    splashScreen.updateProgressBar(95);
+    GameCore::initialise(this, &splashScreen, 50);         // Initialise other game elements
     createScene();                      // Build the scene
-    splashScreen.updateProgressBar(100);
     mSpawnScreen = NULL;
     createFrameListener();
 
@@ -308,7 +306,7 @@ void GraphicsCore::windowClosed (Ogre::RenderWindow* rw)
 SplashScreen::SplashScreen (Ogre::Root* root) : resourceTotal(0), resourceCount(0), mRoot(root)
 {
     // Preload resources (for the splash screen)
-    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("PreLoad");
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ClientSplash");
 }
 
 SplashScreen::~SplashScreen (void)
@@ -340,16 +338,17 @@ void SplashScreen::draw (int width, int height)
     loadingFrame->setPosition(width/2 - 630/2, height-50);
     splashContainer->addChild(loadingFrame);
 
-/*    // Add the loading bar text to the splash screen.
+    // Add the loading bar text to the splash screen.
     loadingText = Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "LoadingText");
     loadingText->setMetricsMode(Ogre::GMM_PIXELS);
-    loadingText->setDimensions(600, 100);
-    loadingText->setPosition(0, 0);
+    loadingText->setDimensions(600, 50);
+    loadingText->setPosition(width/2, height-60);
     loadingText->setParameter("font_name", "DejaVuSans");
-    loadingText->setParameter("char_height", "48");
+    loadingText->setParameter("char_height", "12");
+    loadingText->setParameter("alignment", "center");
     loadingText->setColour(Ogre::ColourValue(0, 0, 0));
-    loadingText->setCaption("Jon, you're a genius");
-    splashContainer->addChild(loadingText);*/
+    loadingText->setCaption("");
+    splashContainer->addChild(loadingText);
 
     // Add the loading bar to the splash screen.
     loadingBar = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LoadingBar");
@@ -366,6 +365,12 @@ void SplashScreen::draw (int width, int height)
 void SplashScreen::clear (void)
 {
     splashOverlay->clear();
+}
+
+void SplashScreen::updateProgressBar (int percent, const Ogre::DisplayString& text)
+{
+    loadingText->setCaption(text);
+    updateProgressBar(percent);
 }
 
 void SplashScreen::updateProgressBar (int percent)
@@ -391,5 +396,5 @@ void SplashScreen::resourceGroupScriptingStarted (const Ogre::String &groupName,
 void SplashScreen::scriptParseEnded (const Ogre::String &scriptName, bool skipped)
 {
     if (resourceTotal > 0)
-        updateProgressBar(++resourceCount * ((float) (100 / resourceTotal)));
+        updateProgressBar(++resourceCount * ((float) (100 / resourceTotal) * 0.5f));
 }

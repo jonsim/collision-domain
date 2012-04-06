@@ -30,7 +30,6 @@ private:
     void removeGraphic();
     void removeCollideable();
 
-    Ogre::Entity *mEntity;
     bool mHasSpawned;
     int mUniqueID;
 };

@@ -613,8 +613,8 @@
     <ClInclude Include="..\..\client\graphics\includes\GraphicsCore.h">
       <Filter>client\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\graphics\includes\SceneSetup.h">
-      <Filter>client\graphics</Filter>
+    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
+      <Filter>shared\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1008,11 +1008,11 @@
     <ClCompile Include="..\..\client\graphics\GraphicsCore.cpp">
       <Filter>client\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\client\graphics\SceneSetup.cpp">
-      <Filter>client\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp">
       <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
+      <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -313,8 +313,11 @@ CarSnapshot* NetworkCore::getCarSnapshotIfExistsSincePreviousGet(int playerID)
 void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	char szNickname[128];
+    char consoleOutput[196];
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
-	
+    sprintf(consoleOutput, "Player '%s' connected.", szNickname);
+	GameCore::mGui->outputToConsole(consoleOutput);
+
 	// Add the player to server player pool
 	int index = GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
     if( index == -1 )
@@ -418,10 +421,14 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
 	pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
+    GameCore::mGameplay->declareNewPlayer(pkt->guid);
+
+    char consoleOutput[196];
+    sprintf(consoleOutput, "Player '%s' spawned.", pPlayer->getNickname());
+	GameCore::mGui->outputToConsole(consoleOutput);
 
 	// Alert the BigScreen we've had a player spawned
 	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
-    GameCore::mGameplay->declareNewPlayer(pkt->guid);
 
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );

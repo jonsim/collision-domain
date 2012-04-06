@@ -73,22 +73,23 @@ bool ServerGraphics::initApplication (void)
     // Create the window and viewport to go in it.
     mWindow = mRoot->initialise(true, "Collision Domain Server");
     GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
+
     createCamera();
     createViewports();
     
     // Load the required resources
-    Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
+    // Create the splash screen (preloading its required resources in the process)
+    SplashScreen splashScreen(mRoot);
+    splashScreen.draw();
+    //Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
+    //loadResources();                    // Load resources
 
-    OutputDebugString("Loading resources.\n");
-    loadResources();                    // Load resources
-    OutputDebugString("Resources loaded.\n");
-
-    GameCore::initialise();             // Initialise other game elements
-    OutputDebugString("Game core initialised.\n");
+    GameCore::initialise(&splashScreen, 0);             // Initialise other game elements
     GameCore::mNetworkCore->init(NULL); // Initialise the server networking
-    OutputDebugString("Network core initialised.\n");
-    setupGUI();                         // Initialise the GUI
+
+    createScene();
     createFrameListener();              // Create the frame listener to be used during rendering
+
     return true;
 }
 
@@ -146,19 +147,25 @@ void ServerGraphics::loadResources (void)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 }
 
+void ServerGraphics::createScene (void)
+{
+    // Add objects to the scene
+    setupArenaNodes();
+    setupArenaPhysics();
+
+    // Setup the GUI
+    setupGUI();
+}
+
 /// @brief  Loads and sets up the resources required by CEGUI, creates a blank window layer and
 ///         adds the FPS counter to it.
 void ServerGraphics::setupGUI (void)
 {
-    // Bootstrap the GUI
-    OutputDebugString("Bootstrapping CEGUI\n");
-    mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-    OutputDebugString("Initialising GUI\n");
-    GameCore::mGui->initialiseGUI();
-    OutputDebugString("Setting console\n");
+    // Run the generic GUI setup
+    SceneSetup::setupGUI();
 
-    // go balls out and add the console
-	GameCore::mGui->setupConsole();
+    // Attach the GUI components
+    GameCore::mGui->setupConsole();
 }
 
 void ServerGraphics::createFrameListener (void)
@@ -184,7 +191,6 @@ void ServerGraphics::createFrameListener (void)
 
 bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    OutputDebugString("frq\n");
     static const float oneSecond = 1.0f / 60.0f;
 
     // Check for exit conditions.
@@ -341,3 +347,101 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
+
+
+
+
+
+/*------------------------------ SPLASH SCREEN CLASS ------------------------------*/
+SplashScreen::SplashScreen (Ogre::Root* root) : mRoot(root)
+{
+    // Preload resources (for the splash screen)
+    Ogre::ResourceGroupManager::getSingleton().initialiseResourceGroup("ServerSplash");
+
+    // Load fonts explicitly after resources as they are not be loaded on start up from the resource manager
+    ResourceManager::ResourceMapIterator iter = Ogre::FontManager::getSingleton().getResourceIterator();
+    while (iter.hasMoreElements())
+        iter.getNext()->load();
+}
+
+SplashScreen::~SplashScreen (void)
+{
+}
+
+void SplashScreen::draw (void)
+{
+    // Create the splash screen overlay
+    splashOverlay = Ogre::OverlayManager::getSingleton().create("OVERLAY_SPLASH");
+    splashOverlay->setZOrder(500);
+    splashOverlay->show();
+
+    // Create an overlay container and add the splash screen to it.
+    splashContainer = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "SplashScreen"));
+    splashContainer->setMetricsMode(Ogre::GMM_PIXELS);
+    splashContainer->setHorizontalAlignment(Ogre::GHA_LEFT);
+    splashContainer->setVerticalAlignment(Ogre::GVA_TOP);
+    splashContainer->setDimensions(640, 480);
+    splashContainer->setMaterialName("CollisionDomain/ServerSplash");
+    splashContainer->setPosition(0, 0);
+    splashOverlay->add2D(splashContainer);
+    
+    // Add the loading bar text to the splash screen.
+    loadingText = Ogre::OverlayManager::getSingleton().createOverlayElement("TextArea", "LoadingText");
+    loadingText->setMetricsMode(Ogre::GMM_PIXELS);
+    loadingText->setDimensions(500, 50);
+    loadingText->setPosition(320, 290);
+    loadingText->setParameter("font_name", "DejaVuSans");
+    loadingText->setParameter("char_height", "12");
+    loadingText->setParameter("alignment", "center");
+    loadingText->setColour(Ogre::ColourValue(1, 1, 1));
+    loadingText->setCaption("");
+    splashContainer->addChild(loadingText);
+
+    // Add the loading bar to the splash screen.
+    loadingBar = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LoadingBar");
+    loadingBar->setMetricsMode(Ogre::GMM_PIXELS);
+    loadingBar->setDimensions(500, 20);
+    loadingBar->setMaterialName("CollisionDomain/ServerLoadingBar");
+    loadingBar->setPosition(70, 310);
+    splashContainer->addChild(loadingBar);
+
+    // Render the screen.
+    forceRedraw();
+}
+
+void SplashScreen::clear (void)
+{
+    splashOverlay->clear();
+}
+
+void SplashScreen::updateProgressBar (int percent, const Ogre::DisplayString& text)
+{
+    loadingText->setCaption(text);
+    updateProgressBar(percent);
+}
+
+void SplashScreen::updateProgressBar (int percent)
+{
+    loadingBar->setDimensions(percent*5, 20);
+    forceRedraw();
+}
+
+void SplashScreen::forceRedraw (void)
+{
+    mRoot->renderOneFrame();
+}
+/*
+void SplashScreen::resourceGroupScriptingStarted (const Ogre::String &groupName, size_t scriptCount)
+{
+    if (scriptCount > 10)
+    {
+        resourceTotal = scriptCount;
+        resourceCount = 0;
+    }
+}
+
+void SplashScreen::scriptParseEnded (const Ogre::String &scriptName, bool skipped)
+{
+    if (resourceTotal > 0)
+        updateProgressBar(++resourceCount * ((float) (100 / resourceTotal)));
+}*/

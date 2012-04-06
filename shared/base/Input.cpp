@@ -164,12 +164,7 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
-
-    if (evt.key == OIS::KC_K) {
-        //GameCore::mAudioCore->playCarCrash();
-        //GameCore::mAudioCore->playEngineIdle();
-    }
-
+    
     // Had to put this in here for now, and the define.. well fuck you shared includes.
     
 #ifdef COLLISION_DOMAIN_CLIENT
@@ -211,7 +206,12 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 	if (evt.state.Z.rel)
 		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
 #else
+    // Inject mouse movements into the GUI
     guiSys.injectMousePosition(evt.state.X.abs, evt.state.Y.abs);
+	if (evt.state.Z.rel)
+		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+
+    // Check if the mouse is within the window
     if (evt.state.X.abs <= 0 || evt.state.X.abs >= evt.state.width ||
         evt.state.Y.abs <= 0 || evt.state.Y.abs >= evt.state.height)
     {

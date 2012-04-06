@@ -11,10 +11,12 @@
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
+class SceneSetup;
+
 /**
  *  @brief  Manages the server's graphics (a console).
  */
-class ServerGraphics : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener
+class ServerGraphics : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
 {
 public:
     ServerGraphics (void);
@@ -34,8 +36,10 @@ protected:
     virtual void createViewports (void);
     virtual void setupResources (void);
     virtual void loadResources (void);
-    virtual void setupGUI (void);
     virtual void createFrameListener (void);
+    
+    virtual void createScene (void);
+    virtual void setupGUI (void);
     
     // Ogre::FrameListener overrides
     virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);
@@ -60,6 +64,26 @@ protected:
     OgreBites::SdkCameraMan* mCameraMan;     // basic camera controller
     bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
     bool mShutDown;
+};
+
+class SplashScreen
+{
+public:
+    SplashScreen (Ogre::Root* root);
+    ~SplashScreen (void);
+    void draw (void);
+    void clear (void);
+    void updateProgressBar (int percent);
+    void updateProgressBar (int percent, const Ogre::DisplayString& text);
+
+private:
+    void forceRedraw (void);
+
+    Ogre::Overlay*          splashOverlay;
+    Ogre::OverlayContainer* splashContainer;
+    Ogre::OverlayElement*   loadingBar;
+    Ogre::OverlayElement*   loadingText;
+    Ogre::Root* mRoot;
 };
 
 #endif // #ifndef SERVERGRAPHICS_H

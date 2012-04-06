@@ -18,6 +18,7 @@ class GraphicsApplication;
 class AiCore;
 class ServerGraphics;
 #endif
+class SplashScreen;
 class AudioCore;
 class GameGUI;
 class PowerupPool;
@@ -51,9 +52,9 @@ public:
 	static Gameplay* mGameplay;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    static void initialise(GraphicsCore* graphicsCore);
+    static void initialise(GraphicsCore* graphicsCore, SplashScreen* ss, int progress);
 #else
-    static void initialise();
+    static void initialise(SplashScreen* ss, int progress);
 #endif
     static void destroy();
 
