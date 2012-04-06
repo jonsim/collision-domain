@@ -40,6 +40,7 @@ protected:
     
     virtual void createScene (void);
     virtual void setupGUI (void);
+    virtual void setupUserInput (void);
     
     // Ogre::FrameListener overrides
     virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);

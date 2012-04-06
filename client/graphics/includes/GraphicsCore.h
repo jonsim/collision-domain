@@ -44,7 +44,7 @@ public:
 protected:
     // Called when the application is first started.
     virtual bool initApplication (void);    // Determines flow from startup
-    virtual bool configureRenderer (void);  // Displays the configuration screen - will be removed from the final program.
+    virtual bool configureRenderer (void);  // Configures the render system used by ogre
     /*
     // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
     virtual bool loadLobby (void);
@@ -62,6 +62,7 @@ protected:
     virtual void createScene (void) = 0;     // This needs to be overridden to display anything
     virtual void destroyScene (void);
     virtual void updateParticleSystems (void);
+    virtual void setupUserInput (void);
 
     // Ogre::FrameListener overrides.
     virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);

@@ -63,6 +63,7 @@ protected:
     void setupArenaGraphics (void);
     void setupMeshDeformer (void);
     virtual void setupGUI (void);
+    virtual void setupUserInput (void) = 0;
 
     void createMotionBlurCompositor (void);
     
@@ -70,10 +71,10 @@ protected:
     CEGUI::OgreRenderer* mGUIRenderer;
 
     // Scene elements which are setup.
-    Ogre::Light*          mWorldSun;
-    Ogre::SceneNode*      mVIPIcon[2]; ///< This is completely not the place for this but I'm waiting
-                                      //   for a better place (in the team class for example) to be 
-                                      //   made available.
+    Ogre::Light*     mWorldSun;
+    Ogre::SceneNode* mVIPIcon[2]; ///< This is completely not the place for this but I'm waiting
+                                  //   for a better place (in the team class for example) to be 
+                                  //   made available.
     // Particle Systems
     Ogre::ParticleSystem* mWeatherSystem;
     Ogre::ParticleSystem* mSparkSystem;
@@ -87,8 +88,8 @@ protected:
     Ogre::NameValuePairList mExplosionDebrisParams;
     
     // Compositor logic modules
-    HDRLogic*         mHDRLogic;
-    BloomLogic*         mBloomLogic;
+    HDRLogic*        mHDRLogic;
+    BloomLogic*      mBloomLogic;
     MotionBlurLogic* mMotionBlurLogic;
     RadialBlurLogic* mRadialBlurLogic;
 };

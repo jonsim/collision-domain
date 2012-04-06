@@ -54,25 +54,28 @@ bool GraphicsCore::configureRenderer (void)
 }
 
 
-/// @brief  Creates a frame listener for the main window.
-void GraphicsCore::createFrameListener (void)
+void GraphicsCore::setupUserInput (void)
 {
     OIS::ParamList     pl;
     size_t             windowHnd = 0;
     std::ostringstream windowHndStr;
 
+    // Setup User Input, setting initial mouse clipping area.
     mWindow->getCustomAttribute("WINDOW", &windowHnd);
     windowHndStr << windowHnd;
-    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
-    
-    // Setup User Input, setting initial mouse clipping area.
+    pl.insert(make_pair("WINDOW", windowHndStr.str()));
     mUserInput.createInputSystem(pl);
-    windowResized(mWindow);
 
-    // Register as a Window listener.
+    // Force the mouse clipping to be recalculated.
+    windowResized(mWindow);
+}
+
+
+/// @brief  Creates a frame listener for the main window.
+void GraphicsCore::createFrameListener (void)
+{
+    // Listener registration
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
-    
-    // Register as a Frame listener.
     mRoot->addFrameListener(this);
 }
 

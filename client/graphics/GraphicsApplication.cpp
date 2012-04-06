@@ -56,24 +56,27 @@ void GraphicsApplication::createViewports (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void GraphicsApplication::createScene (void)
 {
-	// Save reference
+	// Save reference.
 	GameCore::mGraphicsApplication = this;
     
-	// Setup the scene environment
+	// Setup the scene environment.
     setupCompositorChain(mCamera->getViewport());
 	setupShadowSystem();
     setupLightSystem();
     setupParticleSystem();
 
-    // Add objects to the scene
+    // Add objects to the scene.
     setupArenaNodes();
     setupArenaPhysics();
     setupArenaGraphics();
 
-    // Setup the GUI
+    // Setup the GUI.
     setupGUI();
 
-    // Setup the scene resources
+    // Setup the input.
+    setupUserInput();
+
+    // Setup the scene resources.
     setupMeshDeformer();
 }
 
