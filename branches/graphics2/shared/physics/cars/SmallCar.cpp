@@ -138,7 +138,9 @@ SmallCar::SmallCar(int uniqueCarID, CarSkin skin)
 
     initTuning();
     initNodes();
+#ifdef COLLISION_DOMAIN_CLIENT
     initGraphics(chassisShift);
+#endif
     initBody(carPosition, chassisShift);
     initWheels();
 
@@ -151,8 +153,10 @@ SmallCar::SmallCar(int uniqueCarID, CarSkin skin)
     fricConst->enableFeedback( true );
 
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID);
+#endif
 }
 
 
@@ -167,22 +171,28 @@ SmallCar::~SmallCar(void)
     // Cleanup Shapes:
     delete compoundChassisShape;
     delete chassisShape;
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+#endif
 }
 
 
 void SmallCar::playCarHorn()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->playSoundOrRestart(mHornSound);
+#endif
 }
 
 
 /// @brief  Initialises the node tree for this car.
 void SmallCar::initNodes()
 {
+    // Player node.
     mPlayerNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
+    // Top level nodes.
     mBodyNode       = mPlayerNode->createChildSceneNode("BodyNode"   + boost::lexical_cast<std::string>(mUniqueCarID));
     mWheelsNode     = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
 
@@ -193,27 +203,25 @@ void SmallCar::initNodes()
     mRBumperNode    = mBodyNode->createChildSceneNode("RBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     mLHeadlightNode = mBodyNode->createChildSceneNode("mLHeadlightNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRHeadlightNode = mBodyNode->createChildSceneNode("mRHeadlightNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
+    
+    // Wheel nodes.
     mFLWheelNode    = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mFRWheelNode    = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRLWheelNode    = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode    = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    
-	// Setup particles.
-    mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	mBodyNode->attachObject(mDustSystem);
-    // The dust emitters should be placed in the location of the wheel nodes but since
-    // the wheels nodes are not currently positioned correctly these are hard coded numbers.
-    mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.6f, 0.2f,  1.1f));  // FL
-    mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.6f, 0.2f,  1.1f));  // FR
-    mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.6f, 0.2f, -1.1f));  // RL
-    mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.6f, 0.2f, -1.1f));  // RR
 
-    // The variables which aren't yet to be used
-    mCamArmNode  = NULL;
-    mCamNode     = NULL;
+    // Scale all nodes.
+    PhysicsCore::auto_scale_scenenode(mChassisNode);
+    PhysicsCore::auto_scale_scenenode(mLDoorNode);
+    PhysicsCore::auto_scale_scenenode(mRDoorNode);
+    PhysicsCore::auto_scale_scenenode(mFBumperNode);
+    PhysicsCore::auto_scale_scenenode(mRBumperNode);
+    PhysicsCore::auto_scale_scenenode(mLHeadlightNode);
+    PhysicsCore::auto_scale_scenenode(mRHeadlightNode);
+    PhysicsCore::auto_scale_scenenode(mFLWheelNode);
+    PhysicsCore::auto_scale_scenenode(mFRWheelNode);
+    PhysicsCore::auto_scale_scenenode(mRLWheelNode);
+    PhysicsCore::auto_scale_scenenode(mRRWheelNode);
 }
 
 
@@ -234,20 +242,22 @@ void SmallCar::initGraphics(btTransform& chassisShift)
     createGeometry("CarEntity_FRWheel",      "small_car_rwheel.mesh",     mFRWheelNode,    false);
     createGeometry("CarEntity_RLWheel",      "small_car_lwheel.mesh",     mRLWheelNode,    false);
     createGeometry("CarEntity_RRWheel",      "small_car_rwheel.mesh",     mRRWheelNode,    false);
+    
+	// Setup particles.
+    mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
+	mBodyNode->attachObject(mExhaustSystem);
+	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+	mBodyNode->attachObject(mDustSystem);
+    // The dust emitters should be placed in the location of the wheel nodes but since
+    // the wheels nodes are not currently positioned correctly these are hard coded numbers.
+    mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.6f, 0.2f,  1.1f));  // FL
+    mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.6f, 0.2f,  1.1f));  // FR
+    mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.6f, 0.2f, -1.1f));  // RL
+    mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.6f, 0.2f, -1.1f));  // RR
 
-
-    // Scale the loaded meshes
-    PhysicsCore::auto_scale_scenenode(mChassisNode);
-    PhysicsCore::auto_scale_scenenode(mLDoorNode);
-    PhysicsCore::auto_scale_scenenode(mRDoorNode);
-    PhysicsCore::auto_scale_scenenode(mFBumperNode);
-    PhysicsCore::auto_scale_scenenode(mRBumperNode);
-    PhysicsCore::auto_scale_scenenode(mLHeadlightNode);
-    PhysicsCore::auto_scale_scenenode(mRHeadlightNode);
-    PhysicsCore::auto_scale_scenenode(mFLWheelNode);
-    PhysicsCore::auto_scale_scenenode(mFRWheelNode);
-    PhysicsCore::auto_scale_scenenode(mRLWheelNode);
-    PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+    // The variables which aren't yet to be used <- what the hell are these?
+    mCamArmNode  = NULL;
+    mCamNode     = NULL;
 }
 
 

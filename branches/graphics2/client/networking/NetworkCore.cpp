@@ -277,8 +277,10 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	bitStream->Read( playerid );
 	RakNet::StringCompressor().DecodeString( szMessage, 128, bitStream );
 
-    GameCore::mGui->chatboxAddMessage( 
-        GameCore::mPlayerPool->getPlayer( playerid )->getNickname(), szMessage );
+    if( playerid == pkt->guid )
+        GameCore::mGui->chatboxAddMessage( "Admin", szMessage );
+    else
+        GameCore::mGui->chatboxAddMessage( GameCore::mPlayerPool->getPlayer( playerid )->getNickname(), szMessage );
 }
 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

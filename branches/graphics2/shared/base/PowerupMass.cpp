@@ -14,10 +14,11 @@ PowerupMass::PowerupMass()
     mUniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
 
     mHasBeenCollected = false;
-    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "MassPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("MassPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_MASS, mUniqueID);
+#endif
 }
 
 
@@ -39,8 +40,10 @@ PowerupMass::~PowerupMass()
         delete mRigidBody;
         delete collisionShape;
     }
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -60,7 +63,9 @@ void PowerupMass::playerCollision(Player* player)
 
     if( player != NULL )
     {
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
         // apply powerup to player
         //btVector3 inertia;
         //player->getCar()->getVehicle()->getRigidBody()->getCollisionShape()->calculateLocalInertia( 20000, inertia );

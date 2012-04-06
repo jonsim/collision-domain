@@ -96,6 +96,7 @@ public:
 
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
     void sendPowerupCollect( int pwrID, Player *player, PowerupType newtype = POWERUP_HEALTH );
+    void sendChatMessage( char *szMessage );
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 

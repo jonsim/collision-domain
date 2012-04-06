@@ -16,10 +16,11 @@ PowerupHealth::PowerupHealth()
 
     // From Powerup
     mHasBeenCollected = false;
-    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "HealthPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("HealthPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID);
+#endif
 }
 
 
@@ -41,8 +42,10 @@ PowerupHealth::~PowerupHealth()
         delete mRigidBody;
         delete collisionShape;
     }
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -63,7 +66,9 @@ void PowerupHealth::playerCollision(Player* player)
     if( player != NULL )
     {
         // play powerup reward sound
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
 
         // apply extra health
         player->applyHealthBonus();

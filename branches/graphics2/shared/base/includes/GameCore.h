@@ -14,12 +14,12 @@ class NetworkCore;
 #ifdef COLLISION_DOMAIN_CLIENT
 class GraphicsCore;
 class GraphicsApplication;
+class AudioCore;
 #else
 class AiCore;
 class ServerGraphics;
 #endif
 class SplashScreen;
-class AudioCore;
 class GameGUI;
 class PowerupPool;
 class Gameplay;
@@ -40,13 +40,13 @@ public:
 #ifdef COLLISION_DOMAIN_CLIENT
     static GraphicsCore* mGraphicsCore;
 	static GraphicsApplication* mGraphicsApplication;
+    static AudioCore* mAudioCore;
 #else
 	static AiCore* mAiCore;
     static ServerGraphics* mServerGraphics;
 #endif
     static NetworkCore* mNetworkCore;
     static PhysicsCore* mPhysicsCore;
-    static AudioCore* mAudioCore;
 	static GameGUI* mGui;
     static PowerupPool* mPowerupPool;
 	static Gameplay* mGameplay;

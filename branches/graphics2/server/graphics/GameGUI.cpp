@@ -106,25 +106,25 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
     else if( !strnicmp( inputChars, "kill", 4) )
     {
         GameCore::mPlayerPool->getPlayer(atoi((inputChars+5)))->killPlayer();
-        outputToConsole("Killed player.");
+        outputToConsole("Killed player %d.", atoi((inputChars+5)));
     }
     else if( !strnicmp( inputChars, "spawn wander", 12) )
     {
         for (int i = 0; i < atoi((inputChars+13)); i++)
 		    GameCore::mAiCore->createNewAiAgent(wander);
-        outputToConsole("Spawned AI.");
+        outputToConsole("Spawned %d AI players.", atoi((inputChars+13)));
     }
     else if( !strnicmp( inputChars, "spawn seek", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(seek);
-        outputToConsole("Spawned AI.");
+        outputToConsole("Spawned %d AI players.", atoi((inputChars+11)));
     }
     else if( !strnicmp( inputChars, "spawn flee", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(flee);
-        outputToConsole("Spawned AI.");
+        outputToConsole("Spawned %d AI players.", atoi((inputChars+11)));
     }
     else
     {
@@ -137,11 +137,25 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
 	return true;
 }
 
-void GameGUI::outputToConsole( const char* str )
+void GameGUI::outputToConsole( const char* str, ... )
 {
+    // Provide printf like functionality. I do not know if this is cross platform or not (I suspect it might
+    // be compiler specific, in which case I assume it doesn't compile a gcc version will need to be sourced).
+    char buffer[256];
+    va_list ap;
+
+    if (!str)
+        *buffer=0;
+    else
+    {
+        va_start(ap, str);
+        vsprintf(buffer, str, ap);
+        va_end(ap);
+    }
+
 	CEGUI::WindowManager&    winMgr        = CEGUI::WindowManager::getSingleton();
 	CEGUI::MultiLineEditbox* consoleBuffer = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("/Server/buffer"));
-	consoleBuffer->appendText(CEGUI::String(str));
+	consoleBuffer->appendText(CEGUI::String(buffer));
 }
 
 /*-------------------- DEV Chatbox --------------------*

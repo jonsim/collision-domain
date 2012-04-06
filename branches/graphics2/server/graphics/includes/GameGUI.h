@@ -8,6 +8,8 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "NetworkCore.h"
+#include <stdio.h>
+#include <stdarg.h>
 
 class GameGUI
 {
@@ -20,7 +22,7 @@ public:
     
 	void setupConsole();
     bool receiveFromConsole( const CEGUI::EventArgs &args );
-    void outputToConsole( const char* str );
+    void outputToConsole( const char* str, ... );
 
 private:
 	CEGUI::Window* mSheet;

@@ -55,7 +55,10 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
     mNode->translate( createAboveAt );
     mRigidBody->translate(BtOgre::Convert::toBullet(createAboveAt));
 
+#ifdef COLLISION_DOMAIN_CLIENT
+    // Add the sound
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_RANDOM, uniqueID);
+#endif
 }
 
 
@@ -75,8 +78,10 @@ PowerupRandom::~PowerupRandom()
 
     delete mRigidBody;
     delete collisionShape;
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -131,7 +136,9 @@ void PowerupRandom::playerCollision(Player* player, PowerupType pwrType)
 
     if( player != NULL )
     {
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
 
         Powerup* powerup = NULL;
         {
