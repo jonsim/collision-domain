@@ -216,7 +216,7 @@ void NetworkCore::sendSpawnRequest( CarType iCarType )
 }
 
 
-void NetworkCore::sendChatMessage( char *szMessage )
+void NetworkCore::sendChatMessage( const char *szMessage )
 {
     RakNet::BitStream bsSend;
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );

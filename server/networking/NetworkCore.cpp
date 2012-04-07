@@ -314,7 +314,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 {
 	char szNickname[128];
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
-	GameCore::mGui->outputToConsole("Player '%s' connected.", szNickname);
+	GameCore::mGui->outputToConsole("Player '%s' connected.\n", szNickname);
 
 	// Add the player to server player pool
 	int index = GameCore::mPlayerPool->addPlayer( pkt->guid, szNickname );
@@ -353,19 +353,20 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-	// Send to all players
-
+	// Receive the message
 	char szMessage[128];
 	RakNet::StringCompressor().DecodeString( szMessage, 128, bitStream );
 
     // This is where some checks can be done for team-only messages etc
 
+    // Send the message to all players
     RakNet::BitStream bsSend;
-
     bsSend.Write( pkt->guid );
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
-
     m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
+
+    // Add the message to the console
+    GameCore::mGui->outputToConsole("[colour='FFED9DAA']%s:[colour='FFFFFFFF'] %s\n", GameCore::mPlayerPool->getPlayer(pkt->guid)->getNickname(), szMessage);
 }
 
 void NetworkCore::InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -408,7 +409,7 @@ void NetworkCore::sendPowerupCollect( int pwrID, Player *player, PowerupType new
     m_RPC->Signal( "PowerupCollect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
-void NetworkCore::sendChatMessage( char *szMessage )
+void NetworkCore::sendChatMessage( const char *szMessage )
 {
     RakNet::BitStream bsSend;
     bsSend.Write( m_pRak->GetMyGUID() );
@@ -429,7 +430,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
     GameCore::mGameplay->declareNewPlayer(pkt->guid);
 
-    GameCore::mGui->outputToConsole("Player '%s' spawned.", pPlayer->getNickname());
+    GameCore::mGui->outputToConsole("Player '%s' spawned.\n", pPlayer->getNickname());
 
 	// Alert the BigScreen we've had a player spawned
 	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);

@@ -91,7 +91,7 @@ public:
     void ProcessPlayerState( RakNet::Packet *pkt );
 
     void sendSpawnRequest( CarType iCarType );
-    void sendChatMessage( char *szMessage );
+    void sendChatMessage( const char *szMessage );
 	//void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
 
     // RPC Calls

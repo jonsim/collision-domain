@@ -358,7 +358,10 @@ bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
 void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
 {
     char szBuffer[256];
-    sprintf( szBuffer, "[colour='FFED9DAA']%s :[colour='FFFFFFFF'] %s", szNickname, szMessage );
+    if (!strcmp(szNickname, "Admin"))
+        sprintf( szBuffer, "[colour='FF6DDD77']Admin:[colour='FFFFFFFF'] %s", szMessage );
+    else
+        sprintf( szBuffer, "[colour='FFED9DAA']%s:[colour='FFFFFFFF'] %s", szNickname, szMessage );
 
     CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 

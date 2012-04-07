@@ -648,9 +648,6 @@
     <ClCompile Include="..\..\server\networking\PlayerPool.cpp">
       <Filter>server\networking</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\base\CircularBuffer.cpp">
-      <Filter>shared\base</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\base\Input.cpp">
       <Filter>shared\base</Filter>
     </ClCompile>

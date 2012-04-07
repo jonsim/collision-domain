@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GameGUI.h"
 
-GameGUI::GameGUI()
+GameGUI::GameGUI() : consoleHistory(16), consoleHistoryLocation(0xFF)
 {
 }
 
@@ -16,7 +16,9 @@ void GameGUI::initialiseGUI()
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
 	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
 	pFont->setProperty( "PointSize", "10" );
-	pFont = &CEGUI::FontManager::getSingleton().create("monospace-10.font");
+	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuMono-10.font");
+	pFont->setProperty( "PointSize", "12" );
+	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuMonoItalic-10.font");
 	pFont->setProperty( "PointSize", "12" );
 	//pFont->setAutoScaled( false );
 
@@ -53,7 +55,7 @@ void GameGUI::setupConsole()
 	CEGUI::Window *pLayout = winMgr.loadWindowLayout("Server.layout");
 	mSheet->addChildWindow( pLayout );
 
-	// Get handles to some of the objects
+	// Get a handle to the input box
 	CEGUI::Window *inputText = winMgr.getWindow( "/Server/input" );
 	inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber( &GameGUI::receiveFromConsole, this ) );
 
@@ -64,75 +66,90 @@ void GameGUI::setupConsole()
 
 bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
 {
-	CEGUI::WindowManager&    winMgr        = CEGUI::WindowManager::getSingleton();
-	CEGUI::Editbox*          inputText     = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
-	CEGUI::MultiLineEditbox* consoleBuffer = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("/Server/buffer"));
-    CEGUI::Scrollbar*        cbScroll      = consoleBuffer->getVertScrollbar();
+	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
+	CEGUI::Editbox*       inputText     = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
+    CEGUI::DefaultWindow* consoleBuffer = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Server/buffer"));
+    CEGUI::Scrollbar*     cbScroll      = static_cast<CEGUI::Scrollbar*>(winMgr.getWindow("/Server/buffer__auto_vscrollbar__"));
 
-    CEGUI::String inputString  = inputText->getText();
-    CEGUI::String outputString = inputText->getText();
-    outputString.insert(0, "> ", 2);
-	char* inputChars = (char*) inputString.c_str();
-
-	consoleBuffer->appendText(outputString);
+    // Get the input text, echo it back to the console (unless its blank, in which case return, or a chat message in which case it doesn't
+    // make sense to have the message printed twice so don't echo) and clear the input box.
+	const char* inputChars = inputText->getText().c_str();
+    if (inputChars[0] == 0)
+        return true;
+    if (inputChars[0] != '@')
+        outputToConsole("> %s\n", inputChars);
 	inputText->setText("");
-    
-    if ( !stricmp( inputChars,  "help" ) )
+
+    // Parse the string and execute the required action
+    if ( inputChars[0] == '@' )
     {
-        outputToConsole("List of server commands:");
-        outputToConsole("prep            Prepares the players, organising them in a ring and resetting health.");
-        outputToConsole("start           Starts the game.");
-        outputToConsole("ddinfo          Draws the death info.");
-        outputToConsole("kill x          Kills player x (where x is an integer representing their player index).");
-        outputToConsole("spawn wander x  Spawns x AI players with the wander mechanic.");
-        outputToConsole("spawn seek x    Spawns x AI players with the seek mechanic.");
-        outputToConsole("spawn flee x    Spawns x AI players with the flee mechanic.");
+        outputToConsole("[colour='FF6DDD77']Admin:[colour='FFFFFFFF'] %s\n", (inputChars+1));
+        GameCore::mNetworkCore->sendChatMessage((inputChars+1));
+    }
+    else if ( !stricmp( inputChars,  "help" ) )
+    {
+        //              "---------------------MAX STRING LENGTH TO AVOID OVERFLOW--------------------"
+        outputToConsole("List of server commands:\n");
+        outputToConsole("help            Displays this list.\n");
+        outputToConsole("@[font='DejaVuMonoItalic-10']STRING[font='DejaVuMono-10']         Sends [font='DejaVuMonoItalic-10']STRING[font='DejaVuMono-10'] as an admin message to players.\n");
+        outputToConsole("prep            Places players in a ring and resets their health.\n");
+        outputToConsole("start           Starts the game.\n");
+        outputToConsole("ddinfo          Draws the death info.\n");
+        outputToConsole("kill [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']          Kills player [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] (where [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] is their integer player index).\n");
+        outputToConsole("spawn wander [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the wander mechanic.\n");
+        outputToConsole("spawn seek [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the seek mechanic.\n");
+        outputToConsole("spawn flee [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the flee mechanic.\n");
     }
 	else if( !stricmp( inputChars,  "prep" ) )
     {
 		GameCore::mGameplay->preparePlayers();
-        outputToConsole("Prepared players.");
+        outputToConsole("Prepared players.\n");
     }
 	else if( !stricmp( inputChars,  "start" ) )
     {
 		GameCore::mGameplay->startGame();
-        outputToConsole("Game started.");
+        outputToConsole("Game started.\n");
     }
 	else if( !stricmp( inputChars,  "ddinfo" ) )
     {
 		GameCore::mGameplay->drawDeathInfo();
-        outputToConsole("Drawn death info.");
+        outputToConsole("Drawn death info.\n");
     }
     else if( !strnicmp( inputChars, "kill", 4) )
     {
         GameCore::mPlayerPool->getPlayer(atoi((inputChars+5)))->killPlayer();
-        outputToConsole("Killed player %d.", atoi((inputChars+5)));
+        outputToConsole("Killed player %d.\n", atoi((inputChars+5)));
     }
     else if( !strnicmp( inputChars, "spawn wander", 12) )
     {
         for (int i = 0; i < atoi((inputChars+13)); i++)
 		    GameCore::mAiCore->createNewAiAgent(wander);
-        outputToConsole("Spawned %d AI players.", atoi((inputChars+13)));
+        outputToConsole("Spawned %d AI players.\n", atoi((inputChars+13)));
     }
     else if( !strnicmp( inputChars, "spawn seek", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(seek);
-        outputToConsole("Spawned %d AI players.", atoi((inputChars+11)));
+        outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
     else if( !strnicmp( inputChars, "spawn flee", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(flee);
-        outputToConsole("Spawned %d AI players.", atoi((inputChars+11)));
+        outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
     else
     {
-        outputToConsole("Unrecognised command.");
+        outputToConsole("Unrecognised command.\n");
     }
 
+    // Add the input to the history and clear the history position (so you start from the most recent again).
+    consoleHistory.add(inputChars);
+    consoleHistoryLocation = 0xFF;
+
     // Scroll to the bottom of the pane.
-    cbScroll->setScrollPosition(cbScroll->getDocumentSize());
+    if (cbScroll != NULL)
+        cbScroll->setScrollPosition(cbScroll->getDocumentSize());
 
 	return true;
 }
@@ -153,9 +170,56 @@ void GameGUI::outputToConsole( const char* str, ... )
         va_end(ap);
     }
 
-	CEGUI::WindowManager&    winMgr        = CEGUI::WindowManager::getSingleton();
-	CEGUI::MultiLineEditbox* consoleBuffer = static_cast<CEGUI::MultiLineEditbox*>(winMgr.getWindow("/Server/buffer"));
+	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
+	CEGUI::DefaultWindow* consoleBuffer = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Server/buffer"));
 	consoleBuffer->appendText(CEGUI::String(buffer));
+}
+
+void GameGUI::loadConsoleHistory( bool reverseLoading )
+{
+    // Check there is history
+    if (consoleHistory.isEmpty())
+        return;
+    
+    // If true, there is no current history location (i.e. no history is currently loaded)
+    if (consoleHistoryLocation == 0xFF)
+    {
+        // If we have been asked to load the next oldest item, load the first item in history.
+        if (reverseLoading)
+            consoleHistoryLocation = (consoleHistory.getHead() == 0) ? 16 : consoleHistory.getHead() - 1;
+        // If we have been asked to load the next newest item, as we are at the front of the history already do nothing
+        else
+            return;
+    }
+    // We are currently looking at history
+    else
+    {
+        // If true, we need to load the next oldest item (reverse chronological order loading).
+        if (reverseLoading)
+        {
+            if (consoleHistoryLocation == consoleHistory.getTail())
+                return;
+            else
+                consoleHistoryLocation = (consoleHistoryLocation == 0) ? 16 : consoleHistoryLocation - 1;
+        }
+        // Otherwise we need to load the next newest item (forwards chronological order loading).
+        else
+        {
+            if (consoleHistoryLocation == consoleHistory.getHead() - 1)
+                consoleHistoryLocation = 0xFF;
+            else
+                consoleHistoryLocation = (consoleHistoryLocation == 16) ? 0 : consoleHistoryLocation + 1;
+        }
+    }
+        
+	CEGUI::WindowManager& winMgr    = CEGUI::WindowManager::getSingleton();
+	CEGUI::Editbox*       inputText = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
+
+    // Load the history into the input box
+    if (consoleHistoryLocation == 0xFF)
+        inputText->setText("");
+    else
+	    inputText->setText(*(consoleHistory.get(consoleHistoryLocation)));
 }
 
 /*-------------------- DEV Chatbox --------------------*
