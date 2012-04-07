@@ -59,6 +59,7 @@ public:
     bool receiveFromConsole( const CEGUI::EventArgs &args );
     void outputToConsole( const char* str, ... );
     void loadConsoleHistory( bool reverseLoading );
+    bool testingInterfaceButtonClick( const CEGUI::EventArgs &args );
 
 private:
 	CEGUI::Window* mSheet;

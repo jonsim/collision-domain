@@ -30,6 +30,7 @@ void GameGUI::initialiseGUI()
 	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
 	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
 	CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
+	CEGUI::SchemeManager::getSingleton().create("GWEN.scheme");
 	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
 	// Register skin's default image set and cursor icon
@@ -52,16 +53,104 @@ void GameGUI::setupConsole()
 	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
 
 	// Load the layout file for connect box and add it to the overlay
-	CEGUI::Window *pLayout = winMgr.loadWindowLayout("Server.layout");
+	CEGUI::Window* pLayout = winMgr.loadWindowLayout("Server.layout");
 	mSheet->addChildWindow( pLayout );
 
 	// Get a handle to the input box
-	CEGUI::Window *inputText = winMgr.getWindow( "/Server/input" );
+	CEGUI::Window* inputText = winMgr.getWindow( "/Server/input" );
 	inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber( &GameGUI::receiveFromConsole, this ) );
-
+    
     // Display the mouse and give the input box focus.
 	CEGUI::MouseCursor::getSingleton().show();
 	winMgr.getWindow( "/Server/input" )->activate();
+    /*
+    Ogre::Overlay* lobbyBackground = Ogre::OverlayManager::getSingleton().create("OVERLAY_LOBBY");
+    lobbyBackground->setZOrder(501);
+    lobbyBackground->show();
+    // Create an overlay container and add the splash screen to it.
+    Ogre::OverlayContainer* lobbyBackgroundImage = static_cast<Ogre::OverlayContainer*>(Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", "LobbyBg"));
+    lobbyBackgroundImage->setMetricsMode(Ogre::GMM_PIXELS);
+    lobbyBackgroundImage->setHorizontalAlignment(Ogre::GHA_LEFT);
+    lobbyBackgroundImage->setVerticalAlignment(Ogre::GVA_TOP);
+    lobbyBackgroundImage->setDimensions(640, 480);
+    lobbyBackgroundImage->setMaterialName("CollisionDomain/ServerSplash");
+    lobbyBackgroundImage->setPosition(0, 0);
+    lobbyBackground->add2D(lobbyBackgroundImage);
+
+
+    CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
+
+	// Load the layout file for connect box and add it to the overlay
+	CEGUI::Window *pLayout = winMgr.loadWindowLayout("Lobby2.layout");
+	mSheet->addChildWindow( pLayout );
+
+	// Get a handle to the enter IP button
+	CEGUI::Window* ipButton = winMgr.getWindow( "/Lobby/Servers/btnIP" );
+    ipButton->subscribeEvent( CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber( &GameGUI::testingInterfaceButtonClick, this ) );
+
+    // Add the coulmns to the list
+    CEGUI::MultiColumnList* mcl = static_cast<CEGUI::MultiColumnList*>(winMgr.getWindow("/Lobby/Servers/List"));
+    mcl->addColumn("Server Name", 0, CEGUI::UDim(0.40f, 0));
+    mcl->addColumn("#Players",    1, CEGUI::UDim(0.20f, 0));
+    mcl->addColumn("Map",         2, CEGUI::UDim(0.37f, 0));
+
+    // Populate the list
+    // Add a row
+    unsigned int row = mcl->addRow();
+    CEGUI::ListboxTextItem* field;
+    // Column 1
+    field = new CEGUI::ListboxTextItem("boobs", 0);
+    mcl->setItem(field, 0, row);
+    field->setSelected(true);
+    field->setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");
+    // Column 2
+    field = new CEGUI::ListboxTextItem("5/16", 0);
+    mcl->setItem(field, 1, row);
+    field->setSelected(true);
+    field->setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");
+    // Column 3
+    field = new CEGUI::ListboxTextItem("COOLMAP", 0);
+    mcl->setItem(field, 2, row);
+    field->setSelected(true);
+    field->setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");
+    
+    // Add a row
+    row = mcl->addRow();
+    //CEGUI::ListboxTextItem* field;
+    // Column 1
+    field = new CEGUI::ListboxTextItem("[colour='FF000000']noob server", 0);
+    mcl->setItem(field, 0, row);
+    field->setSelected(false);
+    field->setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");
+    // Column 2
+    field = new CEGUI::ListboxTextItem("1/16", 0);
+    mcl->setItem(field, 1, row);
+    field->setSelected(false);
+    field->setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");
+    // Column 3
+    field = new CEGUI::ListboxTextItem("NOOBMAP", 0);
+    mcl->setItem(field, 2, row);
+    field->setSelected(false);
+    field->setSelectionBrushImage("TaharezLook", "MultiListSelectionBrush");*/
+}
+
+bool GameGUI::testingInterfaceButtonClick( const CEGUI::EventArgs &args )
+{
+	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
+    CEGUI::FrameWindow* IPWindow = static_cast<CEGUI::FrameWindow*>(winMgr.getWindow("/Lobby/IPWindow"));
+    CEGUI::DefaultWindow* IPbo   = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Lobby/IPWindowBlackOut"));
+    if (IPWindow->isVisible())
+    {
+        IPWindow->setVisible(false);
+        IPbo->setVisible(false);
+    }
+    else
+    {
+        IPWindow->setVisible(true);
+        IPbo->setVisible(true);
+        IPbo->moveToFront();
+    }
+    return true;
 }
 
 bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
