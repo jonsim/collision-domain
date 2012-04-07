@@ -155,6 +155,8 @@ void GraphicsCore::setupResources (void)
     Ogre::ConfigFile cf;
     cf.load(mResourcesCfg);
 
+	Ogre::Root::getSingletonPtr()->loadPlugin("OgreOggSound");
+
     // Go through all sections & settings in the file
     Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
 

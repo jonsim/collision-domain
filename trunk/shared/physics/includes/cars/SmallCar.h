@@ -7,7 +7,11 @@
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
-#include "boost\lexical_cast.hpp"
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+	#include "boost\lexical_cast.hpp"
+#else
+	#include "boost/lexical_cast.hpp"
+#endif
 
 class SmallCar : public Car
 {

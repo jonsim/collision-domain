@@ -215,8 +215,9 @@ void Gameplay::preparePlayers()
 
 void Gameplay::resetAllHP()
 {
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
 	//Loop through the entire array
-	for(int i=0;i<MAX_PLAYERS;i++)
+	for(int i=0;i<size;i++)
 	{
 		Player* player = GameCore::mPlayerPool->getPlayer(i);
 		if(player != NULL)
@@ -232,8 +233,9 @@ void Gameplay::positionPlayers()
 	int hypo = 25; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
 	Ogre::Real segSize = (2*Ogre::Math::PI)/totalNumberOfPlayers;
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
 
-	for(int i=0;i<MAX_PLAYERS;i++)
+	for(int i=0;i<size;i++)
 	{
 		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
 		if(tmpPlayer != NULL)
@@ -505,8 +507,10 @@ void Gameplay::calculateRoundScores()
 	for(int j=0;j<5;j++)
 		topPlayers[j] = NULL;
 
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
+
 	//Loop through each of the players in the game
-	for(int i=0;i<MAX_PLAYERS;i++)
+	for(int i=0;i<size;i++)
 	{
 		//Only consider them if they're not NULL
 		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);

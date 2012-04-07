@@ -67,6 +67,7 @@ public:
 	bool isWanderOn(){return On(wander);}
 	bool isObstacleOn(){return On(obstacle_avoidance);}
 	bool isWallAvoidanceOn(){return On(wall_avoidance);}
+	bool On(behaviour_type bt){return (m_iFlags & bt) == bt;} ///Test if a specific bit of m_iFlags is set
 
 private:
 	//pointer to owner of this object
@@ -95,7 +96,6 @@ private:
 	Vector3 CalculatePrioritized(void);
 
 	bool AccumulateForce(Vector3 &RuningTot, Vector3 ForceToAdd);
-    bool On(behaviour_type bt){return (m_iFlags & bt) == bt;} ///Test if a specific bit of m_iFlags is set
     Vector3 Seek(Vector3 TargetPos);
     Vector3 Flee(Vector3 TargetPos);
     Vector3 Pursuit(Car* evader);

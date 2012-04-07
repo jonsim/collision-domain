@@ -149,15 +149,11 @@ void BigScreen::manageNewPlayer(Player* player)
 
 void BigScreen::updateMapView()
 {
+	std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
 	//Loop through all possible players
-	for(int i=0;i<MAX_PLAYERS;i++)
+	for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
 	{
-		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-		//Check to see if there is an actual player in this section
-		if(tmpPlayer != NULL)
-		{
-			updatePlayer(tmpPlayer,tmpPlayer->getOverlayElement());
-		}
+		updatePlayer((Player*)(*it), (*it)->getOverlayElement());
 	}
 }
 

@@ -7,6 +7,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
+#include <vector>
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 // Lots of static variable initialization
@@ -167,12 +168,13 @@ void NetworkCore::BroadcastUpdates()
 	// client x's position hasn't been sent for n ms.
 
 	Player *sendPlayer;
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
 
 	// should really package multiple updates into one packet also though
 	// RakNet does tend to do that a bit by itself to stop UDP breaking
 
 	int j = 0;
-	for( j = 0; j < MAX_PLAYERS; j ++ )
+	for( j = 0; j < size; j ++ )
 	{
 
 		sendPlayer = GameCore::mPlayerPool->getPlayer( j );
@@ -226,8 +228,9 @@ void NetworkCore::BroadcastUpdates()
 void NetworkCore::GamestateUpdatePlayer( RakNet::RakNetGUID playerid )
 {
 	Player *sendPlayer;
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
 
-	for( int j = 0; j < MAX_PLAYERS; j ++ )
+	for( int j = 0; j < size; j ++ )
 	{
 		sendPlayer = GameCore::mPlayerPool->getPlayer( j );
 		if( sendPlayer == NULL )
@@ -267,7 +270,9 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 {
 	Player *playerSend;
 
-	for( int j = 0; j < MAX_PLAYERS; j ++ )
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
+
+	for( int j = 0; j < size; j ++ )
 	{
 		// Don't send a new client PlayerJoin of themselves
 		if( GameCore::mPlayerPool->getPlayerGUID( j ) == playerid )
@@ -413,6 +418,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	// Do some checking here to make sure the player is allowed to spawn before sending the RPC back
     CarType iCarType;
     bitStream->Read( iCarType );
+	int size = GameCore::mPlayerPool->getNumberOfPlayers();
 
     // TODO: something with iCarType
 
@@ -430,7 +436,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, GameCore::mPlayerPool->getLocalPlayerID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
-	for( int i = 0; i < MAX_PLAYERS; i ++ )
+	for( int i = 0; i < size; i ++ )
 	{
 		if( GameCore::mPlayerPool->getPlayerGUID( i ) == pkt->guid )
 			continue;
