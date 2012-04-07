@@ -447,6 +447,7 @@ void SplashScreen::draw (void)
 void SplashScreen::clear (void)
 {
     splashOverlay->clear();
+    splashOverlay->hide();
 }
 
 void SplashScreen::updateProgressBar (int percent, const Ogre::DisplayString& text)
