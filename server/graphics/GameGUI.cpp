@@ -2,6 +2,11 @@
 #include "GameGUI.h"
 #include "GraphicsCore.h"
 
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+	#define strncasecmp strnicmp
+	#define strcasecmp  stricmp
+#endif
+
 GameGUI::GameGUI()
 {
 }
@@ -104,23 +109,23 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 
 	inputText->setText( "" );
 
-	if( !stricmp( szInput, "exit" ) )
+	if( !strcasecmp( szInput, "exit" ) )
 		mWinMgr.getWindow( "/Console" )->hide();
-	if( !stricmp( szInput, "prep" ) )
+	if( !strcasecmp( szInput, "prep" ) )
 		GameCore::mGameplay->preparePlayers();
-	if( !stricmp( szInput, "start" ) )
+	if( !strcasecmp( szInput, "start" ) )
 		GameCore::mGameplay->startGame();
-	if( !stricmp( szInput, "ddinfo" ) )
+	if( !strcasecmp( szInput, "ddinfo" ) )
 		GameCore::mGameplay->drawDeathInfo();
-    if( !strnicmp( szInput, "kill", 4) )
+    if( !strncasecmp( szInput, "kill", 4) )
         GameCore::mPlayerPool->getPlayer(atoi((szInput+5)))->killPlayer();
-    if( !strnicmp( szInput, "spawn wander", 12) )
+    if( !strncasecmp( szInput, "spawn wander", 12) )
         for (int i = 0; i < atoi((szInput+13)); i++)
 		    GameCore::mAiCore->createNewAiAgent(wander);
-    if( !strnicmp( szInput, "spawn seek", 10) )
+    if( !strncasecmp( szInput, "spawn seek", 10) )
         for (int i = 0; i < atoi((szInput+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(seek);
-    if( !strnicmp( szInput, "spawn flee", 10) )
+    if( !strncasecmp( szInput, "spawn flee", 10) )
         for (int i = 0; i < atoi((szInput+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(flee);
 

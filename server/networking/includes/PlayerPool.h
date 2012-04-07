@@ -8,16 +8,20 @@
 
 // RakNet includes
 #include "RakNetTypes.h"
+#include <vector>
+#include <limits>
 
 class Player;
 
 class PlayerPool
 {
 private:
-	Player* mPlayers[MAX_PLAYERS];
+	//Player* mPlayers[MAX_PLAYERS];
+	std::vector<Player*> mPlayers;
+	std::vector<RakNet::RakNetGUID> mGUID;
 	Player* mLocalPlayer;
 	RakNet::RakNetGUID mLocalGUID;
-	RakNet::RakNetGUID mGUID[MAX_PLAYERS];
+	//RakNet::RakNetGUID mGUID[MAX_PLAYERS];
 	int getPlayerIndex( RakNet::RakNetGUID playerid );
 
 public:
@@ -28,6 +32,9 @@ public:
 	void addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void delPlayer( RakNet::RakNetGUID playerid );
 	int getNumberOfPlayers();
+	Player* getRandomPlayer();
+	Player* getClosestPlayer(Player* player);
+	std::vector<Player*> getPlayers() { return mPlayers;};
 
 	Player* getPlayer( int index );
 	Player* getPlayer( RakNet::RakNetGUID playerid );

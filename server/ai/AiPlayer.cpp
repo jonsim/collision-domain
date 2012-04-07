@@ -31,16 +31,6 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	//set steering behaviours
 	if((flags & wander) == wander)
 		mSteeringBehaviour->WanderOn();
-	if((flags & flee) == flee)
-	{
-		mSteeringBehaviour->FleeOn();
-		mSteeringBehaviour->SetFleeTarget(GameCore::mPlayerPool->getLocalPlayer());
-	}
-	if((flags & seek) == seek)
-	{
-		mSteeringBehaviour->SeekOn();
-		mSteeringBehaviour->SetSeekTarget(GameCore::mPlayerPool->getLocalPlayer());
-	}
 
 	mFeelerDectionLength = 40.0;
 	direction = turn = 0;
@@ -75,6 +65,34 @@ void AiPlayer::Update(double timeSinceLastFrame)
 	
 	if(mPlayer->getAlive())
 	{
+
+		//get out health our run away if someone is chasing us
+		if(mPlayer->getHP() < 30)
+		{
+			//set flee target as closest person on opposite team
+			Player* fleePlayer;
+			fleePlayer = GameCore::mPlayerPool->getClosestPlayer(mPlayer);
+			mSteeringBehaviour->FleeOn();
+			mSteeringBehaviour->SeekOff();
+			mSteeringBehaviour->SetFleeTarget(fleePlayer);
+		}
+
+		//check if we need to set a target
+		if(mSteeringBehaviour->On(seek))
+		{	
+			if(mSteeringBehaviour->GetSeekTarget() == NULL)
+			{
+				//get a random player on other team
+				Player* seekPlayer;
+				do{
+					seekPlayer = GameCore::mPlayerPool->getRandomPlayer();
+				}while(mPlayer->getTeam() == seekPlayer->getTeam());
+
+				mSteeringBehaviour->SetSeekTarget(seekPlayer);
+			}
+		}
+
+
 		if(distance > 10)
 			mPlayer->getCar()->accelInputTick(true, false, false, timeSinceLastFrame);
 		else
