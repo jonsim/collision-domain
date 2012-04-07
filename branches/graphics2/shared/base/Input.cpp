@@ -179,6 +179,14 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
             GameCore::mGraphicsCore->mSpawnScreen->selectCar();
     }
 #endif
+#ifdef COLLISION_DOMAIN_SERVER
+    // Inject UP to the GUI. Has to be done here to prevent rollover as a button is
+    // held down between frames, causing multiple actions from a single keypress.
+    if (evt.key == OIS::KC_UP)
+        GameCore::mGui->loadConsoleHistory(true);
+    else if (evt.key == OIS::KC_DOWN)
+        GameCore::mGui->loadConsoleHistory(false);
+#endif
 
     return true;
 }

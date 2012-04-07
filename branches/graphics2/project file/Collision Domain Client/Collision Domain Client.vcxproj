@@ -213,7 +213,6 @@
     <ClCompile Include="..\..\client\networking\NetworkCore.cpp" />
     <ClCompile Include="..\..\client\networking\PlayerPool.cpp" />
     <ClCompile Include="..\..\shared\base\AudioCore.cpp" />
-    <ClCompile Include="..\..\shared\base\CircularBuffer.cpp" />
     <ClCompile Include="..\..\shared\base\GameCore.cpp" />
     <ClCompile Include="..\..\shared\base\Input.cpp" />
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
