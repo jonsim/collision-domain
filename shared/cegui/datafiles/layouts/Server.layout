@@ -2,29 +2,30 @@
 
 <GUILayout >
     <Window Type="Vanilla/FrameWindow" Name="/Server" >
-        <Property Name="Font" Value="Verdana-outline-10" />
+        <Property Name="Font" Value="DejaVuSans-10" />
         <Property Name="Text" Value="Collision Domain Server Console" />
-        <Property Name="TitlebarFont" Value="Verdana-outline-10" />
+        <Property Name="TitlebarFont" Value="DejaVuSans-10" />
         <Property Name="SizingEnabled" Value="False" />
         <Property Name="TitlebarEnabled" Value="True" />
         <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
         <Property Name="DragMovingEnabled" Value="False" />
         <Property Name="CloseButtonEnabled" Value="False" />
+        
         <Window Type="TaharezLook/Editbox" Name="/Server/input" >
-            <Property Name="Font" Value="monospace-10" />
+            <Property Name="Font" Value="DejaVuMono-10" />
             <Property Name="MaxTextLength" Value="1073741823" />
             <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{0.035,10}}" />
             <Property Name="VerticalAlignment" Value="Bottom" />
-            <Property Name="TextParsingEnabled" Value="False" />
         </Window>
-        <Window Type="TaharezLook/MultiLineEditbox" Name="/Server/buffer" >
-            <Property Name="Font" Value="monospace-10" />
+        
+        <Window Type="TaharezLook/StaticText" Name="/Server/buffer" >
+            <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{0.935,0}}" />
+			<Property Name="NormalTextColour" Value="FFFFFFFF" />
+            <Property Name="VertScrollbar" Value="True" />
+            <Property Name="VertFormatting" Value="top" />
+            <Property Name="Font" Value="DejaVuMono-10" />
             <Property Name="Text" >Server Started: Welcome to Collision Domain
 </Property>
-            <Property Name="ReadOnly" Value="True" />
-            <Property Name="MaxTextLength" Value="1073741823" />
-            <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{0.935,0}}" />
-            <Property Name="TextParsingEnabled" Value="False" />
         </Window>
     </Window>
 </GUILayout>
