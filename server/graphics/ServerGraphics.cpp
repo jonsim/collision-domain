@@ -46,7 +46,48 @@ void ServerGraphics::go (void)
         return;
 
     // Enter the render loop.
+#if !defined(MAX_FPS) || MAX_FPS == 0 || MAX_FPS > 1000
     mRoot->startRendering();
+#else
+    unsigned long usFrameStart = 0, usScheduledFinish = 0;
+    signed   long usRemainingTime = 0;
+    const unsigned long usStepSize = 1000000 / MAX_FPS;
+    const unsigned long usMinSleepTime = 1000;  // 1 ms
+    const unsigned long usSleepEpsilon = 100;   // 0.1 ms
+
+    mRoot->getRenderSystem()->_initRenderTargets();
+
+    usScheduledFinish = mRoot->getTimer()->getMicroseconds() + usStepSize;
+    while (1)
+    {
+        usFrameStart = mRoot->getTimer()->getMicroseconds();
+        // Calculate the scheduled finish time of this step by adding the step size to
+        // the previous scheduled finish. This accounts for both oversleep and undersleep
+        // from the sleep at the end of the loop. If the previous scheduled finish is
+        // already so far behind that we won't reach it this step, don't increment the
+        // scheduled finish and instead use the previous one. This prevents 'losing time'
+        // when the server can't run at its MAX_FPS, and stabilises the frame durations
+        // on systems with high workload
+        if (usScheduledFinish < usFrameStart + usStepSize)
+            usScheduledFinish += usStepSize;
+
+        // Pump window messages to keep the system responsive.
+        Ogre::WindowEventUtilities::messagePump();
+
+        // Render the frame
+        if (!mRoot->renderOneFrame())
+            break;
+
+        // Try to sleep for the remaining time.
+        // We may wake up early or late, however the ScheduledFinish mechanic will 
+        // force it to tend to MAX_FPS.
+        // When the MAX_FPS is greater than it can reach, usRemainingTime will always
+        // be < 0 (as we are effectively losing time).
+        usRemainingTime = usScheduledFinish - mRoot->getTimer()->getMicroseconds();
+        if (usRemainingTime > 0)
+            usleep(usRemainingTime);
+    }
+#endif
 
     // Exit the render loop and clean up.
     GameCore::destroy();
@@ -84,7 +125,7 @@ bool ServerGraphics::initApplication (void)
     //Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
     //loadResources();                    // Load resources
 
-    GameCore::initialise(&splashScreen, 0); // Initialise other game elements
+    GameCore::initialise(this, &splashScreen, 0); // Initialise other game elements
     GameCore::mNetworkCore->init(NULL);     // Initialise the server networking
 
     createScene();                          // Create the scene (in the server's case loading physics meshes)
