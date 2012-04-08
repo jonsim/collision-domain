@@ -54,7 +54,7 @@ public:
 #ifdef COLLISION_DOMAIN_CLIENT
     static void initialise(GraphicsCore* graphicsCore, SplashScreen* ss, int progress);
 #else
-    static void initialise(SplashScreen* ss, int progress);
+    static void initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int progress);
 #endif
     static void destroy();
 

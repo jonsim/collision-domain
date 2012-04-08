@@ -28,7 +28,7 @@ Gameplay*				GameCore::mGameplay				= NULL;
 #ifdef COLLISION_DOMAIN_CLIENT
 void GameCore::initialise(GraphicsCore* graphicsCore, SplashScreen* ss, int progress)
 #else
-void GameCore::initialise(SplashScreen* ss, int progress)
+void GameCore::initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int progress)
 #endif
 {
     const int endProgress = 100;
@@ -42,6 +42,7 @@ void GameCore::initialise(SplashScreen* ss, int progress)
 #ifdef COLLISION_DOMAIN_SERVER
     ss->updateProgressBar(progress, "Loading AI..."); // 1
 	GameCore::mAiCore		= new AiCore();
+    GameCore::mServerGraphics = serverGraphics;
 #else
     ss->updateProgressBar(progress, ""); // 1
     GameCore::mGraphicsCore = graphicsCore;

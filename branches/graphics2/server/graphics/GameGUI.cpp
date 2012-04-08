@@ -188,6 +188,7 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
         outputToConsole("spawn wander [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the wander mechanic.\n");
         outputToConsole("spawn seek [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the seek mechanic.\n");
         outputToConsole("spawn flee [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the flee mechanic.\n");
+        outputToConsole("get fps         Returns the server's average fps.\n");
     }
 	else if( !stricmp( inputChars,  "prep" ) )
     {
@@ -226,6 +227,10 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(flee);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
+    }
+    else if( !stricmp( inputChars, "get fps" ) )
+    {
+        outputToConsole("Serer's average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
     }
     else
     {
