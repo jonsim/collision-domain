@@ -188,7 +188,8 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
         outputToConsole("spawn wander [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the wander mechanic.\n");
         outputToConsole("spawn seek [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the seek mechanic.\n");
         outputToConsole("spawn flee [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the flee mechanic.\n");
-        outputToConsole("get fps         Returns the server's average fps.\n");
+        outputToConsole("get server fps  Returns the server's average fps.\n");
+        outputToConsole("get gfx fps     Returns the server's graphics fps.\n");
     }
 	else if( !stricmp( inputChars,  "prep" ) )
     {
@@ -228,9 +229,13 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
 		    GameCore::mAiCore->createNewAiAgent(flee);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
-    else if( !stricmp( inputChars, "get fps" ) )
+    else if( !stricmp( inputChars, "get server fps" ) )
     {
-        outputToConsole("Serer's average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
+        outputToConsole("Serer's average fps: %.2f.\n", GameCore::mServerGraphics->mAverageFrameRate);
+    }
+    else if( !stricmp( inputChars, "get gfx fps" ) )
+    {
+        outputToConsole("Serer's graphics average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
     }
     else
     {
@@ -274,13 +279,14 @@ void GameGUI::loadConsoleHistory( bool reverseLoading )
     // Check there is history
     if (consoleHistory.isEmpty())
         return;
+    uint8_t historySize = consoleHistory.getSize();
     
     // If true, there is no current history location (i.e. no history is currently loaded)
     if (consoleHistoryLocation == 0xFF)
     {
         // If we have been asked to load the next oldest item, load the first item in history.
         if (reverseLoading)
-            consoleHistoryLocation = (consoleHistory.getHead() == 0) ? 16 : consoleHistory.getHead() - 1;
+            consoleHistoryLocation = historySize - 1;
         // If we have been asked to load the next newest item, as we are at the front of the history already do nothing
         else
             return;
@@ -291,18 +297,18 @@ void GameGUI::loadConsoleHistory( bool reverseLoading )
         // If true, we need to load the next oldest item (reverse chronological order loading).
         if (reverseLoading)
         {
-            if (consoleHistoryLocation == consoleHistory.getTail())
+            if (consoleHistoryLocation == 0)
                 return;
             else
-                consoleHistoryLocation = (consoleHistoryLocation == 0) ? 16 : consoleHistoryLocation - 1;
+                consoleHistoryLocation--;
         }
         // Otherwise we need to load the next newest item (forwards chronological order loading).
         else
         {
-            if (consoleHistoryLocation == consoleHistory.getHead() - 1)
+            if (consoleHistoryLocation == historySize - 1)
                 consoleHistoryLocation = 0xFF;
             else
-                consoleHistoryLocation = (consoleHistoryLocation == 16) ? 0 : consoleHistoryLocation + 1;
+                consoleHistoryLocation++;
         }
     }
         

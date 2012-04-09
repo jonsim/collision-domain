@@ -61,20 +61,9 @@ public:
         return (head == tail);
     }
 
-
-    /// @brief  Returns the current position of the buffer's head.
-    /// @return The buffer's head index.
-    virtual inline uint8_t getHead (void) const
+    virtual inline uint8_t getSize (void) const
     {
-        return head;
-    }
-
-    
-    /// @brief  Returns the current position of the buffer's tail.
-    /// @return The buffer's tail index.
-    virtual inline uint8_t getTail (void) const
-    {
-        return tail;
+        return (head < tail) ? (head + bufferSize) - tail : head - tail;
     }
     
     /// @brief  Treats the buffer like an array (elements 0, 1, ..., bufferSize-1) and returns the item from

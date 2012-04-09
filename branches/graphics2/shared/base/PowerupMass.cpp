@@ -77,9 +77,9 @@ void PowerupMass::playerCollision(Player* player)
 }
 
 
-void PowerupMass::frameEvent(const Ogre::FrameEvent& evt)
+void PowerupMass::frameEvent(const float timeSinceLastFrame)
 {
-    mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(evt.timeSinceLastFrame), 0.0 ) );
+    mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(timeSinceLastFrame), 0.0 ) );
 }
 
 

@@ -192,7 +192,7 @@ void GraphicsApplication::finishBenchmark (uint8_t stage, float averageTriangles
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    static const float oneSecond = 1.0f / 60.0f;
+    static const float physicsTimeStep = 1.0f / 20.0f;
 
     if (!GraphicsCore::frameRenderingQueued(evt))
         return false;
@@ -237,7 +237,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 	if (NetworkCore::bConnected)
 	{
         // Process the player pool. Perform updates on other players
-        GameCore::mPlayerPool->frameEvent(evt);
+        GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
         if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
         {
             GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
@@ -253,7 +253,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
         All powerup removals handled by the server's collision events
         In fact, client probably shouldn't register any collision callbacks for powerups
     */
-    GameCore::mPowerupPool->frameEvent(evt);
+    GameCore::mPowerupPool->frameEvent(evt.timeSinceLastFrame);
 
     // FUTURE
     // game will run x ticks behind the server
@@ -263,7 +263,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     
 
     // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, oneSecond);
+    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, physicsTimeStep);
 	
 	//Draw info items
 	GameCore::mGameplay->drawInfo();
@@ -274,7 +274,7 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
     {
 	    if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
 	    {
-		    GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, (1.0f / 60.0f));
+		    GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, physicsTimeStep);
 		    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
 	    }
     }

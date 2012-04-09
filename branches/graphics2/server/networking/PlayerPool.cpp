@@ -96,7 +96,7 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 	return NULL;
 }
 
-void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
+void PlayerPool::frameEvent( const float timeSinceLastFrame )
 {
 	for( int i = 0; i < MAX_PLAYERS; i ++ )
 	{
@@ -106,7 +106,7 @@ void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
 		if( mPlayers[i] == NULL )
 			return;
 		if( mPlayers[i]->newInput != NULL )
-			mPlayers[i]->processControlsFrameEvent( mPlayers[i]->newInput, evt.timeSinceLastFrame, (1.0f / 60.0f));
+			mPlayers[i]->processControlsFrameEvent( mPlayers[i]->newInput, timeSinceLastFrame, (1.0f / 60.0f));
 	}
 
 }

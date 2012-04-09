@@ -76,7 +76,7 @@ void PowerupSpeed::playerCollision(Player* player)
 }
 
 
-void PowerupSpeed::frameEvent(const Ogre::FrameEvent& evt)
+void PowerupSpeed::frameEvent(const float timeSinceLastFrame)
 {
     // no need to rotate the speed powerup
 }

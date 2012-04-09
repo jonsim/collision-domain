@@ -92,7 +92,7 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 	return NULL;
 }
 
-void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
+void PlayerPool::frameEvent( const float timeSinceLastFrame )
 {
 	int i = 0;
 
@@ -102,7 +102,7 @@ void PlayerPool::frameEvent( const Ogre::FrameEvent& evt )
             continue;
 		processPlayer( mPlayers[i] );
         // Since we don't have access to other player's input we won't do this for now.
-        //mPlayers[i]->updateGlobalGraphics( mPlayers[i]->newInput, evt.timeSinceLastFrame );
+        //mPlayers[i]->updateGlobalGraphics( mPlayers[i]->newInput, timeSinceLastFrame );
 		// TODO: add timestamps to snapshots
 	}
 
