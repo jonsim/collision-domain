@@ -20,7 +20,7 @@ public:
     PowerupMass();
     ~PowerupMass();
     void playerCollision(Player* player);
-    void frameEvent( const Ogre::FrameEvent& evt );
+    void frameEvent( const float timeSinceLastFrame );
     bool isPendingDelete();
     void spawn(Ogre::Vector3 createAboveAt);
 

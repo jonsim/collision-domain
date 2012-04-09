@@ -122,7 +122,7 @@ void PowerupRandom::playerCollision(Player* player)
     // isPendingDelete() NEEDS TO RETURN SOMETHING ELSE
 }
 
-void PowerupRandom::frameEvent(const Ogre::FrameEvent& evt)
+void PowerupRandom::frameEvent(const float timeSinceLastFrame)
 {
 
 }

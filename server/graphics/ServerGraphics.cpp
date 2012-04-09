@@ -8,6 +8,24 @@
 #include "GameIncludes.h"
 
 
+// The maximum FPS for the server to run at. Note that, when possible, the server's FPS will *tend* to this number - higher and lower
+// FPS are possible, especially for individual frames so it does NOT fix the frame interval, but rather causes the number of frames
+// per second to tend to MAX_FPS.
+// Defining this as 0, or undefining it alltogether will unlock the FPS (as of the time of writing this, 08/04/12, the unlocked server
+// with singlethreadded ai/physics runs at around 4000 fps).
+// While running the server at a high frame rate might seem attractive, it causes a very high and completely unnecessary load on both
+// the graphics card and CPU for no visible gain (the physics runs at a fixed, independant frame rate, and none of the other gameplay
+// elements require such frequent updates). Additional problems can occur as the timeSinceLastFrame value is very succeptible to
+// hiccups at extremely high frame rates which can potentially cause fluctuations in the game performance.
+// It is recommended to choose a number > 60, the current rate at which the physics runs, to ensure physics is simulated rather than 
+// interpolated (which is less accurate and occurs when the timeStep > fixedTimeStep).
+// TLDR: Leave on to lock the server's update speed and relinquish some CPU power and *significantly* reducing graphics card load,
+//       set to 0 to unlock the fps for maximum performance.
+#define SERVER_FPS 100
+#define GRAPHICS_FPS 30
+#define PHYSICS_FPS 60
+
+
 
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -46,21 +64,38 @@ void ServerGraphics::go (void)
         return;
 
     // Enter the render loop.
-#if !defined(MAX_FPS) || MAX_FPS == 0 || MAX_FPS > 1000
-    mRoot->startRendering();
-#else
-    unsigned long usFrameStart = 0, usScheduledFinish = 0;
-    signed   long usRemainingTime = 0;
-    const unsigned long usStepSize = 1000000 / MAX_FPS;
-    const unsigned long usMinSleepTime = 1000;  // 1 ms
-    const unsigned long usSleepEpsilon = 100;   // 0.1 ms
+    unsigned long usCurrentFrame = 0, usPreviousFrame = 0, numberOfFrames = 0;
+    float sTimeSinceLastFrame = 0;
+    mAverageFrameRate = 0;
+#if SERVER_FPS > 0
+    signed long usRemainingTime = 0;
+    unsigned long usNextStateStep = 0;
+    const unsigned long usStateStepSize    = 1000000 / SERVER_FPS;
+#endif
+#if GRAPHICS_FPS > 0
+    unsigned long usNextGraphicsStep = 0;
+    const unsigned long usGraphicsStepSize = 1000000 / GRAPHICS_FPS;
+#endif
 
     mRoot->getRenderSystem()->_initRenderTargets();
 
-    usScheduledFinish = mRoot->getTimer()->getMicroseconds() + usStepSize;
+    // Run the server at the server FPS, making the assumption that the graphics are both 
+    // non-critical and update at a sufficiently lower rate than the state update rate,
+    // extrapolating the graphical updates on top of the state updates.
+#if SERVER_FPS > 0
+    usNextStateStep    = mRoot->getTimer()->getMicroseconds() + usStateStepSize;
+#endif
+#if GRAPHICS_FPS > 0
+    usNextGraphicsStep = mRoot->getTimer()->getMicroseconds() + usGraphicsStepSize;
+#endif
     while (1)
     {
-        usFrameStart = mRoot->getTimer()->getMicroseconds();
+        usCurrentFrame = mRoot->getTimer()->getMicroseconds();
+        sTimeSinceLastFrame = (float) (usCurrentFrame - usPreviousFrame) / 1000000.0f;
+        if (numberOfFrames < 5000)
+            mAverageFrameRate += ((1.0f / sTimeSinceLastFrame) - mAverageFrameRate) / ((float) ++numberOfFrames);
+        else
+            mAverageFrameRate += ((1.0f / sTimeSinceLastFrame) - mAverageFrameRate) / 5000;
         // Calculate the scheduled finish time of this step by adding the step size to
         // the previous scheduled finish. This accounts for both oversleep and undersleep
         // from the sleep at the end of the loop. If the previous scheduled finish is
@@ -68,26 +103,43 @@ void ServerGraphics::go (void)
         // scheduled finish and instead use the previous one. This prevents 'losing time'
         // when the server can't run at its MAX_FPS, and stabilises the frame durations
         // on systems with high workload
-        if (usScheduledFinish < usFrameStart + usStepSize)
-            usScheduledFinish += usStepSize;
 
-        // Pump window messages to keep the system responsive.
-        Ogre::WindowEventUtilities::messagePump();
+        // Calculate when to have the next state step (the driving step).
+#if SERVER_FPS > 0
+        if (usNextStateStep < usCurrentFrame + usStateStepSize)
+            usNextStateStep += usStateStepSize;
+#endif
 
-        // Render the frame
-        if (!mRoot->renderOneFrame())
-            break;
+        // Update the gamestate
+        updateState(sTimeSinceLastFrame);
+        
+        // Update the graphics
+#if GRAPHICS_FPS > 0
+        if (usCurrentFrame > usNextGraphicsStep)
+        {
+#endif
+            // Render the frame - pumping window messages to keep the system responsive and
+            // drawing the GUI, exitting the loop if necessary.
+            Ogre::WindowEventUtilities::messagePump();
+            if (!mRoot->renderOneFrame())
+                break;
+#if GRAPHICS_FPS > 0
+            usNextGraphicsStep += usGraphicsStepSize;
+        }
+#endif
 
         // Try to sleep for the remaining time.
         // We may wake up early or late, however the ScheduledFinish mechanic will 
         // force it to tend to MAX_FPS.
         // When the MAX_FPS is greater than it can reach, usRemainingTime will always
         // be < 0 (as we are effectively losing time).
-        usRemainingTime = usScheduledFinish - mRoot->getTimer()->getMicroseconds();
+#if SERVER_FPS > 0
+        usRemainingTime = usNextStateStep - mRoot->getTimer()->getMicroseconds();
         if (usRemainingTime > 0)
             usleep(usRemainingTime);
-    }
 #endif
+        usPreviousFrame = usCurrentFrame;
+    }
 
     // Exit the render loop and clean up.
     GameCore::destroy();
@@ -265,10 +317,13 @@ void ServerGraphics::createFrameListener (void)
     mRoot->addFrameListener(this);                                      // Register as a Frame listener.
 }
 
+bool ServerGraphics::frameStarted (const Ogre::FrameEvent& evt)
+{
+    return true;
+}
+
 bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
-    static const float oneSecond = 1.0f / 60.0f;
-
     // Check for exit conditions.
     if (mWindow->isClosed())
         return false;
@@ -278,9 +333,22 @@ bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
     // Update the GUI.
     CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
     
+    return true;
+}
+
+bool ServerGraphics::frameEnded (const Ogre::FrameEvent& evt)
+{
+    return true;
+}
+
+
+void ServerGraphics::updateState (const float timeSinceLastFrame)
+{
+    static const float physicsTimeStep = 1.0f / PHYSICS_FPS;
+    
     // Check if the network core is online
     if (!NetworkCore::bConnected)
-        return true;
+        return;
 
     // Capture the user input
     mUserInput.capture();
@@ -289,74 +357,17 @@ bool ServerGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
     GameCore::mNetworkCore->frameEvent();
 
     // Process the player pool. Perform updates on players.
-    GameCore::mPlayerPool->frameEvent( evt );
+    GameCore::mPlayerPool->frameEvent(timeSinceLastFrame);
     
     // Perform updates on AI players.
-    GameCore::mAiCore->frameEvent( evt.timeSinceLastFrame );
+    GameCore::mAiCore->frameEvent(timeSinceLastFrame);
 
     // Perform update on the powerups (basically manage spawning/deleting).
-    GameCore::mPowerupPool->frameEvent( evt );
+    GameCore::mPowerupPool->frameEvent(timeSinceLastFrame);
 
-    // Currently unused updates
-    //GameCore::mAudioCore->frameEvent(200);
-    //GameCore::mGameplay->drawInfo();
-
-    // LOCAL
-    // get new snapshpot from control press - don't move the car though
-    // get old snapshot received from server
-    // create a new snapshot between new and old
-    // apply new snapshot to player
-
-    // REMOTE
-    // get snapshot from server
-    // apply to player
-    
-    // FUTURE
-    // game will run x ticks behind the server
-    // when a new snapshot is received, it should be in the client's future
-    // interpolate based on snapshot timestamps
-
-    // Perform Client Side Prediction.
-    // Move any players who are out of sync
-
-    /* Deal with all but local player (who's snapshots should be 0ms behind where this client thinks they are)
-    for (i : otherPlayerIDs)
-    {
-        CarSnapshot *carSnapshot = getCarSnapshotIfExistsSincePreviousGet(int playerID);
-
-        if (CSP.needsPushingBackIntoPosition(players[playerID], carSnapshot)
-        {
-            players[playerID].getCar()->restoreSnapshot(carSnapshot);
-        }
-
-        delete carSnapshot;
-    }
-    
-    // Deal with the local player (who's snapshot will be x=latency ms behind the real thing)
-    if (CSP.needsMePushedBack(players[clientID], carSnapshot))
-    {
-        // Calculate a snapshot which doesn't jolt the player harshly if it can be fixed with small movements
-        CarSnapshot *latestPlayerSnapshot = getCarSnapshotIfExistsSincePreviousGet(int clientID);
-        CarSnapshot *fixSnapshot = new CarSnapshot(...);
-
-        players[clientID].getCar->restoreSnapshot(fixSnapshot);
-    }
-    */
-
+    // There was a giant ass comment here about client interpolation, see r409 and sooner to find it.
     // Step physics. Minimum of 20 FPS (maxSubsteps=3) before physics becomes wrong.
-    GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 4, oneSecond);
-
-    return true;
-}
-
-bool ServerGraphics::frameStarted (const Ogre::FrameEvent& evt)
-{
-    return true;
-}
-
-bool ServerGraphics::frameEnded (const Ogre::FrameEvent& evt)
-{
-    return true;
+    GameCore::mPhysicsCore->stepSimulation(timeSinceLastFrame, 4, physicsTimeStep);
 }
 
 
