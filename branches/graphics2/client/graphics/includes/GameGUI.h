@@ -19,12 +19,6 @@ public:
 
     void setupFPSCounter (void);
 
-    void setupLobby (void);
-    void closeLobby (void);
-    bool lobbyEnterIPPressed (const CEGUI::EventArgs &args);
-    bool lobbyRefreshPressed (const CEGUI::EventArgs &args);
-    bool lobbyConnectPressed (const CEGUI::EventArgs &args);
-
 	void setupConnectBox();
     void closeConnectBox();
 	bool Connect_Host( const CEGUI::EventArgs &args );

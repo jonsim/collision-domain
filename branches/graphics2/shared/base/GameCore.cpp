@@ -12,12 +12,11 @@ Ogre::SceneManager* GameCore::mSceneMgr = NULL;
 PlayerPool*  GameCore::mPlayerPool = NULL;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-GraphicsCore*			GameCore::mGraphicsCore			= NULL;
-GraphicsApplication*	GameCore::mGraphicsApplication	= NULL;
+ClientGraphics*			GameCore::mClientGraphics       = NULL;
 AudioCore*				GameCore::mAudioCore			= NULL;
 #else
-AiCore*					GameCore::mAiCore				= NULL;
 ServerGraphics*         GameCore::mServerGraphics       = NULL;
+AiCore*					GameCore::mAiCore				= NULL;
 #endif
 NetworkCore*			GameCore::mNetworkCore			= NULL;
 PhysicsCore*			GameCore::mPhysicsCore			= NULL;
@@ -26,52 +25,51 @@ PowerupPool*			GameCore::mPowerupPool			= NULL;
 Gameplay*				GameCore::mGameplay				= NULL;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-void GameCore::initialise(GraphicsCore* graphicsCore, SplashScreen* ss, int progress)
+void GameCore::initialise(ClientGraphics* clientGraphics, SplashScreen* ss, int progress)
 #else
 void GameCore::initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int progress)
 #endif
 {
     const int endProgress = 100;
 #ifdef COLLISION_DOMAIN_CLIENT
-    const int numberOfSteps = 8;
+    const int numberOfSteps = 7;
 #else
     const int numberOfSteps = 7;
 #endif
     const int progressStep = (float) (endProgress - progress) / (float) numberOfSteps;
 
 #ifdef COLLISION_DOMAIN_SERVER
-    ss->updateProgressBar(progress, "Loading AI..."); // 1
-	GameCore::mAiCore		= new AiCore();
+    ss->updateProgressBar(progress += progressStep, "Loading AI...");       // -/1
+	GameCore::mAiCore = new AiCore();
     GameCore::mServerGraphics = serverGraphics;
 #else
-    ss->updateProgressBar(progress, ""); // 1
-    GameCore::mGraphicsCore = graphicsCore;
+    GameCore::mClientGraphics = clientGraphics;
 #endif
 
-    ss->updateProgressBar(progress += progressStep, "Loading GUI..."); // 1
+    ss->updateProgressBar(progress += progressStep, "Loading GUI...");      // 1/2
 	GameCore::mGui         = new GameGUI();
 
-    ss->updateProgressBar(progress += progressStep, "Loading Players..."); // 2
+    ss->updateProgressBar(progress += progressStep, "Loading Players...");  // 2/3
     GameCore::mPlayerPool  = new PlayerPool();
 
-    ss->updateProgressBar(progress += progressStep, "Loading Network..."); // 3
+    ss->updateProgressBar(progress += progressStep, "Loading Network...");  // 3/4
     GameCore::mNetworkCore = new NetworkCore();
 
-    ss->updateProgressBar(progress += progressStep, "Loading Physics..."); // 4
+    ss->updateProgressBar(progress += progressStep, "Loading Physics...");  // 4/5
     GameCore::mPhysicsCore = new PhysicsCore();
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    ss->updateProgressBar(progress += progressStep, "Loading Audio..."); // (optionally 5)
+    ss->updateProgressBar(progress += progressStep, "Loading Audio...");    // 5/-
     GameCore::mAudioCore   = new AudioCore();
 #endif
 
-    ss->updateProgressBar(progress += progressStep, "Loading Powerups..."); // 6
+    ss->updateProgressBar(progress += progressStep, "Loading Powerups..."); // 6/6
     GameCore::mPowerupPool = new PowerupPool();
 
-    ss->updateProgressBar(progress += progressStep, "Loading Gameplay..."); // 7
+    ss->updateProgressBar(progress += progressStep, "Loading Gameplay..."); // 7/7
 	GameCore::mGameplay	   = new Gameplay();
 
-    ss->updateProgressBar(100, "Finalising...");                      // 8
+    ss->updateProgressBar(100, "Finalising...");                            // 8/8
 }
 
 void GameCore::destroy()

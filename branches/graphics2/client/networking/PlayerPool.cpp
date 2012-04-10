@@ -163,7 +163,7 @@ void PlayerPool::processPlayer( Player *pPlayer )
 
         
         if (pPlayer->getVIP())
-            GameCore::mGraphicsCore->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
+            GameCore::mClientGraphics->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
     }
 }
 

@@ -607,14 +607,14 @@
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h">
-      <Filter>client\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\client\graphics\includes\GraphicsCore.h">
-      <Filter>client\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
       <Filter>shared\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\ClientGraphics.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\client\graphics\includes\Lobby.h">
+      <Filter>client\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1002,14 +1002,14 @@
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp">
       <Filter>shared\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\client\graphics\GraphicsCore.cpp">
-      <Filter>client\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp">
-      <Filter>client\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
       <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\ClientGraphics.cpp">
+      <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\graphics\Lobby.cpp">
+      <Filter>client\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

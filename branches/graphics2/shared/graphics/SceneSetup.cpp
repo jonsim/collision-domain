@@ -412,12 +412,16 @@ void SceneSetup::setupMeshDeformer (void)
 
 void SceneSetup::setupGUI (void)
 {
-    // Attach and start the GUI renderer.
-    OutputDebugString("Bootstrapping CEGUI\n");
-    mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
-    OutputDebugString("Initialising GUI\n");
-    GameCore::mGui->initialiseGUI();
-    OutputDebugString("GUI Initialised\n");
+    static bool guiSetup = false;
+    if (!guiSetup)
+    {
+        // Attach and start the GUI renderer.
+        OutputDebugString("Bootstrapping CEGUI\n");
+        mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+        OutputDebugString("Initialising GUI\n");
+        GameCore::mGui->initialiseGUI();
+        OutputDebugString("GUI Initialised\n");
+    }
 }
 
 
