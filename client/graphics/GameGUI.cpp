@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "GameGUI.h"
-#include "GraphicsCore.h"
 #include "boost/algorithm/string.hpp"
 
 GameGUI::GameGUI()
@@ -15,17 +14,23 @@ GameGUI::~GameGUI()
 ///         adds the FPS counter to it.
 void GameGUI::initialiseGUI (void)
 {
-	// Create the default font
+	// Load the fonts and set their sizes.
+    CEGUI::Font* pFont;
 	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	CEGUI::Font *pFont = &CEGUI::FontManager::getSingleton().create("Verdana-outline-10.font");
-    CEGUI::System::getSingleton().setDefaultFont( pFont );
+	//pFont = &CEGUI::FontManager::getSingleton().create("Verdana-outline-10.font");
+	//pFont->setProperty( "PointSize", "10" );
+	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
+	pFont->setProperty( "PointSize", "10" );
 
-    CEGUI::Font *pOtherFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
-    pOtherFont->setProperty( "PointSize", "6" );
+	// Register font as default
+    if(CEGUI::FontManager::getSingleton().isDefined("DejaVuSans-10"))
+		CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
 
 	// Create skin scheme outlining widget (window) parameters
 	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
 	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
+	CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
+	CEGUI::SchemeManager::getSingleton().create("GWEN.scheme");
 	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
 
 	// Register skin's default image set and cursor icon
@@ -37,53 +42,8 @@ void GameGUI::initialiseGUI (void)
 
 	// Create an empty default window layer
 	mSheet = CEGUI::WindowManager::getSingleton().createWindow( "DefaultWindow", "root_wnd" );
-}
 
-
-
-/* lobby */
-void GameGUI::setupLobby (void)
-{
-	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
-
-	// Load the lobby's layout file
-	CEGUI::Window* pLayout = winMgr.loadWindowLayout("Lobby.layout");
-
-	// Add to gui overlay window
-	mSheet->addChildWindow(pLayout);
-    
-	// Get handles for the buttons
-	//CEGUI::Window* enterIPButton = winMgr.getWindow("/Connect/host");
-    //CEGUI::Window* refreshButton = winMgr.getWindow("/Connect/nick");
-	CEGUI::Window* connectButton = winMgr.getWindow("/Lobby/btnConnect");
-    CEGUI::Window* quitButton    = winMgr.getWindow("/Lobby/btnQuit");
-
-	// Register callbacks for the buttons
-	connectButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::lobbyConnectPressed, this));
-    quitButton->subscribeEvent(   CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::lobbyRefreshPressed, this));
-}
-
-void GameGUI::closeLobby (void)
-{
-    mSheet->removeChildWindow("/Lobby");
-	CEGUI::MouseCursor::getSingleton().hide();
-}
-
-bool GameGUI::lobbyEnterIPPressed (const CEGUI::EventArgs &args)
-{
-    return true;
-}
-
-bool GameGUI::lobbyRefreshPressed (const CEGUI::EventArgs &args)
-{
-    OutputDebugString("noobs\n");
-    return true;
-}
-
-bool GameGUI::lobbyConnectPressed (const CEGUI::EventArgs &args)
-{
-    OutputDebugString("boobs\n");
-    return true;
+	CEGUI::System::getSingleton().setGUISheet( mSheet );
 }
 
 
@@ -165,7 +125,7 @@ bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
 
 bool GameGUI::Connect_Quit( const CEGUI::EventArgs &args )
 {
-	GameCore::mGraphicsCore->shutdown();
+	GameCore::mClientGraphics->shutdown();
 	return true;
 }
 
@@ -239,19 +199,19 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
             if( strTokens.at(0) == "exit" )
                 mWinMgr.getWindow( "/Console" )->hide();
 			else if (!strnicmp(szInput, "weather ", 8))
-				GameCore::mGraphicsApplication->setWeather(atoi(&szInput[8]) - 1);
+				GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);
 			else if (!stricmp(szInput, "benchmark"))
-				GameCore::mGraphicsApplication->startBenchmark(0);
+				GameCore::mClientGraphics->startBenchmark(0);
 			else if (!strnicmp(szInput, "b1 ", 3))
-                GameCore::mGraphicsApplication->loadBloom(GameCore::mGraphicsCore->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
+                GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
 			else if (!strnicmp(szInput, "b2 ", 3))
-				GameCore::mGraphicsApplication->loadBloom(GameCore::mGraphicsCore->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
+				GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
 			else if (!strnicmp(szInput, "mb ", 3))
-				GameCore::mGraphicsApplication->loadMotionBlur(GameCore::mGraphicsCore->mCamera->getViewport(), 1, atof(&szInput[3]));
+				GameCore::mClientGraphics->loadMotionBlur(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]));
 			else if (!stricmp(szInput, "wireframe on"))
-                GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
+                GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
 			else if (!stricmp(szInput, "wireframe off"))
-                GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_SOLID);
+                GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_SOLID);
             else if (!stricmp(szInput, "bitsoff"))
                 GameCore::mPlayerPool->getLocalPlayer()->getCar()->makeBitsFallOff();
             else if( strTokens.at(0) == "movdbg" )
@@ -501,7 +461,7 @@ void GameGUI::updateCounters()
 	static char szFPS[64];
 
 	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-	sprintf( szFPS,   "FPS: %.2f", GameCore::mGraphicsCore->mWindow->getAverageFPS());
+	sprintf( szFPS,   "FPS: %.2f", GameCore::mClientGraphics->mWindow->getAverageFPS());
 	fps->setText( szFPS );
 }
 

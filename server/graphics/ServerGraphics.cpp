@@ -8,19 +8,18 @@
 #include "GameIncludes.h"
 
 
-// The maximum FPS for the server to run at. Note that, when possible, the server's FPS will *tend* to this number - higher and lower
-// FPS are possible, especially for individual frames so it does NOT fix the frame interval, but rather causes the number of frames
-// per second to tend to MAX_FPS.
-// Defining this as 0, or undefining it alltogether will unlock the FPS (as of the time of writing this, 08/04/12, the unlocked server
-// with singlethreadded ai/physics runs at around 4000 fps).
-// While running the server at a high frame rate might seem attractive, it causes a very high and completely unnecessary load on both
-// the graphics card and CPU for no visible gain (the physics runs at a fixed, independant frame rate, and none of the other gameplay
-// elements require such frequent updates). Additional problems can occur as the timeSinceLastFrame value is very succeptible to
-// hiccups at extremely high frame rates which can potentially cause fluctuations in the game performance.
-// It is recommended to choose a number > 60, the current rate at which the physics runs, to ensure physics is simulated rather than 
-// interpolated (which is less accurate and occurs when the timeStep > fixedTimeStep).
-// TLDR: Leave on to lock the server's update speed and relinquish some CPU power and *significantly* reducing graphics card load,
-//       set to 0 to unlock the fps for maximum performance.
+// SERVER_FPS defines the rate at which the server processes requests and updates player states. This is NOT a maximum FPS, nor is it
+// a stable fps, rather it is the target the server aims for. If there are not enough resources to achieve this FPS then the observed
+// FPS will be lower, if there are an excess then the observed FPS will be around this value (due to the hyperactive nature of the
+// scheduler it is often up to 20% higher than this figure). Define this to 0 to unlock the server's fps, causing it to run at the
+// maximum speed (as of 08/04/12 the unlocked, single threadded server idles at ~420,000 FPS, with 100AI players this drops to 4,000).
+// 
+// GRAPHICS_FPS defines the rate the graphics updates at, this will never be more than the server's FPS, and in the case that the
+// server updates close to the same speed this may drop. The graphics can NOT update faster than this. Define this to  0 to unlock the 
+// graphics fps, causing it to run at the same speed as the SERVER_FPS (which can also be unlocked - though note that in this case the 
+// bottle neck is the graphics card and will put a very heavy load on it).
+// 
+// PHYSICS_FPS defines the rate at which the physics updates at.
 #define SERVER_FPS 100
 #define GRAPHICS_FPS 30
 #define PHYSICS_FPS 60
@@ -90,12 +89,14 @@ void ServerGraphics::go (void)
 #endif
     while (1)
     {
+        // Calculate the time since the last frame was processed.
         usCurrentFrame = mRoot->getTimer()->getMicroseconds();
         sTimeSinceLastFrame = (float) (usCurrentFrame - usPreviousFrame) / 1000000.0f;
         if (numberOfFrames < 5000)
             mAverageFrameRate += ((1.0f / sTimeSinceLastFrame) - mAverageFrameRate) / ((float) ++numberOfFrames);
         else
             mAverageFrameRate += ((1.0f / sTimeSinceLastFrame) - mAverageFrameRate) / 5000;
+
         // Calculate the scheduled finish time of this step by adding the step size to
         // the previous scheduled finish. This accounts for both oversleep and undersleep
         // from the sleep at the end of the loop. If the previous scheduled finish is
@@ -103,7 +104,6 @@ void ServerGraphics::go (void)
         // scheduled finish and instead use the previous one. This prevents 'losing time'
         // when the server can't run at its MAX_FPS, and stabilises the frame durations
         // on systems with high workload
-
         // Calculate when to have the next state step (the driving step).
 #if SERVER_FPS > 0
         if (usNextStateStep < usCurrentFrame + usStateStepSize)
@@ -113,7 +113,7 @@ void ServerGraphics::go (void)
         // Update the gamestate
         updateState(sTimeSinceLastFrame);
         
-        // Update the graphics
+        // Update the graphics, if this state step coincides with a graphics step.
 #if GRAPHICS_FPS > 0
         if (usCurrentFrame > usNextGraphicsStep)
         {
@@ -129,10 +129,9 @@ void ServerGraphics::go (void)
 #endif
 
         // Try to sleep for the remaining time.
-        // We may wake up early or late, however the ScheduledFinish mechanic will 
-        // force it to tend to MAX_FPS.
-        // When the MAX_FPS is greater than it can reach, usRemainingTime will always
-        // be < 0 (as we are effectively losing time).
+        // We may wake up early or late, however the NextStep mechanic will force it to tend to
+        // the target rate. When the SERVER_FPS is greater than it can reach, usRemainingTime 
+        // will always be < 0 (as we are effectively losing time) and no sleeping will occur.
 #if SERVER_FPS > 0
         usRemainingTime = usNextStateStep - mRoot->getTimer()->getMicroseconds();
         if (usRemainingTime > 0)

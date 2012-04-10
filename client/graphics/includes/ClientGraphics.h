@@ -2,8 +2,8 @@
  * @file    GraphicsCore.h
  * @brief     Configures the graphical settings and provides the common graphical functionality.
  */
-#ifndef GRAPHICSCORE_H
-#define GRAPHICSCORE_H
+#ifndef CLIENTGRAPHICS_H
+#define CLIENTGRAPHICS_H
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
@@ -19,22 +19,27 @@ class SceneSetup;
 
 enum GraphicsState
 {
-    LOBBY,
-    PLAYER,
-    SPECTATOR,
+    UNDEFINED,
+    IN_LOBBY,
+    PLAYING_GAME,
+    BENCHMARKING,
+    //SPECTATING_GAME,
     PROJECTOR
 };
 
-class GraphicsCore : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
+class ClientGraphics : public Ogre::FrameListener, public Ogre::WindowEventListener, OgreBites::SdkTrayListener, public SceneSetup
 {
 public:
-    GraphicsCore (void);
-    virtual ~GraphicsCore (void);
+    ClientGraphics (void);
+    virtual ~ClientGraphics (void);
     virtual void go (void);
     void shutdown() { mShutDown = true; }
     void generateExplosion (Ogre::Vector3 location);
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
     void updateVIPLocation (int teamNumber, Ogre::Vector3 location);
+
+    // GraphicsApplication shit
+	void startBenchmark (uint8_t stage);
 
     Ogre::Camera*       mCamera;
     Ogre::RenderWindow* mWindow;
@@ -45,40 +50,54 @@ protected:
     // Called when the application is first started.
     virtual bool initApplication (void);    // Determines flow from startup
     virtual bool configureRenderer (void);  // Configures the render system used by ogre
-    /*
+    
+    virtual void createCamera (void);
+    virtual void createViewports (void);
+    
     // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
-    virtual bool loadLobby (void);
-    virtual bool unloadLobby (void);
-
+    virtual void loadLobby (void);
+    virtual void unloadLobby (void);
     // Called when the 3D graphics are loaded (and a game has been entered).
-    virtual bool loadGame (void);
-    virtual bool unloadGame (void);
-    */
-    virtual void createCamera (void) = 0;
-    virtual void createViewports (void) = 0;
+    virtual void loadGame (void);
+    virtual void unloadGame (void);
+
     virtual void setupResources (void);
     virtual void loadResources (void);
     virtual void createFrameListener (void);
-    virtual void createScene (void) = 0;     // This needs to be overridden to display anything
+    virtual void createScene (void);     // This needs to be overridden to display anything
+    
+    virtual void setupUserInput (void);
+    virtual void setupGUI (void);
+
     virtual void destroyScene (void);
     virtual void updateParticleSystems (void);
-    virtual void setupUserInput (void);
 
     // Ogre::FrameListener overrides.
     virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);
+    virtual bool frameStarted (const Ogre::FrameEvent& evt);
+    virtual bool frameEnded (const Ogre::FrameEvent& evt);
     
     // Ogre::WindowEventListener overrides.
     virtual void windowResized (Ogre::RenderWindow* rw);
     virtual void windowClosed (Ogre::RenderWindow* rw);
+    
+    // Graphics Application shit (to be moved)
+	void finishBenchmark (uint8_t stage, float averageTriangles);
+	bool    mBenchmarkRunning;
+	uint8_t mBenchmarkStage;
+    
+    // Graphics state.
+    GraphicsState           mGraphicsState;
 
-    // OIS user input
+    // OIS user input.
     Input mUserInput;
 
+    // Ogre bits and bobs.
     Ogre::Root*  mRoot;
     Ogre::String mResourcesCfg;
     Ogre::String mPluginsCfg;
-
-    // OgreBites
+    
+    // OgreBites.
     OgreBites::SdkCameraMan* mCameraMan;     // basic camera controller
     bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
     bool mDebrisVisible;

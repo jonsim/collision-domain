@@ -87,7 +87,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
 	OutputDebugString(ss.str().c_str());*/
 
-	GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
+	GameCore::mClientGraphics->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
 }
 
 
@@ -196,7 +196,7 @@ void Player::updateLocalGraphics (void)
 		blurAmount = (speedmph - 40) / 28;
 		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
 	}
-    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
+    GameCore::mClientGraphics->setRadialBlur(GameCore::mClientGraphics->mCamera->getViewport(), blurAmount);
 }
 
 /// @brief  Updates graphics for all players (called individually for each player in player pool), contains graphical
@@ -226,7 +226,7 @@ void Player::killPlayer()
 {
 	this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
-    GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
+    GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
 
     // Blast the fuck out of the car (renders it completely undriveable but since this

@@ -11,10 +11,10 @@
 
 #include "PlayerPool.h"
 #include "Player.h"
-#include "GraphicsCore.h"
-#include "GraphicsApplication.h"
+#include "ClientGraphics.h"
 #include "NetworkCore.h"
 #include "GameGUI.h"
+#include "Lobby.h"
 #include "CarCam.h"
 #include "SpawnScreen.h"
 #include "Team.h"

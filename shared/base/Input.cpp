@@ -169,14 +169,14 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
     
 #ifdef COLLISION_DOMAIN_CLIENT
     // This is safe, mSpawnScreen will only ever be not null if we are selecting
-    if( GameCore::mGraphicsCore->mSpawnScreen != NULL )
+    if( GameCore::mClientGraphics->mSpawnScreen != NULL )
     {
         if( evt.key == OIS::KC_LEFT || evt.key == OIS::KC_A )
-            GameCore::mGraphicsCore->mSpawnScreen->switchCar( -1 );
+            GameCore::mClientGraphics->mSpawnScreen->switchCar( -1 );
         else if( evt.key == OIS::KC_RIGHT || evt.key == OIS::KC_D )
-            GameCore::mGraphicsCore->mSpawnScreen->switchCar( 1 );
+            GameCore::mClientGraphics->mSpawnScreen->switchCar( 1 );
         else if( evt.key == OIS::KC_RETURN )
-            GameCore::mGraphicsCore->mSpawnScreen->selectCar();
+            GameCore::mClientGraphics->mSpawnScreen->selectCar();
     }
 #endif
 #ifdef COLLISION_DOMAIN_SERVER
@@ -253,7 +253,7 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     // Play the car horn on left or right button press
 #ifdef COLLISION_DOMAIN_CLIENT
     Player*      localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-    SpawnScreen* spawnScreen = GameCore::mGraphicsCore->mSpawnScreen;
+    SpawnScreen* spawnScreen = GameCore::mClientGraphics->mSpawnScreen;
     
     if (!spawnScreen && localPlayer && localPlayer->getCar())
         localPlayer->getCar()->playCarHorn();

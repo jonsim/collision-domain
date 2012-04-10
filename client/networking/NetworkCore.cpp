@@ -242,7 +242,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
     // Show the spawn screen
-    GameCore::mGraphicsCore->mSpawnScreen = new SpawnScreen( GameCore::mGraphicsCore->mCamera );
+    GameCore::mClientGraphics->mSpawnScreen = new SpawnScreen( GameCore::mClientGraphics->mCamera );
 
 	// If we're allowed to spawn, our spawn method will be called by the server automagically.
 }
@@ -298,13 +298,13 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	{
         // Get rid of our spawn screen
-        delete GameCore::mGraphicsCore->mSpawnScreen;
-        GameCore::mGraphicsCore->mSpawnScreen = NULL;
+        delete GameCore::mClientGraphics->mSpawnScreen;
+        GameCore::mClientGraphics->mSpawnScreen = NULL;
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
 		pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
 		pPlayer->setTeam(teamNum);
-        pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
+        pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
 	}
 	else
 	{

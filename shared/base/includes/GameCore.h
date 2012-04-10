@@ -12,9 +12,8 @@
 class PlayerPool;
 class NetworkCore;
 #ifdef COLLISION_DOMAIN_CLIENT
-class GraphicsCore;
-class GraphicsApplication;
 class AudioCore;
+class ClientGraphics;
 #else
 class AiCore;
 class ServerGraphics;
@@ -38,9 +37,8 @@ public:
     static PlayerPool*  mPlayerPool;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    static GraphicsCore* mGraphicsCore;
-	static GraphicsApplication* mGraphicsApplication;
     static AudioCore* mAudioCore;
+    static ClientGraphics* mClientGraphics;
 #else
 	static AiCore* mAiCore;
     static ServerGraphics* mServerGraphics;
@@ -52,7 +50,7 @@ public:
 	static Gameplay* mGameplay;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    static void initialise(GraphicsCore* graphicsCore, SplashScreen* ss, int progress);
+    static void initialise(ClientGraphics* clientGraphics, SplashScreen* ss, int progress);
 #else
     static void initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int progress);
 #endif
