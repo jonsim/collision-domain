@@ -121,17 +121,17 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
         case HORN_MID:      break;
         case HORN_HIGH:     break;
         case ENGINE_SMALL:
-            sound->setVolume(0.15f);
+            sound->setVolume(0.2f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
         case ENGINE_COUPE:
-            sound->setVolume(0.15f);
+            sound->setVolume(0.2f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
         case ENGINE_TRUCK:
-            sound->setVolume(0.15f);
+            sound->setVolume(0.2f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
