@@ -372,15 +372,27 @@ void GameGUI::setupSpeedo( void )
 	oleNeedle->setMetricsMode( Ogre::GMM_PIXELS );
 	oleNeedle->setDimensions( 250, 250 );
 	oleNeedle->setMaterialName( "speedo_needle" );
-
+    
 	olcSpeedo->addChild( oleNeedle );
-
-    Ogre::OverlayElement *hub = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDOHUB" );
+    
+    /*Ogre::OverlayElement *hub = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDOHUB" );
 	hub->setMetricsMode( Ogre::GMM_PIXELS );
 	hub->setDimensions( 250, 250 );
 	hub->setMaterialName( "speedo_hub" );
 
-	olcSpeedo->addChild( hub );
+	olcSpeedo->addChild( hub );*/
+
+    // The needle/hub layering was incorrect before, adding another container implicitly puts it on top
+    
+	Ogre::OverlayContainer *olcHub = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDO_HUB" ) );
+	olcHub->setMetricsMode( Ogre::GMM_PIXELS );
+	olcHub->setHorizontalAlignment( Ogre::GHA_LEFT );
+	olcHub->setVerticalAlignment( Ogre::GVA_BOTTOM );
+	olcHub->setDimensions( 250, 250 );
+	olcHub->setMaterialName( "speedo_hub" );
+	olcHub->setPosition( 20, -270 );
+    
+	olSpeedo->add2D( olcHub );
 }
 
 void GameGUI::updateSpeedo( void )

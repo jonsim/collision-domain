@@ -185,7 +185,9 @@ OutputDebugString(s.c_str());*/
 
 
 void SimpleCoupeCar::louderLocalSounds() {
-    float increaseTo = mEngineSound->getVolume() + 0.3;
+    //mEngineSound->setVolume(0); return;
+
+    float increaseTo = mEngineSound->getVolume() + 0.25;
     if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
 }
 
