@@ -36,7 +36,10 @@ GraphicsCore::~GraphicsCore (void)
     //Remove ourself as a Window listener
     Ogre::WindowEventUtilities::removeWindowEventListener(mWindow, this);
     windowClosed(mWindow);
-    delete mRoot;
+
+    // It really doesn't matter as we aren't making multiple graphics cores
+    // and its the top level of our program, so is going to be cleaned anyway
+    // delete mRoot;
 }
 
 
