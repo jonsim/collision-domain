@@ -227,6 +227,16 @@ std::string Player::getGUID(void) {
 	return stringGUID;
 }
 
+RakNet::RakNetGUID Player::getPlayerGUID()
+{
+	return mPlayerGUID;
+}
+
+void Player::setPlayerGUID(RakNet::RakNetGUID playerGUID)
+{
+	mPlayerGUID = playerGUID;
+}
+
 void Player::addToScore(int amount)
 {
 	roundScore += amount;

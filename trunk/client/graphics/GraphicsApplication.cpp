@@ -191,7 +191,14 @@ bool GraphicsApplication::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     if (!GraphicsCore::frameRenderingQueued(evt))
         return false;
-    
+
+    // Show the big screen
+	if(mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))
+		GameCore::mGameplay->mSB->show();
+	else
+		GameCore::mGameplay->mSB->hide();
+
+
 	if (mBenchmarkRunning)
 	{
 		static float    benchmarkProgress = 0;

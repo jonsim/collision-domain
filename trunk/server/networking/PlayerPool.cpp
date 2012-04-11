@@ -21,18 +21,7 @@ int PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 
 int PlayerPool::getNumberOfPlayers()
 {
-	int i = 0, count = 0;
-	/*for( i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		if( mPlayers[i] != NULL )
-		{
-			count++;
-		}
-	}*/
-
-	count = mPlayers.size();
-
-	return count;
+	return mPlayers.size();
 }
 
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
@@ -122,58 +111,6 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 	
 	//return this->mPlayers;
 	return tmp;
-	//The below is pretty awful trying a better way
-	/*
-	//TODO - This is slow so if performance problem can implement a better sort
-	std::vector<Player*> tmpPlayers;
-	int lowestScoreSoFar = 0;
-
-	//Some variables to keep track of data during each search
-	int lowestScoreThisSearch;
-	Player* lowestScorePlayerThisSearch = NULL;
-
-	int numberOfPlayer = this->getNumberOfPlayers();
-
-	bool finished = false;
-
-	while(!finished)
-	{
-		lowestScoreThisSearch = -1;
-		lowestScorePlayerThisSearch = NULL;
-
-		for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
-		{
-			Player* player = (*it);
-
-			if(player != NULL) 
-			{
-				//If it's the lowest score add it and be done wit it
-				if(player->getRoundScore() == lowestScoreSoFar)
-				{
-					lowestScorePlayerThisSearch = player;
-					break;
-				}
-
-				//Try and find the next lowest
-				if(lowestScoreThisSearch == -1 || player->getRoundScore() < lowestScoreThisSearch)
-				{
-					lowestScoreThisSearch = player->getRoundScore();
-					lowestScorePlayerThisSearch = player;
-				}
-			}
-		}
-
-		//Add the lowest to the new vector
-		tmpPlayers.push_back(lowestScorePlayerThisSearch);
-		lowestScoreSoFar = lowestScoreThisSearch;
-
-		if(tmpPlayers.size() == numberOfPlayer)
-			finished = true;
-	}
-
-	return tmpPlayers;
-	*/
-
 }
 
 Player* PlayerPool::getLocalPlayer() { return mLocalPlayer; }
