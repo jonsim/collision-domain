@@ -17,10 +17,10 @@ using namespace OgreOggSound;
 #define FILE_CAR_CRASH         "car-crash-1.wav"
 #define FILE_EXPLOSION         "explosion.wav"
 
-//#define FILE_TRUCK_ENGINE_LOW  "truck-engine-low.ogg"
-#define FILE_ENGINE_SMALL       "truck-engine-high.ogg"
-#define FILE_ENGINE_COUPE       "truck-engine-high.ogg"
-#define FILE_ENGINE_TRUCK       "truck-engine-high.ogg"
+// The same sound is ok as rpms modulate it differently per car
+#define FILE_ENGINE_SMALL      "own-truck-engine-idle.ogg"
+#define FILE_ENGINE_COUPE      "own-truck-engine-idle.ogg"
+#define FILE_ENGINE_TRUCK      "own-truck-engine-idle.ogg"
 
 #define FILE_POWERUP_HEALTH    "powerup-health.wav"
 #define FILE_POWERUP_SPEED     "powerup-speed.wav"
@@ -112,8 +112,40 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
         default: return NULL;
     }
     std::string name = file + boost::lexical_cast<std::string>(uniqueID);
+    OgreOggISound *sound = getNamedSoundInstance(name, file, attachTo, loop);
 
-    return getNamedSoundInstance(name, file, attachTo, loop);
+    // Apply some parameters to this sound
+    switch (h)
+    {
+        case HORN_LOW:      break;
+        case HORN_MID:      break;
+        case HORN_HIGH:     break;
+        case ENGINE_SMALL:
+            sound->setVolume(0.15f);
+            sound->setRolloffFactor(1.5f);
+            sound->setReferenceDistance(14.f);
+            break;
+        case ENGINE_COUPE:
+            sound->setVolume(0.15f);
+            sound->setRolloffFactor(1.5f);
+            sound->setReferenceDistance(14.f);
+            break;
+        case ENGINE_TRUCK:
+            sound->setVolume(0.15f);
+            sound->setRolloffFactor(1.5f);
+            sound->setReferenceDistance(14.f);
+            break;
+        case CAR_CRASH:     break;
+        case EXPLOSION:
+            sound->setVolume(0.8f);
+            sound->setRolloffFactor(1.8f);
+            sound->setReferenceDistance(20.f);
+            break;
+        default:
+            break;
+    }
+
+    return sound;
 }
 
 /// it is quite possible mInitOK is false, so this may return null.

@@ -130,7 +130,8 @@ void GraphicsCore::generateExplosion (Ogre::Vector3 location)
     
     // Generate a sound (this isn't a particularly good way of doing it but it will work until a better method is available).
     static OgreOggSound::OgreOggISound* explosionSound = GameCore::mAudioCore->getSoundInstance(EXPLOSION, 0, NULL);
-    
+
+    explosionSound->setPosition(location);
     GameCore::mAudioCore->playSoundOrRestart(explosionSound);
 }
 

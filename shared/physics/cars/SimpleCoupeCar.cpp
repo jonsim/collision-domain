@@ -150,11 +150,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
-    mEngineSound->setVolume(0.35f);
     mEngineSound->setPitch(2.0f);
-    mEngineSound->setRolloffFactor(1.5f);
-    mEngineSound->setReferenceDistance(14.f);
-    //mEngineSound->setRelativeToListener(false);
     
     #ifdef COLLISION_DOMAIN_CLIENT
         if (!silentCar) mEngineSound->play();
@@ -179,20 +175,38 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
 }
 
+/*static float min = 99999;
+static float max = 0;
+min = min > rpm ? rpm : min;
+max = max < rpm ? rpm : max;
+std::string s = "min ";
+s += boost::lexical_cast<std::string>(min) + "    max " + boost::lexical_cast<std::string>(max) + "\n";
+OutputDebugString(s.c_str());*/
+
+
+void SimpleCoupeCar::louderLocalSounds() {
+    float increaseTo = mEngineSound->getVolume() + 0.3;
+    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+}
+
 
 void SimpleCoupeCar::frameEvent()
 {
+    float maxPitch = 1.0f;
+
     updateRPM();
-    float pitch = (this->getRPM() / 3200.0f) * 2.7;
-    if (pitch < 1.0f) pitch = 1.0f;
+    float rpm = this->getRPM();
+    // min 1600    max 4497.07373
+
+    rpm -= 1600;
+    if (rpm < 0) rpm = 0;
+    float pitch = (rpm / 2898.f);
+    if (pitch > 1) pitch = 1;
+    // pitch between 0 and 1. add 1 so min. pitch is 1.0 as required to avoid phasey sounds
+    pitch = pitch * maxPitch + 1;
+
     mEngineSound->setPitch(pitch);
 
-    /*std::string str = "" + boost::lexical_cast<std::string>(mBodyNode->getPosition().x)
-                    + "    " + boost::lexical_cast<std::string>(mBodyNode->getPosition().y)
-                    + "    " + boost::lexical_cast<std::string>(mBodyNode->getPosition().z) + "\n";
-    OutputDebugString(str.c_str());*/
-
-    // can also setDirection
     mEngineSound->setPosition(mBodyNode->getPosition());
     mEngineSound->setVelocity(Car::getLinearVelocity());
 }

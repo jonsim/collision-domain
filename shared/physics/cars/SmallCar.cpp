@@ -156,11 +156,8 @@ SmallCar::SmallCar(int uniqueCarID, CarSkin skin, bool silentCar)
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_SMALL, mUniqueCarID, NULL, true);
-    mEngineSound->setVolume(0.35f);
     mEngineSound->setPitch(2.0f);
-    mEngineSound->setRolloffFactor(1.5f);
-    mEngineSound->setReferenceDistance(14.f);
-    //mEngineSound->setRelativeToListener(false);
+    
     #ifdef COLLISION_DOMAIN_CLIENT
         if (!silentCar) mEngineSound->play();
     #endif
@@ -185,11 +182,27 @@ SmallCar::~SmallCar(void)
 }
 
 
+void SmallCar::louderLocalSounds() {
+    float increaseTo = mEngineSound->getVolume() + 0.3;
+    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+}
+
+
 void SmallCar::frameEvent()
 {
+    float maxPitch = 1.2f;
+
     updateRPM();
-    float pitch = (this->getRPM() / 3200.0f) * 2.7;
-    if (pitch < 1.0f) pitch = 1.0f;
+    float rpm = this->getRPM();
+    // min 1800    max 7054
+
+    rpm -= 1800;
+    if (rpm < 0) rpm = 0;
+    float pitch = (rpm / 5254.f);
+    if (pitch > 1) pitch = 1;
+    // pitch between 0 and 1. add 1 so min. pitch is 1.0 as required to avoid phasey sounds
+    pitch = pitch * maxPitch + 1;
+
     mEngineSound->setPitch(pitch);
     
     mEngineSound->setPosition(mBodyNode->getPosition());
