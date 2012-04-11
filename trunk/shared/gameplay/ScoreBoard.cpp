@@ -154,7 +154,7 @@ std::string ScoreBoard::buildScoreText()
 	if(numberOfPlayers > 10)
 		numberOfPlayers = 10;
 
-	#ifdef COLLISSION_DOMAIN_SERVER
+	#ifdef COLLISION_DOMAIN_SERVER
 		//Get the sorted list
 		std::vector<Player*> sortedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();
 		//Print out all the players names
