@@ -77,6 +77,33 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 	return -1;
 }
 
+bool PlayerPool::cmp(Player* a, Player* b)
+{
+	if(a == NULL)
+		return false;
+	if(b==NULL)
+		return true;
+	return a->getRoundScore() < b->getRoundScore();
+}
+
+//This returns all the players in the pool in sorted score order.
+std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
+{
+	//Put all the players from the array into a vector
+	std::vector<Player*> tmp;
+	for(int i=0;i<MAX_PLAYERS;i++)
+	{
+		if(mPlayers[i] != NULL)
+			tmp.push_back(mPlayers[i]);
+	}
+	
+	//And sort the vector
+	std::sort(tmp.begin(),tmp.end(),PlayerPool::cmp);
+	
+	//return this->mPlayers;
+	return tmp;
+}
+
 Player* PlayerPool::getLocalPlayer() { return mLocalPlayer; }
 RakNet::RakNetGUID PlayerPool::getLocalPlayerID() { return mLocalGUID; }
 Player* PlayerPool::getPlayer( int index ) { return mPlayers[index]; }

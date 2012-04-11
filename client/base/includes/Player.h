@@ -55,8 +55,11 @@ public:
     GameCamera* getCamera() { return mCamera; }
     void serverSaysHealthChangedTo(float newHP);
 
+	RakNet::RakNetGUID getPlayerGUID();
+	void setPlayerGUID(RakNet::RakNetGUID playerGUID);
+
 	CarSnapshot *mSnapshots;
-	RakNet::RakNetGUID playerGUID;
+	
 
 	
 	//Increase
@@ -98,7 +101,7 @@ private:
 	int										   lowDamageSpeed;
 	int                                        mediumDamageSpeed;
 	int                                        highDamageSpeed;
-
+	RakNet::RakNetGUID mPlayerGUID;
 
     GameCamera*      mCamera;
 	int roundScore;
