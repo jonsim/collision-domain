@@ -22,6 +22,7 @@ ScoreBoard::ScoreBoard()
 	while (iter.hasMoreElements()) { iter.getNext()->load(); }
 	
 	isInitialized = false;
+	isForced = false;
 }
 
 void ScoreBoard::show()
@@ -37,13 +38,41 @@ void ScoreBoard::show()
 	this->isShown = true;
 }
 
-void ScoreBoard::hide()
+void ScoreBoard::showForce()
+{
+	//Make sure it's been setup
+	if(!isInitialized)
+		this->initialize();
+
+	this->update();
+
+	sbOverlay->show();
+
+	this->isShown = true;
+	this->isForced = true;
+}
+
+
+void ScoreBoard::hideForce()
 {
 	//Make sure it's been setup
 	if(!isInitialized)
 		this->initialize();
 
 	if(isShown) {
+		this->sbOverlay->hide();
+		this->isShown = false;
+		this->isForced = false;
+	}
+}
+
+void ScoreBoard::hide()
+{
+	//Make sure it's been setup
+	if(!isInitialized)
+		this->initialize();
+
+	if(isShown && !isForced) {
 		this->sbOverlay->hide();
 		this->isShown = false;
 	}
@@ -125,12 +154,18 @@ std::string ScoreBoard::buildScoreText()
 	if(numberOfPlayers > 10)
 		numberOfPlayers = 10;
 
-	//Print out all the players names
-	for(int i=0;i<numberOfPlayers;i++)
-	{
-		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-		buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
-	}
+	#ifdef COLLISSION_DOMAIN_SERVER
+		//Get the sorted list
+		std::vector<Player*> sortedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();
+		//Print out all the players names
+		//for(int i=0;i<numberOfPlayers;i++)
+		for(int i=(numberOfPlayers-1);i>=0;i--)
+		{
+			//Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+			Player* tmpPlayer = sortedPlayers[i];
+			buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
+		}
+	#endif
 
 	return buildingStream.str();
 }

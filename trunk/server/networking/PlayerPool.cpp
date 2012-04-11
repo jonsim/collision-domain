@@ -99,6 +99,83 @@ Player* PlayerPool::getClosestPlayer(Player* player)
 	return closest;
 }
 
+bool PlayerPool::cmp(Player* a, Player* b)
+{
+	return a->getRoundScore() < b->getRoundScore();
+}
+
+//This returns all the players in the pool in sorted score order.
+std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
+{
+	//This is a much nicer way of doing it
+	std::sort(this->mPlayers.begin(),this->mPlayers.end(),PlayerPool::cmp);
+	
+	std::vector<Player*> tmp;
+	OutputDebugString("Sorted List");
+	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
+	{
+		std::stringstream tmpString;
+		tmpString << "Player: " << (*it)->getNickname() << " " << (*it)->getRoundScore() << "\n";
+		OutputDebugString(tmpString.str().c_str());
+		tmp.push_back((*it));
+	}
+	
+	//return this->mPlayers;
+	return tmp;
+	//The below is pretty awful trying a better way
+	/*
+	//TODO - This is slow so if performance problem can implement a better sort
+	std::vector<Player*> tmpPlayers;
+	int lowestScoreSoFar = 0;
+
+	//Some variables to keep track of data during each search
+	int lowestScoreThisSearch;
+	Player* lowestScorePlayerThisSearch = NULL;
+
+	int numberOfPlayer = this->getNumberOfPlayers();
+
+	bool finished = false;
+
+	while(!finished)
+	{
+		lowestScoreThisSearch = -1;
+		lowestScorePlayerThisSearch = NULL;
+
+		for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
+		{
+			Player* player = (*it);
+
+			if(player != NULL) 
+			{
+				//If it's the lowest score add it and be done wit it
+				if(player->getRoundScore() == lowestScoreSoFar)
+				{
+					lowestScorePlayerThisSearch = player;
+					break;
+				}
+
+				//Try and find the next lowest
+				if(lowestScoreThisSearch == -1 || player->getRoundScore() < lowestScoreThisSearch)
+				{
+					lowestScoreThisSearch = player->getRoundScore();
+					lowestScorePlayerThisSearch = player;
+				}
+			}
+		}
+
+		//Add the lowest to the new vector
+		tmpPlayers.push_back(lowestScorePlayerThisSearch);
+		lowestScoreSoFar = lowestScoreThisSearch;
+
+		if(tmpPlayers.size() == numberOfPlayer)
+			finished = true;
+	}
+
+	return tmpPlayers;
+	*/
+
+}
+
 Player* PlayerPool::getLocalPlayer() { return mLocalPlayer; }
 RakNet::RakNetGUID PlayerPool::getLocalPlayerID() { return mLocalGUID; }
 RakNet::RakNetGUID PlayerPool::getPlayerGUID( int index ) { return mGUID[index]; }

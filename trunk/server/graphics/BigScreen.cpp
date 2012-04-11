@@ -253,3 +253,13 @@ void BigScreen::setMapSize(Ogre::Vector3 size)
 {
 	mapSize = size;
 }
+
+void BigScreen::hideScreen()
+{
+	this->olcMap->hide();
+}
+
+void BigScreen::showScreen()
+{
+	this->olcMap->show();
+}

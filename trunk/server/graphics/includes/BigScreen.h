@@ -23,6 +23,8 @@ public:
 	void						addCamera(Ogre::Camera* cam);
 	void						setupMapView();
 	void						updateMapView();
+	void						hideScreen();
+	void						showScreen();
 private:
 	ViewportManager*			mViewportManager;
 	std::vector<ViewCamera*>	viewCameraVector;
