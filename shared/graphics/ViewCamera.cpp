@@ -1,3 +1,5 @@
+
+#include "stdafx.h"
 #include "SharedIncludes.h"
 
 ViewCamera::ViewCamera(Ogre::Camera* cam)

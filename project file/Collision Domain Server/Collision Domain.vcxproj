@@ -232,7 +232,9 @@
     <ClCompile Include="..\..\shared\base\PowerupPool.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupRandom.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp" />
-    <ClCompile Include="..\..\shared\base\stdafx.cpp" />
+    <ClCompile Include="..\..\shared\base\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\Gameplay.cpp" />
     <ClCompile Include="..\..\shared\gameplay\HUD.cpp" />
     <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp" />
