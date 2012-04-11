@@ -75,7 +75,7 @@ private:
 	std::vector<Team*>			teams;
 	int							mGameplayMode;
 	
-	Ogre::OverlayContainer* olContainer;
+	Ogre::OverlayContainer*		olContainer;
 	void						handleInfoItem(InfoItem* item, bool show);
 
 	HUD*						mHUD;

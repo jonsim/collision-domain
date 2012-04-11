@@ -35,6 +35,8 @@ public:
 	Player* getRandomPlayer();
 	Player* getClosestPlayer(Player* player);
 	std::vector<Player*> getPlayers() { return mPlayers;};
+	static bool cmp(Player* a, Player* b);
+	std::vector<Player*> getScoreOrderedPlayers();
 
 	Player* getPlayer( int index );
 	Player* getPlayer( RakNet::RakNetGUID playerid );

@@ -330,6 +330,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 	Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
 	#ifdef COLLISION_DOMAIN_SERVER
 	    InfoItem* newGameII;
+		InfoItem* transitionII;
     #endif
 
 	if(show)
@@ -367,18 +368,40 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				tmpOLE->show();
 				break;
 			case GAME_OVER_OT:
+				/*
 				tmpOLE->setDimensions(0.1f, 0.1f);
 				tmpOLE->setMaterialName( "map_top_1" );
 				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
+				*/
+				mSB->showForce();
 				#ifdef COLLISION_DOMAIN_SERVER
-					newGameII = new InfoItem(NEW_GAME_OT, 5000, 1000);
+					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
+					mInfoItems.push_back(transitionII);
+					newGameII = new InfoItem(NEW_GAME_OT, 10000, 1000);
 					mInfoItems.push_back(newGameII);
 					this->calculateRoundScores();
 				#endif
 				break;
+			case SCOREBOARD_TO_WINNER_OT:
+				#ifdef COLLISION_DOMAIN_SERVER
+					mSB->hideForce();
+					GameCore::mGraphicsApplication->bigScreen->hideScreen();
+
+					//Move the camera
+					GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,0,80));
+					GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
+					GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,0,-300));
+				#endif
+				break;
 			case NEW_GAME_OT:
 				#ifdef COLLISION_DOMAIN_SERVER
+					//Move the camera back
+				    GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,10,0));
+					GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,100,0));
+					GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
+
+					GameCore::mGraphicsApplication->bigScreen->showScreen();
 					this->scheduleCountDown();
 				#endif
 				break;

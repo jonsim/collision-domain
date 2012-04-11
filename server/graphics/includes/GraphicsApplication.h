@@ -23,6 +23,7 @@ public:
 	Ogre::Viewport* getMainViewPort();
 	void addRemainingViewports();
 	// Extra server gameplay shit. This shouldn't be here. Will be purged.
+	// Why? They're cameras. I agree with the bigscreen thing pottentially - Ash
     Ogre::Camera* mViewCam1;
     Ogre::Camera* mViewCam2;
     BigScreen* bigScreen;

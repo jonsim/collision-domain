@@ -70,6 +70,8 @@ public:
 	void addToGameScore(int amount);
     int lastsenthp;
 
+	//Operator overides
+	//bool operator<(Player *other) { return this->getRoundScore()<this->getRoundScore(); } //Used in the sort function
 private:
     const float      cameraRotationConstant;
 	int		         hp;
