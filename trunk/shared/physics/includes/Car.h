@@ -64,6 +64,8 @@ public:
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );
+    
+    virtual void louderLocalSounds() = 0;
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();

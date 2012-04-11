@@ -59,6 +59,12 @@ void Player::createPlayer (CarType carType, CarSkin skin)
         mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), skin);
         break;
     }
+    
+    bool isLocalPlayer = this == GameCore::mPlayerPool->getLocalPlayer();
+    if (isLocalPlayer)
+    {
+        mCar->louderLocalSounds();
+    }
 
 	roundScore = 0;
     mCar->attachCollisionTickCallback(this);

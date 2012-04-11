@@ -21,6 +21,7 @@ public:
     virtual ~SimpleCoupeCar(void);
     void frameEvent();
     void playCarHorn();
+    void louderLocalSounds();
     virtual void updateTeam (int teamNumber);
     virtual void loadDestroyedModel (void);
 

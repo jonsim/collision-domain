@@ -141,11 +141,8 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_TRUCK, mUniqueCarID, NULL, true);
-    mEngineSound->setVolume(0.35f);
     mEngineSound->setPitch(2.0f);
-    mEngineSound->setRolloffFactor(1.5f);
-    mEngineSound->setReferenceDistance(14.f);
-    //mEngineSound->setRelativeToListener(false);
+    
     #ifdef COLLISION_DOMAIN_CLIENT
         if (!silentCar) mEngineSound->play();
     #endif
@@ -170,11 +167,30 @@ TruckCar::~TruckCar(void)
 }
 
 
+void TruckCar::louderLocalSounds() {
+    float increaseTo = mEngineSound->getVolume() + 0.3;
+    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+}
+
+
 void TruckCar::frameEvent()
 {
+    float maxPitch = 2.0f;
+
+    // for the multiplication later
+    maxPitch -= 1;
+
     updateRPM();
-    float pitch = (this->getRPM() / 3200.0f) * 2.7;
-    if (pitch < 1.0f) pitch = 1.0f;
+    float rpm = this->getRPM();
+    // min 300    max 3666
+
+    rpm -= 300;
+    if (rpm < 0) rpm = 0;
+    float pitch = (rpm / 3366.f);
+    if (pitch > 1) pitch = 1;
+    // pitch between 0 and 1. add 1 so min. pitch is 1.0 as required to avoid phasey sounds
+    pitch = pitch * maxPitch + 1;
+
     mEngineSound->setPitch(pitch);
     
     mEngineSound->setPosition(mBodyNode->getPosition());
