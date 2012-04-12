@@ -38,6 +38,9 @@ class Car
 #endif
 
 public:
+    Car(int uniqueID);
+    ~Car();
+
     // = 0 methods not implemented by Car yet!
     virtual void playCarHorn() = 0;
 
@@ -81,6 +84,8 @@ protected:
     void updateRPM();
     void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo, bool isDeformable);
     void setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo);
+
+    OgreOggISound *mGearSound;
 
     // Camera node (if not null its attached to bodyNode) (attachCamNode())
     Ogre::SceneNode *mCamArmNode;

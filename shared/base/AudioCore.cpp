@@ -21,6 +21,7 @@ using namespace OgreOggSound;
 #define FILE_ENGINE_SMALL      "own-truck-engine-idle.ogg"
 #define FILE_ENGINE_COUPE      "own-truck-engine-idle.ogg"
 #define FILE_ENGINE_TRUCK      "own-truck-engine-idle.ogg"
+#define FILE_GEAR_CHANGE       "own-gear-change.ogg"
 
 #define FILE_POWERUP_HEALTH    "powerup-health.wav"
 #define FILE_POWERUP_SPEED     "powerup-speed.wav"
@@ -54,6 +55,7 @@ AudioCore::AudioCore()
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_ENGINE_SMALL,   false, false, true, GameCore::mSceneMgr));
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_ENGINE_COUPE,   false, false, true, GameCore::mSceneMgr));
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_ENGINE_TRUCK,   false, false, true, GameCore::mSceneMgr));
+    mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_GEAR_CHANGE,    false, false, true, GameCore::mSceneMgr));
     
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_HEALTH, false, false, true, GameCore::mSceneMgr));
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_SPEED,  false, false, true, GameCore::mSceneMgr));
@@ -67,7 +69,7 @@ AudioCore::AudioCore()
         //mBackingTrack->play();
     #endif
 
-    // doppler effect is unnoticeable at the default 1.0
+    // doppler effect is good now at the default 1.0
     //mSoundManager->setSpeedOfSound();
     //mSoundManager->setDopplerFactor(6000.0);
 }
@@ -107,6 +109,7 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
         case ENGINE_SMALL:  file = FILE_ENGINE_SMALL;   break;
         case ENGINE_COUPE:  file = FILE_ENGINE_COUPE;   break;
         case ENGINE_TRUCK:  file = FILE_ENGINE_TRUCK;   break;
+        case GEAR_CHANGE:   file = FILE_GEAR_CHANGE;    break;
         case CAR_CRASH:     file = FILE_CAR_CRASH;      break;
         case EXPLOSION:     file = FILE_EXPLOSION;      break;
         default: return NULL;
@@ -134,6 +137,10 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
             sound->setVolume(0.2f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
+            break;
+        case GEAR_CHANGE:
+            sound->setVolume(0.7f);
+            sound->setRelativeToListener(true); // Gear changes are not positional yet (but every car does have a (loud) one)
             break;
         case CAR_CRASH:     break;
         case EXPLOSION:
@@ -211,6 +218,7 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
 
     // if framerate is low, timeSinceLastFrame is larger.                   if framerate is high, timeSinceLastFrame is lower.
     // if framerate is low, unscaled Velocity will be higher than expected. if framerate is high, unscaled velocity will be lower than expected.
+
     mSoundManager->getListener()->setPosition(earsPosition);
     mSoundManager->getListener()->setOrientation(earsOrientation);
 

@@ -130,6 +130,7 @@ void SmallCar::initTuning()
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
 SmallCar::SmallCar(int uniqueCarID, CarSkin skin, bool silentCar)
+    : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
     
