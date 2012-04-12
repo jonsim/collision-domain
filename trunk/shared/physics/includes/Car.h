@@ -47,7 +47,7 @@ public:
     // Overrideable methods, but you can use the generic Car method with all cars
     virtual Ogre::SceneNode *attachCamNode();
     virtual void frameEvent() = 0;
-    virtual void steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
+    virtual void steerInputTick(bool isLeft,    bool isRight,             Ogre::Real secondsSinceLastFrame);
     virtual void accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real secondsSinceLastFrame);
     virtual void moveTo(const btVector3 &position);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
@@ -59,7 +59,8 @@ public:
     void applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force);
     
     void readTuning( char *szFile );
-    float getRPM();
+    float getRPM() { return mEngineRPM; }
+    float getRevLimit() { return mRevLimit; }
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
@@ -67,7 +68,7 @@ public:
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );
-    
+    virtual void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
     virtual void louderLocalSounds() = 0;
 
 	Ogre::Vector3 GetPos();
@@ -175,8 +176,6 @@ private:
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
 
-    void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
-    void updateCompositors();
 
     void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );
     

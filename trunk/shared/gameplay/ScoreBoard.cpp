@@ -102,9 +102,9 @@ void ScoreBoard::initialize()
 	Ogre::OverlayElement *textAreaHeader = 
 			Ogre::OverlayManager::getSingleton().
 				createOverlayElement("TextArea","SCOREBOARD_HEADER");
-	textAreaHeader->setDimensions(0.9,0.3);
+	textAreaHeader->setDimensions(0.9f, 0.3f);
 	textAreaHeader->setMetricsMode(Ogre::GMM_PIXELS);
-	textAreaHeader->setPosition(40,40);
+	textAreaHeader->setPosition(40, 40);
 	textAreaHeader->setParameter("font_name","StarWars");
 	textAreaHeader->setParameter("char_height", "30");
 	textAreaHeader->setColour(Ogre::ColourValue::White);
@@ -114,10 +114,10 @@ void ScoreBoard::initialize()
 	this->textAreaT1 = Ogre::OverlayManager::getSingleton().
 		createOverlayElement("TextArea","SCOREBOARD_ELEMENT");
 
-	int screenWidth = GameCore::mGraphicsApplication->getMainViewPort()->getActualWidth();
-	int screenHeight = GameCore::mGraphicsApplication->getMainViewPort()->getActualHeight();
+	//int screenWidth = GameCore::mGraphicsApplication->getMainViewPort()->getActualWidth();
+	//int screenHeight = GameCore::mGraphicsApplication->getMainViewPort()->getActualHeight();
 
-	this->textAreaT1->setDimensions(0.9,0.6);
+	this->textAreaT1->setDimensions(0.9f, 0.6f);
 	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
 	this->textAreaT1->setPosition(40,100);
 	

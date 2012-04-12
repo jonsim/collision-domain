@@ -127,29 +127,16 @@ void Player::processControlsFrameEvent(
 	if(this->getAlive())
 	{
 		// process steering
-		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);
     
 	    // apply acceleration 4wd style
 	    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
 	}
     else
     {
-        mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
+        mCar->steerInputTick(false, false, secondsSinceLastFrame);
         mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
     }
-    // TELEPORT TESTING
-    /*if (userInput->isLeft() && userInput->isRight())
-    {
-        // teleport to the previously set point!
-        if (mCarSnapshot != NULL) mCar->restoreSnapshot(mCarSnapshot);
-    }
-    
-    if (userInput->isLeft() && !userInput->isRight())
-    {
-        // set the new teleport point
-        if (mCarSnapshot != NULL) delete mCarSnapshot;
-        mCarSnapshot = mCar->getCarSnapshot();
-    }*/
 }
 
 
@@ -241,13 +228,6 @@ void Player::killPlayer()
 
 	GameCore::mNetworkCore->sendPlayerDeath(this);
 
-    // Place an explosion at the players position and load the burnt model
-    GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
-    mCar->loadDestroyedModel();
-
-    // Blast the fuck out of the car (renders it completely undriveable but since this
-    // should only be called on dead cars thats not such a problem).
-    // Yeah so turns out this just fucks everything up and not in a good way.
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 500.0f, 0)); 
 }
 

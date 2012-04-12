@@ -16,7 +16,7 @@ class Powerup
 public:
     virtual void playerCollision(Player* player) = 0;
     virtual void playerCollision(Player* player, PowerupType pwrType) {} // For client removing randoms
-    virtual void frameEvent( const Ogre::FrameEvent& evt ) = 0;
+    virtual void frameEvent( const float timeSinceLastFrame ) = 0;
     virtual bool isPendingDelete() = 0;
 
     int  getIndex() { return mPoolIndex; }

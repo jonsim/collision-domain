@@ -55,9 +55,6 @@
     <ClInclude Include="..\..\server\graphics\includes\BigScreen.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\server\graphics\includes\GraphicsApplication.h">
-      <Filter>server\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\server\graphics\includes\ViewportManager.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
@@ -598,13 +595,7 @@
     <ClInclude Include="..\..\shared\physics\includes\BtOgrePG.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
-      <Filter>shared\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h">
-      <Filter>shared\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\shared\gameplay\includes\ScoreBoard.h">
@@ -631,6 +622,12 @@
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\server\graphics\includes\ServerGraphics.h">
+      <Filter>server\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
+      <Filter>shared\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -642,9 +639,6 @@
     <ClCompile Include="..\..\server\graphics\BigScreen.cpp">
       <Filter>server\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\server\graphics\GraphicsApplication.cpp">
-      <Filter>server\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\server\graphics\ViewportManager.cpp">
       <Filter>server\graphics</Filter>
     </ClCompile>
@@ -653,9 +647,6 @@
     </ClCompile>
     <ClCompile Include="..\..\server\networking\PlayerPool.cpp">
       <Filter>server\networking</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\base\CircularBuffer.cpp">
-      <Filter>shared\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\base\Input.cpp">
       <Filter>shared\base</Filter>
@@ -1011,13 +1002,7 @@
     <ClCompile Include="..\..\shared\physics\BtOgre.cpp">
       <Filter>shared\physics</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
-      <Filter>shared\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp">
-      <Filter>shared\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp">
       <Filter>shared\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\ScoreBoard.cpp">
@@ -1039,6 +1024,12 @@
       <Filter>shared\physics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp">
+      <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\server\graphics\ServerGraphics.cpp">
+      <Filter>server\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
       <Filter>shared\graphics</Filter>
     </ClCompile>
   </ItemGroup>

@@ -14,8 +14,9 @@
     <ClInclude Include="..\..\client\base\includes\Player.h" />
     <ClInclude Include="..\..\client\base\includes\SpawnScreen.h" />
     <ClInclude Include="..\..\client\GameIncludes.h" />
+    <ClInclude Include="..\..\client\graphics\includes\ClientGraphics.h" />
     <ClInclude Include="..\..\client\graphics\includes\GameGUI.h" />
-    <ClInclude Include="..\..\client\graphics\includes\GraphicsApplication.h" />
+    <ClInclude Include="..\..\client\graphics\includes\Lobby.h" />
     <ClInclude Include="..\..\client\networking\includes\Config.h" />
     <ClInclude Include="..\..\client\networking\includes\NetworkCore.h" />
     <ClInclude Include="..\..\client\networking\includes\PlayerPool.h" />
@@ -38,7 +39,6 @@
     <ClInclude Include="..\..\shared\gameplay\includes\Team.h" />
     <ClInclude Include="..\..\shared\graphics\includes\Camera.h" />
     <ClInclude Include="..\..\shared\graphics\includes\CarCam.h" />
-    <ClInclude Include="..\..\shared\graphics\includes\GraphicsCore.h" />
     <ClInclude Include="..\..\shared\graphics\includes\MeshDeformer.h" />
     <ClInclude Include="..\..\shared\graphics\includes\PostFilterLogic.h" />
     <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h" />
@@ -207,12 +207,12 @@
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp" />
     <ClCompile Include="..\..\client\base\SpawnScreen.cpp" />
+    <ClCompile Include="..\..\client\graphics\ClientGraphics.cpp" />
     <ClCompile Include="..\..\client\graphics\GameGUI.cpp" />
-    <ClCompile Include="..\..\client\graphics\GraphicsApplication.cpp" />
+    <ClCompile Include="..\..\client\graphics\Lobby.cpp" />
     <ClCompile Include="..\..\client\networking\NetworkCore.cpp" />
     <ClCompile Include="..\..\client\networking\PlayerPool.cpp" />
     <ClCompile Include="..\..\shared\base\AudioCore.cpp" />
-    <ClCompile Include="..\..\shared\base\CircularBuffer.cpp" />
     <ClCompile Include="..\..\shared\base\GameCore.cpp" />
     <ClCompile Include="..\..\shared\base\Input.cpp" />
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
@@ -233,7 +233,6 @@
     <ClCompile Include="..\..\shared\gameplay\Team.cpp" />
     <ClCompile Include="..\..\shared\graphics\Camera.cpp" />
     <ClCompile Include="..\..\shared\graphics\CarCam.cpp" />
-    <ClCompile Include="..\..\shared\graphics\GraphicsCore.cpp" />
     <ClCompile Include="..\..\shared\graphics\MeshDeformer.cpp" />
     <ClCompile Include="..\..\shared\graphics\PostFilterLogic.cpp" />
     <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp" />

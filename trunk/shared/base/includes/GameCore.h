@@ -9,15 +9,20 @@
 
 // needed for non-shared variables like GraphicsCore and NetworkCore
 #include "GameIncludes.h"
-class AiCore;
 class PlayerPool;
 class NetworkCore;
-class GraphicsCore;
-class GraphicsApplication;
+#ifdef COLLISION_DOMAIN_CLIENT
 class AudioCore;
+class ClientGraphics;
+#else
+class AiCore;
+class ServerGraphics;
+#endif
+class SplashScreen;
 class GameGUI;
 class PowerupPool;
 class Gameplay;
+class MeshDeformer;
 
 #define MESH_SCALING_CONSTANT 0.01f
 
@@ -31,17 +36,25 @@ public:
     static Ogre::SceneManager* mSceneMgr;
     static PlayerPool*  mPlayerPool;
 
+#ifdef COLLISION_DOMAIN_CLIENT
+    static AudioCore* mAudioCore;
+    static ClientGraphics* mClientGraphics;
+#else
 	static AiCore* mAiCore;
-    static GraphicsCore* mGraphicsCore;
-	static GraphicsApplication* mGraphicsApplication;
+    static ServerGraphics* mServerGraphics;
+#endif
     static NetworkCore* mNetworkCore;
     static PhysicsCore* mPhysicsCore;
-    static AudioCore* mAudioCore;
 	static GameGUI* mGui;
     static PowerupPool* mPowerupPool;
 	static Gameplay* mGameplay;
 
-    static void initialise(GraphicsCore* graphicsCore);
+#ifdef COLLISION_DOMAIN_CLIENT
+    static void initialise (ClientGraphics* clientGraphics);
+#else
+    static void initialise (ServerGraphics* serverGraphics);
+#endif
+    static void load (SplashScreen* ss, int progress);
     static void destroy();
 
 	static MeshDeformer meshDeformer;

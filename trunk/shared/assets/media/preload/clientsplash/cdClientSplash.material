@@ -1,0 +1,55 @@
+material CollisionDomain/SplashScreen
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            depth_check off
+            
+            texture_unit
+            {
+                texture splashscreen.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/LoadingFrame
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            depth_check off
+			scene_blend alpha_blend
+            
+            texture_unit
+            {
+                texture loading_frame.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}
+
+material CollisionDomain/LoadingBar
+{
+    technique
+    {
+        pass
+        {
+            lighting off
+            depth_check off
+			scene_blend alpha_blend
+            
+            texture_unit
+            {
+                texture loading_bar.png
+                tex_address_mode clamp
+            }
+        }
+    }
+}

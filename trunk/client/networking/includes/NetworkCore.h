@@ -72,6 +72,7 @@ private:
     static RakNet::RakPeerInterface *m_pRak;
     static RakNet::RPC4 *m_RPC;
     RakNet::RakNetGUID serverGUID;
+    std::string mPlayerName;
 
     static RakNet::TimeMS timeLastUpdate;
 
@@ -91,7 +92,7 @@ public:
     void ProcessPlayerState( RakNet::Packet *pkt );
 
     void sendSpawnRequest( CarType iCarType );
-    void sendChatMessage( char *szMessage );
+    void sendChatMessage( const char *szMessage );
 	//void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
 
     // RPC Calls

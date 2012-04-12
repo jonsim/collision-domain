@@ -1,141 +1,249 @@
 #include "stdafx.h"
 #include "GameGUI.h"
-#include "GraphicsCore.h"
 #include "boost/algorithm/string.hpp"
 
-GameGUI::GameGUI()
-{
-}
 
-GameGUI::~GameGUI()
-{
-}
 
-void GameGUI::initialiseGUI()
-{
-	// Create the default font
-	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	CEGUI::Font *pFont = &CEGUI::FontManager::getSingleton().create("Verdana-outline-10.font");
-    CEGUI::System::getSingleton().setDefaultFont( pFont );
 
-    CEGUI::Font *pOtherFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
-    pOtherFont->setProperty( "PointSize", "6" );
-
-	// Create skin scheme outlining widget (window) parameters
-	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
-	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
-
-	// Register skin's default image set and cursor icon
-	CEGUI::Imageset::setDefaultResourceGroup("Imagesets");
-	CEGUI::System::getSingleton().setDefaultMouseCursor("Vanilla-Images", "MouseArrow");
-
-	// Tell CEGUI where to look for layouts
-	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-
-	// Create an empty default window layer
-	mSheet = CEGUI::WindowManager::getSingleton().
-		createWindow( "DefaultWindow", "root_wnd" );
-
-	CEGUI::Window *mph = CEGUI::WindowManager::getSingleton().
-		createWindow( "Vanilla/StaticText", "root_wnd/mph" );
-
-	mph->setText( "MPH: " );
-	mph->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
-    mph->setVisible( false );
-
-	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
-	createWindow( "Vanilla/StaticText", "root_wnd/fps" );
-	fps->setText( "fps: " );
-	fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
-	CEGUI::System::getSingleton().setGUISheet( mSheet );
-	mSheet->addChildWindow( fps );
-
-	mSheet->addChildWindow( mph );
-}
-
-/*-------------------- CONNECTION BOX --------------------*/
-
-void GameGUI::setupConnectBox()
+/*-------------------- SPAWN SCREEN --------------------*/
+void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
 	// Load the layout file for connect box
-	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Connect.layout" );
+	CEGUI::Window *pLayout = winMgr.loadWindowLayout("SpawnScreen.layout");
 
 	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
+	guiWindow->addChildWindow( pLayout );
 
-	// Get handles to some of the objects
-	CEGUI::Window *hostText = winMgr.getWindow( "/Connect/host" );
-    CEGUI::Window *nickText = winMgr.getWindow( "/Connect/nick" );
-	CEGUI::Window *cmdCon = winMgr.getWindow( "/Connect/cmdCon" );
-	CEGUI::Window *cmdQuit = winMgr.getWindow( "/Connect/cmdQuit" );
+	// Setup the image
+    spawnScreenImageSet = &CEGUI::ImagesetManager::getSingleton().create("SpawnScreen.imageset");
+	spawnScreenImage = winMgr.getWindow("/SpawnScreen/Vehicle/imgVehicle");
+    spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
 
-	// Give the host textbox focus
-	hostText->activate();
+    // Get handles to the buttons
+    // Page 1 buttons
+	CEGUI::Window* p1btnBlueTeam   = winMgr.getWindow("/SpawnScreen/Team/btnBlue");
+	CEGUI::Window* p1btnRedTeam    = winMgr.getWindow("/SpawnScreen/Team/btnRed");
+	CEGUI::Window* p1btnAutoAssign = winMgr.getWindow("/SpawnScreen/Team/btnAuto");
+	CEGUI::Window* p1btnSpectator  = winMgr.getWindow("/SpawnScreen/Team/btnSpectate");
+	CEGUI::Window* p1btnProjector  = winMgr.getWindow("/SpawnScreen/Team/btnProjector");
+	p1btnBlueTeam->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnBlueTeam,   this));
+	p1btnRedTeam->subscribeEvent(   CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnRedTeam,    this));
+	p1btnAutoAssign->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnAutoAssign, this));
+	p1btnSpectator->subscribeEvent( CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnSpectator,  this));
+	p1btnProjector->subscribeEvent( CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnProjector,  this));
 
-	// Register callback for <Enter> press
-	hostText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
-    nickText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
-	cmdCon->subscribeEvent( CEGUI::PushButton::EventClicked, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
-	cmdQuit->subscribeEvent( CEGUI::PushButton::EventClicked,  
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Quit, this ) );
+    // Page 2 buttons
+	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+	CEGUI::Window* p2btnCancel    = winMgr.getWindow("/SpawnScreen/Vehicle/btnCancel");
+	CEGUI::Window* p2btnConfirm   = winMgr.getWindow("/SpawnScreen/Vehicle/btnConfirm");
+	p2btnCoupe->subscribeEvent(    CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnCoupe,     this));
+	p2btnHatchback->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnHatchback, this));
+	p2btnTruck->subscribeEvent(    CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnTruck,     this));
+	p2btnCancel->subscribeEvent(   CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnCancel,    this));
+	p2btnConfirm->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnConfirm,   this));
+
+	CEGUI::MouseCursor::getSingleton().show();
 }
 
-void GameGUI::closeConnectBox()
+void GameGUI::showSpawnScreenPage1 (void)
 {
-    mSheet->removeChildWindow( "/Connect" );
-	CEGUI::MouseCursor::getSingleton().hide();
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    // Get references to the pages.
+    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
+    CEGUI::Window* page1 = winMgr.getWindow("/SpawnScreen/Team");
+    CEGUI::Window* page2 = winMgr.getWindow("/SpawnScreen/Vehicle");
+
+    // Show the correct pages
+    mainWindow->setVisible(true);
+    page2->setVisible(false);
+    page1->setVisible(true);
 }
 
-/// @brief  Check user has filled in all details, and connect, otherwise tab into the required field
-bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
+void GameGUI::showSpawnScreenPage2 (void)
 {
-	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
-	CEGUI::Editbox *connectText = 
-		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/host" ) );
-    CEGUI::Editbox *nickText = 
-        static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/nick" ) );
+    // Get references to the pages.
+    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
+    CEGUI::Window* page1 = winMgr.getWindow("/SpawnScreen/Team");
+    CEGUI::Window* page2 = winMgr.getWindow("/SpawnScreen/Vehicle");
+	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
 
-    if( connectText->getText().empty() )
+    // Update the page's image
+    if (spawnScreenTeamSelection == 1)
     {
-        connectText->activate();
-        return true;
+        page2->setProperty("Text", "Blue Team: Select a Vehicle");
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
+    }
+    else if (spawnScreenTeamSelection == 2)
+    {
+        page2->setProperty("Text", "Red Team: Select a Vehicle");
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
     }
 
-    if( nickText->getText().empty() )
-    {
-        nickText->activate();
-        return true;
-    }
+    // Update the page's buttons
+    p2btnCoupe->setProperty(    "Disabled", "true");
+    p2btnHatchback->setProperty("Disabled", "false");
+    p2btnTruck->setProperty(    "Disabled", "false");
 
-	bool bResult = GameCore::mNetworkCore->Connect( 
-		connectText->getText().c_str(), SERVER_PORT, NULL );
-
-	if( bResult )
-	{
-        connectText->setEnabled( false );
-        nickText->setEnabled( false );
-	}
-	else
-		connectText->setText( "" );
-
-	return true;
+    // Show the correct pages
+    mainWindow->setVisible(true);
+    page1->setVisible(false);
+    page2->setVisible(true);
 }
 
-bool GameGUI::Connect_Quit( const CEGUI::EventArgs &args )
+void GameGUI::showSpawnScreenErrorText (const char* errorText)
 {
-	GameCore::mGraphicsCore->shutdown();
-	return true;
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
+    txtError->setProperty("Text", errorText);
+    txtError->show();
 }
+
+void GameGUI::hideSpawnScreenErrorText (void)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
+    txtError->hide();
+}
+
+void GameGUI::closeSpawnScreen (void)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    // Get references to the pages.
+    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
+
+    // Show the correct pages
+    mainWindow->hide();
+}
+
+bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
+{
+    hideSpawnScreenErrorText();
+
+    spawnScreenTeamSelection = 1;
+    showSpawnScreenPage2();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnRedTeam (const CEGUI::EventArgs& args)
+{
+    hideSpawnScreenErrorText();
+
+    spawnScreenTeamSelection = 2;
+    showSpawnScreenPage2();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args)
+{
+    hideSpawnScreenErrorText();
+
+    spawnScreenTeamSelection = 1;
+    showSpawnScreenPage2();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnSpectator (const CEGUI::EventArgs& args)
+{
+    showSpawnScreenErrorText("Feature not implemented yet.");
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnProjector (const CEGUI::EventArgs& args)
+{
+    showSpawnScreenErrorText("Feature not implemented yet.");
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+    p2btnCoupe->setProperty(    "Disabled", "true");
+    p2btnHatchback->setProperty("Disabled", "false");
+    p2btnTruck->setProperty(    "Disabled", "false");
+
+    if (spawnScreenTeamSelection == 1)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
+    else if (spawnScreenTeamSelection == 2)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+    p2btnCoupe->setProperty(    "Disabled", "false");
+    p2btnHatchback->setProperty("Disabled", "true");
+    p2btnTruck->setProperty(    "Disabled", "false");
+
+    if (spawnScreenTeamSelection == 1)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackBlue")));
+    else if (spawnScreenTeamSelection == 2)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackRed")));
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+    p2btnCoupe->setProperty(    "Disabled", "false");
+    p2btnHatchback->setProperty("Disabled", "false");
+    p2btnTruck->setProperty(    "Disabled", "true");
+
+    if (spawnScreenTeamSelection == 1)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckBlue")));
+    else if (spawnScreenTeamSelection == 2)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckRed")));
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args)
+{
+    closeSpawnScreen();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args)
+{
+    showSpawnScreenPage1();
+
+    return true;
+}
+
+
+
 
 /*-------------------- DEV CONSOLE --------------------*/
-void GameGUI::setupConsole()
+void GameGUI::setupConsole (CEGUI::Window* guiWindow)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -143,7 +251,7 @@ void GameGUI::setupConsole()
 	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Console.layout" );
 
 	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
+	guiWindow->addChildWindow( pLayout );
 
 	// Get handles to some of the objects
 	CEGUI::Window *consoleFrame = winMgr.getWindow( "/Console" );
@@ -163,7 +271,7 @@ void GameGUI::setupConsole()
 	consoleFrame->hide();
 }
 
-void GameGUI::toggleConsole()
+void GameGUI::toggleConsole (void)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 	// Get handles to some of the objects
@@ -178,7 +286,7 @@ void GameGUI::toggleConsole()
 	}
 }
 
-bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
+bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 
@@ -204,19 +312,19 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
             if( strTokens.at(0) == "exit" )
                 mWinMgr.getWindow( "/Console" )->hide();
 			else if (!strnicmp(szInput, "weather ", 8))
-				GameCore::mGraphicsApplication->setWeather(atoi(&szInput[8]) - 1);
+				GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);
 			else if (!stricmp(szInput, "benchmark"))
-				GameCore::mGraphicsApplication->startBenchmark(0);
+				GameCore::mClientGraphics->startBenchmark(0);
 			else if (!strnicmp(szInput, "b1 ", 3))
-                GameCore::mGraphicsApplication->loadBloom(GameCore::mGraphicsCore->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
+                GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
 			else if (!strnicmp(szInput, "b2 ", 3))
-				GameCore::mGraphicsApplication->loadBloom(GameCore::mGraphicsCore->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
+				GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
 			else if (!strnicmp(szInput, "mb ", 3))
-				GameCore::mGraphicsApplication->loadMotionBlur(GameCore::mGraphicsCore->mCamera->getViewport(), 1, atof(&szInput[3]));
+				GameCore::mClientGraphics->loadMotionBlur(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]));
 			else if (!stricmp(szInput, "wireframe on"))
-                GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
+                GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
 			else if (!stricmp(szInput, "wireframe off"))
-                GameCore::mGraphicsCore->mCamera->setPolygonMode(Ogre::PM_SOLID);
+                GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_SOLID);
             else if (!stricmp(szInput, "bitsoff"))
                 GameCore::mPlayerPool->getLocalPlayer()->getCar()->makeBitsFallOff();
             else if( strTokens.at(0) == "movdbg" )
@@ -259,7 +367,7 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 	return true;
 }
 
-bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
+bool GameGUI::Console_Off (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 	mWinMgr.getWindow( "/Console" )->hide();
@@ -267,7 +375,7 @@ bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
 }
 
 /*-------------------- DEV Chatbox --------------------*/
-void GameGUI::setupChatbox()
+void GameGUI::setupChatbox (CEGUI::Window* guiWindow)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -275,7 +383,7 @@ void GameGUI::setupChatbox()
 	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Chatbox.layout" );
 
 	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
+	guiWindow->addChildWindow( pLayout );
 
 	// Get handles to some of the objects
 	CEGUI::Window *chatboxFrame = winMgr.getWindow( "/Chatbox" );
@@ -288,7 +396,7 @@ void GameGUI::setupChatbox()
 	inputText->hide();
 }
 
-void GameGUI::toggleChatbox()
+void GameGUI::toggleChatbox (void)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 	// Get handles to some of the objects
@@ -303,7 +411,7 @@ void GameGUI::toggleChatbox()
 	}
 }
 
-bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
+bool GameGUI::Chatbox_Send (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 
@@ -320,10 +428,13 @@ bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
 	return true;
 }
 
-void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
+void GameGUI::chatboxAddMessage (const char *szNickname, char *szMessage)
 {
     char szBuffer[256];
-    sprintf( szBuffer, "[colour='FFED9DAA']%s :[colour='FFFFFFFF'] %s", szNickname, szMessage );
+    if (!strcmp(szNickname, "Admin"))
+        sprintf( szBuffer, "[colour='FF6DDD77']Admin:[colour='FFFFFFFF'] %s", szMessage );
+    else
+        sprintf( szBuffer, "[colour='FFED9DAA']%s:[colour='FFFFFFFF'] %s", szNickname, szMessage );
 
     CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 
@@ -349,9 +460,25 @@ void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
 	lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
 }
 
+
+
+
+/* In-game HUD */
+/* FPS Counter */
+void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
+{
+    // Setup the FPS Counter
+	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
+	createWindow( "Vanilla/StaticText", "root_wnd/fps" );
+    fps->setText( "fps: " );
+	fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
+	CEGUI::System::getSingleton().setGUISheet( guiWindow );
+	guiWindow->addChildWindow( fps );
+}
+
 /*-------------------- SPEEDOMETER --------------------*/
 /// @brief Draws the speedo on-screen
-void GameGUI::setupSpeedo( void )
+void GameGUI::setupSpeedo (void)
 {
 	// Create our speedometer overlays
 	Ogre::Overlay *olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
@@ -395,7 +522,7 @@ void GameGUI::setupSpeedo( void )
 	olSpeedo->add2D( olcHub );
 }
 
-void GameGUI::updateSpeedo( void )
+void GameGUI::updateSpeedo (void)
 {
     updateSpeedo(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph(),
                  GameCore::mPlayerPool->getLocalPlayer()->getCar()->getGear());
@@ -404,7 +531,7 @@ void GameGUI::updateSpeedo( void )
 /// @brief	Update the rotation of the speedo needle
 /// @param	fSpeed	Float containing speed of car in mph
 /// @param  iGear   Current car gear
-void GameGUI::updateSpeedo( float fSpeed, int iGear )
+void GameGUI::updateSpeedo (float fSpeed, int iGear)
 {
 	if( fSpeed < 0 )
 		fSpeed *= -1;
@@ -438,7 +565,7 @@ void GameGUI::updateSpeedo( float fSpeed, int iGear )
 
 /*-------------------- GEAR DISPLAY --------------------*/
 /// @brief Draws the gear display
-void GameGUI::setupGearDisplay()
+void GameGUI::setupGearDisplay (void)
 {
 	oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
 
@@ -454,16 +581,16 @@ void GameGUI::setupGearDisplay()
 	updateSpeedo( 0, -1 );
 }
 
-void GameGUI::updateCounters()
+void GameGUI::updateCounters (void)
 {
 	static char szFPS[64];
 
 	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-	sprintf( szFPS,   "FPS: %.2f", GameCore::mGraphicsCore->mWindow->getAverageFPS());
+	sprintf( szFPS,   "FPS: %.2f", GameCore::mClientGraphics->mWindow->getAverageFPS());
 	fps->setText( szFPS );
 }
 
-void GameGUI::setupDamageDisplay()
+void GameGUI::setupDamageDisplay (void)
 {
     int width = 82, height = 169;
 
@@ -541,7 +668,7 @@ void GameGUI::setupDamageDisplay()
 }
 
 // part 0-body, 1-engine, 2-fl, 3-fr, 4-rl, 5-rr. colour 0-green, 1-yellow, 2-red
-void GameGUI::updateDamage(int part, int colour)
+void GameGUI::updateDamage (int part, int colour)
 {
     std::string s = "damage_";
 
@@ -582,7 +709,7 @@ void GameGUI::updateDamage(int part, int colour)
     }
 }
 
-void GameGUI::setupOverlays()
+void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
 {
     setupSpeedo();
     setupGearDisplay();

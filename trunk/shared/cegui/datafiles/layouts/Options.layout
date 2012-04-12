@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="Vanilla/FrameWindow" Name="/Options" >
+        <Property Name="Font" Value="DejaVuSans-10" />
+        <Property Name="Alpha" Value="0.5" />
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+        <Property Name="SizingEnabled" Value="False" />
+        <Property Name="TitlebarEnabled" Value="False" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="DragMovingEnabled" Value="False" />
+        <Property Name="CloseButtonEnabled" Value="False" />
+        <Window Type="GWEN/FrameWindow" Name="/Options/Menu" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="Game Options" />
+            <Property Name="CaptionFont" Value="DejaVuSans-10" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.289453,0},{0.172417,0},{0.68125,0},{0.786873,0}}" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NWSESizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Window Type="GWEN/StaticText" Name="/Options/Menu/lblCaptions" >
+                <Property Name="Text" >Nickname:
+ 
+ 
+Resolution:
+ 
+Display Mode:
+ 
+VSync:
+ 
+AntiAliasing:
+ 
+Bloom:
+ 
+Radial Blur:
+ 
+Motion Blur:
+ 
+ 
+Audio Volume:</Property>
+                <Property Name="HorzExtent" Value="128" />
+                <Property Name="VertExtent" Value="386.014" />
+                <Property Name="FrameEnabled" Value="False" />
+                <Property Name="VertFormatting" Value="TopAligned" />
+                <Property Name="UnifiedAreaRect" Value="{{0.01,0},{0.01,0},{0.35,0},{0.99,0}}" />
+                <Property Name="BackgroundEnabled" Value="False" />
+            </Window>
+            <Window Type="GWEN/Editbox" Name="/Options/Menu/edtNick" >
+                <Property Name="Text" Value="Player" />
+                <Property Name="MaxTextLength" Value="1073741823" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.005,0},{0.99,0},{0.075,0}}" />
+                <Property Name="TextParsingEnabled" Value="False" />
+            </Window>
+            <Window Type="GWEN/Combobox" Name="/Options/Menu/cmdRes" >
+                <Property Name="Text" Value="error" />
+                <Property Name="ReadOnly" Value="True" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.135813,0},{0.99,0},{0.747552,0}}" />
+                <Property Name="MaxEditTextLength" Value="1073741823" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Options/Menu/btnAccept" >
+                <Property Name="Text" Value="Accept" />
+                <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.91,0},{0.485,0},{0.99,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Options/Menu/btnCancel" >
+                <Property Name="Text" Value="Cancel" />
+                <Property Name="UnifiedAreaRect" Value="{{0.515,0},{0.91,0},{0.8,0},{0.99,0}}" />
+            </Window>
+            <Window Type="GWEN/Combobox" Name="/Options/Menu/cmdDisplayMode" >
+                <Property Name="Text" Value="error" />
+                <Property Name="ReadOnly" Value="True" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.226687,0},{0.99,0},{0.476687,0}}" />
+                <Property Name="MaxEditTextLength" Value="1073741823" />
+            </Window>
+            <Window Type="GWEN/Checkbox" Name="/Options/Menu/chkBloom" >
+                <Property Name="Text" Value="Enabled" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.501457,0},{0.99,0},{0.560966,0}}" />
+            </Window>
+            <Window Type="GWEN/Checkbox" Name="/Options/Menu/chkVsync" >
+                <Property Name="Text" Value="Enabled" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.322776,0},{0.99,0},{0.376073,0}}" />
+            </Window>
+            <Window Type="GWEN/HorizontalSlider" Name="/Options/Menu/sldVolume" >
+                <Property Name="CurrentValue" Value="0" />
+                <Property Name="MaximumValue" Value="1" />
+                <Property Name="ClickStepSize" Value="0.01" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.827147,0},{0.99,0},{0.86181,0}}" />
+            </Window>
+            <Window Type="GWEN/Checkbox" Name="/Options/Menu/chkRadial" >
+                <Property Name="Text" Value="Enabled" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.584893,0},{0.99,0},{0.650614,0}}" />
+            </Window>
+            <Window Type="GWEN/Checkbox" Name="/Options/Menu/chkMotion" >
+                <Property Name="Text" Value="Enabled" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.680369,0},{0.99,0},{0.737808,0}}" />
+            </Window>
+            <Window Type="GWEN/Combobox" Name="/Options/Menu/cmdAA" >
+                <Property Name="Text" >error
+</Property>
+                <Property Name="ReadOnly" Value="True" />
+                <Property Name="UnifiedAreaRect" Value="{{0.36,0},{0.403528,0},{0.99,0},{0.759125,0}}" />
+                <Property Name="MaxEditTextLength" Value="1073741823" />
+            </Window>
+        </Window>
+    </Window>
+</GUILayout>

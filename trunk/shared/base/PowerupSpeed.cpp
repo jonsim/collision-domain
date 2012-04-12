@@ -14,10 +14,11 @@ PowerupSpeed::PowerupSpeed()
     mUniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
 
     mHasBeenCollected = false;
-    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "SpeedPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("SpeedPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_SPEED, mUniqueID, NULL);
+#endif
 }
 
 
@@ -39,8 +40,10 @@ PowerupSpeed::~PowerupSpeed()
         delete mRigidBody;
         delete collisionShape;
     }
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -61,7 +64,9 @@ void PowerupSpeed::playerCollision(Player* player)
     if( player != NULL )
     {
         // play powerup reward sound
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
         // apply powerup to player
     }
 
@@ -71,7 +76,7 @@ void PowerupSpeed::playerCollision(Player* player)
 }
 
 
-void PowerupSpeed::frameEvent(const Ogre::FrameEvent& evt)
+void PowerupSpeed::frameEvent(const float timeSinceLastFrame)
 {
     // no need to rotate the speed powerup
 }
@@ -89,7 +94,9 @@ void PowerupSpeed::spawn(Ogre::Vector3 createAboveAt)
     if (mHasSpawned) return;
     mHasSpawned = true;
 
+#ifdef COLLISION_DOMAIN_CLIENT
     createGraphic();
+#endif
     createCollideable();
 
     mNode->translate(createAboveAt);
@@ -98,17 +105,17 @@ void PowerupSpeed::spawn(Ogre::Vector3 createAboveAt)
 
 void PowerupSpeed::createGraphic()
 {
-    mEntity = GameCore::mSceneMgr->createEntity("SpeedPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_speed.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("SpeedPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_speed.mesh");
 
     int GEOMETRY_QUERY_MASK = 1<<2;
-    mEntity->setQueryFlags(GEOMETRY_QUERY_MASK);
+    entity->setQueryFlags(GEOMETRY_QUERY_MASK);
 
 #if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0))
     entity->setNormaliseNormals(true);
 #endif // only applicable before shoggoth (1.5.0)
 
-    mEntity->setCastShadows(false);
-    mNode->attachObject(mEntity);
+    entity->setCastShadows(false);
+    mNode->attachObject(entity);
 
     mNode->scale(0.2f, 0.2f, 0.2f);
 }
@@ -143,7 +150,7 @@ void PowerupSpeed::createCollideable()
 
 void PowerupSpeed::removeGraphic()
 {
-    mNode->detachObject(mEntity);
+    mNode->detachAllObjects();
 }
 
 

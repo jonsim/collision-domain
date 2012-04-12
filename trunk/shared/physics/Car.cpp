@@ -11,16 +11,18 @@
 
 #define WHEEL_FRICTION_CFM 0.6f
 
-Car::Car(int uniqueID)
+Car::Car (int uniqueID)
 {
-    // I think it is about time we have a constructor ...
+#ifdef COLLISION_DOMAIN_CLIENT
     mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
-
+#endif
 }
 
 Car::~Car()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mGearSound);
+#endif
 }
 
 //#define DEBUG_SHOW_SKID
@@ -101,7 +103,7 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 /// @param  targetPhysicsFrameRate  The target framerate in seconds anything other than 1/60 will result in an
 ///         unexpected steering rate. This does not mean the controls aren't framerate independent, its just the
 ///         fixed frame length in seconds which is taken as "base" for applying normalised steering increments.
-void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate)
+void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame)
 {
     // process steering on both wheels (+1 = left, -1 = right)
     int leftRight = 0;
@@ -109,6 +111,7 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
     if (isRight) leftRight -= 1;
 
     float calcIncrement = 0.0f;
+    const float steeringScalingFactor = 1.0f / 60.0f;
     bool resetToZero = false;
 
     // we don't want to go straight to this steering value (i.e. apply acceleration to steer value)
@@ -124,12 +127,12 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
         // go back to zero
         if (mSteer >= 0)
         {
-            if (mSteer >= mSteerToZeroIncrement * (secondsSinceLastFrame / targetPhysicsFrameRate)) calcIncrement = -mSteerToZeroIncrement;
+            if (mSteer >= mSteerToZeroIncrement * (secondsSinceLastFrame / steeringScalingFactor)) calcIncrement = -mSteerToZeroIncrement;
             else resetToZero = true;
         }
         else
         {
-            if (mSteer <= -mSteerToZeroIncrement * (secondsSinceLastFrame / targetPhysicsFrameRate)) calcIncrement = mSteerToZeroIncrement;
+            if (mSteer <= -mSteerToZeroIncrement * (secondsSinceLastFrame / steeringScalingFactor)) calcIncrement = mSteerToZeroIncrement;
             else resetToZero = true;
         }
     }
@@ -138,7 +141,7 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
     else
     {
         // Framerate independent wheel turning acceleration
-        calcIncrement *= secondsSinceLastFrame / targetPhysicsFrameRate;
+        calcIncrement *= secondsSinceLastFrame / steeringScalingFactor;
         mSteer += calcIncrement;
     }
 
@@ -228,12 +231,10 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
                 {
                     mVehicle->applyEngineForce( mEngineForce, i );                      // Press accel & moving forwards - accelerate
                     doBrake = 1;
-                    //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );       // and apply the brake if had been pressed
                 }
                 else
                 {
                     mVehicle->applyEngineForce( 0, i );                                 // Press accell & moving backwards - turn off accel
-                    //mVehicle->getBulletVehicle()->setBrake( mMaxBrakeForce, i );      // and apply the brake if had been pressed
                     doBrake = 2;
                 }
             }
@@ -249,8 +250,6 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
                 mVehicle->applyEngineForce( 0, i );                                     // Turn off accel if you're pressing brake temporarily
             else
                 mVehicle->applyEngineForce( mEngineForce, i );                          // otherwise normal force (simulate accel & brake together)
-
-            //mVehicle->getBulletVehicle()->setBrake( mBrakingForce, i );               // Set brake on if we're pressing it
             doBrake = 1;
         }
     }
@@ -268,19 +267,12 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
     }
 	
     updateRPM();
-    updateParticleSystems(isForward, secondsSinceLastFrame);
-    updateCompositors();
-}
-
-float Car::getRPM()
-{
-    return mEngineRPM;
 }
 
 /*
 mph = (rpm * cir) / (gear * final * 88)
 where rpm = engine rpm
-cir = tire cicumference, in feet
+cir = tyre cicumference, in feet
 gear = gear ratio of your car
 final = final drive ratio of your car
 88 = combines several conversion factors
@@ -330,7 +322,9 @@ void Car::updateRPM()
             if( mCurrentGear < mGearCount )
             {
                 mCurrentGear ++;
+#ifdef COLLISION_DOMAIN_CLIENT
                 GameCore::mAudioCore->playSoundOrRestart(mGearSound);
+#endif
             }
         }
         
@@ -338,7 +332,9 @@ void Car::updateRPM()
         if( fPrevGear < mRevLimit -1500 && mCurrentGear > 1 )
         {
             mCurrentGear --;
+#ifdef COLLISION_DOMAIN_CLIENT
             GameCore::mAudioCore->playSoundOrRestart(mGearSound);
+#endif
         }
     }
 
@@ -391,23 +387,6 @@ void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame
     
 }
 
-void Car::updateCompositors (void)
-{
-#ifdef COLLISION_DOMAIN_CLIENT
-	float speedmph    = getCarMph();
-	// Update radial blur (from vehicle speed).
-	float blurAmount = 0;
-	if (speedmph > 40.0f)
-	{
-		// calculate blurring as a function of speed, then scale it back depending on where you
-		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
-		// +/-180 and 0, hence the double abs() reduction)).
-		blurAmount = (speedmph - 40) / 28;
-		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
-	}
-    GameCore::mGraphicsApplication->setRadialBlur(GameCore::mGraphicsCore->mCamera->getViewport(), blurAmount);
-#endif
-}
 
 /// @brief  If a node isnt already attached, attaches a new one, otherwise returns the current one
 /// @return The node onto which a camera can be attached to observe the car. The parent of this node is

@@ -16,10 +16,11 @@ PowerupHealth::PowerupHealth()
 
     // From Powerup
     mHasBeenCollected = false;
-    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "HealthPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("HealthPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_HEALTH, mUniqueID, NULL);
+#endif
 }
 
 
@@ -41,8 +42,10 @@ PowerupHealth::~PowerupHealth()
         delete mRigidBody;
         delete collisionShape;
     }
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -63,7 +66,9 @@ void PowerupHealth::playerCollision(Player* player)
     if( player != NULL )
     {
         // play powerup reward sound
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
 
         // apply extra health
         player->applyHealthBonus();
@@ -74,9 +79,9 @@ void PowerupHealth::playerCollision(Player* player)
 }
 
 
-void PowerupHealth::frameEvent(const Ogre::FrameEvent& evt)
+void PowerupHealth::frameEvent(const float timeSinceLastFrame)
 {
-    mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(evt.timeSinceLastFrame), 0.0 ) );
+    mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(timeSinceLastFrame), 0.0 ) );
 }
 
 
@@ -91,7 +96,9 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
     if (mHasSpawned) return;
     mHasSpawned = true;
 
+#ifdef COLLISION_DOMAIN_CLIENT
     createGraphic();
+#endif
     createCollideable();
     
     mNode->translate( createAboveAt );
@@ -101,7 +108,7 @@ void PowerupHealth::spawn(Ogre::Vector3 createAboveAt)
 
 void PowerupHealth::createGraphic()
 {
-    entity = GameCore::mSceneMgr->createEntity("HealthPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_health.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("HealthPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_health.mesh");
     
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK);
@@ -157,7 +164,7 @@ void PowerupHealth::createCollideable()
 
 void PowerupHealth::removeGraphic()
 {
-    mNode->detachObject(entity);
+    mNode->detachAllObjects();
 }
 
 

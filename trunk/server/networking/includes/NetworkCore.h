@@ -83,7 +83,7 @@ public:
 	RakNet::RakPeerInterface* getRakInterface();
 	void RegisterRPCSlots();
 
-    void frameEvent(InputState *inputSnapshot);
+    void frameEvent();
 	void ProcessPlayerState( RakNet::Packet *pkt );
 	void BroadcastUpdates();
 	void BroadcastRPC( char *rpcName, RakNet::BitStream *bsData );
@@ -96,6 +96,7 @@ public:
 
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
     void sendPowerupCollect( int pwrID, Player *player, PowerupType newtype = POWERUP_HEALTH );
+    void sendChatMessage( const char *szMessage );
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 

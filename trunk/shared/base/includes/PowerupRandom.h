@@ -22,11 +22,10 @@ public:
     ~PowerupRandom();
     void playerCollision(Player* player);
     void playerCollision(Player* player, PowerupType pwrType);
-    void frameEvent( const Ogre::FrameEvent& evt );
+    void frameEvent( const float timeSinceLastFrame );
     bool isPendingDelete();
 
 private:
-    Ogre::Entity *entity;
     void removeFromWorlds();
 };
 

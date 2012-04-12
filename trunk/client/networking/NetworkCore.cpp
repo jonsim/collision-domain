@@ -14,7 +14,7 @@ RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
 
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore()
+NetworkCore::NetworkCore () : mPlayerName("boobs")
 {
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
@@ -120,9 +120,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 
 				RakNet::BitStream bsSend;
 
-				RakNet::StringCompressor().EncodeString( 
-                    CEGUI::WindowManager::getSingleton().
-                    getWindow( "/Connect/nick" )->getText().c_str(), 128, &bsSend );
+				RakNet::StringCompressor().EncodeString( mPlayerName.c_str(), 128, &bsSend );
 
 				m_RPC->Signal( "PlayerJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
 				break;
@@ -216,7 +214,7 @@ void NetworkCore::sendSpawnRequest( CarType iCarType )
 }
 
 
-void NetworkCore::sendChatMessage( char *szMessage )
+void NetworkCore::sendChatMessage( const char *szMessage )
 {
     RakNet::BitStream bsSend;
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
@@ -233,8 +231,6 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), szNickname );
 	log( "GameJoin : local playerid %s", m_pRak->GetMyGUID().ToString() );
 
-    GameCore::mGui->closeConnectBox();
-
 	bConnected = true;
 	timeLastUpdate = 0;
 
@@ -242,7 +238,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
     // Show the spawn screen
-    GameCore::mGraphicsCore->mSpawnScreen = new SpawnScreen( GameCore::mGraphicsCore->mCamera );
+    GameCore::mClientGraphics->mSpawnScreen = new SpawnScreen( GameCore::mClientGraphics->mCamera );
 
 	// If we're allowed to spawn, our spawn method will be called by the server automagically.
 }
@@ -277,8 +273,10 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	bitStream->Read( playerid );
 	RakNet::StringCompressor().DecodeString( szMessage, 128, bitStream );
 
-    GameCore::mGui->chatboxAddMessage( 
-        GameCore::mPlayerPool->getPlayer( playerid )->getNickname(), szMessage );
+    if( playerid == pkt->guid )
+        GameCore::mGui->chatboxAddMessage( "Admin", szMessage );
+    else
+        GameCore::mGui->chatboxAddMessage( GameCore::mPlayerPool->getPlayer( playerid )->getNickname(), szMessage );
 }
 
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -296,13 +294,13 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	{
         // Get rid of our spawn screen
-        delete GameCore::mGraphicsCore->mSpawnScreen;
-        GameCore::mGraphicsCore->mSpawnScreen = NULL;
+        delete GameCore::mClientGraphics->mSpawnScreen;
+        GameCore::mClientGraphics->mSpawnScreen = NULL;
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
 		pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
 		pPlayer->setTeam(teamNum);
-        pPlayer->attachCamera( GameCore::mGraphicsCore->mCamera );
+        pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
 	}
 	else
 	{
