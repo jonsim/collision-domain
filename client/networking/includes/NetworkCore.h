@@ -72,6 +72,7 @@ private:
     static RakNet::RakPeerInterface *m_pRak;
     static RakNet::RPC4 *m_RPC;
     RakNet::RakNetGUID serverGUID;
+    std::string mPlayerName;
 
     static RakNet::TimeMS timeLastUpdate;
 

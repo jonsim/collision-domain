@@ -276,13 +276,12 @@ void ClientGraphics::setupGUI (void)
     GameCore::mGui->setupSpawnScreen(mGUIWindow);
     GameCore::mGui->showSpawnScreenPage1();
 
-    /*
     GameCore::mGui->setupFPSCounter(mGUIWindow);
     GameCore::mGui->setupConsole(mGUIWindow);
     GameCore::mGui->setupChatbox(mGUIWindow);
     GameCore::mGui->setupOverlays(mGUIWindow);
 
-    GameCore::mGameplay->setupOverlay();*/
+    GameCore::mGameplay->setupOverlay();
 }
 
 

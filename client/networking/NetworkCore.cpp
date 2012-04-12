@@ -14,7 +14,7 @@ RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
 
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore()
+NetworkCore::NetworkCore () : mPlayerName("boobs")
 {
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
@@ -120,9 +120,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 
 				RakNet::BitStream bsSend;
 
-				RakNet::StringCompressor().EncodeString( 
-                    CEGUI::WindowManager::getSingleton().
-                    getWindow( "/Connect/nick" )->getText().c_str(), 128, &bsSend );
+				RakNet::StringCompressor().EncodeString( mPlayerName.c_str(), 128, &bsSend );
 
 				m_RPC->Signal( "PlayerJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
 				break;
