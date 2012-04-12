@@ -21,8 +21,8 @@ enum GraphicsState
 {
     UNDEFINED,
     IN_LOBBY,
-    SPAWN_SCREEN,
-    PLAYING_GAME,
+    //SPAWN_SCREEN,
+    IN_GAME,
     BENCHMARKING,
     //SPECTATING_GAME,
     PROJECTOR

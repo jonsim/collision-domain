@@ -8,6 +8,203 @@
 /*-------------------- SPAWN SCREEN --------------------*/
 void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
 {
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+	// Load the layout file for connect box
+	CEGUI::Window *pLayout = winMgr.loadWindowLayout("SpawnScreen.layout");
+
+	// Add to gui overlay window
+	guiWindow->addChildWindow( pLayout );
+
+	// Setup the image
+    spawnScreenImageSet = &CEGUI::ImagesetManager::getSingleton().create("SpawnScreen.imageset");
+	spawnScreenImage = winMgr.getWindow("/SpawnScreen/Vehicle/imgVehicle");
+    spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
+
+    // Get handles to the buttons
+    // Page 1 buttons
+	CEGUI::Window* p1btnBlueTeam   = winMgr.getWindow("/SpawnScreen/Team/btnBlue");
+	CEGUI::Window* p1btnRedTeam    = winMgr.getWindow("/SpawnScreen/Team/btnRed");
+	CEGUI::Window* p1btnAutoAssign = winMgr.getWindow("/SpawnScreen/Team/btnAuto");
+	CEGUI::Window* p1btnSpectator  = winMgr.getWindow("/SpawnScreen/Team/btnSpectate");
+	CEGUI::Window* p1btnProjector  = winMgr.getWindow("/SpawnScreen/Team/btnProjector");
+	p1btnBlueTeam->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnBlueTeam,   this));
+	p1btnRedTeam->subscribeEvent(   CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnRedTeam,    this));
+	p1btnAutoAssign->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnAutoAssign, this));
+	p1btnSpectator->subscribeEvent( CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnSpectator,  this));
+	p1btnProjector->subscribeEvent( CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p1btnProjector,  this));
+
+    // Page 2 buttons
+	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+	CEGUI::Window* p2btnCancel    = winMgr.getWindow("/SpawnScreen/Vehicle/btnCancel");
+	CEGUI::Window* p2btnConfirm   = winMgr.getWindow("/SpawnScreen/Vehicle/btnConfirm");
+	p2btnCoupe->subscribeEvent(    CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnCoupe,     this));
+	p2btnHatchback->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnHatchback, this));
+	p2btnTruck->subscribeEvent(    CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnTruck,     this));
+	p2btnCancel->subscribeEvent(   CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnCancel,    this));
+	p2btnConfirm->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnConfirm,   this));
+
+	CEGUI::MouseCursor::getSingleton().show();
+}
+
+void GameGUI::showSpawnScreenPage1 (void)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    // Get references to the pages.
+    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
+    CEGUI::Window* page1 = winMgr.getWindow("/SpawnScreen/Team");
+    CEGUI::Window* page2 = winMgr.getWindow("/SpawnScreen/Vehicle");
+
+    // Show the correct pages
+    mainWindow->setVisible(true);
+    page2->setVisible(false);
+    page1->setVisible(true);
+}
+
+void GameGUI::showSpawnScreenPage2 (void)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    // Get references to the pages.
+    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
+    CEGUI::Window* page1 = winMgr.getWindow("/SpawnScreen/Team");
+    CEGUI::Window* page2 = winMgr.getWindow("/SpawnScreen/Vehicle");
+
+    // Update the page's image
+    if (spawnScreenTeamSelection == 1)
+    {
+        page2->setProperty("Text", "Blue Team: Select a Vehicle");
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
+    }
+    else if (spawnScreenTeamSelection == 2)
+    {
+        page2->setProperty("Text", "Red Team: Select a Vehicle");
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
+    }
+
+    // Show the correct pages
+    mainWindow->setVisible(true);
+    page1->setVisible(false);
+    page2->setVisible(true);
+}
+
+void GameGUI::showSpawnScreenErrorText (const char* errorText)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
+    txtError->setProperty("Text", errorText);
+    txtError->show();
+}
+
+void GameGUI::hideSpawnScreenErrorText (void)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
+    txtError->hide();
+}
+
+void GameGUI::closeSpawnScreen (void)
+{
+	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+
+    // Get references to the pages.
+    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
+
+    // Show the correct pages
+    mainWindow->hide();
+}
+
+bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
+{
+    hideSpawnScreenErrorText();
+
+    spawnScreenTeamSelection = 1;
+    showSpawnScreenPage2();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnRedTeam (const CEGUI::EventArgs& args)
+{
+    hideSpawnScreenErrorText();
+
+    spawnScreenTeamSelection = 2;
+    showSpawnScreenPage2();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args)
+{
+    hideSpawnScreenErrorText();
+
+    spawnScreenTeamSelection = 1;
+    showSpawnScreenPage2();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnSpectator (const CEGUI::EventArgs& args)
+{
+    showSpawnScreenErrorText("Feature not implemented yet.");
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p1btnProjector (const CEGUI::EventArgs& args)
+{
+    showSpawnScreenErrorText("Feature not implemented yet.");
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args)
+{
+    if (spawnScreenTeamSelection == 1)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
+    else if (spawnScreenTeamSelection == 2)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args)
+{
+    if (spawnScreenTeamSelection == 1)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackBlue")));
+    else if (spawnScreenTeamSelection == 2)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackRed")));
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args)
+{
+    if (spawnScreenTeamSelection == 1)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckBlue")));
+    else if (spawnScreenTeamSelection == 2)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckRed")));
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args)
+{
+    closeSpawnScreen();
+
+    return true;
+}
+
+bool GameGUI::SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args)
+{
+    showSpawnScreenPage1();
+
+    return true;
 }
 
 

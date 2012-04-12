@@ -16,7 +16,21 @@ public:
     ~GameGUI (void) {}
 
     void setupSpawnScreen (CEGUI::Window* guiWindow);
+    void showSpawnScreenPage2 (void);
+    void showSpawnScreenPage1 (void);
     void closeSpawnScreen (void);
+    void showSpawnScreenErrorText (const char* errorText);
+    void hideSpawnScreenErrorText (void);
+    bool SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p1btnRedTeam (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p1btnSpectator (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p1btnProjector (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args);
+    bool SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args);
 
 	void setupChatbox (CEGUI::Window* guiWindow);
 	void toggleChatbox (void);
@@ -55,6 +69,10 @@ private:
     Ogre::OverlayElement* oleDamageFR;
     Ogre::OverlayElement* oleDamageRL;
     Ogre::OverlayElement* oleDamageRR;
+
+    CEGUI::Window*   spawnScreenImage;
+    CEGUI::Imageset* spawnScreenImageSet;
+    int              spawnScreenTeamSelection;
 };
 
 #endif
