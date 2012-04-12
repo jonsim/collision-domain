@@ -22,8 +22,7 @@ ClientGraphics::ClientGraphics (void)
     mDebrisVisible(false),
     mShutDown(false),
     mSpawnScreen(0),
-    mGraphicsState(UNDEFINED),
-    mBenchmarkRunning(false)
+    mGraphicsState(UNDEFINED)
 {
 }
 
@@ -83,9 +82,14 @@ bool ClientGraphics::initApplication (void)
     // Create the camera and viewport for viewing the scene
     createCamera();
     createViewports();
+    
+    // Initialise the application critical elements.
+    GameCore::initialise(this);
 
     // Load the lobby
     loadLobby();
+
+    setupUserInput();
 
     // Load the game
     //loadGame();
@@ -169,11 +173,15 @@ void ClientGraphics::loadLobby (void)
     // Set the graphics state
     mGraphicsState = IN_LOBBY;
 
-    // First we need to load CEGUI and it's resources by running the generic setup.
+    // First load CEGUI and it's resources by running the generic setup.
     SceneSetup::setupGUI();
-    setupUserInput();
 
-    //GameCore::mGui->setupLobby(mWindow->getWidth(), mWindow->getHeight());
+    // Create the lobby and set it right up.
+    mLobby = new Lobby(mGUIWindow);
+    mLobby->setup(mWindow->getWidth(), mWindow->getHeight());
+    mLobby->addServer("NOOBS4GLORY", "4/5", "GAY MAP", true);
+    mLobby->addServer("Boobs Server", "15/32", "GAY MAP", false);
+    mLobby->addServer("Another Server", "0/32", "NEW MAP", false);
 }
 
 
@@ -181,13 +189,17 @@ void ClientGraphics::unloadLobby (void)
 {
     // Set the graphics state
     mGraphicsState = UNDEFINED;
+    mLobby->close();
+    delete mLobby;
 }
 
 
 void ClientGraphics::loadGame (void)
 {
     // Set the graphics state
-    mGraphicsState = PLAYING_GAME;
+    if (mGraphicsState == IN_LOBBY)
+        unloadLobby();
+    mGraphicsState = SPAWN_SCREEN;
 
     // Create the splash screen (preloading its required resources in the process)
     SplashScreen splashScreen(mRoot);
@@ -199,8 +211,8 @@ void ClientGraphics::loadGame (void)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
     loadResources();
 
-    // Initialise the other game elements.
-    GameCore::initialise(this, &splashScreen, 50);
+    // Load the game elements
+    GameCore::load(&splashScreen, 50);
 
     // Build the scene.
     createScene();
@@ -245,9 +257,6 @@ void ClientGraphics::createScene (void)
     // Setup the GUI.
     setupGUI();
 
-    // Setup the input.
-    setupUserInput();
-
     // Setup the scene resources.
     setupMeshDeformer();
 }
@@ -255,15 +264,14 @@ void ClientGraphics::createScene (void)
 
 void ClientGraphics::setupGUI (void)
 {
-    // Run the generic GUI setup
+    // Initialise the GUI renderer if it hasn't already been.
     SceneSetup::setupGUI();
 
     // Attach the GUI components
-    GameCore::mGui->setupFPSCounter();
-    GameCore::mGui->setupConnectBox();
-    GameCore::mGui->setupConsole();
-    GameCore::mGui->setupChatbox();
-    GameCore::mGui->setupOverlays();
+    GameCore::mGui->setupFPSCounter(mGUIWindow);
+    GameCore::mGui->setupConsole(mGUIWindow);
+    GameCore::mGui->setupChatbox(mGUIWindow);
+    GameCore::mGui->setupOverlays(mGUIWindow);
 
     GameCore::mGameplay->setupOverlay();
 }
@@ -308,9 +316,9 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     if (mGraphicsState == IN_LOBBY)
     {
-        mUserInput.capture();
-
+        // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+        mUserInput.capture();
     }
     else if (mGraphicsState == PLAYING_GAME)
     {
@@ -330,36 +338,6 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         mVIPIcon[0]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
         mVIPIcon[1]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
     
-        // Check for benchmarking
-	    if (mBenchmarkRunning)
-	    {
-		    static float    benchmarkProgress = 0;
-		    static float    CATriangles       = 0;
-		    static uint16_t CAi               = 0;
-            benchmarkProgress += evt.timeSinceLastFrame;
-		    CATriangles += ((float) (mWindow->getTriangleCount() - CATriangles)) / ((float) (++CAi));
-		    // stop the benchmark after 8 seconds
-		    if (benchmarkProgress > 8)
-		    {
-			    CAi               = 0;
-			    benchmarkProgress = 0;
-			    mBenchmarkRunning = false;
-			    finishBenchmark(mBenchmarkStage, CATriangles);
-		    }
-
-		    // rotate the camera
-            GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * evt.timeSinceLastFrame, 0.0f, 0.0f, evt.timeSinceLastFrame);
-
-		    // update fps counter
-		    float avgfps = mWindow->getAverageFPS(); // update fps
-		    CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-		    char szFPS[16];
-		    sprintf(szFPS, "FPS: %.2f", avgfps);
-		    fps->setText(szFPS);
-
-		    // dont do any of the non-graphics bullshit
-		    return true;
-	    }
 
         // Collect input
 	    InputState *inputSnapshot = mUserInput.getInputState();
@@ -408,13 +386,20 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         {
 	        if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
 	        {
-		        GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame, physicsTimeStep);
+		        GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
 		        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
 	        }
         }
 
         // Cleanup frame specific objects.
         delete inputSnapshot;
+    }
+    // Check for benchmarking
+    else if (mGraphicsState == BENCHMARKING)
+    {
+        // Update the GUI and benchmark
+        CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+        updateBenchmark(evt.timeSinceLastFrame);
     }
 
     return true;
@@ -436,6 +421,33 @@ bool ClientGraphics::frameStarted (const Ogre::FrameEvent& evt)
 bool ClientGraphics::frameEnded (const Ogre::FrameEvent& evt)
 {
     return true;
+}
+
+
+void ClientGraphics::updateBenchmark (const float timeSinceLastFrame)
+{// Check for benchmarking
+	static float    benchmarkProgress = 0;
+	static float    CATriangles       = 0;
+	static uint16_t CAi               = 0;
+    benchmarkProgress += timeSinceLastFrame;
+	CATriangles += ((float) (mWindow->getTriangleCount() - CATriangles)) / ((float) (++CAi));
+	// stop the benchmark after 8 seconds
+	if (benchmarkProgress > 8)
+	{
+		CAi               = 0;
+		benchmarkProgress = 0;
+		finishBenchmark(mBenchmarkStage, CATriangles);
+	}
+
+	// rotate the camera
+    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * timeSinceLastFrame, 0.0f, 0.0f, timeSinceLastFrame);
+
+	// update fps counter
+	float avgfps = mWindow->getAverageFPS(); // update fps
+	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+	char szFPS[16];
+	sprintf(szFPS, "FPS: %.2f", avgfps);
+	fps->setText(szFPS);
 }
 
 
@@ -581,7 +593,7 @@ void ClientGraphics::startBenchmark (uint8_t stage)
 	
 	mWindow->resetStatistics();
 	mBenchmarkStage = stage;
-	mBenchmarkRunning = true;
+	mGraphicsState = BENCHMARKING;
 }
 
 void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)
@@ -613,6 +625,8 @@ void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)
 		rFile.close();
 		OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
 		Ogre::CompositorManager::getSingleton().removeCompositor(mCamera->getViewport(), "HDR");
+
+        mGraphicsState = PLAYING_GAME;
 	}
 	else
 	{
@@ -731,19 +745,22 @@ extern "C" {
 #endif
 
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-    INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
+    INT WINAPI WinMain (HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT)
 #else
-    int main(int argc, char *argv[])
+    int main (int argc, char *argv[])
 #endif
     {
         // Create application object
         ClientGraphics application;
 
-        try {
+        try
+        {
             application.go();
-        } catch( Ogre::Exception& e ) {
+        }
+        catch (Ogre::Exception& e)
+        {
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-            MessageBox( NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
+            MessageBox(NULL, e.getFullDescription().c_str(), "An exception has occured!", MB_OK | MB_ICONERROR | MB_TASKMODAL);
 #else
             std::cerr << "An exception has occured: " << e.getFullDescription().c_str() << std::endl;
 #endif
@@ -751,7 +768,6 @@ extern "C" {
 
         return 0;
     }
-
 #ifdef __cplusplus
 }
 #endif

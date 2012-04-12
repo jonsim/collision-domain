@@ -127,14 +127,14 @@ void Player::processControlsFrameEvent(
 	if(this->getAlive())
 	{
 		// process steering
-		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);
     
 	    // apply acceleration 4wd style
 	    mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
 	}
     else
     {
-        mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
+        mCar->steerInputTick(false, false, secondsSinceLastFrame);
         mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
     }
 }

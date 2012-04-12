@@ -25,10 +25,22 @@ PowerupPool*			GameCore::mPowerupPool			= NULL;
 Gameplay*				GameCore::mGameplay				= NULL;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-void GameCore::initialise(ClientGraphics* clientGraphics, SplashScreen* ss, int progress)
+void GameCore::initialise (ClientGraphics* clientGraphics)
 #else
-void GameCore::initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int progress)
+void GameCore::initialise (ServerGraphics* serverGraphics)
 #endif
+{
+#ifdef COLLISION_DOMAIN_SERVER
+    GameCore::mServerGraphics = serverGraphics;
+#else
+    GameCore::mClientGraphics = clientGraphics;
+#endif
+
+    // Load the networking
+    GameCore::mNetworkCore = new NetworkCore();
+}
+
+void GameCore::load (SplashScreen* ss, int progress)
 {
     const int endProgress = 100;
 #ifdef COLLISION_DOMAIN_CLIENT
@@ -41,9 +53,6 @@ void GameCore::initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int 
 #ifdef COLLISION_DOMAIN_SERVER
     ss->updateProgressBar(progress += progressStep, "Loading AI...");       // -/1
 	GameCore::mAiCore = new AiCore();
-    GameCore::mServerGraphics = serverGraphics;
-#else
-    GameCore::mClientGraphics = clientGraphics;
 #endif
 
     ss->updateProgressBar(progress += progressStep, "Loading GUI...");      // 1/2
@@ -52,24 +61,21 @@ void GameCore::initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int 
     ss->updateProgressBar(progress += progressStep, "Loading Players...");  // 2/3
     GameCore::mPlayerPool  = new PlayerPool();
 
-    ss->updateProgressBar(progress += progressStep, "Loading Network...");  // 3/4
-    GameCore::mNetworkCore = new NetworkCore();
-
-    ss->updateProgressBar(progress += progressStep, "Loading Physics...");  // 4/5
+    ss->updateProgressBar(progress += progressStep, "Loading Physics...");  // 3/4
     GameCore::mPhysicsCore = new PhysicsCore();
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    ss->updateProgressBar(progress += progressStep, "Loading Audio...");    // 5/-
+    ss->updateProgressBar(progress += progressStep, "Loading Audio...");    // 4/-
     GameCore::mAudioCore   = new AudioCore();
 #endif
 
-    ss->updateProgressBar(progress += progressStep, "Loading Powerups..."); // 6/6
+    ss->updateProgressBar(progress += progressStep, "Loading Powerups..."); // 5/5
     GameCore::mPowerupPool = new PowerupPool();
 
-    ss->updateProgressBar(progress += progressStep, "Loading Gameplay..."); // 7/7
+    ss->updateProgressBar(progress += progressStep, "Loading Gameplay..."); // 6/6
 	GameCore::mGameplay	   = new Gameplay();
 
-    ss->updateProgressBar(100, "Finalising...");                            // 8/8
+    ss->updateProgressBar(100, "Finalising...");                            // 7/7
 }
 
 void GameCore::destroy()

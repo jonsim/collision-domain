@@ -159,14 +159,13 @@ int Input::getMouseZRel()
 bool Input::keyPressed (const OIS::KeyEvent &evt)
 {
 	// Get the GUI system and inject the key press
-	CEGUI::System &sys = CEGUI::System::getSingleton();
+	CEGUI::System& sys = CEGUI::System::getSingleton();
 	sys.injectKeyDown(evt.key);
 
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
     
     // Had to put this in here for now, and the define.. well fuck you shared includes.
-    
 #ifdef COLLISION_DOMAIN_CLIENT
     // This is safe, mSpawnScreen will only ever be not null if we are selecting
     if( GameCore::mClientGraphics->mSpawnScreen != NULL )
@@ -251,7 +250,7 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     // Play the car horn on left or right button press
-#ifdef COLLISION_DOMAIN_CLIENT
+#ifdef COLLISION_DOMAIN_CLIENTo
     Player*      localPlayer = GameCore::mPlayerPool->getLocalPlayer();
     SpawnScreen* spawnScreen = GameCore::mClientGraphics->mSpawnScreen;
     

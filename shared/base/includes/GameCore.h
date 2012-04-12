@@ -50,10 +50,11 @@ public:
 	static Gameplay* mGameplay;
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    static void initialise(ClientGraphics* clientGraphics, SplashScreen* ss, int progress);
+    static void initialise (ClientGraphics* clientGraphics);
 #else
-    static void initialise(ServerGraphics* serverGraphics, SplashScreen* ss, int progress);
+    static void initialise (ServerGraphics* serverGraphics);
 #endif
+    static void load (SplashScreen* ss, int progress);
     static void destroy();
 
 	static MeshDeformer meshDeformer;

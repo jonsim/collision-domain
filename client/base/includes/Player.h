@@ -22,7 +22,7 @@ public:
     ~Player (void);
     void createPlayer (CarType carType, CarSkin skin);
     void attachCamera (Ogre::Camera* cam);
-    void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
+    void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time);
     void updateLocalGraphics (void);
     void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);

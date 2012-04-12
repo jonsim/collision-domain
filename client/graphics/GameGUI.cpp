@@ -2,135 +2,19 @@
 #include "GameGUI.h"
 #include "boost/algorithm/string.hpp"
 
-GameGUI::GameGUI()
+
+
+
+/*-------------------- SPAWN SCREEN --------------------*/
+void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
 {
 }
 
-GameGUI::~GameGUI()
-{
-}
-
-/// @brief  Loads and sets up the resources required by CEGUI, creates a blank window layer and
-///         adds the FPS counter to it.
-void GameGUI::initialiseGUI (void)
-{
-	// Load the fonts and set their sizes.
-    CEGUI::Font* pFont;
-	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	//pFont = &CEGUI::FontManager::getSingleton().create("Verdana-outline-10.font");
-	//pFont->setProperty( "PointSize", "10" );
-	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
-	pFont->setProperty( "PointSize", "10" );
-
-	// Register font as default
-    if(CEGUI::FontManager::getSingleton().isDefined("DejaVuSans-10"))
-		CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
-
-	// Create skin scheme outlining widget (window) parameters
-	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
-	CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
-	CEGUI::SchemeManager::getSingleton().create("GWEN.scheme");
-	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
-
-	// Register skin's default image set and cursor icon
-	CEGUI::Imageset::setDefaultResourceGroup("Imagesets");
-	CEGUI::System::getSingleton().setDefaultMouseCursor("Vanilla-Images", "MouseArrow");
-
-	// Tell CEGUI where to look for layouts
-	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-
-	// Create an empty default window layer
-	mSheet = CEGUI::WindowManager::getSingleton().createWindow( "DefaultWindow", "root_wnd" );
-
-	CEGUI::System::getSingleton().setGUISheet( mSheet );
-}
 
 
-
-
-/*-------------------- CONNECTION BOX --------------------*/
-
-void GameGUI::setupConnectBox()
-{
-	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-
-	// Load the layout file for connect box
-	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Connect.layout" );
-
-	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
-
-	// Get handles to some of the objects
-	CEGUI::Window *hostText = winMgr.getWindow( "/Connect/host" );
-    CEGUI::Window *nickText = winMgr.getWindow( "/Connect/nick" );
-	CEGUI::Window *cmdCon = winMgr.getWindow( "/Connect/cmdCon" );
-	CEGUI::Window *cmdQuit = winMgr.getWindow( "/Connect/cmdQuit" );
-
-	// Give the host textbox focus
-	hostText->activate();
-
-	// Register callback for <Enter> press
-	hostText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
-    nickText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
-	cmdCon->subscribeEvent( CEGUI::PushButton::EventClicked, 
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Host, this ) );
-	cmdQuit->subscribeEvent( CEGUI::PushButton::EventClicked,  
-		CEGUI::Event::Subscriber( &GameGUI::Connect_Quit, this ) );
-}
-
-void GameGUI::closeConnectBox()
-{
-    mSheet->removeChildWindow( "/Connect" );
-	CEGUI::MouseCursor::getSingleton().hide();
-}
-
-/// @brief  Check user has filled in all details, and connect, otherwise tab into the required field
-bool GameGUI::Connect_Host( const CEGUI::EventArgs &args )
-{
-	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
-
-	CEGUI::Editbox *connectText = 
-		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/host" ) );
-    CEGUI::Editbox *nickText = 
-        static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Connect/nick" ) );
-
-    if( connectText->getText().empty() )
-    {
-        connectText->activate();
-        return true;
-    }
-
-    if( nickText->getText().empty() )
-    {
-        nickText->activate();
-        return true;
-    }
-
-	bool bResult = GameCore::mNetworkCore->Connect( 
-		connectText->getText().c_str(), SERVER_PORT, NULL );
-
-	if( bResult )
-	{
-        connectText->setEnabled( false );
-        nickText->setEnabled( false );
-	}
-	else
-		connectText->setText( "" );
-
-	return true;
-}
-
-bool GameGUI::Connect_Quit( const CEGUI::EventArgs &args )
-{
-	GameCore::mClientGraphics->shutdown();
-	return true;
-}
 
 /*-------------------- DEV CONSOLE --------------------*/
-void GameGUI::setupConsole()
+void GameGUI::setupConsole (CEGUI::Window* guiWindow)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -138,7 +22,7 @@ void GameGUI::setupConsole()
 	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Console.layout" );
 
 	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
+	guiWindow->addChildWindow( pLayout );
 
 	// Get handles to some of the objects
 	CEGUI::Window *consoleFrame = winMgr.getWindow( "/Console" );
@@ -158,7 +42,7 @@ void GameGUI::setupConsole()
 	consoleFrame->hide();
 }
 
-void GameGUI::toggleConsole()
+void GameGUI::toggleConsole (void)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 	// Get handles to some of the objects
@@ -173,7 +57,7 @@ void GameGUI::toggleConsole()
 	}
 }
 
-bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
+bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 
@@ -254,7 +138,7 @@ bool GameGUI::Console_Send( const CEGUI::EventArgs &args )
 	return true;
 }
 
-bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
+bool GameGUI::Console_Off (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 	mWinMgr.getWindow( "/Console" )->hide();
@@ -262,7 +146,7 @@ bool GameGUI::Console_Off( const CEGUI::EventArgs &args )
 }
 
 /*-------------------- DEV Chatbox --------------------*/
-void GameGUI::setupChatbox()
+void GameGUI::setupChatbox (CEGUI::Window* guiWindow)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -270,7 +154,7 @@ void GameGUI::setupChatbox()
 	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Chatbox.layout" );
 
 	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
+	guiWindow->addChildWindow( pLayout );
 
 	// Get handles to some of the objects
 	CEGUI::Window *chatboxFrame = winMgr.getWindow( "/Chatbox" );
@@ -283,7 +167,7 @@ void GameGUI::setupChatbox()
 	inputText->hide();
 }
 
-void GameGUI::toggleChatbox()
+void GameGUI::toggleChatbox (void)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 	// Get handles to some of the objects
@@ -298,7 +182,7 @@ void GameGUI::toggleChatbox()
 	}
 }
 
-bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
+bool GameGUI::Chatbox_Send (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
 
@@ -315,7 +199,7 @@ bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
 	return true;
 }
 
-void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
+void GameGUI::chatboxAddMessage (const char *szNickname, char *szMessage)
 {
     char szBuffer[256];
     if (!strcmp(szNickname, "Admin"))
@@ -352,20 +236,20 @@ void GameGUI::chatboxAddMessage( const char *szNickname, char *szMessage )
 
 /* In-game HUD */
 /* FPS Counter */
-void GameGUI::setupFPSCounter (void)
+void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
 {
     // Setup the FPS Counter
 	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
 	createWindow( "Vanilla/StaticText", "root_wnd/fps" );
     fps->setText( "fps: " );
 	fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
-	CEGUI::System::getSingleton().setGUISheet( mSheet );
-	mSheet->addChildWindow( fps );
+	CEGUI::System::getSingleton().setGUISheet( guiWindow );
+	guiWindow->addChildWindow( fps );
 }
 
 /*-------------------- SPEEDOMETER --------------------*/
 /// @brief Draws the speedo on-screen
-void GameGUI::setupSpeedo( void )
+void GameGUI::setupSpeedo (void)
 {
 	// Create our speedometer overlays
 	Ogre::Overlay *olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
@@ -397,7 +281,7 @@ void GameGUI::setupSpeedo( void )
 	olcSpeedo->addChild( hub );
 }
 
-void GameGUI::updateSpeedo( void )
+void GameGUI::updateSpeedo (void)
 {
     updateSpeedo(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getCarMph(),
                  GameCore::mPlayerPool->getLocalPlayer()->getCar()->getGear());
@@ -406,7 +290,7 @@ void GameGUI::updateSpeedo( void )
 /// @brief	Update the rotation of the speedo needle
 /// @param	fSpeed	Float containing speed of car in mph
 /// @param  iGear   Current car gear
-void GameGUI::updateSpeedo( float fSpeed, int iGear )
+void GameGUI::updateSpeedo (float fSpeed, int iGear)
 {
 	if( fSpeed < 0 )
 		fSpeed *= -1;
@@ -440,7 +324,7 @@ void GameGUI::updateSpeedo( float fSpeed, int iGear )
 
 /*-------------------- GEAR DISPLAY --------------------*/
 /// @brief Draws the gear display
-void GameGUI::setupGearDisplay()
+void GameGUI::setupGearDisplay (void)
 {
 	oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
 
@@ -456,7 +340,7 @@ void GameGUI::setupGearDisplay()
 	updateSpeedo( 0, -1 );
 }
 
-void GameGUI::updateCounters()
+void GameGUI::updateCounters (void)
 {
 	static char szFPS[64];
 
@@ -465,7 +349,7 @@ void GameGUI::updateCounters()
 	fps->setText( szFPS );
 }
 
-void GameGUI::setupDamageDisplay()
+void GameGUI::setupDamageDisplay (void)
 {
     int width = 82, height = 169;
 
@@ -543,7 +427,7 @@ void GameGUI::setupDamageDisplay()
 }
 
 // part 0-body, 1-engine, 2-fl, 3-fr, 4-rl, 5-rr. colour 0-green, 1-yellow, 2-red
-void GameGUI::updateDamage(int part, int colour)
+void GameGUI::updateDamage (int part, int colour)
 {
     std::string s = "damage_";
 
@@ -584,7 +468,7 @@ void GameGUI::updateDamage(int part, int colour)
     }
 }
 
-void GameGUI::setupOverlays()
+void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
 {
     setupSpeedo();
     setupGearDisplay();

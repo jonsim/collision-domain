@@ -51,7 +51,8 @@ public:
     Ogre::Entity *truckRDoorMesh;
     Ogre::Entity *truckRBumperMesh;
 
-    MeshDeformer *meshDeformer;
+    MeshDeformer*  mMeshDeformer;
+	CEGUI::Window* mGUIWindow;
 
 protected:
     void setupCompositorChain (Ogre::Viewport* vp);
