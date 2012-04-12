@@ -33,7 +33,7 @@ public:
     Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, int id = -1 );
     Powerup *getPowerup( int id );
     PowerupType getPowerupType( int index );
-    void frameEvent( const Ogre::FrameEvent& evt );
+    void frameEvent( const float timeSinceLastFrame );
     void spawnSomething();
     
 private:

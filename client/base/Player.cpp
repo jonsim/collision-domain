@@ -93,7 +93,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
 	OutputDebugString(ss.str().c_str());*/
 
-	GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
+	GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
 }
 
 
@@ -133,22 +133,20 @@ void Player::attachCamera (Ogre::Camera* cam)
 /// @brief  Applies the player controls to the car so it will move on next stepSimulation.
 /// @param  userInput               The latest user keypresses.
 /// @param  secondsSinceLastFrame   The time in seconds since the last frame, for framerate independence.
-/// @param  targetPhysicsFrameRate  The target framerate to normalise acceleration to.
 void Player::processControlsFrameEvent(
         InputState *userInput,
-        Ogre::Real secondsSinceLastFrame,
-        float targetPhysicsFrameRate)
+        Ogre::Real secondsSinceLastFrame)
 {
 	//Only take input if the player is alive
 	if(this->mAlive)
 	{
 		// process steering and apply acceleration
-		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);
 		mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
 	}
     else
     {
-        mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
+        mCar->steerInputTick(false, false, secondsSinceLastFrame);
         mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
     }
 }
@@ -186,6 +184,32 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
 	*/
 }
 
+/// @brief  Updates graphics for the local player (with effects that should only be applied from that, for example
+///         radial blur, screen cracks etc.
+void Player::updateLocalGraphics (void)
+{
+	// Update radial blur (from vehicle speed).
+	float speedmph = mCar->getCarMph();
+	float blurAmount = 0;
+
+	if (speedmph > 40.0f)
+	{
+		// calculate blurring as a function of speed, then scale it back depending on where you
+		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
+		// +/-180 and 0, hence the double abs() reduction)).
+		blurAmount = (speedmph - 40) / 28;
+		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
+	}
+    GameCore::mClientGraphics->setRadialBlur(GameCore::mClientGraphics->mCamera->getViewport(), blurAmount);
+}
+
+/// @brief  Updates graphics for all players (called individually for each player in player pool), contains graphical
+///         effects all players will have.
+void Player::updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame)
+{
+    mCar->updateParticleSystems(isForward, secondsSinceLastFrame);
+}
+
 /// @brief Returns the camera current yawing around the player.
 /// @return The yawing, in degrees, around the player. 0 is directly in front of the player, +/-180 is behind.
 float Player::getCameraYaw ()
@@ -206,7 +230,7 @@ void Player::killPlayer()
 {
 	this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
-    GameCore::mGraphicsCore->generateExplosion(mCar->mBodyNode->getPosition());
+    GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
 
     // Blast the fuck out of the car (renders it completely undriveable but since this

@@ -119,7 +119,9 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
 
     initTuning();
     initNodes();
+#ifdef COLLISION_DOMAIN_CLIENT
     initGraphics();
+#endif
     initBody(carPosition, chassisShift);
     initWheels();
     initDoors(chassisShift);
@@ -138,6 +140,7 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
 
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID, NULL);
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
@@ -149,6 +152,7 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
     #endif
 
     //mBodyNode->attachObject(mEngineSound);
+#endif
 }
 
 
@@ -163,8 +167,10 @@ TruckCar::~TruckCar(void)
     // Cleanup Shapes:
     delete compoundChassisShape;
     delete chassisShape;
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+#endif
 }
 
 
@@ -203,18 +209,23 @@ void TruckCar::frameEvent()
 
 void TruckCar::playCarHorn()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->playSoundOrRestart(mHornSound);
+#endif
 }
 
 
 /// @brief  Initialises the node tree for this car.
 void TruckCar::initNodes()
 {
+    // Player node.
     mPlayerNode  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PlayerNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     
+    // Top level nodes.
     mBodyNode   = mPlayerNode->createChildSceneNode("BodyNode"   + boost::lexical_cast<std::string>(mUniqueCarID));
     mWheelsNode = mPlayerNode->createChildSceneNode("WheelsNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
+    
+    // Body nodes.
     mChassisNode     = mBodyNode->createChildSceneNode("ChassisNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     //mLDoorNode       = mBodyNode->createChildSceneNode("LDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
     mLDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
@@ -223,46 +234,14 @@ void TruckCar::initNodes()
     mRBumperNode     = mBodyNode->createChildSceneNode("RBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     mLWingmirrorNode = mBodyNode->createChildSceneNode("LWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRWingmirrorNode = mBodyNode->createChildSceneNode("RWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-
+    
+    // Wheel nodes.
     mFLWheelNode = mWheelsNode->createChildSceneNode("FLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mFRWheelNode = mWheelsNode->createChildSceneNode("FRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRLWheelNode = mWheelsNode->createChildSceneNode("RLWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRRWheelNode = mWheelsNode->createChildSceneNode("RRWheelNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-	
-	// Setup particles.
-    mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-	mBodyNode->attachObject(mDustSystem);
-    // The dust emitters should be placed in the location of the wheel nodes but since
-    // the wheels nodes are not currently positioned correctly these are hard coded numbers.
-    mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 1.2f, 0.2f,  1.7f));  // FL
-    mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-1.2f, 0.2f,  1.7f));  // FR
-    mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 1.2f, 0.2f, -1.7f));  // RL
-    mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-1.2f, 0.2f, -1.7f));  // RR
 
-    // The variables which aren't yet to be used
-    mCamArmNode  = NULL;
-    mCamNode     = NULL;
-}
-
-
-/// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void TruckCar::initGraphics()
-{
-    // Load the truck meshes.
-    createGeometry("UnIqUe_TruckBody",      "truck_body.mesh",        mChassisNode,     true);
-    createGeometry("UnIqUe_TruckLDoor",     "truck_ldoor.mesh",       mLDoorNode,       true);
-    createGeometry("UnIqUe_TruckRDoor",     "truck_rdoor.mesh",       mRDoorNode,       true);
-    createGeometry("UnIqUe_TruckRBumper",   "truck_rbumper.mesh",     mRBumperNode,     true);
-    createGeometry("CarEntity_LWingmirror", "truck_lwingmirror.mesh", mLWingmirrorNode, false);
-    createGeometry("CarEntity_RWingmirror", "truck_rwingmirror.mesh", mRWingmirrorNode, false);
-    createGeometry("CarEntity_FLWheel",     "truck_lwheel.mesh",      mFLWheelNode,     false);
-    createGeometry("CarEntity_FRWheel",     "truck_rwheel.mesh",      mFRWheelNode,     false);
-    createGeometry("CarEntity_RLWheel",     "truck_lwheel.mesh",      mRLWheelNode,     false);
-    createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode,     false);
-
-    // Scale the loaded meshes
+    // Scale the nodes.
     PhysicsCore::auto_scale_scenenode(mChassisNode);
     PhysicsCore::auto_scale_scenenode(mLDoorNode);
     PhysicsCore::auto_scale_scenenode(mRDoorNode);
@@ -273,6 +252,41 @@ void TruckCar::initGraphics()
     PhysicsCore::auto_scale_scenenode(mFRWheelNode);
     PhysicsCore::auto_scale_scenenode(mRLWheelNode);
     PhysicsCore::auto_scale_scenenode(mRRWheelNode);
+}
+
+
+/// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
+void TruckCar::initGraphics()
+{
+    // Load the meshes.
+	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
+	// be used in the first parameter
+    createGeometry("UnIqUe_TruckBody",      "truck_body.mesh",        mChassisNode,     true);
+    createGeometry("UnIqUe_TruckLDoor",     "truck_ldoor.mesh",       mLDoorNode,       true);
+    createGeometry("UnIqUe_TruckRDoor",     "truck_rdoor.mesh",       mRDoorNode,       true);
+    createGeometry("UnIqUe_TruckRBumper",   "truck_rbumper.mesh",     mRBumperNode,     true);
+    createGeometry("CarEntity_LWingmirror", "truck_lwingmirror.mesh", mLWingmirrorNode, false);
+    createGeometry("CarEntity_RWingmirror", "truck_rwingmirror.mesh", mRWingmirrorNode, false);
+    createGeometry("CarEntity_FLWheel",     "truck_lwheel.mesh",      mFLWheelNode,     false);
+    createGeometry("CarEntity_FRWheel",     "truck_rwheel.mesh",      mFRWheelNode,     false);
+    createGeometry("CarEntity_RLWheel",     "truck_lwheel.mesh",      mRLWheelNode,     false);
+    createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode,     false);
+	
+	// Setup particles.
+    mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Truck/Exhaust");
+	mBodyNode->attachObject(mExhaustSystem);
+	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+	mBodyNode->attachObject(mDustSystem);
+    // The dust emitters should be placed in the location of the wheel nodes but since
+    // the wheels nodes are not currently positioned correctly these are hard coded numbers.
+    mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 1.2f, 0.2f,  1.7f));  // FL
+    mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-1.2f, 0.2f,  1.7f));  // FR
+    mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 1.2f, 0.2f, -1.7f));  // RL
+    mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-1.2f, 0.2f, -1.7f));  // RR
+
+    // The variables which aren't yet to be used <- what the hell are these?
+    mCamArmNode  = NULL;
+    mCamNode     = NULL;
 }
 
 

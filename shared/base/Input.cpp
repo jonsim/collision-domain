@@ -63,6 +63,7 @@ void Input::capture ()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getInputState()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
 	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{
         return new InputState(mKeyboard->isKeyDown(OIS::KC_UP)    || mKeyboard->isKeyDown(OIS::KC_W),
@@ -76,6 +77,9 @@ InputState* Input::getInputState()
 		// Don't want to capture any keys (typing things) or at the select car screen
 		return new InputState( false, false, false, false, false );
 	}
+#else
+    return NULL;
+#endif
 }
 
 
@@ -83,6 +87,7 @@ InputState* Input::getInputState()
 /// @return The InputState object containing movement key information at the time of the previous sample.
 InputState* Input::getFreeCamInputState()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
 	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
 	{
         return new InputState(mKeyboard->isKeyDown(OIS::KC_T),
@@ -95,11 +100,15 @@ InputState* Input::getFreeCamInputState()
     {
         return new InputState( false, false, false, false, false );
     }
+#else
+    return NULL;
+#endif
 }
 
 /// @brief  Processes the interface controls, performing the correct actions if they are found pressed.
 void Input::processInterfaceControls()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     // Check for console and chatbox - NB: they cannot be displayed simultaneously.
     if (NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
     {
@@ -107,7 +116,7 @@ void Input::processInterfaceControls()
             GameCore::mGui->toggleChatbox();
 	    else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleConsole();
-#ifdef COLLISION_DOMAIN_CLIENT
+//#ifdef COLLISION_DOMAIN_CLIENT
         if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false )
         {
             if( mKeyboard->isKeyDown( OIS::KC_TAB ) )
@@ -115,8 +124,9 @@ void Input::processInterfaceControls()
                 GameCore::mPlayerPool->spectateNext();
             }
         }
-#endif
+//#endif
     }
+#endif
 }
 
 /// @brief  Deals with mouse input.
@@ -149,30 +159,32 @@ int Input::getMouseZRel()
 bool Input::keyPressed (const OIS::KeyEvent &evt)
 {
 	// Get the GUI system and inject the key press
-	CEGUI::System &sys = CEGUI::System::getSingleton();
+	CEGUI::System& sys = CEGUI::System::getSingleton();
 	sys.injectKeyDown(evt.key);
 
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
-
-    if (evt.key == OIS::KC_K) {
-        //GameCore::mAudioCore->playCarCrash();
-        //GameCore::mAudioCore->playEngineIdle();
-    }
-
-    // Had to put this in here for now, and the define.. well fuck you shared includes.
     
+    // Had to put this in here for now, and the define.. well fuck you shared includes.
 #ifdef COLLISION_DOMAIN_CLIENT
     // This is safe, mSpawnScreen will only ever be not null if we are selecting
-    if( GameCore::mGraphicsCore->mSpawnScreen != NULL )
+    if( GameCore::mClientGraphics->mSpawnScreen != NULL )
     {
         if( evt.key == OIS::KC_LEFT || evt.key == OIS::KC_A )
-            GameCore::mGraphicsCore->mSpawnScreen->switchCar( -1 );
+            GameCore::mClientGraphics->mSpawnScreen->switchCar( -1 );
         else if( evt.key == OIS::KC_RIGHT || evt.key == OIS::KC_D )
-            GameCore::mGraphicsCore->mSpawnScreen->switchCar( 1 );
+            GameCore::mClientGraphics->mSpawnScreen->switchCar( 1 );
         else if( evt.key == OIS::KC_RETURN )
-            GameCore::mGraphicsCore->mSpawnScreen->selectCar();
+            GameCore::mClientGraphics->mSpawnScreen->selectCar();
     }
+#endif
+#ifdef COLLISION_DOMAIN_SERVER
+    // Inject UP to the GUI. Has to be done here to prevent rollover as a button is
+    // held down between frames, causing multiple actions from a single keypress.
+    if (evt.key == OIS::KC_UP)
+        GameCore::mGui->loadConsoleHistory(true);
+    else if (evt.key == OIS::KC_DOWN)
+        GameCore::mGui->loadConsoleHistory(false);
 #endif
 
     return true;
@@ -194,12 +206,39 @@ bool Input::keyReleased (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::mouseMoved (const OIS::MouseEvent& evt)
 {
-	CEGUI::System &sys = CEGUI::System::getSingleton();
-	sys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
+	CEGUI::System& guiSys = CEGUI::System::getSingleton();
+#ifdef COLLISION_DOMAIN_CLIENT
+	guiSys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
 	// Scroll wheel.
 	if (evt.state.Z.rel)
-		sys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+#else
+    // Inject mouse movements into the GUI
+    guiSys.injectMousePosition(evt.state.X.abs, evt.state.Y.abs);
+	if (evt.state.Z.rel)
+		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
 
+    // Check if the mouse is within the window
+    if (evt.state.X.abs <= 0 || evt.state.X.abs >= evt.state.width ||
+        evt.state.Y.abs <= 0 || evt.state.Y.abs >= evt.state.height)
+    {
+        CEGUI::MouseCursor::getSingleton().hide();
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        ShowCursor(true);
+#else
+        #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+#endif
+    }
+    else
+    {
+	    CEGUI::MouseCursor::getSingleton().show();
+#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        ShowCursor(false);
+#else
+        #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+#endif
+    }
+#endif
     return true;
 }
 
@@ -211,29 +250,15 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
     // Play the car horn on left or right button press
-    {
-        Car* localCar;
-    #ifdef COLLISION_DOMAIN_CLIENT
-        Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-        SpawnScreen* spawnScreen = GameCore::mGraphicsCore->mSpawnScreen;
-        
-        if (spawnScreen)        localCar = spawnScreen->getCar();
-        else if (localPlayer)   localCar = localPlayer->getCar();
-        else                    localCar = NULL;
-    #else
-        Player* localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-        localCar = localPlayer ? localPlayer->getCar() : NULL;
-    #endif
-        if (localCar) localCar->playCarHorn();
-    }
-
-    //if (id == OIS::MB_Right)
-    //{
-    //    GameCore::mPowerupPool->spawnSomething();
-    //}
+#ifdef COLLISION_DOMAIN_CLIENTo
+    Player*      localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    SpawnScreen* spawnScreen = GameCore::mClientGraphics->mSpawnScreen;
+    
+    if (!spawnScreen && localPlayer && localPlayer->getCar())
+        localPlayer->getCar()->playCarHorn();
+#endif
 
 	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
-
     return true;
 }
 

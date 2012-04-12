@@ -7,9 +7,6 @@ PowerupPool::PowerupPool()
     for( int i = 0; i < MAX_POWERUPS; i ++ )
         mPowerups[i] = NULL;
 
-    // Random seed
-    srand( time(NULL));//(unsigned int) RakNet::GetTimeMS() );
-
     createPowerup(POWERUP_SPEED);
 }
 
@@ -137,7 +134,7 @@ void PowerupPool::spawnSomething()
 }
 
 /// @brief  Process state changes for powerups and delete collected ones
-void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
+void PowerupPool::frameEvent( const float timeSinceLastFrame )
 {
 	for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
@@ -159,7 +156,7 @@ void PowerupPool::frameEvent( const Ogre::FrameEvent& evt )
         }
         else
         {
-            mPowerups[i]->frameEvent(evt);
+            mPowerups[i]->frameEvent(timeSinceLastFrame);
         }
     }
 }

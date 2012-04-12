@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="Vanilla/FrameWindow" Name="/Lobby" >
+        <Property Name="Font" Value="DejaVuSans-10" />
+        <Property Name="Alpha" Value="0.5" />
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+        <Property Name="SizingEnabled" Value="False" />
+        <Property Name="TitlebarEnabled" Value="False" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="DragMovingEnabled" Value="False" />
+        <Property Name="CloseButtonEnabled" Value="False" />
+        <Window Type="GWEN/StaticText" Name="/Lobby/Options" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="OPTIONS" />
+            <Property Name="HorzExtent" Value="79" />
+            <Property Name="VertExtent" Value="20.3165" />
+            <Property Name="TextColours" Value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0220701,0},{0.697708,0},{0.196875,0},{0.753052,0}}" />
+            <Property Name="BackgroundEnabled" Value="False" />
+        </Window>
+        <Window Type="GWEN/StaticText" Name="/Lobby/lblConnect" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="CONNECT TO SERVER" />
+            <Property Name="HorzExtent" Value="190" />
+            <Property Name="VertExtent" Value="20.3165" />
+            <Property Name="TextColours" Value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0185547,0},{0.0318068,0},{0.268555,0},{0.081807,0}}" />
+            <Property Name="BackgroundEnabled" Value="False" />
+        </Window>
+        <Window Type="GWEN/StaticText" Name="/Lobby/Quit" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="QUIT" />
+            <Property Name="HorzExtent" Value="42" />
+            <Property Name="VertExtent" Value="20.3165" />
+            <Property Name="TextColours" Value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0193361,0},{0.783969,0},{0.269336,0},{0.829135,0}}" />
+            <Property Name="BackgroundEnabled" Value="False" />
+        </Window>
+        <Window Type="GWEN/FrameWindow" Name="/Lobby/Servers" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="Servers" />
+            <Property Name="CaptionFont" Value="DejaVuSans-10" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.0185547,0},{0.0722647,0},{0.680858,0},{0.639057,0}}" />
+            <Property Name="DragMovingEnabled" Value="False" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NWSESizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Window Type="GWEN/MultiColumnList" Name="/Lobby/Servers/List" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0407769,0},{0.0184975,0},{0.949028,0},{0.812927,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Lobby/Servers/btnConnect" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Connect" />
+                <Property Name="UnifiedAreaRect" Value="{{0.761579,0},{0.842772,0},{0.946701,0},{0.951252,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Lobby/Servers/btnRefresh" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Refresh" />
+                <Property Name="UnifiedAreaRect" Value="{{0.561643,0},{0.845663,0},{0.742342,0},{0.95361,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Lobby/Servers/btnIP" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Enter IP" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0458547,0},{0.841548,0},{0.232451,0},{0.948698,0}}" />
+            </Window>
+        </Window>
+        <Window Type="GWEN/FrameWindow" Name="/Lobby/IPWindow" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="Enter Server IP" />
+            <Property Name="Visible" Value="False" />
+            <Property Name="AlwaysOnTop" Value="True" />
+            <Property Name="CaptionFont" Value="DejaVuSans-10" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.419531,0},{0.359288,0},{0.730078,0},{0.541859,0}}" />
+            <Property Name="DragMovingEnabled" Value="False" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NWSESizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Window Type="GWEN/Editbox" Name="/Lobby/IPWindow/edtIP" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="lame.server.ip" />
+                <Property Name="MaxTextLength" Value="1073741823" />
+                <Property Name="UnifiedAreaRect" Value="{{0.03522,0},{0.0610145,0},{0.970755,0},{0.450387,0}}" />
+                <Property Name="MouseCursorImage" Value="set:TaharezLook image:MouseTextBar" />
+                <Property Name="TextParsingEnabled" Value="False" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Lobby/IPWindow/btnConnect" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Connect" />
+                <Property Name="UnifiedAreaRect" Value="{{0.550314,0},{0.5,0},{0.960692,0},{0.924216,0}}" />
+                <Property Name="WantsMultiClickEvents" Value="False" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Lobby/IPWindow/btnClose" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Close" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0364779,0},{0.50662,0},{0.437421,0},{0.916898,0}}" />
+                <Property Name="WantsMultiClickEvents" Value="False" />
+            </Window>
+        </Window>
+        <Window Type="TaharezLook/StaticText" Name="/Lobby/IPWindowBlackOut" >
+            <Property Name="Alpha" Value="0.5" />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+            <Property Name="Visible" Value="False" />
+        </Window>
+    </Window>
+</GUILayout>

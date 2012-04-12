@@ -1,6 +1,12 @@
 <?xml version="1.0" ?>
 <GUIScheme Name="VanillaSkin">
 	<Imageset Filename="Vanilla.imageset" />
+    <Font Filename="DejaVuMono-10.font" />
+    <Font Filename="DejaVuMonoBold-10.font" />
+    <Font Filename="DejaVuMonoItalic-10.font" />
+    <Font Filename="DejaVuSans-10.font" />
+    <Font Filename="DejaVuSansBold-10.font" />
+    <Font Filename="DejaVuSansItalic-10.font" />
 	<LookNFeel Filename="Vanilla.looknfeel" />
 	<WindowRendererSet Filename="CEGUIFalagardWRBase" />
 	<FalagardMapping WindowType="Vanilla/Titlebar" TargetType="CEGUI/Titlebar" Renderer="Falagard/Titlebar" LookNFeel="Vanilla/Titlebar" />

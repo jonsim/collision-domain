@@ -13,8 +13,8 @@
 
 Gameplay::Gameplay()
 {
-	mSB = new ScoreBoard();
-	mHUD = new HUD();
+	//mSB = new ScoreBoard();
+	//mHUD = new HUD();
 	this->setNumberOfTeams(2); //Might as well default it to 2
 	mGameActive = false;
 }
@@ -83,13 +83,13 @@ Player* Gameplay::setNewVIP(Team* team)
 {
 	Player* pPlayer = team->getRandomPlayer();
     
-        // Manage and assign VIP Cameras for the server
+        /*// Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
 	if(team == teams[0])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
 	else if(team == teams[1])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
-#endif
+#endif*/
 
 	return team->setNewVIP(pPlayer);
 }
@@ -101,8 +101,8 @@ void Gameplay::setAllNewVIP()
 	{
 		Team* team = *itr;
 		Player* vipPlayer = team->getRandomPlayer();
-
-        // Manage and assign VIP Cameras for the server
+        
+/*        // Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
 		//Clear the previous assignments
 		GameCore::mGraphicsApplication->mViewCam1->detachFromParent();
@@ -112,7 +112,7 @@ void Gameplay::setAllNewVIP()
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam1);
 		else if(team == teams[1])
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
-#endif
+#endif*/
 		team->setNewVIP(vipPlayer);
 	}
 }
@@ -121,6 +121,10 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
 	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
 	Team* teamToJoin = getTeamToJoin();
+    if (tmpPlayer == NULL)
+        OutputDebugString("uh oh\n");
+    if (teamToJoin == NULL)
+        OutputDebugString("uh oh 2\n");
 	teamToJoin->addPlayer(tmpPlayer);
 
 	//Check to see if we need to start game
@@ -386,22 +390,22 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 			case SCOREBOARD_TO_WINNER_OT:
 				#ifdef COLLISION_DOMAIN_SERVER
 					mSB->hideForce();
-					GameCore::mGraphicsApplication->bigScreen->hideScreen();
+					//GameCore::mGraphicsApplication->bigScreen->hideScreen();
 
 					//Move the camera
-					GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,0,80));
-					GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
-					GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,0,-300));
+					//GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,0,80));
+					//GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
+					//GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,0,-300));
 				#endif
 				break;
 			case NEW_GAME_OT:
 				#ifdef COLLISION_DOMAIN_SERVER
 					//Move the camera back
-				    GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,10,0));
-					GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,100,0));
-					GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
+				    //GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,10,0));
+					//GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,100,0));
+					//GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
 
-					GameCore::mGraphicsApplication->bigScreen->showScreen();
+					//GameCore::mGraphicsApplication->bigScreen->showScreen();
 					this->scheduleCountDown();
 				#endif
 				break;

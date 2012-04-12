@@ -7,7 +7,6 @@
 
 #include "MeshDeformer.h"
 #include "AudioCore.h"
-#include "CircularBuffer.h"
 #include "InputState.h"
 #include "Input.h"
 #include "CarSnapshot.h"
@@ -21,7 +20,6 @@
 #include "cars/TruckCar.h"
 #include "PostFilterLogic.h"
 #include "SceneSetup.h"
-#include "GraphicsCore.h"
 #include "ViewCamera.h"
 #include "Camera.h"
 #include "GameCore.h"

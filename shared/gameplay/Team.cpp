@@ -20,10 +20,9 @@ Team::Team(std::string teamName_P, int teamNumber)
 void Team::addPlayer(Player *player)
 {
     player->setTeam(teamNumber);
+#ifdef COLLISION_DOMAIN_CLIENT
     player->getCar()->updateTeam(teamNumber);
-    char bob[64];
-    sprintf(bob, "team number = %d\n", teamNumber);
-    OutputDebugString(bob);
+#endif
 	players.push_back(player);
 }
 

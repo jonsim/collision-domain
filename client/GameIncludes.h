@@ -11,7 +11,8 @@
 
 #include "PlayerPool.h"
 #include "Player.h"
-#include "GraphicsApplication.h"
+#include "Lobby.h"
+#include "ClientGraphics.h"
 #include "NetworkCore.h"
 #include "GameGUI.h"
 #include "CarCam.h"

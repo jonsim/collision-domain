@@ -8,7 +8,6 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "SharedIncludes.h"
-class GraphicsCore;
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -16,8 +15,6 @@ class GraphicsCore;
  */
 class Input : public OIS::KeyListener, public OIS::MouseListener
 {
-    friend class GraphicsCore;
-
 public:
     Input ();
     ~Input ();
@@ -34,11 +31,11 @@ public:
 
     void processInterfaceControls();
 	OIS::Keyboard* mKeyboard;
+    OIS::Mouse*    mMouse;
 
 protected:
     //OIS Input devices
     OIS::InputManager* mInputManager;
-    OIS::Mouse*    mMouse;
     // OIS::KeyListener
     virtual bool keyPressed (const OIS::KeyEvent &evt);
     virtual bool keyReleased (const OIS::KeyEvent &evt);

@@ -40,12 +40,12 @@ public:
 
 	Player* getPlayer( int index );
 	Player* getPlayer( RakNet::RakNetGUID playerid );
-	Player* getLocalPlayer();
-	RakNet::RakNetGUID getLocalPlayerID();
+	//Player* getLocalPlayer();
+	//RakNet::RakNetGUID getLocalPlayerID();
 	RakNet::RakNetGUID getPlayerGUID( int index );
 
 
-	void frameEvent( const Ogre::FrameEvent& evt );
+	void frameEvent( const float timeSinceLastFrame );
 	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
 };
 

@@ -14,10 +14,11 @@ PowerupMass::PowerupMass()
     mUniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
 
     mHasBeenCollected = false;
-    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode(
-            "MassPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
+    mNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("MassPowerupNode" + boost::lexical_cast<std::string>(mUniqueID));
 
+#ifdef COLLISION_DOMAIN_CLIENT
     mSound = GameCore::mAudioCore->getSoundInstance(POWERUP_MASS, mUniqueID, NULL);
+#endif
 }
 
 
@@ -39,8 +40,10 @@ PowerupMass::~PowerupMass()
         delete mRigidBody;
         delete collisionShape;
     }
-
+    
+#ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);
+#endif
 }
 
 
@@ -60,7 +63,9 @@ void PowerupMass::playerCollision(Player* player)
 
     if( player != NULL )
     {
+#ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
+#endif
         // apply powerup to player
         //btVector3 inertia;
         //player->getCar()->getVehicle()->getRigidBody()->getCollisionShape()->calculateLocalInertia( 20000, inertia );
@@ -72,9 +77,9 @@ void PowerupMass::playerCollision(Player* player)
 }
 
 
-void PowerupMass::frameEvent(const Ogre::FrameEvent& evt)
+void PowerupMass::frameEvent(const float timeSinceLastFrame)
 {
-    mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(evt.timeSinceLastFrame), 0.0 ) );
+    mNode->rotate( Ogre::Quaternion( 1.0, 0.0, 1.2*(timeSinceLastFrame), 0.0 ) );
 }
 
 
@@ -85,7 +90,7 @@ bool PowerupMass::isPendingDelete()
 
 void PowerupMass::createGraphic()
 {
-    entity = GameCore::mSceneMgr->createEntity("MassPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_mass.mesh");
+    Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("MassPowerupMesh" + boost::lexical_cast<std::string>(mUniqueID) , "powerup_mass.mesh");
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK);
@@ -136,7 +141,9 @@ void PowerupMass::spawn(Ogre::Vector3 createAboveAt)
     if (mHasSpawned) return;
     mHasSpawned = true;
 
+#ifdef COLLISION_DOMAIN_CLIENT
     createGraphic();
+#endif
     createCollideable();
 
     mNode->translate(createAboveAt);
@@ -145,7 +152,7 @@ void PowerupMass::spawn(Ogre::Vector3 createAboveAt)
 
 void PowerupMass::removeGraphic()
 {
-    mNode->detachObject(entity);
+    mNode->detachAllObjects();
 }
 
 
