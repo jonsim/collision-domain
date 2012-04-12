@@ -86,18 +86,18 @@ void TruckCar::initTuning()
 	mRearWheelDrive  = true;
     
     mGearCount = 9;
-    mCurrentGear = 1;
-    mGearRatio[0] = 14.00f;
-    mGearRatio[1] = 12.00f;
-    mGearRatio[2] = 10.00f;
-    mGearRatio[3] = 07.00f;
-    mGearRatio[4] = 05.60f;
-    mGearRatio[5] = 04.20f;
-    mGearRatio[6] = 02.25f;
-    mGearRatio[7] = 01.20f;
-    mGearRatio[8] = 00.80f;
-    mReverseRatio = 03.00f;
-    mFinalDriveRatio = 1.5f;
+    mCurrentGear = 1;       // orig
+    mGearRatio[0] = 35.00f; // 14
+    mGearRatio[1] = 15.00f; // 12
+    mGearRatio[2] = 11.00f; // 10
+    mGearRatio[3] = 08.00f; // 7
+    mGearRatio[4] = 06.40f; // 5.6
+    mGearRatio[5] = 05.20f; // 4.2
+    mGearRatio[6] = 03.00f; // 2.25
+    mGearRatio[7] = 01.50f; // 1.2
+    mGearRatio[8] = 00.90f; // 0.8
+    mReverseRatio = 03.00f; // 3
+    mFinalDriveRatio = 0.7f;//1.5
 
     mRevTick  = 500;
     mRevLimit = 3500;
@@ -110,6 +110,7 @@ void TruckCar::initTuning()
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
 TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
+    : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
     

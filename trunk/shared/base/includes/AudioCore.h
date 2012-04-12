@@ -21,6 +21,7 @@ enum SoundType
     ENGINE_SMALL,
     ENGINE_COUPE,
     ENGINE_TRUCK,
+    GEAR_CHANGE,
     CAR_CRASH,
     EXPLOSION
 };

@@ -11,6 +11,18 @@
 
 #define WHEEL_FRICTION_CFM 0.6f
 
+Car::Car(int uniqueID)
+{
+    // I think it is about time we have a constructor ...
+    mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
+
+}
+
+Car::~Car()
+{
+    GameCore::mAudioCore->deleteSoundInstance(mGearSound);
+}
+
 //#define DEBUG_SHOW_SKID
 
 /// @brief  Takes the given CarSnapshot and positions this car as it specifies (velocity etc.).
@@ -316,13 +328,17 @@ void Car::updateRPM()
         {
             mEngineRPM = ( mRevLimit - 200 ) + ( rand() % 400 );
             if( mCurrentGear < mGearCount )
+            {
                 mCurrentGear ++;
+                GameCore::mAudioCore->playSoundOrRestart(mGearSound);
+            }
         }
         
         // Check for shift-down
         if( fPrevGear < mRevLimit -1500 && mCurrentGear > 1 )
         {
             mCurrentGear --;
+            GameCore::mAudioCore->playSoundOrRestart(mGearSound);
         }
     }
 

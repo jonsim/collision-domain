@@ -103,7 +103,7 @@ void SimpleCoupeCar::initTuning()
     mGearRatio[7] = 0.0f;
     mGearRatio[8] = 0.0f;
     mReverseRatio = 3.16f;
-    mFinalDriveRatio = 3.06f;
+    mFinalDriveRatio = 3.6f; // 3.06 (it seems odd to do 40mph in 1st gear :P)
 
     // http://www.allpar.com/cars/dodge/challenger/specifications.html
 
@@ -121,6 +121,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
 SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
+    : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
     
