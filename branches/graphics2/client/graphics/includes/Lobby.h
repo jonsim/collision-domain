@@ -12,20 +12,21 @@
 class Lobby
 {
 public:
-	Lobby();
-	~Lobby();
+    Lobby (CEGUI::Window* guiWindow) : mGUIWindow(guiWindow) {}
+    ~Lobby (void) {}
 
-    void setupLobby (const int screenWidth, const int screenHeight);
-    void closeLobby (void);
-    void lobbyAddServer (const char* serverName, const char* numberOfPlayers, const char* serverMap, bool selected);
-    bool lobbyEnterIPPressed (const CEGUI::EventArgs &args);
-    bool lobbyRefreshPressed (const CEGUI::EventArgs &args);
-    bool lobbyConnectPressed (const CEGUI::EventArgs &args);
-    bool lobbyIP_connectPressed (const CEGUI::EventArgs &args);
-    bool lobbyIP_closePressed   (const CEGUI::EventArgs &args);
+    void setup (const int screenWidth, const int screenHeight);
+    void close (void);
+    void addServer (std::string serverName, std::string numberOfPlayers, std::string serverMap, bool selected);
 
 private:
-	CEGUI::Window *mSheet;
+    bool enterIPPressed (const CEGUI::EventArgs &args);
+    bool refreshPressed (const CEGUI::EventArgs &args);
+    bool connectPressed (const CEGUI::EventArgs &args);
+    bool IP_connectPressed (const CEGUI::EventArgs &args);
+    bool IP_closePressed   (const CEGUI::EventArgs &args);
+
+    CEGUI::Window* mGUIWindow;
 };
 
 #endif

@@ -1,59 +1,17 @@
 #include "stdafx.h"
 #include "GameGUI.h"
 
-GameGUI::GameGUI() : consoleHistory(16), consoleHistoryLocation(0xFF)
-{
-}
 
-GameGUI::~GameGUI()
-{
-}
 
-void GameGUI::initialiseGUI()
-{
-	// Load the fonts and set their sizes.
-    CEGUI::Font* pFont;
-	CEGUI::Font::setDefaultResourceGroup("Fonts");
-	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuSans-10.font");
-	pFont->setProperty( "PointSize", "10" );
-	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuMono-10.font");
-	pFont->setProperty( "PointSize", "12" );
-	pFont = &CEGUI::FontManager::getSingleton().create("DejaVuMonoItalic-10.font");
-	pFont->setProperty( "PointSize", "12" );
-
-	// Register font as default
-    if(CEGUI::FontManager::getSingleton().isDefined("DejaVuSans-10"))
-		CEGUI::System::getSingleton().setDefaultFont("DejaVuSans-10");
-
-	// Create skin scheme window parameters
-	CEGUI::Scheme::setDefaultResourceGroup("Schemes");
-	CEGUI::SchemeManager::getSingleton().create("VanillaSkin.scheme");
-	CEGUI::SchemeManager::getSingleton().create("TaharezLook.scheme");
-	CEGUI::SchemeManager::getSingleton().create("GWEN.scheme");
-	CEGUI::WidgetLookManager::setDefaultResourceGroup("LookNFeel");
-
-	// Register skin's default image set and cursor icon
-	CEGUI::Imageset::setDefaultResourceGroup("Imagesets");
-	CEGUI::System::getSingleton().setDefaultMouseCursor("Vanilla-Images", "MouseArrow");
-	CEGUI::MouseCursor::getSingleton().hide();
-
-	// Tell CEGUI where to look for layouts
-	CEGUI::WindowManager::setDefaultResourceGroup("Layouts");
-
-	// Create an empty default window layer
-	mSheet = CEGUI::WindowManager::getSingleton().createWindow( "DefaultWindow", "root_wnd" );
-
-	CEGUI::System::getSingleton().setGUISheet( mSheet );
-}
 
 /*-------------------- DEV CONSOLE --------------------*/
-void GameGUI::setupConsole()
+void GameGUI::setupConsole (CEGUI::Window* guiWindow)
 {
 	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
 
 	// Load the layout file for connect box and add it to the overlay
 	CEGUI::Window* pLayout = winMgr.loadWindowLayout("Server.layout");
-	mSheet->addChildWindow( pLayout );
+	guiWindow->addChildWindow( pLayout );
 
 	// Get a handle to the input box
 	CEGUI::Window* inputText = winMgr.getWindow( "/Server/input" );
@@ -64,26 +22,7 @@ void GameGUI::setupConsole()
 	winMgr.getWindow( "/Server/input" )->activate();
 }
 
-bool GameGUI::testingInterfaceButtonClick( const CEGUI::EventArgs &args )
-{
-	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
-    CEGUI::FrameWindow* IPWindow = static_cast<CEGUI::FrameWindow*>(winMgr.getWindow("/Lobby/IPWindow"));
-    CEGUI::DefaultWindow* IPbo   = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Lobby/IPWindowBlackOut"));
-    if (IPWindow->isVisible())
-    {
-        IPWindow->setVisible(false);
-        IPbo->setVisible(false);
-    }
-    else
-    {
-        IPWindow->setVisible(true);
-        IPbo->setVisible(true);
-        IPbo->moveToFront();
-    }
-    return true;
-}
-
-bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
+bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
 	CEGUI::Editbox*       inputText     = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
@@ -183,7 +122,7 @@ bool GameGUI::receiveFromConsole( const CEGUI::EventArgs &args )
 	return true;
 }
 
-void GameGUI::outputToConsole( const char* str, ... )
+void GameGUI::outputToConsole (const char* str, ...)
 {
     // Provide printf like functionality. I do not know if this is cross platform or not (I suspect it might
     // be compiler specific, in which case I assume it doesn't compile a gcc version will need to be sourced).
@@ -204,7 +143,7 @@ void GameGUI::outputToConsole( const char* str, ... )
 	consoleBuffer->appendText(CEGUI::String(buffer));
 }
 
-void GameGUI::loadConsoleHistory( bool reverseLoading )
+void GameGUI::loadConsoleHistory (bool reverseLoading)
 {
     // Check there is history
     if (consoleHistory.isEmpty())
@@ -251,77 +190,3 @@ void GameGUI::loadConsoleHistory( bool reverseLoading )
     else
 	    inputText->setText(*(consoleHistory.get(consoleHistoryLocation)));
 }
-
-/*-------------------- DEV Chatbox --------------------*
-void GameGUI::setupChatbox()
-{
-	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-
-	// Load the layout file for connect box
-	CEGUI::Window *pLayout = winMgr.loadWindowLayout( "Chatbox.layout" );
-
-	// Add to gui overlay window
-	mSheet->addChildWindow( pLayout );
-
-	// Get handles to some of the objects
-	CEGUI::Window *chatboxFrame = winMgr.getWindow( "/Chatbox" );
-	CEGUI::Window *inputText = winMgr.getWindow( "/Chatbox/input" );
-
-	inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
-		CEGUI::Event::Subscriber( &GameGUI::Chatbox_Send, this ) );
-
-	CEGUI::MouseCursor::getSingleton().show();
-	inputText->hide();
-}
-
-void GameGUI::toggleChatbox()
-{
-	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-	// Get handles to some of the objects
-	CEGUI::Window *chatboxFrame = winMgr.getWindow( "/Chatbox/input" );
-	if( chatboxFrame->isVisible() )
-		chatboxFrame->hide();
-	else
-	{
-		// Show the Chatbox frame and give the inputbox focus
-		chatboxFrame->show();
-		winMgr.getWindow( "/Chatbox/input" )->activate();
-	}
-}
-
-bool GameGUI::Chatbox_Send( const CEGUI::EventArgs &args )
-{
-	CEGUI::WindowManager& mWinMgr = CEGUI::WindowManager::getSingleton();
-
-	CEGUI::Editbox *inputText = 
-		static_cast<CEGUI::Editbox*> ( mWinMgr.getWindow( "/Chatbox/input" ) );
-
-	char *szInput = (char*)inputText->getText().c_str();
-
-	CEGUI::Listbox *lstHistory = 
-		static_cast<CEGUI::Listbox*> ( mWinMgr.getWindow( "/Chatbox/buffer" ) );
-
-	CEGUI::ListboxTextItem *newItem;
-	if( lstHistory->getItemCount() == 13 )
-	{
-		newItem = static_cast<CEGUI::ListboxTextItem*> 
-			( lstHistory->getListboxItemFromIndex( 0 ) );
-		newItem->setAutoDeleted( false );
-		lstHistory->removeItem( newItem );
-		newItem->setAutoDeleted( true );
-		newItem->setText( inputText->getText() );
-	}
-	else
-	{
-		newItem = new CEGUI::ListboxTextItem( inputText->getText() );
-	}
-	
-	lstHistory->addItem( newItem );
-	lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
-
-	inputText->setText( "" );
-
-	mWinMgr.getWindow( "/Chatbox/input" )->hide();
-
-	return true;
-}*/

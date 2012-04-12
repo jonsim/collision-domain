@@ -21,6 +21,7 @@ enum GraphicsState
 {
     UNDEFINED,
     IN_LOBBY,
+    SPAWN_SCREEN,
     PLAYING_GAME,
     BENCHMARKING,
     //SPECTATING_GAME,
@@ -37,13 +38,20 @@ public:
     void generateExplosion (Ogre::Vector3 location);
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
     void updateVIPLocation (int teamNumber, Ogre::Vector3 location);
+    
+    // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
+    virtual void loadLobby (void);
+    virtual void unloadLobby (void);
+    // Called when the 3D graphics are loaded (and a game has been entered).
+    virtual void loadGame (void);
+    virtual void unloadGame (void);
 
     // GraphicsApplication shit
 	void startBenchmark (uint8_t stage);
 
     Ogre::Camera*       mCamera;
     Ogre::RenderWindow* mWindow;
-    SpawnScreen *mSpawnScreen;
+    SpawnScreen*        mSpawnScreen;
     
 
 protected:
@@ -53,13 +61,6 @@ protected:
     
     virtual void createCamera (void);
     virtual void createViewports (void);
-    
-    // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
-    virtual void loadLobby (void);
-    virtual void unloadLobby (void);
-    // Called when the 3D graphics are loaded (and a game has been entered).
-    virtual void loadGame (void);
-    virtual void unloadGame (void);
 
     virtual void setupResources (void);
     virtual void loadResources (void);
@@ -76,6 +77,8 @@ protected:
     virtual bool frameRenderingQueued (const Ogre::FrameEvent& evt);
     virtual bool frameStarted (const Ogre::FrameEvent& evt);
     virtual bool frameEnded (const Ogre::FrameEvent& evt);
+
+    virtual void updateBenchmark (const float timeSinceLastFrame);
     
     // Ogre::WindowEventListener overrides.
     virtual void windowResized (Ogre::RenderWindow* rw);
@@ -83,11 +86,11 @@ protected:
     
     // Graphics Application shit (to be moved)
 	void finishBenchmark (uint8_t stage, float averageTriangles);
-	bool    mBenchmarkRunning;
 	uint8_t mBenchmarkStage;
     
     // Graphics state.
-    GraphicsState           mGraphicsState;
+    GraphicsState mGraphicsState;
+    Lobby* mLobby;
 
     // OIS user input.
     Input mUserInput;

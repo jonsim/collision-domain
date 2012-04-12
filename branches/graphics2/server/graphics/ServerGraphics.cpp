@@ -176,7 +176,8 @@ bool ServerGraphics::initApplication (void)
     //Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);   // Set default mipmap level
     //loadResources();                    // Load resources
 
-    GameCore::initialise(this, &splashScreen, 0); // Initialise other game elements
+    GameCore::initialise(this); // Initialise other game elements
+    GameCore::load(&splashScreen, 0);
     GameCore::mNetworkCore->init(NULL);     // Initialise the server networking
 
     createScene();                          // Create the scene (in the server's case loading physics meshes)
@@ -283,11 +284,11 @@ void ServerGraphics::createScene (void)
 ///         adds the FPS counter to it.
 void ServerGraphics::setupGUI (void)
 {
-    // Run the generic GUI setup
+    // Initialise the GUI renderer if it hasn't already been.
     SceneSetup::setupGUI();
 
     // Attach the GUI components
-    GameCore::mGui->setupConsole();
+    GameCore::mGui->setupConsole(mGUIWindow);
 }
 
 void ServerGraphics::setupUserInput (void)

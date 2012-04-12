@@ -114,12 +114,12 @@ void AiPlayer::Update(double timeSinceLastFrame)
 				if(fabs(theta-angle) < 0.03)
 					return;
 				else if(theta > angle)
-					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
 				else
-					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 			}
 			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 
 			return;
 		}
@@ -135,12 +135,12 @@ void AiPlayer::Update(double timeSinceLastFrame)
 				if(fabs(theta-angle) < 0.03)
 					return;
 				else if(theta < angle)
-					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
 				else
-					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 			}
 			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 
 			return;
 
@@ -153,12 +153,12 @@ void AiPlayer::Update(double timeSinceLastFrame)
 				if(fabs(theta - angle) < 0.03)
 					return;
 				else if(angle > theta)
-					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+					mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
 				else
-					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 			}
 			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 
 			return;
 
@@ -172,16 +172,16 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			if(fabs(theta-angle) < 0.03)
 				return;
 			else if(angle > theta)
-				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame, 1.0f/60.0f);
+				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
 			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 		}
 		else
-			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame, 1.0f/60.0f);
+			mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 	}
     else
     {
-        mPlayer->getCar()->steerInputTick(false, false, timeSinceLastFrame, 1.0f/60.0f);
+        mPlayer->getCar()->steerInputTick(false, false, timeSinceLastFrame);
         mPlayer->getCar()->accelInputTick(false, false, false, timeSinceLastFrame);
     }
 }

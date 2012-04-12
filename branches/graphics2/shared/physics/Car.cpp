@@ -89,7 +89,7 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 /// @param  targetPhysicsFrameRate  The target framerate in seconds anything other than 1/60 will result in an
 ///         unexpected steering rate. This does not mean the controls aren't framerate independent, its just the
 ///         fixed frame length in seconds which is taken as "base" for applying normalised steering increments.
-void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate)
+void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame)
 {
     // process steering on both wheels (+1 = left, -1 = right)
     int leftRight = 0;
@@ -97,6 +97,7 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
     if (isRight) leftRight -= 1;
 
     float calcIncrement = 0.0f;
+    const float steeringScalingFactor = 1.0f / 60.0f;
     bool resetToZero = false;
 
     // we don't want to go straight to this steering value (i.e. apply acceleration to steer value)
@@ -112,12 +113,12 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
         // go back to zero
         if (mSteer >= 0)
         {
-            if (mSteer >= mSteerToZeroIncrement * (secondsSinceLastFrame / targetPhysicsFrameRate)) calcIncrement = -mSteerToZeroIncrement;
+            if (mSteer >= mSteerToZeroIncrement * (secondsSinceLastFrame / steeringScalingFactor)) calcIncrement = -mSteerToZeroIncrement;
             else resetToZero = true;
         }
         else
         {
-            if (mSteer <= -mSteerToZeroIncrement * (secondsSinceLastFrame / targetPhysicsFrameRate)) calcIncrement = mSteerToZeroIncrement;
+            if (mSteer <= -mSteerToZeroIncrement * (secondsSinceLastFrame / steeringScalingFactor)) calcIncrement = mSteerToZeroIncrement;
             else resetToZero = true;
         }
     }
@@ -126,7 +127,7 @@ void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastF
     else
     {
         // Framerate independent wheel turning acceleration
-        calcIncrement *= secondsSinceLastFrame / targetPhysicsFrameRate;
+        calcIncrement *= secondsSinceLastFrame / steeringScalingFactor;
         mSteer += calcIncrement;
     }
 

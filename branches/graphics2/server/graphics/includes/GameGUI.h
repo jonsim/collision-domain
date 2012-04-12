@@ -49,22 +49,18 @@ private:
 class GameGUI
 {
 public:
-
-	GameGUI();
-	~GameGUI();
-
-	void initialiseGUI();
-    
-	void setupConsole();
-    bool receiveFromConsole( const CEGUI::EventArgs &args );
-    void outputToConsole( const char* str, ... );
-    void loadConsoleHistory( bool reverseLoading );
-    bool testingInterfaceButtonClick( const CEGUI::EventArgs &args );
+    GameGUI (void) : consoleHistory(16), consoleHistoryLocation(0xFF) {}
+    ~GameGUI (void) {}
+        
+	void setupConsole (CEGUI::Window* guiWindow);
+    bool receiveFromConsole (const CEGUI::EventArgs &args);
+    void outputToConsole (const char* str, ...);
+    void loadConsoleHistory (bool reverseLoading);
+    bool testingInterfaceButtonClick (const CEGUI::EventArgs &args);
 
 private:
-	CEGUI::Window* mSheet;
     StringCircularBuffer consoleHistory;
-    uint8_t consoleHistoryLocation;
+    uint8_t              consoleHistoryLocation;
 };
 
 #endif

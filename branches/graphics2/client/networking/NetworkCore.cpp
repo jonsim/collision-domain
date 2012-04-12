@@ -233,8 +233,6 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), szNickname );
 	log( "GameJoin : local playerid %s", m_pRak->GetMyGUID().ToString() );
 
-    GameCore::mGui->closeConnectBox();
-
 	bConnected = true;
 	timeLastUpdate = 0;
 

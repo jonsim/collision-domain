@@ -2,21 +2,8 @@
 #include "GameIncludes.h"
 
 
-// @brief   Constructor
-Lobby::Lobby()
-{
-}
 
-
-// @brief   Deconstructor
-Lobby::~Lobby()
-{
-}
-
-
-
-
-void Lobby::setupLobby (const int screenWidth, const int screenHeight)
+void Lobby::setup (const int screenWidth, const int screenHeight)
 {
     // Add the splashimage to the background
     /*Ogre::Overlay* lobbyBackground = Ogre::OverlayManager::getSingleton().create("OVERLAY_LOBBY");
@@ -39,7 +26,7 @@ void Lobby::setupLobby (const int screenWidth, const int screenHeight)
 	CEGUI::Window* pLayout = winMgr.loadWindowLayout("Lobby.layout");
 
 	// Add to gui overlay window
-	mSheet->addChildWindow(pLayout);
+	mGUIWindow->addChildWindow(pLayout);
     
 	// Get handles for the buttons
 	CEGUI::Window* connectButton = winMgr.getWindow("/Lobby/Servers/btnConnect");
@@ -50,11 +37,11 @@ void Lobby::setupLobby (const int screenWidth, const int screenHeight)
     CEGUI::Window* ip_closeButton   = winMgr.getWindow("/Lobby/IPWindow/btnClose");
 
 	// Register callbacks for the buttons
-	connectButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::lobbyConnectPressed, this));
-    refreshButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::lobbyRefreshPressed, this));
-    enterIPButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::lobbyEnterIPPressed, this));
-    ip_connectButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::lobbyIP_connectPressed, this));
-    ip_closeButton->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::lobbyIP_closePressed, this));
+	connectButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::connectPressed, this));
+    refreshButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::refreshPressed, this));
+    enterIPButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::enterIPPressed, this));
+    ip_connectButton->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::IP_connectPressed, this));
+    ip_closeButton->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Lobby::IP_closePressed, this));
     
     // Add the coulmns to the list
     CEGUI::MultiColumnList* mcl = static_cast<CEGUI::MultiColumnList*>(winMgr.getWindow("/Lobby/Servers/List"));
@@ -64,7 +51,7 @@ void Lobby::setupLobby (const int screenWidth, const int screenHeight)
 }
 
 
-void Lobby::lobbyAddServer (const char* serverName, const char* numberOfPlayers, const char* serverMap, bool selected)
+void Lobby::addServer (std::string serverName, std::string numberOfPlayers, std::string serverMap, bool selected)
 {
     // Get the list.
     CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
@@ -74,51 +61,52 @@ void Lobby::lobbyAddServer (const char* serverName, const char* numberOfPlayers,
     unsigned int row = mcl->addRow();
     CEGUI::ListboxTextItem* field;
     // Column 1
-    field = new CEGUI::ListboxTextItem(serverName, 0);
+    field = new CEGUI::ListboxTextItem("[colour='FF000000']" + serverName, 0);
     mcl->setItem(field, 0, row);
     field->setSelected(selected);
     field->setSelectionBrushImage("GWEN", "Input.ListBox.EvenLineSelected");
     // Column 2
-    field = new CEGUI::ListboxTextItem(numberOfPlayers, 0);
+    field = new CEGUI::ListboxTextItem("[colour='FF000000']" + numberOfPlayers, 0);
     mcl->setItem(field, 1, row);
     field->setSelected(selected);
-    field->setSelectionBrushImage("GWEN", "Input.ListBox.EvenLineSelected");
+    field->setSelectionBrushImage("GWEN", "Input.ListBox.OddLineSelected");
     // Column 3
-    field = new CEGUI::ListboxTextItem(serverMap, 0);
+    field = new CEGUI::ListboxTextItem("[colour='FF000000']" + serverMap, 0);
     mcl->setItem(field, 2, row);
     field->setSelected(selected);
     field->setSelectionBrushImage("GWEN", "Input.ListBox.EvenLineSelected");
 }
 
-void Lobby::closeLobby (void)
+void Lobby::close (void)
 {
-    mSheet->removeChildWindow("/Lobby");
+    mGUIWindow->removeChildWindow("/Lobby");
 	CEGUI::MouseCursor::getSingleton().hide();
 }
 
-bool Lobby::lobbyConnectPressed (const CEGUI::EventArgs &args)
+bool Lobby::connectPressed (const CEGUI::EventArgs &args)
 {
     OutputDebugString("boobs\n");
+    GameCore::mClientGraphics->loadGame();
     return true;
 }
 
-bool Lobby::lobbyRefreshPressed (const CEGUI::EventArgs &args)
+bool Lobby::refreshPressed (const CEGUI::EventArgs &args)
 {
     OutputDebugString("noobs\n");
     return true;
 }
 
-bool Lobby::lobbyEnterIPPressed (const CEGUI::EventArgs &args)
+bool Lobby::enterIPPressed (const CEGUI::EventArgs &args)
 {
     return true;
 }
 
-bool Lobby::lobbyIP_connectPressed (const CEGUI::EventArgs &args)
+bool Lobby::IP_connectPressed (const CEGUI::EventArgs &args)
 {
     return true;
 }
 
-bool Lobby::lobbyIP_closePressed (const CEGUI::EventArgs &args)
+bool Lobby::IP_closePressed (const CEGUI::EventArgs &args)
 {
     return true;
 }

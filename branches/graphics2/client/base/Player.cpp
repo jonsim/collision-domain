@@ -87,7 +87,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
 	OutputDebugString(ss.str().c_str());*/
 
-	GameCore::mClientGraphics->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
+	GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
 }
 
 
@@ -127,22 +127,20 @@ void Player::attachCamera (Ogre::Camera* cam)
 /// @brief  Applies the player controls to the car so it will move on next stepSimulation.
 /// @param  userInput               The latest user keypresses.
 /// @param  secondsSinceLastFrame   The time in seconds since the last frame, for framerate independence.
-/// @param  targetPhysicsFrameRate  The target framerate to normalise acceleration to.
 void Player::processControlsFrameEvent(
         InputState *userInput,
-        Ogre::Real secondsSinceLastFrame,
-        float targetPhysicsFrameRate)
+        Ogre::Real secondsSinceLastFrame)
 {
 	//Only take input if the player is alive
 	if(this->mAlive)
 	{
 		// process steering and apply acceleration
-		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame, targetPhysicsFrameRate);
+		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);
 		mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
 	}
     else
     {
-        mCar->steerInputTick(false, false, secondsSinceLastFrame, targetPhysicsFrameRate);
+        mCar->steerInputTick(false, false, secondsSinceLastFrame);
         mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
     }
 }
