@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<GUILayout >
+    <Window Type="Vanilla/FrameWindow" Name="/SpawnScreen" >
+        <Property Name="Font" Value="DejaVuSans-10" />
+        <Property Name="Alpha" Value="0.5" />
+        <Property Name="FrameEnabled" Value="False" />
+        <Property Name="TitlebarFont" Value="DejaVuSans-10" />
+        <Property Name="SizingEnabled" Value="False" />
+        <Property Name="TitlebarEnabled" Value="False" />
+        <Property Name="UnifiedAreaRect" Value="{{0,0},{0,0},{1,0},{1,0}}" />
+        <Property Name="DragMovingEnabled" Value="False" />
+        <Property Name="CloseButtonEnabled" Value="False" />
+        <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Team" >
+            <Property Name="Font" Value="DejaVuSans-10" />
+            <Property Name="Text" Value="Select a Team" />
+            <Property Name="Visible" Value="False" />
+            <Property Name="CaptionFont" Value="DejaVuSans-10" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="RollUpEnabled" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.35,0},{0.32,0},{0.65,0},{0.68,0}}" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Property Name="NWSESizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnAuto" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Auto Assign" />
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.39,0},{0.9,0},{0.54,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnBlue" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Blue" />
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.21,0},{0.9,0},{0.36,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnRed" >
+                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Text" Value="Red" />
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.03,0},{0.9,0},{0.18,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnSpectate" >
+                <Property Name="Text" Value="Spectate" />
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.65,0},{0.9,0},{0.8,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnProjector" >
+                <Property Name="Text" Value="Projector" />
+                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.83,0},{0.9,0},{0.98,0}}" />
+            </Window>
+        </Window>
+        <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Vehicle" >
+            <Property Name="Text" Value="Select a Vehicle" />
+            <Property Name="Visible" Value="False" />
+            <Property Name="CaptionFont" Value="DejaVuSans-10" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="SizingEnabled" Value="False" />
+            <Property Name="TitlebarEnabled" Value="True" />
+            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.32,0},{0.75,0},{0.68,0}}" />
+            <Property Name="CloseButtonEnabled" Value="False" />
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCoupe" >
+                <Property Name="Text" Value="Coupe" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.38,0},{0.17,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnHatchback" >
+                <Property Name="Text" Value="Hatchback" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.2,0},{0.38,0},{0.35,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnTruck" >
+                <Property Name="Text" Value="Truck" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.38,0},{0.38,0},{0.53,0}}" />
+            </Window>
+            <Window Type="GWEN/StaticImage" Name="/SpawnScreen/Vehicle/imgVehicle" >
+                <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0,0},{1,0},{1,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCancel" >
+                <Property Name="Text" Value="Cancel" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.83,0},{0.38,0},{0.98,0}}" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnConfirm" >
+                <Property Name="Text" Value="Confirm" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.65,0},{0.38,0},{0.8,0}}" />
+            </Window>
+        </Window>
+        <Window Type="GWEN/StaticText" Name="/SpawnScreen/txtError" >
+            <Property Name="Font" Value="DejaVuSansBold-10" />
+            <Property Name="Text" Value="Team full, please use Auto Assign." />
+            <Property Name="Visible" Value="False" />
+            <Property Name="HorzExtent" Value="336" />
+            <Property Name="VertExtent" Value="20.3165" />
+            <Property Name="TextColours" Value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
+            <Property Name="FrameEnabled" Value="False" />
+            <Property Name="InheritsAlpha" Value="False" />
+            <Property Name="HorzFormatting" Value="HorzCentred" />
+            <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.7,0},{0.7,0},{0.75,0}}" />
+            <Property Name="BackgroundEnabled" Value="False" />
+        </Window>
+    </Window>
+</GUILayout>

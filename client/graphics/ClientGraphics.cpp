@@ -8,6 +8,9 @@
 #include "GameIncludes.h"
 
 
+#define PHYSICS_FPS 60
+
+
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, initialising all resources.
@@ -196,10 +199,9 @@ void ClientGraphics::unloadLobby (void)
 
 void ClientGraphics::loadGame (void)
 {
-    // Set the graphics state
+    // Set the graphics state (unloading the lobby set it as undefined).
     if (mGraphicsState == IN_LOBBY)
         unloadLobby();
-    mGraphicsState = SPAWN_SCREEN;
 
     // Create the splash screen (preloading its required resources in the process)
     SplashScreen splashScreen(mRoot);
@@ -223,6 +225,9 @@ void ClientGraphics::loadGame (void)
 
     // Auto connect to the first server you can find.
     GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
+
+    
+    mGraphicsState = IN_GAME;
 }
 
 
@@ -268,12 +273,16 @@ void ClientGraphics::setupGUI (void)
     SceneSetup::setupGUI();
 
     // Attach the GUI components
+    GameCore::mGui->setupSpawnScreen(mGUIWindow);
+    GameCore::mGui->showSpawnScreenPage1();
+
+    /*
     GameCore::mGui->setupFPSCounter(mGUIWindow);
     GameCore::mGui->setupConsole(mGUIWindow);
     GameCore::mGui->setupChatbox(mGUIWindow);
     GameCore::mGui->setupOverlays(mGUIWindow);
 
-    GameCore::mGameplay->setupOverlay();
+    GameCore::mGameplay->setupOverlay();*/
 }
 
 
@@ -308,6 +317,8 @@ void ClientGraphics::createFrameListener (void)
 /// @return Whether the application should continue (i.e.\ false will force a shut down).
 bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 {
+    static const float physicsTimeStep = 1.0f / (float) PHYSICS_FPS;
+
     // Check for exit conditions.
     if (mWindow->isClosed())
         return false;
@@ -316,19 +327,21 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
     if (mGraphicsState == IN_LOBBY)
     {
+        // Capture input
+        mUserInput.capture();
+
         // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
-        mUserInput.capture();
     }
-    else if (mGraphicsState == PLAYING_GAME)
+    else if (mGraphicsState == IN_GAME)
     {
-        static const float physicsTimeStep = 1.0f / 60.0f;
-
+        // Capture input
         mUserInput.capture();
+
         if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
             return false;
 
-        // Feed the GUI the timestamping information.
+        // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
 
         // Update the particle systems
@@ -337,8 +350,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Rotate the VIP crowns (this should really be done somewhere else, but again waiting for a good place)
         mVIPIcon[0]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
         mVIPIcon[1]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
-    
-
+        
         // Collect input
 	    InputState *inputSnapshot = mUserInput.getInputState();
         mUserInput.processInterfaceControls();
@@ -626,7 +638,7 @@ void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)
 		OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
 		Ogre::CompositorManager::getSingleton().removeCompositor(mCamera->getViewport(), "HDR");
 
-        mGraphicsState = PLAYING_GAME;
+        mGraphicsState = IN_GAME;
 	}
 	else
 	{
