@@ -50,7 +50,6 @@ public:
 	void startBenchmark (uint8_t stage);
 
     Ogre::Camera*       mCamera;
-    Ogre::RenderWindow* mWindow;
     SpawnScreen*        mSpawnScreen;
     
 

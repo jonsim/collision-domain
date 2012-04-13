@@ -30,9 +30,9 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor.
-ServerGraphics::ServerGraphics (void) : mRoot(0),
+ServerGraphics::ServerGraphics (void) : SceneSetup(),
+                                        mRoot(0),
                                         mCamera(0),
-                                        mWindow(0),
                                         mResourcesCfg(Ogre::StringUtil::BLANK),
                                         mPluginsCfg(Ogre::StringUtil::BLANK),
                                         mCameraMan(0),
@@ -163,7 +163,10 @@ bool ServerGraphics::initApplication (void)
         return false;
 
     // Create the window and viewport to go in it.
-    mWindow = mRoot->initialise(true, "Collision Domain Server");
+    NameValuePairList windowParameters;
+    windowParameters["border"] = "fixed";
+    mRoot->initialise(false);
+    mWindow = mRoot->createRenderWindow("Collision Domain Server", 640, 480, false, &windowParameters);
     GameCore::mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
 
     createCamera();
@@ -371,6 +374,22 @@ void ServerGraphics::updateState (const float timeSinceLastFrame)
 }
 
 
+/// @brief  Called if the window is moved to give the console correct focus again.
+/// @param  rw  The window that has been moved.
+void ServerGraphics::windowMoved (Ogre::RenderWindow* rw)
+{
+    GameCore::mGui->giveConsoleFocus();
+}
+
+
+/// @brief  Called if the window has been tabbed into/out of to give the console correct focus again.
+/// @param  rw  The window that has been moved.
+void ServerGraphics::windowFocusChange (Ogre::RenderWindow* rw)
+{
+    GameCore::mGui->giveConsoleFocus();
+}
+
+
 /// @brief  Adjust mouse clipping area when the window is resized.
 /// @param  rw  The window that has been resized.
 void ServerGraphics::windowResized (Ogre::RenderWindow* rw)
@@ -389,6 +408,8 @@ void ServerGraphics::windowResized (Ogre::RenderWindow* rw)
 #else
     #error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
+
+    GameCore::mGui->giveConsoleFocus();
 }
 
 

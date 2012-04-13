@@ -69,9 +69,9 @@ void GameGUI::showSpawnScreenPage2 (void)
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
     // Get references to the pages.
-    CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
-    CEGUI::Window* page1 = winMgr.getWindow("/SpawnScreen/Team");
-    CEGUI::Window* page2 = winMgr.getWindow("/SpawnScreen/Vehicle");
+    CEGUI::Window* mainWindow     = winMgr.getWindow("/SpawnScreen");
+    CEGUI::Window* page1          = winMgr.getWindow("/SpawnScreen/Team");
+    CEGUI::Window* page2          = winMgr.getWindow("/SpawnScreen/Vehicle");
 	CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
 	CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
 	CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
@@ -120,11 +120,10 @@ void GameGUI::closeSpawnScreen (void)
 {
 	CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
-    // Get references to the pages.
     CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
-
-    // Show the correct pages
     mainWindow->hide();
+
+	CEGUI::MouseCursor::getSingleton().hide();
 }
 
 bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
