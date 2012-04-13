@@ -355,47 +355,36 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
     
         // Process the networking. Sends client's input and receives data
         GameCore::mNetworkCore->frameEvent(inputSnapshot);
-
+        
+        // Process the player pool. Perform updates on other players
 	    if (NetworkCore::bConnected)
-	    {
-            // Process the player pool. Perform updates on other players
-            GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
-            if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
-            {
-                GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
-                GameCore::mAudioCore->frameEvent(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getRPM());
-                GameCore::mGui->updateCounters();
-                GameCore::mGui->updateSpeedo();
-            }
-
-	    }
+	        GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
 
         /*  NOTE TO SELF (JAMIE)
             Client doesn't want to do PowerupPool::frameEvent() when powerups are networked
             All powerup removals handled by the server's collision events
-            In fact, client probably shouldn't register any collision callbacks for powerups
-        */
+            In fact, client probably shouldn't register any collision callbacks for powerups */
         GameCore::mPowerupPool->frameEvent(evt.timeSinceLastFrame);
 
-        // FUTURE
-        // game will run x ticks behind the server
-        // when a new snapshot is received, it should be in the client's future
-        // interpolate based on snapshot timestamps
-
-    
-
+        //-PHYSICS-STEP--------------------------------------------------------------------
         // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
         GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, physicsTimeStep);
-	
+        //-PHYSICS-STEP--------------------------------------------------------------------
+
 	    //Draw info items
 	    GameCore::mGameplay->drawInfo();
-
     
 	    // Apply controls the player (who will be moved on frameEnd and frameStart).
         if (NetworkCore::bConnected)
         {
 	        if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
 	        {
+                // Moved here as audio event needs frehest car position
+                GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
+                GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
+                GameCore::mGui->updateCounters();
+                GameCore::mGui->updateSpeedo();
+
 		        GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
 		        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
 	        }

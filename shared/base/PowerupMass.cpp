@@ -66,6 +66,7 @@ void PowerupMass::playerCollision(Player* player)
 #ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->playSoundOrRestart(mSound);
 #endif
+
         // apply powerup to player
         //btVector3 inertia;
         //player->getCar()->getVehicle()->getRigidBody()->getCollisionShape()->calculateLocalInertia( 20000, inertia );

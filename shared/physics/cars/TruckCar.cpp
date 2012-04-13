@@ -170,6 +170,7 @@ TruckCar::~TruckCar(void)
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+    GameCore::mAudioCore->deleteSoundInstance(mEngineSound);
 #endif
 }
 
@@ -182,8 +183,10 @@ void TruckCar::louderLocalSounds() {
 }
 
 
-void TruckCar::frameEvent()
+// Only gets called on the client
+void TruckCar::updateAudioPitchFrameEvent()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     float maxPitch = 2.0f;
 
     // for the multiplication later
@@ -204,6 +207,7 @@ void TruckCar::frameEvent()
     
     mEngineSound->setPosition(mBodyNode->getPosition());
     mEngineSound->setVelocity(Car::getLinearVelocity());
+#endif
 }
 
 

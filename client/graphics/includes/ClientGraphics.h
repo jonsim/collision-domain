@@ -46,7 +46,7 @@ public:
     virtual void loadGame (void);
     virtual void unloadGame (void);
 
-    // GraphicsApplication shit
+    // GraphicsApplication stuff
 	void startBenchmark (uint8_t stage);
 
     Ogre::Camera*       mCamera;
@@ -83,7 +83,7 @@ protected:
     virtual void windowResized (Ogre::RenderWindow* rw);
     virtual void windowClosed (Ogre::RenderWindow* rw);
     
-    // Graphics Application shit (to be moved)
+    // Graphics Application stuff (to be moved)
 	void finishBenchmark (uint8_t stage, float averageTriangles);
 	uint8_t mBenchmarkStage;
     

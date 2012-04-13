@@ -156,9 +156,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
     mEngineSound->setPitch(2.0f);
     
-    #ifdef COLLISION_DOMAIN_CLIENT
-        if (!silentCar) mEngineSound->play();
-    #endif
+    if (!silentCar) mEngineSound->play();
 
     //mBodyNode->attachObject(mEngineSound);
 #endif
@@ -179,6 +177,7 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+    GameCore::mAudioCore->deleteSoundInstance(mEngineSound);
 #endif
 }
 
@@ -199,8 +198,10 @@ void SimpleCoupeCar::louderLocalSounds() {
 }
 
 
-void SimpleCoupeCar::frameEvent()
+// Only gets called on the client
+void SimpleCoupeCar::updateAudioPitchFrameEvent()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     float maxPitch = 1.0f;
 
     updateRPM();
@@ -218,6 +219,7 @@ void SimpleCoupeCar::frameEvent()
 
     mEngineSound->setPosition(mBodyNode->getPosition());
     mEngineSound->setVelocity(Car::getLinearVelocity());
+#endif
 }
 
 

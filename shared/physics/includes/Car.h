@@ -33,20 +33,21 @@ enum CarSkin {SKIN_DEFAULT, SKIN_TEAM1, SKIN_TEAM2};
 class Car
 {
 
-#ifdef COLLISON_DOMAIN_CLIENT
-    friend class SpawnScreen;
-#endif
-
 public:
     Car(int uniqueID);
     ~Car();
 
     // = 0 methods not implemented by Car yet!
     virtual void playCarHorn() = 0;
+    virtual void updateAudioPitchFrameEvent() = 0;
+    virtual void louderLocalSounds() = 0;
+
+    virtual void updateTeam (int teamNumber) = 0;
+    virtual void loadDestroyedModel (void) = 0;
+    virtual void makeBitsFallOff() = 0;
 
     // Overrideable methods, but you can use the generic Car method with all cars
     virtual Ogre::SceneNode *attachCamNode();
-    virtual void frameEvent() = 0;
     virtual void steerInputTick(bool isLeft,    bool isRight,             Ogre::Real secondsSinceLastFrame);
     virtual void accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real secondsSinceLastFrame);
     virtual void moveTo(const btVector3 &position);
@@ -64,12 +65,8 @@ public:
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
-    virtual void updateTeam (int teamNumber) = 0;
-    virtual void loadDestroyedModel (void) = 0;
-    virtual void makeBitsFallOff() = 0;
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );
     virtual void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
-    virtual void louderLocalSounds() = 0;
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();
@@ -85,8 +82,10 @@ protected:
     void updateRPM();
     void createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo, bool isDeformable);
     void setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo);
-
+    
+//#ifdef COLLISION_DOMAIN_CLIENT
     OgreOggISound *mGearSound;
+//#endif
 
     // Camera node (if not null its attached to bodyNode) (attachCamNode())
     Ogre::SceneNode *mCamArmNode;
@@ -200,7 +199,7 @@ public:
     btRaycastVehicle    *mVehicle;
     btRigidBody         *mbtRigidBody;
     
-    // Note to Jamie: I made the two calc functions public to implement my shit, do whatever you like with them this is your domain.
+    // Note to Jamie: I made the two calc functions public to implement my stuff, do whatever you like with them this is your domain.
     btScalar calcWheelSkid();
     btScalar calcSlipAngle();
     

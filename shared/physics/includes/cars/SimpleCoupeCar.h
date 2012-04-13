@@ -19,7 +19,7 @@ class SimpleCoupeCar : Car
 public:
     SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
     virtual ~SimpleCoupeCar(void);
-    void frameEvent();
+    void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (int teamNumber);

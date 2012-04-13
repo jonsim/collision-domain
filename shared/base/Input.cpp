@@ -165,7 +165,7 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
     
-    // Had to put this in here for now, and the define.. well fuck you shared includes.
+    // Had to put this in here for now, and the define.. because of shared includes.
 #ifdef COLLISION_DOMAIN_CLIENT
     // This is safe, mSpawnScreen will only ever be not null if we are selecting
     if( GameCore::mClientGraphics->mSpawnScreen != NULL )

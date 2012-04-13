@@ -18,7 +18,7 @@ class SmallCar : public Car
 public:
     SmallCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
     virtual ~SmallCar(void);
-    void frameEvent();
+    void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (int teamNumber);
