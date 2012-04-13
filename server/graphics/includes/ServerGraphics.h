@@ -27,7 +27,6 @@ public:
 
     float               mAverageFrameRate;
     Ogre::Camera*       mCamera;
-    Ogre::RenderWindow* mWindow;
 
 protected:
     virtual bool initApplication (void);    // Determines flow from startup
@@ -51,6 +50,8 @@ protected:
     virtual bool frameEnded (const Ogre::FrameEvent& evt);
     
     // Ogre::WindowEventListener overrides.
+    virtual void windowMoved (Ogre::RenderWindow* rw);
+    virtual void windowFocusChange (Ogre::RenderWindow* rw);
     virtual void windowResized (Ogre::RenderWindow* rw);
     virtual void windowClosed (Ogre::RenderWindow* rw);
 

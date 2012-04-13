@@ -14,18 +14,17 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, initialising all resources.
-ClientGraphics::ClientGraphics (void)
-    : mRoot(0),
-    mCamera(0),
-    mWindow(0),
-    mResourcesCfg(Ogre::StringUtil::BLANK),
-    mPluginsCfg(Ogre::StringUtil::BLANK),
-    mCameraMan(0),
-    mCursorWasVisible(false),
-    mDebrisVisible(false),
-    mShutDown(false),
-    mSpawnScreen(0),
-    mGraphicsState(UNDEFINED)
+ClientGraphics::ClientGraphics (void) : SceneSetup(),
+                                        mRoot(0),
+                                        mCamera(0),
+                                        mResourcesCfg(Ogre::StringUtil::BLANK),
+                                        mPluginsCfg(Ogre::StringUtil::BLANK),
+                                        mCameraMan(0),
+                                        mCursorWasVisible(false),
+                                        mDebrisVisible(false),
+                                        mShutDown(false),
+                                        mSpawnScreen(0),
+                                        mGraphicsState(UNDEFINED)
 {
 }
 

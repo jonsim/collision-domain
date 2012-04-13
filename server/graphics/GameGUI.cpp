@@ -194,3 +194,10 @@ void GameGUI::loadConsoleHistory (bool reverseLoading)
     else
 	    inputText->setText(*(consoleHistory.get(consoleHistoryLocation)));
 }
+
+void GameGUI::giveConsoleFocus (void)
+{
+    // Give the input box focus.
+	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
+	winMgr.getWindow("/Server/input")->activate();
+}

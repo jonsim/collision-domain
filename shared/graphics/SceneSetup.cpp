@@ -11,11 +11,11 @@
 #define ARENA 1
 
 
-SceneSetup::SceneSetup (void) :
-    mGfxSettingHDR(1.0f),
-    mGfxSettingBloom(1.0f),
-    mGfxSettingRadialBlur(1.0f),
-    mGfxSettingMotionBlur(1.0f)
+SceneSetup::SceneSetup (void) : mWindow(0),
+                                mGfxSettingHDR(1.0f),
+                                mGfxSettingBloom(1.0f),
+                                mGfxSettingRadialBlur(1.0f),
+                                mGfxSettingMotionBlur(1.0f)
 {
 }
 
@@ -415,7 +415,7 @@ void SceneSetup::setupGUI (void)
     if (!guiSetup)
     {
         // Attach and start the CEGUI renderer.
-        mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem();
+        mGUIRenderer = &CEGUI::OgreRenderer::bootstrapSystem(*mWindow);
 
         // Initialise the CEGUI renderer
 	    // Load the fonts and set their sizes.

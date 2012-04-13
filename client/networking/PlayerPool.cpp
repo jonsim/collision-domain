@@ -24,6 +24,9 @@ void PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 			break;
 		}
 	}
+    char bob[256];
+    sprintf(bob, "addPlayer called, playerid = %s, szNickname = %s, iNew = %d\n", playerid.ToString(), szNickname, iNew);
+    OutputDebugString(bob);
 
 	if( iNew != -1 )
 	{

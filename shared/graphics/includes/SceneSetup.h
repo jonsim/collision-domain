@@ -52,6 +52,7 @@ public:
     Ogre::Entity *truckRBumperMesh;
 
     MeshDeformer*  mMeshDeformer;
+    Ogre::RenderWindow* mWindow;
 	CEGUI::Window* mGUIWindow;
 
 protected:
