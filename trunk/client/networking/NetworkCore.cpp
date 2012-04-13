@@ -403,7 +403,11 @@ void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	bitStream->Read(vipPlayerGUID);
 
 	Player* newPlayer = GameCore::mPlayerPool->getPlayer(vipPlayerGUID);
-	Team* team = GameCore::mGameplay->getTeam(newPlayer->getTeam());
+    if (newPlayer == NULL)
+        OutputDebugString("newPlayer == NULL\n");
+	Team* team = GameCore::mGameplay->getTeam(newPlayer->getTeam() - 1);
+    if (team == NULL)
+        OutputDebugString("newPlayer == NULL\n");
 	team->setNewVIP(newPlayer);
 }
 
