@@ -12,6 +12,7 @@
 #define WHEEL_FRICTION_CFM 0.6f
 
 Car::Car (int uniqueID)
+    : mGearSound(NULL)
 {
 #ifdef COLLISION_DOMAIN_CLIENT
     mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
@@ -100,9 +101,6 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
 /// @param  isLeft                  User input specifying if the left control is pressed.
 /// @param  isRight                 User input specifying if the right control is pressed.
 /// @param  secondsSinceLastFrame   For framerate independence as the wheel turning "accelerate" with keypresses.
-/// @param  targetPhysicsFrameRate  The target framerate in seconds anything other than 1/60 will result in an
-///         unexpected steering rate. This does not mean the controls aren't framerate independent, its just the
-///         fixed frame length in seconds which is taken as "base" for applying normalised steering increments.
 void Car::steerInputTick(bool isLeft, bool isRight, Ogre::Real secondsSinceLastFrame)
 {
     // process steering on both wheels (+1 = left, -1 = right)

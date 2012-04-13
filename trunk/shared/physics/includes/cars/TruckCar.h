@@ -18,7 +18,7 @@ class TruckCar : public Car
 public:
     TruckCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
     virtual ~TruckCar(void);
-    void frameEvent();
+    void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (int teamNumber);

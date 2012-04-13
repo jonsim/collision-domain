@@ -185,20 +185,25 @@ SmallCar::~SmallCar(void)
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
+    GameCore::mAudioCore->deleteSoundInstance(mEngineSound);
 #endif
 }
 
 
 void SmallCar::louderLocalSounds() {
+#ifdef COLLISION_DOMAIN_CLIENT
     //mEngineSound->setVolume(0); return;
 
     float increaseTo = mEngineSound->getVolume() + 0.25;
     if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+#endif
 }
 
 
-void SmallCar::frameEvent()
+// Only gets called on the client
+void SmallCar::updateAudioPitchFrameEvent()
 {
+#ifdef COLLISION_DOMAIN_CLIENT
     float maxPitch = 1.2f;
 
     updateRPM();
@@ -216,6 +221,7 @@ void SmallCar::frameEvent()
     
     mEngineSound->setPosition(mBodyNode->getPosition());
     mEngineSound->setVelocity(Car::getLinearVelocity());
+#endif
 }
 
 

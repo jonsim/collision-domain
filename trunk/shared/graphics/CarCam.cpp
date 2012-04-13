@@ -7,7 +7,7 @@
 #include "GameIncludes.h"
 #include "CarCam.h"
 
-#define SHIT_CAMERA 0
+#define BAD_CAMERA 0
 
 CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre::SceneNode* followedObject)
 {
@@ -29,7 +29,7 @@ CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre
 	
 	//Attach the camera to the node
 	//mApproxCamNode->translate(Ogre::Vector3(0,0,65));
-    if (SHIT_CAMERA) mApproxCamNode->attachObject(mCam);
+    if (BAD_CAMERA) mApproxCamNode->attachObject(mCam);
     else car->attachCamNode()->attachObject(mCam);
 	//mCam->setFocalLength(4);
 	
@@ -37,7 +37,7 @@ CarCam::CarCam(Car* car, Ogre::Camera* cam, Ogre::SceneNode* actualCamNode, Ogre
 
 void CarCam::updatePosition(int XRotation, int YRotation)
 {
-	if (SHIT_CAMERA)
+	if (BAD_CAMERA)
     {
     
 	    Ogre::Vector3 pos =  mFollowedObject->getPosition();

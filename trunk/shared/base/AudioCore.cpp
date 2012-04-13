@@ -64,10 +64,8 @@ AudioCore::AudioCore()
 
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
 
-    #ifdef COLLISION_DOMAIN_CLIENT
-        mBackingTrack->setVolume(0.2f);
-        //mBackingTrack->play();
-    #endif
+    mBackingTrack->setVolume(0.15f);
+    playSoundOrRestart(mBackingTrack);
 
     // doppler effect is good now at the default 1.0
     //mSoundManager->setSpeedOfSound();
@@ -80,8 +78,7 @@ AudioCore::~AudioCore()
     delete mSoundDeletesPending;
 }
 
-/// plays a car horn (I didn't commit all the horn sounds so they will be a surprise ;)
-/// eventually this will be attached to cars and networked
+/// does what it says on the tin. can be given null sounds
 void AudioCore::playSoundOrRestart(OgreOggISound *sound)
 {
     // fix for some crash, if !mInitOK
@@ -208,15 +205,11 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     // In an ideal world the camera would be attached to a scene node so the listener would update
     // automatically. But that's not how we've done things, so manually set listener.
     
+    // This ifdef is here to stop getLocalPlayer problems (server has no local player).
+#ifdef COLLISION_DOMAIN_CLIENT
     // Attach ears to the car instead of the camera. Otherwise it just sounds weird!
     //GameCore::mGraphicsCore->mCamera->getPosition(),
     //GameCore::mGraphicsCore->mCamera->getOrientation()
-
-    // This ifdef is here to stop getLocalPlayer problems. AudioCore shouldn't even be included with the server but there are audio
-    // objects spread all over the shop unfortunately so rather than pull them all out one by one its simpler just to leave AudioCore
-    // as shared and ignore the unused references on the server. None of the functions are ever called.
-    // If someone has free time they could sort this out - it would make things a lot simpler.
-#ifdef COLLISION_DOMAIN_CLIENT
     Ogre::Vector3 earsPosition = GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->getPosition();
     Ogre::Quaternion earsOrientation = GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->getOrientation();
 
@@ -227,6 +220,24 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     mSoundManager->getListener()->setOrientation(earsOrientation);
 
     mSoundManager->getListener()->setVelocity(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getLinearVelocity());
+
+    // fire a frameevent for each car
+    int numPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
+    for (int i = 0; i < numPlayers; i++)
+    {
+        Player *player = GameCore::mPlayerPool->getPlayer(i);
+        if (player == NULL) continue;
+        Car *car = player->getCar();
+        if (car == NULL) continue;
+        car->updateAudioPitchFrameEvent();
+    }
+    
+    // fire a frameevent for the local player
+    Player *localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    if (localPlayer != NULL && localPlayer->getCar() != NULL)
+    {
+        localPlayer->getCar()->updateAudioPitchFrameEvent();
+    }
 #endif
 }
 

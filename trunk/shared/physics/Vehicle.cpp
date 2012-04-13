@@ -36,7 +36,7 @@ btScalar calcContactFriction(btWheelContactPoint& contactPoint);
     - Possibly need to divide by friction slip parameter - take veldifference.length[2?]() and get proportion
     - Different if brakes are on - front wheel vel = 0 then so probably need to use car linear velocity
 
-    - Sliding is fucked. Why do you do this to me Bullet?
+    - Sliding is not working. Why do you do this to me Bullet?
     - Some crazy equation of linear / angular velocity * slipangle might work
 */
 

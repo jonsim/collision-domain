@@ -88,11 +88,6 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	} else if(speed >= highDamageSpeed) {
 		highDamageCallBack(causedByPlayer->getGUID());
 	}*/
-	/*std::stringstream ss;
-	ss << "crash with " << causedByPlayer->getGUID() << " overlap: " << depth << "\n";
-	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
-	OutputDebugString(ss.str().c_str());*/
-
 	GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
 }
 
@@ -233,9 +228,9 @@ void Player::killPlayer()
     GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());
     mCar->loadDestroyedModel();
 
-    // Blast the fuck out of the car (renders it completely undriveable but since this
+    // Blast the stuff out of the car (renders it completely undriveable but since this
     // should only be called on dead cars thats not such a problem).
-    // Yeah so turns out this just fucks everything up and not in a good way.
+    // Yeah so turns out this just stuffs everything up and not in a good way.
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 500.0f, 0)); 
 }
 
@@ -291,7 +286,7 @@ void Player::serverSaysHealthChangedTo(float newHP)
         return;
     }
 
-    OutputDebugString("SHIT\n");
+    OutputDebugString("Local player health changed\n");
 
 
     // update damage HUD
