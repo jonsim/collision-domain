@@ -6,54 +6,19 @@
 
 #define MARKER_WIDTH 0.03f
 #define MARKER_HEIGHT 0.04f
-/*
-BigScreen::BigScreen(ViewportManager* vpm_P, NetworkCore* networkCore)
-{
-	mViewportManager	= vpm_P;
-	mNetworkCore		= networkCore;
-}
-*/
 
-BigScreen::BigScreen(ViewportManager* vpm_P)
+BigScreen::BigScreen()
 {
-	mViewportManager = vpm_P;
+
 }
 
 bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
 	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
-	/*
-	ViewCamera* bestCanidateVC = NULL;
-	std::vector<ViewCamera*>::iterator itr;
-	for(itr = viewCameraVector.begin(); itr<viewCameraVector.end(); ++itr)
-	{
-		ViewCamera* tmp = *itr;
-		if(bestCanidateVC != NULL)
-		{
-			//Check to see if this new canidate is smaller than the previous canidate
-			if(RakNet::LessThan(tmp->getLastUpdateTime(),bestCanidateVC->getLastUpdateTime()))
-			{
-				bestCanidateVC =  tmp;
-			}
-		}
-		else
-		{
-			bestCanidateVC=  tmp;
-		}
-	}
-	
-	if(bestCanidateVC != NULL)
-	{
-		//This is important. If you add the camera to two points it dies
-		bestCanidateVC->getCamera()->detachFromParent(); 
-		tmpPlayer->attachCamera(bestCanidateVC->getCamera());
-		OutputDebugString("Attached Camera to new player\n");
-		bestCanidateVC->setLastUpdateTime();
-	}
-	*/
 	//Manage new player for bigscreen view
 	this->manageNewPlayer(tmpPlayer);
-	return mViewportManager->declareNewPlayer(tmpPlayer);
+	//return mViewportManager->declareNewPlayer(tmpPlayer);
+	return true;
 }
 
 void BigScreen::addCamera(Ogre::Camera* cam) 
@@ -64,6 +29,7 @@ void BigScreen::addCamera(Ogre::Camera* cam)
 
 void BigScreen::setupMapView()
 {
+
 	Ogre::Overlay *olMap = 
 		Ogre::OverlayManager::getSingleton().create( "OVERLAY_MAP" );
 	olMap->setZOrder(500);
@@ -89,7 +55,7 @@ void BigScreen::setupMapView()
         setMapCorner(an->getPosition());
         setMapSize(ae->getBoundingBox().getSize() * an->getScale());
     }
-    catch (exception&)
+    catch (Exception&)
     {
         OutputDebugString("Exception caught while creating the bigScreen view, arena not fully initialised.\n");
     }
@@ -114,13 +80,22 @@ void BigScreen::setupMapView()
 
 	olcMap->addChild(oleVIP1);
 	olcMap->addChild(oleVIP2);
+
+	/*
+	//Go through all the players which will add anything pre existing players in
+	std::vector<Player*> tmpPlayers = GameCore::mPlayerPool->getPlayers();
+	for(int i=0;i<tmpPlayers.size();i++)
+	{
+		this->manageNewPlayer(tmpPlayers[i]);
+	}
+	*/
 }
 
 void BigScreen::manageNewPlayer(Player* player)
 {
 	//Timestamp used to fix duplicate named overlays.
 	std::stringstream overlayNameSS;
-	overlayNameSS << "PlayerOverlay" << RakNet::GetTime();	
+	overlayNameSS << "PlayerOverlay" << player->getGUID() << RakNet::GetTime();	
 	
 	Ogre::OverlayElement* tmpOLE = 
 		Ogre::OverlayManager::getSingleton().createOverlayElement(
@@ -153,7 +128,12 @@ void BigScreen::updateMapView()
 	//Loop through all possible players
 	for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
 	{
-		updatePlayer((Player*)(*it), (*it)->getOverlayElement());
+		if((*it)->getOverlayElement() == NULL)
+		{
+			this->manageNewPlayer((*it));
+		}
+		if((*it)->getOverlayElement() != NULL)
+			updatePlayer((Player*)(*it), (*it)->getOverlayElement());
 	}
 }
 

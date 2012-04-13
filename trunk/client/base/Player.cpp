@@ -19,6 +19,7 @@ Player::Player (void) : cameraRotationConstant(0.08f), mAlive(true), mIsVIP(fals
     // PlayerState state configures constants and zeros values upon creation.
 	//processingCollision = false;
 	numCollisionDataPoints = 0;
+	this->mOLE = NULL;
 	//averageCollisionPoint.setZero();
 
 	// Damage Level Thresholds: how many calls to collisionTickCallback have been seen
@@ -382,4 +383,9 @@ void Player::killPlayer(Player* causedBy)
 	{
 		causedBy->addToScore(1);
 	}
+}
+
+void Player::setOverlayElement(Ogre::OverlayElement* ole)
+{
+        mOLE = ole;
 }

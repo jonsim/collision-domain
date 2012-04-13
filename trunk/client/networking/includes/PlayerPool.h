@@ -30,6 +30,7 @@ public:
 	int                 getNumberOfPlayers();
 	static bool cmp(Player* a, Player* b);
 	std::vector<Player*> getScoreOrderedPlayers();
+	std::vector<Player*> getPlayers();
 
 	Player*             getPlayer( int index );
 	Player*             getPlayer( RakNet::RakNetGUID playerid );

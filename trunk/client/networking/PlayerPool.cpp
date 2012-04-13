@@ -261,3 +261,16 @@ void PlayerPool::spectateNext()
         mSpectating = mGUID[nextIdx];
     }
 }
+
+std::vector<Player*> PlayerPool::getPlayers() {
+	//Put all the players from the array into a vector
+	std::vector<Player*> tmp;
+	for(int i=0;i<MAX_PLAYERS;i++)
+	{
+		if(mPlayers[i] != NULL)
+			tmp.push_back(mPlayers[i]);
+	}
+	
+	//return this->mPlayers;
+	return tmp;
+}
