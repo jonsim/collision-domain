@@ -52,9 +52,6 @@
     <ClInclude Include="..\..\server\base\includes\Player.h">
       <Filter>server\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\server\graphics\includes\BigScreen.h">
-      <Filter>server\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\server\graphics\includes\ViewportManager.h">
       <Filter>server\graphics</Filter>
     </ClInclude>
@@ -635,9 +632,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\server\base\Player.cpp">
       <Filter>server\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\server\graphics\BigScreen.cpp">
-      <Filter>server\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\server\graphics\ViewportManager.cpp">
       <Filter>server\graphics</Filter>
