@@ -12,10 +12,10 @@ class Player;
 class PlayerPool
 {
 private:
-	Player*             mPlayers[MAX_PLAYERS];
+	std::vector<Player*> mPlayers;
+	std::vector<RakNet::RakNetGUID> mGUID;
 	Player*             mLocalPlayer;
 	RakNet::RakNetGUID  mLocalGUID;
-	RakNet::RakNetGUID  mGUID[MAX_PLAYERS];
 	int                 getPlayerIndex( RakNet::RakNetGUID playerid );
     RakNet::RakNetGUID  mSpectating;
     void                setSpectating( int idx );
@@ -24,7 +24,7 @@ public:
 	PlayerPool();
 	~PlayerPool();
 	
-	void                addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
+	int                addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void                addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void                delPlayer( RakNet::RakNetGUID playerid );
 	int                 getNumberOfPlayers();
