@@ -120,7 +120,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
+SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar)
     : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
@@ -131,7 +131,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar)
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
-    initGraphics(chassisShift, skin);
+    initGraphics(tid);
 #endif
     initBody(carPosition, chassisShift);
     initWheels();
@@ -272,7 +272,7 @@ void SimpleCoupeCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
+void SimpleCoupeCar::initGraphics(TeamID tid)
 {
     // Load the meshes.
 	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
@@ -290,10 +290,7 @@ void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
     createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh",     mRRWheelNode, false);
     
     // Update the skin based on the team
-    if (skin == SKIN_TEAM1)
-        updateTeam(1);
-    else if (skin == SKIN_TEAM2)
-        updateTeam(2);
+    updateTeam(tid);
 
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
@@ -313,19 +310,26 @@ void SimpleCoupeCar::initGraphics(btTransform& chassisShift, CarSkin skin)
 }
 
 
-void SimpleCoupeCar::updateTeam (int teamNumber)
+void SimpleCoupeCar::updateTeam (TeamID tid)
 {
     // Load the team coloured items
-    switch (teamNumber)
+    switch (tid)
     {
-    case 1:
+    case NO_TEAM:
+        setMaterial("banger_body_uv",  mChassisNode);
+        setMaterial("banger_fdoor_uv", mFLDoorNode);
+        setMaterial("banger_fdoor_uv", mFRDoorNode);
+        setMaterial("banger_rdoor_uv", mRLDoorNode);
+        setMaterial("banger_rdoor_uv", mRRDoorNode);
+        break;
+    case BLUE_TEAM:
         setMaterial("banger_body_t1",  mChassisNode);
         setMaterial("banger_fdoor_t1", mFLDoorNode);
         setMaterial("banger_fdoor_t1", mFRDoorNode);
         setMaterial("banger_rdoor_t1", mRLDoorNode);
         setMaterial("banger_rdoor_t1", mRRDoorNode);
         break;
-    case 2:
+    case RED_TEAM:
         setMaterial("banger_body_t2",  mChassisNode);
         setMaterial("banger_fdoor_t2", mFLDoorNode);
         setMaterial("banger_fdoor_t2", mFRDoorNode);

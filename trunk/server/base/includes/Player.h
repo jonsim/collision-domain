@@ -21,7 +21,7 @@ class Player
 public:
     Player (void);
     ~Player (void);
-    void createPlayer (CarType carType, CarSkin skin);
+    void createPlayer (CarType carType, TeamID tid);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);

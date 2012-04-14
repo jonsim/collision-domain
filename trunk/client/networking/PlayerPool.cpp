@@ -73,7 +73,7 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 {
 	//Put all the players from the array into a vector
 	std::vector<Player*> tmp;
-	for(int i=0;i<mPlayers.size();i++)
+	for(unsigned int i=0;i<mPlayers.size();i++)
 	{
 		if(mPlayers[i] != NULL)
 			tmp.push_back(mPlayers[i]);
@@ -103,9 +103,7 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 
 void PlayerPool::frameEvent( const float timeSinceLastFrame )
 {
-	int i = 0;
-
-	for( i = 0; i < mPlayers.size(); i ++ )
+	for( unsigned int i = 0; i < mPlayers.size(); i ++ )
 	{
 		processPlayer( mPlayers[i] );
         // Since we don't have access to other player's input we won't do this for now.
@@ -203,7 +201,7 @@ void PlayerPool::spectateNext()
     int nextIdx = -1;
 
     // Check for an alive player further forward in player array
-	for( int i = ++curIdx; i < mPlayers.size(); i ++ )
+	for( unsigned int i = ++curIdx; i < mPlayers.size(); i ++ )
     {
         if( mPlayers[i] )
         {
@@ -242,7 +240,7 @@ void PlayerPool::spectateNext()
 std::vector<Player*> PlayerPool::getPlayers() {
 	//Put all the players from the array into a vector
 	std::vector<Player*> tmp;
-	for(int i=0;i<mPlayers.size();i++)
+	for(unsigned int i=0;i<mPlayers.size();i++)
 	{
 		if(mPlayers[i] != NULL)
 			tmp.push_back(mPlayers[i]);

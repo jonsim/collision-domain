@@ -20,36 +20,33 @@
 /*-------------------- Some Game Values -------------*/
 #define NUM_PLAYERS_TO_START 5
 #define NUM_TOP_PLAYERS 5
+#define NUM_TEAMS 2
 
 /*-------------------- ENUM TYPES -------------------*/
-enum
-{
-	FREE_FOR_ALL_MODE,
-	TEAM_FREE_FOR_ALL_MODE,
-	KING_OF_THE_HILL_MODE,
-	VIP_MODE
-};
+// Represents a game mode. FFA = Free for all; TDM = Team deathmatch, KOTH = King of the hill.
+enum GameMode {FFA_MODE, TDM_MODE, KOTH_MODE, VIP_MODE};
+enum TeamID   {NO_TEAM = 0, BLUE_TEAM = 1, RED_TEAM = 2};
 
 class Player;
 class InfoItem;
+class Team;
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 class Gameplay
 {
 public:
 								Gameplay();
-	void						setNumberOfTeams(int num);
-	Ogre::Real					getScorePercentage(std::string identifier);
-	int							getScoreValue(std::string identifier);
-	Team*						createTeam(std::string teamName, int teamNumber);
-	void						addPlayerToTeam(Team* team, Player* player);
+                                ~Gameplay();
+	//Ogre::Real					getScorePercentage(std::string identifier);
+	//int							getScoreValue(std::string identifier);
 	bool						gameOver();
-	bool						hasWon(Team* team);
-	Team*						checkIfGameOver();
-	void						setGameplayMode(int gameplayMode);
-	Player*						setNewVIP(Team* team);
-	void						setAllNewVIP();
-	Team*						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
+	bool						hasWon(TeamID teamID);
+	void						checkIfGameOver();
+	void						setGameMode(GameMode gameMode);
+	void						setNewVIP(TeamID teamID);
+    void                        setNewVIP(TeamID teamID, Player* newVIP);
+	void						setNewVIPs();
+	void						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
 	void						notifyDamage(Player* player);
 	void						preparePlayers(); //Place the palyers in the correct place
 	void						resetAllHP();
@@ -57,7 +54,6 @@ public:
 	void						startGame();
 	void						drawInfo(); //Draws any info that we require
 	void						setupOverlay();
-	Team*						getTeam(int i);
 	void						drawDeathInfo();
 	void						initialize();
 
@@ -71,12 +67,15 @@ public:
 private:
 	//Methods
 	bool						vipModeGameWon();
-	Team*						getTeamToJoin();
+	Team*						getTeam(TeamID teamID);
+    Team*                       autoAssignTeam();
+	//Team*						getTeamToJoin();
 	void						printTeamStats();
 	void						scheduleCountDown();
 	//Variabels
-	std::vector<Team*>			teams;
-	int							mGameplayMode;
+	//std::vector<Team*>			teams;
+    Team*                       mTeams[NUM_TEAMS];
+	GameMode					mGameMode;
 	
 	Ogre::OverlayContainer*		olContainer;
 	void						handleInfoItem(InfoItem* item, bool show);

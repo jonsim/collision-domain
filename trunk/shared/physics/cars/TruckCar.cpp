@@ -109,7 +109,7 @@ void TruckCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
+TruckCar::TruckCar(int uniqueCarID, TeamID tid, bool silentCar)
     : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
@@ -120,7 +120,7 @@ TruckCar::TruckCar(int uniqueCarID, CarSkin skin, bool silentCar)
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
-    initGraphics();
+    initGraphics(tid);
 #endif
     initBody(carPosition, chassisShift);
     initWheels();
@@ -260,7 +260,7 @@ void TruckCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void TruckCar::initGraphics()
+void TruckCar::initGraphics(TeamID tid)
 {
     // Load the meshes.
 	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
@@ -275,6 +275,9 @@ void TruckCar::initGraphics()
     createGeometry("CarEntity_FRWheel",     "truck_rwheel.mesh",      mFRWheelNode,     false);
     createGeometry("CarEntity_RLWheel",     "truck_lwheel.mesh",      mRLWheelNode,     false);
     createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode,     false);
+    
+    // Update the skin based on the team
+    updateTeam(tid);
 	
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Truck/Exhaust");
@@ -294,18 +297,23 @@ void TruckCar::initGraphics()
 }
 
 
-void TruckCar::updateTeam (int teamNumber)
+void TruckCar::updateTeam (TeamID tid)
 {
     // Load the team coloured items
-    switch (teamNumber)
+    switch (tid)
     {
-    case 1:
-        setMaterial("truck_body_t1",  mChassisNode);
+    case NO_TEAM:
+        setMaterial("truck_body_uv", mChassisNode);
+        setMaterial("truck_door_uv", mLDoorNode);
+        setMaterial("truck_door_uv", mRDoorNode);
+        break;
+    case BLUE_TEAM:
+        setMaterial("truck_body_t1", mChassisNode);
         setMaterial("truck_door_t1", mLDoorNode);
         setMaterial("truck_door_t1", mRDoorNode);
         break;
-    case 2:
-        setMaterial("truck_body_t2",  mChassisNode);
+    case RED_TEAM:
+        setMaterial("truck_body_t2", mChassisNode);
         setMaterial("truck_door_t2", mLDoorNode);
         setMaterial("truck_door_t2", mRDoorNode);
         break;

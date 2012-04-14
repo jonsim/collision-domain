@@ -27,7 +27,7 @@ enum CarType
 };
 
 /// CarSkin represents the texture applied to the player object.
-enum CarSkin {SKIN_DEFAULT, SKIN_TEAM1, SKIN_TEAM2};
+enum TeamID;
 
 
 class Car
@@ -42,7 +42,7 @@ public:
     virtual void updateAudioPitchFrameEvent() = 0;
     virtual void louderLocalSounds() = 0;
 
-    virtual void updateTeam (int teamNumber) = 0;
+    virtual void updateTeam (TeamID tid) = 0;
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
 

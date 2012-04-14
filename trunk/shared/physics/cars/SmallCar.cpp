@@ -129,7 +129,7 @@ void SmallCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SmallCar::SmallCar(int uniqueCarID, CarSkin skin, bool silentCar)
+SmallCar::SmallCar(int uniqueCarID, TeamID tid, bool silentCar)
     : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
@@ -140,7 +140,7 @@ SmallCar::SmallCar(int uniqueCarID, CarSkin skin, bool silentCar)
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
-    initGraphics(chassisShift);
+    initGraphics(tid);
 #endif
     initBody(carPosition, chassisShift);
     initWheels();
@@ -273,7 +273,7 @@ void SmallCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SmallCar::initGraphics(btTransform& chassisShift)
+void SmallCar::initGraphics(TeamID tid)
 {
     // Load the small car meshes.
 	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
@@ -289,6 +289,9 @@ void SmallCar::initGraphics(btTransform& chassisShift)
     createGeometry("CarEntity_FRWheel",      "small_car_rwheel.mesh",     mFRWheelNode,    false);
     createGeometry("CarEntity_RLWheel",      "small_car_lwheel.mesh",     mRLWheelNode,    false);
     createGeometry("CarEntity_RRWheel",      "small_car_rwheel.mesh",     mRRWheelNode,    false);
+    
+    // Update the skin based on the team
+    updateTeam(tid);
     
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
@@ -308,17 +311,22 @@ void SmallCar::initGraphics(btTransform& chassisShift)
 }
 
 
-void SmallCar::updateTeam (int teamNumber)
+void SmallCar::updateTeam (TeamID tid)
 {
     // Load the team coloured items
-    switch (teamNumber)
+    switch (tid)
     {
-    case 1:
+    case NO_TEAM:
+        setMaterial("small_car_body_uv",  mChassisNode);
+        setMaterial("small_car_door_uv", mLDoorNode);
+        setMaterial("small_car_door_uv", mRDoorNode);
+        break;
+    case BLUE_TEAM:
         setMaterial("small_car_body_t1",  mChassisNode);
         setMaterial("small_car_door_t1", mLDoorNode);
         setMaterial("small_car_door_t1", mRDoorNode);
         break;
-    case 2:
+    case RED_TEAM:
         setMaterial("small_car_body_t2",  mChassisNode);
         setMaterial("small_car_door_t2", mLDoorNode);
         setMaterial("small_car_door_t2", mRDoorNode);

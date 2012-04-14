@@ -7,9 +7,9 @@ SpawnScreen::SpawnScreen( Ogre::Camera* cam )
     mOrigCamPos = cam->getPosition();
 
     // Initialize the car viewing array
-    mViewCar[CAR_BANGER] = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), SKIN_DEFAULT, true);
-    mViewCar[CAR_SMALL] = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), SKIN_DEFAULT, true);
-    mViewCar[CAR_TRUCK] = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), SKIN_DEFAULT, true);
+    mViewCar[CAR_BANGER] = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), NO_TEAM, true);
+    mViewCar[CAR_SMALL] = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), NO_TEAM, true);
+    mViewCar[CAR_TRUCK] = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), NO_TEAM, true);
 
     // Move the cars out of the way
     for( int i = 0; i < CAR_COUNT; i ++ )

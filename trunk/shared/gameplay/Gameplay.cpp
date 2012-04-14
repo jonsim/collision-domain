@@ -11,32 +11,16 @@
 
 
 
-Gameplay::Gameplay()
+Gameplay::Gameplay() : mGameActive(false)
 {
 	//mSB = new ScoreBoard();
 	//mHUD = new HUD();
-	this->setNumberOfTeams(2); //Might as well default it to 2
-	mGameActive = false;
+	//this->setNumberOfTeams(2); //Might as well default it to 2
+    mTeams[0] = new Team(BLUE_TEAM);
+    mTeams[1] = new Team(RED_TEAM);
 }
 
-void Gameplay::setNumberOfTeams(int num)
-{
-	numberOfTeams = num;
-	//Create the new teams
-	for(int i=1;i<=num;i++)
-	{
-		this->createTeam("", i);
-	}
-}
-
-Team* Gameplay::createTeam(std::string teamName, int teamNumber)
-{
-	Team* tmpTeam = new Team(teamName, teamNumber);
-	teams.push_back(tmpTeam);
-	return tmpTeam;
-}
-
-Ogre::Real Gameplay::getScorePercentage(std::string identifier)
+/*Ogre::Real Gameplay::getScorePercentage(std::string identifier)
 {
 	return 0.0;
 }
@@ -44,44 +28,47 @@ Ogre::Real Gameplay::getScorePercentage(std::string identifier)
 int	Gameplay::getScoreValue(std::string identifier)
 {
 	return 0;
-}
+}*/
 
-void Gameplay::addPlayerToTeam(Team* team, Player* player)
+Team* Gameplay::getTeam(TeamID teamID)
 {
-	team->addPlayer(player);
+    switch (teamID)
+    {
+        case BLUE_TEAM: return mTeams[0]; break;
+        case RED_TEAM:  return mTeams[1]; break;
+        case NO_TEAM:
+        default:        throw Ogre::Exception::ERR_INVALIDPARAMS; break;
+    }
+    return NULL;
 }
 
 bool Gameplay::gameOver()
 {
-	if(mGameplayMode == VIP_MODE) {
+	if(mGameMode == VIP_MODE) {
 		vipModeGameWon();
 	}
 	return false;
 }
 
-bool Gameplay::hasWon(Team* team)
+bool Gameplay::hasWon(TeamID teamID)
 {
 	return false;
 }
 
-void Gameplay::setGameplayMode(int gameplayMode)
+void Gameplay::setGameMode(GameMode gameMode)
 {
-	mGameplayMode = gameplayMode;
+	mGameMode = gameMode;
 }
 
 bool Gameplay::vipModeGameWon()
 {
-	std::vector<Team*>::iterator itr;
-	for(itr = teams.begin(); itr<teams.end(); ++itr)
-	{
-
-	}
 	return false;
 }
 
-Player* Gameplay::setNewVIP(Team* team)
+void Gameplay::setNewVIP(TeamID teamID)
 {
-	Player* pPlayer = team->getRandomPlayer();
+    Team* t = getTeam(teamID);
+    t->setNewVIP(t->getRandomPlayer());
     
         /*// Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
@@ -90,17 +77,22 @@ Player* Gameplay::setNewVIP(Team* team)
 	else if(team == teams[1])
 		pPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
 #endif*/
-
-	return team->setNewVIP(pPlayer);
+}
+    
+void Gameplay::setNewVIP(TeamID teamID, Player* newVIP)
+{
+    getTeam(teamID)->setNewVIP(newVIP);
 }
 
-void Gameplay::setAllNewVIP()
+void Gameplay::setNewVIPs()
 {
-	std::vector<Team*>::iterator itr;
-	for(itr = teams.begin(); itr<teams.end(); ++itr)
-	{
-		Team* team = *itr;
-		Player* vipPlayer = team->getRandomPlayer();
+    setNewVIP(BLUE_TEAM);
+    setNewVIP(RED_TEAM);
+//	std::vector<Team*>::iterator itr;
+//	for(itr = teams.begin(); itr<teams.end(); ++itr)
+//	{
+		//Team* team = *itr;
+		//Player* vipPlayer = team->getRandomPlayer();
         
 /*        // Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
@@ -113,18 +105,14 @@ void Gameplay::setAllNewVIP()
 		else if(team == teams[1])
 			vipPlayer->attachCamera(GameCore::mGraphicsApplication->mViewCam2);
 #endif*/
-		team->setNewVIP(vipPlayer);
-	}
+		//team->setNewVIP(vipPlayer);
+	//}
 }
 
-Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
+void Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
-	Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
-	Team* teamToJoin = getTeamToJoin();
-    if (tmpPlayer == NULL)
-        OutputDebugString("uh oh\n");
-    if (teamToJoin == NULL)
-        OutputDebugString("uh oh 2\n");
+	Player* tmpPlayer   = GameCore::mPlayerPool->getPlayer(playerid);
+	Team*   teamToJoin  = autoAssignTeam();
 	teamToJoin->addPlayer(tmpPlayer);
 
 	//Check to see if we need to start game
@@ -132,10 +120,19 @@ Team* Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 	{
 		this->startGame();
 	}
-
-	return teamToJoin;
 }
 
+Team* Gameplay::autoAssignTeam()
+{
+#if NUM_TEAMS == 2
+    if (mTeams[0]->getTeamSize() > mTeams[1]->getTeamSize())
+        return mTeams[1];
+    return mTeams[0];
+#else
+    #error "Code not rewritten for !2 teams."
+#endif
+}
+/*
 //Gets which team makes sense to join (Aims to balance)
 Team* Gameplay::getTeamToJoin()
 {
@@ -163,7 +160,7 @@ Team* Gameplay::getTeamToJoin()
 	}
 
 	return lowestTeam;
-}
+}*/
 
 void Gameplay::notifyDamage(Player* player)
 {
@@ -172,21 +169,19 @@ void Gameplay::notifyDamage(Player* player)
 
 void Gameplay::printTeamStats()
 {
-	std::stringstream tmpOutputString;
-	tmpOutputString << "Team Stats \n";
-	//Loop through all teams and find the one with the lowest value
-	std::vector<Team*>::iterator itr;
-	int i=0;
-	for(itr = teams.begin(); itr<teams.end(); ++itr)
-	{
-		Team* tmpTeam = *itr;
-		tmpOutputString << "Team " << i << ": " << tmpTeam->getTotalTeamHP() << "\n";
-		i++;
-	}
-	OutputDebugString(tmpOutputString.str().c_str());
+    std::stringstream tmpOutputString;
+    tmpOutputString << "Team Stats:\n";
+#if NUM_TEAMS == 2
+    tmpOutputString << "  Blue Team: " << getTeam(BLUE_TEAM)->getTotalTeamHP() << " health\n";
+    tmpOutputString << "  Red Team: " << getTeam(RED_TEAM)->getTotalTeamHP() << " health\n";
+#else
+    for (int i = 0; i < NUM_TEAMS; i++)
+        tmpOutputString << "  teams[" << i << "]: " << teams[i]->getTotalTeamHP() << " health\n";
+#endif
+    OutputDebugString(tmpOutputString.str().c_str());
 }
 
-Team* Gameplay::checkIfGameOver()
+/*Team* Gameplay::checkIfGameOver()
 {
 	Team* winningTeam = NULL;
 	//Loop through 
@@ -209,7 +204,7 @@ Team* Gameplay::checkIfGameOver()
 	}
 
 	return winningTeam;
-}
+}*/
 
 void Gameplay::preparePlayers()
 {
@@ -286,9 +281,12 @@ void Gameplay::positionPlayers()
 void Gameplay::startGame()
 {
 	this->positionPlayers();
-	this->setAllNewVIP(); //TODO - Change this once we have multiple game modes
+	this->setNewVIPs(); //TODO - Change this once we have multiple game modes
 	this->scheduleCountDown();
 	mGameActive = true;
+#ifdef COLLISION_DOMAIN_SERVER
+    GameCore::mGui->outputToConsole("Game started.\n");
+#endif
 }
 
 void Gameplay::drawInfo()
@@ -491,11 +489,6 @@ void Gameplay::setupOverlay()
 	tmpOLE->setPosition(0.45f, 0.1f);
 	tmpOLE->hide();
 	olContainer->addChild(tmpOLE);
-}
-
-Team* Gameplay::getTeam(int i)
-{
-	return teams[i];
 }
 
 void Gameplay::drawDeathInfo()

@@ -17,12 +17,12 @@
 class SimpleCoupeCar : Car
 {
 public:
-    SimpleCoupeCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
+    SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar = false);
     virtual ~SimpleCoupeCar(void);
     void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
-    virtual void updateTeam (int teamNumber);
+    virtual void updateTeam (TeamID tid);
     virtual void loadDestroyedModel (void);
 
     virtual void makeBitsFallOff();
@@ -30,7 +30,7 @@ public:
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(btTransform& chassisShift, CarSkin skin);
+    void initGraphics(TeamID tid);
     void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
     void initWheels();
     

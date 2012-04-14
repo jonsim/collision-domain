@@ -26,8 +26,8 @@
 #include "ScoreBoard.h"
 #include "HUD.h"
 #include "Death.h"
-#include "Team.h"
 #include "Gameplay.h"
+#include "Team.h"
 #include "InfoItem.h"
 
 
