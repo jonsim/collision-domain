@@ -1,4 +1,3 @@
-
 #include "stdafx.h"
 #include "SharedIncludes.h"
 
@@ -189,6 +188,29 @@ Ogre::Vector3* PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadiu
 
     return new Ogre::Vector3(x, y, z);
 }
+
+Ogre::Vector3 PowerupPool::getNearestPowerUp(Ogre::Vector3 pos)
+{
+	float minDist = std::numeric_limits<float>::infinity(), distance;
+	Ogre::Vector3 ret;
+
+	for(int i = 0;i < MAX_POWERUPS;i++)
+	{
+		if(mPowerups[i])
+			distance = mPowerups[i]->getPosition().distance(pos);
+		else
+			return ret;
+
+		if(distance < minDist)
+		{
+			minDist = distance;
+			ret = mPowerups[i]->getPosition();
+		}
+	}
+
+	return ret;
+}
+
 
 std::vector<Powerup*> PowerupPool::getPowerups()
 {
