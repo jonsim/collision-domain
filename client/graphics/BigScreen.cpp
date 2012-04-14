@@ -106,13 +106,14 @@ void BigScreen::manageNewPlayer(Player* player)
 	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
 	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
 
-	//Make a copy of the material
+	//Get a reference to the main material
 	Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DefaultIcon");
-	//Build a new name with GUID so it should be unique
+	//Build a new name with GUID and the time so it should be unique
 	std::stringstream newMaterialName;
-	newMaterialName << "DefaultIcon" << player->getPlayerGUID().ToString();
+	newMaterialName << "DefaultIcon" << player->getPlayerGUID().ToString() << RakNet::GetTime();
+	
 	//Clone a new instance
-	arrowMaterial = arrowMaterial->clone(newMaterialName.str());
+	arrowMaterial->clone(newMaterialName.str());
 	//We can now assign the new material with a new name
 	tmpOLE->setMaterialName(newMaterialName.str());
 	
@@ -128,11 +129,13 @@ void BigScreen::updateMapView()
 	//Loop through all possible players
 	for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
 	{
+		/*
 		if((*it)->getOverlayElement() == NULL)
 		{
 			this->manageNewPlayer((*it));
 		}
-		if((*it)->getOverlayElement() != NULL)
+		*/
+		//if((*it)->getOverlayElement() != NULL)
 			updatePlayer((Player*)(*it), (*it)->getOverlayElement());
 	}
 }
@@ -170,14 +173,14 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 	CarSnapshot *playerSnap = NULL;
 
     if(player->getCar() != NULL)
-        playerSnap = player->getCar()->getCarSnapshot();
+        playerSnap = player->getCar()->getCarSnapshot();	
 
 	if(playerSnap != NULL)
 	{
 		btVector3 localPlayerPos = playerSnap->mPosition;
 		float xPos = this->convertWorldToScreenX(localPlayerPos.getX()); 
 		float yPos = this->convertWorldToScreenY(localPlayerPos.getZ()); //Z as we're doing a 2D projection
-	
+
 		//Correct the position to be relative of top left corner.
 		//xPos -= mapCorner.x;
 		//yPos -= mapCorner.z;
@@ -218,7 +221,6 @@ void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 		}
 
 		carOverlay->setPosition(xPos,yPos);
-
 
         delete playerSnap; //Fixes the memory leak
 	}
