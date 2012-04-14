@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "SharedIncludes.h"
 #include <sstream>
 #include <math.h>
 

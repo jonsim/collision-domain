@@ -26,6 +26,9 @@
 #include "ScoreBoard.h"
 #include "HUD.h"
 #include "Death.h"
+#include "Team.h"
+#include "Gameplay.h"
+#include "InfoItem.h"
 
 
 #endif // #ifndef SHAREDINCLUDES_H

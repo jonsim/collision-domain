@@ -68,6 +68,8 @@ struct PLAYER_SYNC_DATA
 	float fWheelPos;
 };
 
+class InfoItem;
+
 class NetworkCore
 {
 private:

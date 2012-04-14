@@ -7,9 +7,9 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
-#include "InfoItem.h"
-#include "ScoreBoard.h"
+#include "SharedIncludes.h"
+//#include "InfoItem.h"
+//#include "ScoreBoard.h"
 #include "HUD.h"
 #include "Death.h"
 
@@ -29,6 +29,9 @@ enum
 	KING_OF_THE_HILL_MODE,
 	VIP_MODE
 };
+
+class Player;
+class InfoItem;
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 class Gameplay

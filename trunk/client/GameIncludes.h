@@ -17,9 +17,6 @@
 #include "GameGUI.h"
 #include "CarCam.h"
 #include "SpawnScreen.h"
-#include "Team.h"
-#include "Gameplay.h"
-#include "InfoItem.h"
 #include "BigScreen.h"
 
 #endif // #ifndef CLIENTINCLUDES_H
