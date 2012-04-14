@@ -6,56 +6,35 @@
 
 PlayerPool::PlayerPool() : mLocalPlayer(0)
 {
-	// Initialize the pool
-	for( int i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		mPlayers[i] = NULL;
-	}
+
 }
 
-void PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
+int PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
-	int i = 0, iNew = -1;
-	for( i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		if( mPlayers[i] == NULL )
-		{
-			iNew = i;
-			break;
-		}
-	}
-    char bob[256];
-    sprintf(bob, "addPlayer called, playerid = %s, szNickname = %s, iNew = %d\n", playerid.ToString(), szNickname, iNew);
-    OutputDebugString(bob);
+	int iNew = mPlayers.size();
+	mPlayers.push_back(new Player());
+	mPlayers[iNew]->setPlayerGUID(playerid);
+	mPlayers[iNew]->setGUID(playerid);
+	mGUID.push_back(playerid);
+    mPlayers[iNew]->setNickname( szNickname );
 
-	if( iNew != -1 )
-	{
-		mPlayers[iNew] = new Player();
-		mPlayers[iNew]->setGUID(playerid);
-		mGUID[iNew] = playerid;
-        mPlayers[iNew]->setNickname( szNickname );
-	}
+	return iNew;
 }
 
 int PlayerPool::getNumberOfPlayers()
 {
-	int i = 0, count = 0;
-	for( i = 0; i < MAX_PLAYERS; i ++ )
-	{
-		if( mPlayers[i] != NULL )
-		{
-			count++;
-		}
-	}
-
-	return count;
+	return mPlayers.size();
 }
 
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
 	mLocalPlayer = new Player();
+	mLocalPlayer->setPlayerGUID(playerid);
+	mLocalPlayer->setNickname(szNickname);
 	mLocalGUID = playerid;
-    mLocalPlayer->setNickname( szNickname );
+	
+	mPlayers.push_back(mLocalPlayer);
+	mGUID.push_back(playerid);
 }
 
 void PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
@@ -71,7 +50,7 @@ void PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
 int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 {
 	int i = 0;
-	for (int i = 0; i < MAX_PLAYERS; i ++ )
+	for (int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
 	{
 		if( mGUID[i] == playerid )
 			return i;
@@ -94,7 +73,7 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 {
 	//Put all the players from the array into a vector
 	std::vector<Player*> tmp;
-	for(int i=0;i<MAX_PLAYERS;i++)
+	for(int i=0;i<mPlayers.size();i++)
 	{
 		if(mPlayers[i] != NULL)
 			tmp.push_back(mPlayers[i]);
@@ -126,10 +105,8 @@ void PlayerPool::frameEvent( const float timeSinceLastFrame )
 {
 	int i = 0;
 
-	for( i = 0; i < MAX_PLAYERS; i ++ )
+	for( i = 0; i < mPlayers.size(); i ++ )
 	{
-        if (mPlayers[i] == NULL)
-            continue;
 		processPlayer( mPlayers[i] );
         // Since we don't have access to other player's input we won't do this for now.
         //mPlayers[i]->updateGlobalGraphics( mPlayers[i]->newInput, timeSinceLastFrame );
@@ -226,7 +203,7 @@ void PlayerPool::spectateNext()
     int nextIdx = -1;
 
     // Check for an alive player further forward in player array
-    for( int i = ++curIdx; i < MAX_PLAYERS; i ++ )
+	for( int i = ++curIdx; i < mPlayers.size(); i ++ )
     {
         if( mPlayers[i] )
         {
@@ -265,7 +242,7 @@ void PlayerPool::spectateNext()
 std::vector<Player*> PlayerPool::getPlayers() {
 	//Put all the players from the array into a vector
 	std::vector<Player*> tmp;
-	for(int i=0;i<MAX_PLAYERS;i++)
+	for(int i=0;i<mPlayers.size();i++)
 	{
 		if(mPlayers[i] != NULL)
 			tmp.push_back(mPlayers[i]);
