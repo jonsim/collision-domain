@@ -5,11 +5,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
-#include <sstream>
-#include <math.h>
-#include "InfoItem.h"
-#include "BitStream.h"
+#include "SharedIncludes.h"
+//#include "BitStream.h"
 InfoItem::InfoItem(OverlayType ot, RakNet::Time startTime, RakNet::Time endTime)
 {
 	mOT			= ot;

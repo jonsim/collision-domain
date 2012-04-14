@@ -14,8 +14,6 @@
 #include "Player.h"
 #include "ServerGraphics.h"
 #include "ViewportManager.h"
-#include "Team.h"
-#include "Gameplay.h"
 #include "NetworkCore.h"
 #include "GameGUI.h"
 #include "GameManager.h"
