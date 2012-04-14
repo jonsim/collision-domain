@@ -277,7 +277,7 @@ void BigScreen::manageNewPowerup(Powerup* pu)
 	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
 
 	//Get a reference to the main material
-	tmpOLE->setMaterialName("gear0");
+	tmpOLE->setMaterialName("powerupCrateIcon");
 	
 	Ogre::Vector3 pos = pu->getPosition();
 	float tmpX = convertWorldToScreenX(pos.x);

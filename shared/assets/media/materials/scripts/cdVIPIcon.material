@@ -4,3 +4,9 @@ material vipComponent : cd/GUIComponent
 {
     set $texture Star.png
 }
+
+material powerupCrateIcon : cd/GUIComponent
+{
+    set $texture crate_top_down.png
+}
+
