@@ -252,7 +252,7 @@ void BigScreen::showScreen()
 void BigScreen::handlePowerups()
 {
 	std::vector<Powerup*> powerups = GameCore::mPowerupPool->getPowerups();
-	for(int i=0;i<powerups.size();i++)
+	for(unsigned int i=0;i<powerups.size();i++)
 	{
 		//Create new OLE's if the is a new element
 		if(powerups[i]->getOverlayElement() == NULL)

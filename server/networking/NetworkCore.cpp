@@ -433,7 +433,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     // TODO: something with iCarType
 
 	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
-	pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
+	pPlayer->createPlayer( iCarType, NO_TEAM );
     GameCore::mGameplay->declareNewPlayer(pkt->guid);
 
     GameCore::mGui->outputToConsole("Player '%s' spawned.\n", pPlayer->getNickname());

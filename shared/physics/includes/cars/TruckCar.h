@@ -16,12 +16,12 @@
 class TruckCar : public Car
 {
 public:
-    TruckCar(int uniqueCarID, CarSkin skin, bool silentCar = false);
+    TruckCar(int uniqueCarID, TeamID tid, bool silentCar = false);
     virtual ~TruckCar(void);
     void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
-    virtual void updateTeam (int teamNumber);
+    virtual void updateTeam (TeamID tid);
     virtual void loadDestroyedModel (void);
 
     virtual void makeBitsFallOff();
@@ -29,7 +29,7 @@ public:
 private:
     void initTuning();
     void initNodes();
-    void initGraphics();
+    void initGraphics(TeamID tid);
     void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
     void initDoors( btTransform& chassisShift );
     void initWheels();

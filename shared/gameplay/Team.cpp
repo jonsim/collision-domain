@@ -11,17 +11,16 @@
 /// @param teamName_P   The name for this team
 /// @param teamNumber   The number which uniquely identifies this team. Should be >= 1
 ///                     (0 is reserved for no-team or free-for-all).
-Team::Team(std::string teamName_P, int teamNumber)
+Team::Team(TeamID tid)
 {
-	Team::teamName = teamName_P;
-    Team::teamNumber = teamNumber;
+	Team::teamID = tid;
 }
 
 void Team::addPlayer(Player *player)
 {
-    player->setTeam(teamNumber);
+    player->setTeam(teamID);
 #ifdef COLLISION_DOMAIN_CLIENT
-    player->getCar()->updateTeam(teamNumber);
+    player->getCar()->updateTeam(teamID);
 #endif
 	players.push_back(player);
 }
@@ -29,11 +28,6 @@ void Team::addPlayer(Player *player)
 std::vector<Player*> Team::getPlayers()
 {
 	return Team::players;
-}
-
-std::string Team::getName()
-{
-	return Team::teamName;
 }
 
 Player*	Team::getRandomPlayer()

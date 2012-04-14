@@ -18,10 +18,9 @@ class Player;
 class Team
 {
 public:
-							Team(std::string teamName_P, int teamNumber);
+							Team(TeamID tid);
 	void					addPlayer(Player *player);
 	std::vector<Player*>	getPlayers();
-	std::string				getName();
 	Player*					getRandomPlayer();
 	Player*					setNewVIP(Player* player);
 	Player*					getVIP();
@@ -29,8 +28,7 @@ public:
 	int						getTotalTeamHP();
 private:
 	std::vector<Player*>	players;
-    int                     teamNumber;
-	std::string				teamName;
+    TeamID                  teamID;
 	Player*					vipPlayer;
 };
 

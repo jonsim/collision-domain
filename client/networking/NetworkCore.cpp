@@ -284,10 +284,10 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	Player *pPlayer = NULL;
 	RakNet::RakNetGUID playerid;
     CarType iCarType;
-	int teamNum;
+	TeamID teamID;
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
-	bitStream->Read( teamNum );
+	bitStream->Read( teamID );
     OutputDebugString("ClientSpawn\n");
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
@@ -298,8 +298,8 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
         GameCore::mClientGraphics->mSpawnScreen = NULL;
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-		pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
-		pPlayer->setTeam(teamNum);
+		pPlayer->createPlayer( iCarType, NO_TEAM );
+		pPlayer->setTeam(teamID);
         pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
 	}
 	else
@@ -307,8 +307,8 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		if( pPlayer != NULL )
 		{
-			pPlayer->createPlayer( iCarType, SKIN_DEFAULT );
-			pPlayer->setTeam(teamNum);
+			pPlayer->createPlayer( iCarType, NO_TEAM );
+			pPlayer->setTeam(teamID);
 		}
 		else
 			log( "..invalid player" );
@@ -410,10 +410,7 @@ void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	Player* newPlayer = GameCore::mPlayerPool->getPlayer(vipPlayerGUID);
     if (newPlayer == NULL)
         OutputDebugString("newPlayer == NULL\n");
-	Team* team = GameCore::mGameplay->getTeam(newPlayer->getTeam() - 1);
-    if (team == NULL)
-        OutputDebugString("newPlayer == NULL\n");
-	team->setNewVIP(newPlayer);
+    GameCore::mGameplay->setNewVIP(newPlayer->getTeam(), newPlayer);
 }
 
 /// @brief Registers the RPC calls for the client
