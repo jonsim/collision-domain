@@ -69,6 +69,7 @@ public:
 	int getRoundScore();	
 	void addToGameScore(int amount);
     int lastsenthp;
+	bool isReady() { return mSpawned;};
 
 	//Operator overides
 	//bool operator<(Player *other) { return this->getRoundScore()<this->getRoundScore(); } //Used in the sort function

@@ -14,7 +14,7 @@ enum behaviour_type
 		none               = 0x00000,
 	    seek               = 0x00002,
 	    flee               = 0x00004,
-	    arrive             = 0x00008,
+	    powerup            = 0x00008,
 	    wander             = 0x00010,
 	    cohesion           = 0x00020,
 	    separation         = 0x00040,
@@ -40,28 +40,30 @@ public:
 	void SetTargetPlayer2(Player *agent){mTargetPlayer2 = agent;}
 	void SetFleeTarget(Player *agent)	{mFleeTarget = agent;}
 	void SetSeekTarget(Player *agent)   {mSeekTarget = agent;}
+	void SetPowerupTarget(Ogre::Vector3 pos)  {mPowerup = pos;};
 	void SetTarget(const Ogre::Vector3 t){mTarget = t;}
 	Player* GetFleeTarget() { return mFleeTarget; }
 	Player* GetSeekTarget() { return mSeekTarget; }
+	Ogre::Vector3 GetPowerup() { return mPowerup;};
+	void PowerupOn() {m_iFlags |= powerup;};
 	void FleeOn(){m_iFlags |= flee;}
 	void SeekOn(){m_iFlags |= seek;}
-	void ArriveOn(){m_iFlags |= arrive;}
 	void PursuitOn(){m_iFlags |= pursuit;}
 	void EvadeOn(){m_iFlags |= evade;}
 	void WanderOn(){m_iFlags |= wander;}
 	void ObstacleOn(){m_iFlags |= obstacle_avoidance;}
 	void WallAvoidanceOn(){m_iFlags |= wall_avoidance;}
+	void PowerupOff()  {if(On(powerup)) m_iFlags ^= powerup;};
 	void FleeOff()     {if(On(flee))    m_iFlags ^= flee;}
 	void SeekOff()     {if(On(seek))    m_iFlags ^= seek;}
-	void ArriveOff()   {if(On(arrive))  m_iFlags ^= arrive;}
 	void PursuitOff()  {if(On(pursuit)) m_iFlags ^= pursuit;}
 	void EvadeOff()    {if(On(evade))   m_iFlags ^= evade;}
 	void WanderOff()   {if(On(wander))  m_iFlags ^= wander;}
 	void ObstacleOff() {if(On(wander))  m_iFlags ^= obstacle_avoidance;}
 	void WallAvoidanceOff() {if(On(wander))  m_iFlags ^= wall_avoidance;}
+	bool isPowerupOn() { return On(powerup);};
 	bool isFleeOn(){return On(flee);}
 	bool isSeekOn(){return On(seek);}
-	bool isArriveOn(){return On(arrive);}
 	bool isPursuitOn(){return On(pursuit);}
 	bool isEvadeOn(){return On(evade);}
 	bool isWanderOn(){return On(wander);}
@@ -103,6 +105,7 @@ private:
     Vector3 Wander(void);
     //Vector3 ObstacleAvoidance(const BaseGameEntity* obstacle);
     Ogre::Vector3 WallAvoidance(const Vector3 feeler, const Vector3 wallHit, const Vector3 normal);
+	Ogre::Vector3 mPowerup;
 
 
 };

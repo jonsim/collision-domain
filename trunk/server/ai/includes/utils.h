@@ -90,6 +90,12 @@ inline int RandomInteger(int x, int y)
 }
 
 //Returns a random double between 0 and 1
+inline int RandomInt(void)
+{
+  return ((rand())/(RAND_MAX+1));
+}
+
+//Returns a random double between 0 and 1
 inline double RandomFloat(void)
 {
   return ((rand())/(RAND_MAX+1.0));

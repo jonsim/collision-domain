@@ -229,6 +229,9 @@ Car* Player::getCar()
 
 void Player::killPlayer()
 {
+	if(!mCar)
+		return;
+
 	this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
     GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());

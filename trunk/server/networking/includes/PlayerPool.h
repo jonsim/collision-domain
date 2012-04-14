@@ -44,7 +44,6 @@ public:
 	//RakNet::RakNetGUID getLocalPlayerID();
 	RakNet::RakNetGUID getPlayerGUID( int index );
 
-
 	void frameEvent( const float timeSinceLastFrame );
 	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
 };
