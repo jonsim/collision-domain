@@ -35,6 +35,7 @@ public:
     PowerupType getPowerupType( int index );
     void frameEvent( const float timeSinceLastFrame );
     void spawnSomething();
+	std::vector<Powerup*> getPowerups();
     
 private:
     Powerup *createPowerup( PowerupType type, Ogre::Vector3 createAboveAt, bool spawn, int id = -1 );

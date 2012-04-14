@@ -8,7 +8,7 @@
 
 
 /// @brief  Constructor.
-PowerupHealth::PowerupHealth()
+PowerupHealth::PowerupHealth() : Powerup()
 {
     // Local to this class
     mHasSpawned = false;

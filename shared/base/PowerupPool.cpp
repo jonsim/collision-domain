@@ -189,3 +189,16 @@ Ogre::Vector3* PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadiu
 
     return new Ogre::Vector3(x, y, z);
 }
+
+std::vector<Powerup*> PowerupPool::getPowerups()
+{
+	std::vector<Powerup*> tmpPowerupPool;
+	for(int i=0;i<MAX_POWERUPS;i++)
+	{
+		if(this->mPowerups[i] != NULL)
+		{
+			tmpPowerupPool.push_back(this->mPowerups[i]);
+		}
+	}
+	return tmpPowerupPool;
+}

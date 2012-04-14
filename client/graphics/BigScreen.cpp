@@ -125,6 +125,9 @@ void BigScreen::manageNewPlayer(Player* player)
 
 void BigScreen::updateMapView()
 {
+	//Handle powerups
+	this->handlePowerups();
+
 	std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
 	//Loop through all possible players
 	for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
@@ -244,4 +247,44 @@ void BigScreen::hideScreen()
 void BigScreen::showScreen()
 {
 	this->olcMap->show();
+}
+
+void BigScreen::handlePowerups()
+{
+	std::vector<Powerup*> powerups = GameCore::mPowerupPool->getPowerups();
+	for(int i=0;i<powerups.size();i++)
+	{
+		//Create new OLE's if the is a new element
+		if(powerups[i]->getOverlayElement() == NULL)
+			manageNewPowerup(powerups[i]);
+	}
+
+}
+
+void BigScreen::manageNewPowerup(Powerup* pu)
+{
+	//Timestamp used to fix duplicate named overlays.
+	std::stringstream overlayNameSS;
+	overlayNameSS << "PowerupOverlay" << pu->getIndex() << RakNet::GetTime();	
+	
+	Ogre::OverlayElement* tmpOLE = 
+		Ogre::OverlayManager::getSingleton().createOverlayElement(
+		"Panel",
+		overlayNameSS.str());
+
+
+	tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
+	tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
+
+	//Get a reference to the main material
+	tmpOLE->setMaterialName("gear0");
+	
+	Ogre::Vector3 pos = pu->getPosition();
+	float tmpX = convertWorldToScreenX(pos.x);
+	float tmpY = convertWorldToScreenY(pos.y);
+
+	tmpOLE->setPosition(tmpX,tmpY);
+	olcMap->addChild(tmpOLE);
+
+	pu->setOverlayElement(tmpOLE);
 }
