@@ -8,7 +8,7 @@
 
 
 /// @brief  Constructor.
-PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt)
+PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt) : Powerup()
 {
     mHasBeenCollected = false;
 

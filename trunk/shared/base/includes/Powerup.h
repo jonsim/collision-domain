@@ -14,6 +14,8 @@
 class Powerup
 {
 public:
+	Powerup() { mOLE = NULL; }
+
     virtual void playerCollision(Player* player) = 0;
     virtual void playerCollision(Player* player, PowerupType pwrType) {} // For client removing randoms
     virtual void frameEvent( const float timeSinceLastFrame ) = 0;
@@ -23,6 +25,9 @@ public:
     void setIndex( int x ) { mPoolIndex = x; }
 
     Ogre::Vector3 getPosition() { if( mNode ) return mNode->getPosition(); return Ogre::Vector3(); }
+
+	Ogre::OverlayElement* getOverlayElement() { return this->mOLE; }
+	void setOverlayElement(Ogre::OverlayElement* ole) { this->mOLE = ole; }
 
     //int getPowerupType(); if you have to check this, its probably bad oo design
     //void setPowerupType( int iType ); http://stackoverflow.com/questions/500493/c-equivalent-of-instanceof
@@ -35,6 +40,8 @@ protected:
     OgreOggISound   *mSound;
 
     int             mPoolIndex;
+
+	Ogre::OverlayElement* mOLE;
 };
 
 #endif // #ifndef POWERUP_H

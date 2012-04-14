@@ -8,7 +8,7 @@
 
 
 /// @brief  Constructor.
-PowerupMass::PowerupMass()
+PowerupMass::PowerupMass() : Powerup()
 {
     mHasSpawned = false;
     mUniqueID = GameCore::mPhysicsCore->getUniqueEntityID();
