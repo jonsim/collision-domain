@@ -84,22 +84,22 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
         GameCore::mPlayerPool->getPlayer(atoi((inputChars+5)))->killPlayer();
         outputToConsole("Killed player %d.\n", atoi((inputChars+5)));
     }
-    else if( !strnicmp( inputChars, "spawn wander", 12) )
-    {
-        for (int i = 0; i < atoi((inputChars+13)); i++)
-		    GameCore::mAiCore->createNewAiAgent(wander);
-        outputToConsole("Spawned %d AI players.\n", atoi((inputChars+13)));
-    }
-    else if( !strnicmp( inputChars, "spawn seek", 10) )
+    else if( !strnicmp( inputChars, "spawn easy", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
-		    GameCore::mAiCore->createNewAiAgent(seek);
+		    GameCore::mAiCore->createNewAiAgent(seek, level::easy);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
-    else if( !strnicmp( inputChars, "spawn flee", 10) )
+    else if( !strnicmp( inputChars, "spawn normal", 12) )
+    {
+        for (int i = 0; i < atoi((inputChars+13)); i++)
+			GameCore::mAiCore->createNewAiAgent(seek, level::normal);
+        outputToConsole("Spawned %d AI players.\n", atoi((inputChars+13)));
+    }
+    else if( !strnicmp( inputChars, "spawn hard", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
-		    GameCore::mAiCore->createNewAiAgent(flee);
+		    GameCore::mAiCore->createNewAiAgent(seek, level::hard);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
     else if( !stricmp( inputChars, "get server fps" ) )

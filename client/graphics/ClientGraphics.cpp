@@ -164,7 +164,7 @@ void ClientGraphics::createViewports (void)
     // Create one viewport, entire window
     Ogre::Viewport* vp = mWindow->addViewport(mCamera);
 
-	// Set the background colour and match the aspect ratio to the window's.
+        // Set the background colour and match the aspect ratio to the window's.
     vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 }
@@ -247,9 +247,9 @@ void ClientGraphics::loadResources (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void ClientGraphics::createScene (void)
 {
-	// Setup the scene environment.
+        // Setup the scene environment.
     setupCompositorChain(mCamera->getViewport());
-	setupShadowSystem();
+        setupShadowSystem();
     setupLightSystem();
     setupParticleSystem();
 
@@ -331,7 +331,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
     }
-    else if (mGraphicsState == IN_GAME || mGraphicsState == PROJECTOR)
+    else if (mGraphicsState == IN_GAME)
     {
         // Capture input
         mUserInput.capture();
@@ -350,15 +350,15 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         mVIPIcon[1]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
         
         // Collect input
-	    InputState *inputSnapshot = mUserInput.getInputState();
+            InputState *inputSnapshot = mUserInput.getInputState();
         mUserInput.processInterfaceControls();
     
         // Process the networking. Sends client's input and receives data
         GameCore::mNetworkCore->frameEvent(inputSnapshot);
         
         // Process the player pool. Perform updates on other players
-	    if (NetworkCore::bConnected)
-	        GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
+            if (NetworkCore::bConnected)
+                GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
 
         /*  NOTE TO SELF (JAMIE)
             Client doesn't want to do PowerupPool::frameEvent() when powerups are networked
@@ -371,29 +371,24 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, physicsTimeStep);
         //-PHYSICS-STEP--------------------------------------------------------------------
 
-	    //Draw info items
-	    GameCore::mGameplay->drawInfo();
+            //Draw info items
+            GameCore::mGameplay->drawInfo();
     
-	    // Apply controls the player (who will be moved on frameEnd and frameStart).
+            // Apply controls the player (who will be moved on frameEnd and frameStart).
         if (NetworkCore::bConnected)
         {
-	        if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
-	        {
+                if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+                {
                 // Moved here as audio event needs frehest car position
                 GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
                 GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
                 GameCore::mGui->updateCounters();
                 GameCore::mGui->updateSpeedo();
 
-		        GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
-		        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
-	        }
+                        GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
+                        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
+                }
         }
-
-		if (mGraphicsState == PROJECTOR)
-		{
-			this->mBigScreen->updateMapView();
-		}
 
         // Cleanup frame specific objects.
         delete inputSnapshot;
@@ -430,28 +425,28 @@ bool ClientGraphics::frameEnded (const Ogre::FrameEvent& evt)
 
 void ClientGraphics::updateBenchmark (const float timeSinceLastFrame)
 {// Check for benchmarking
-	static float    benchmarkProgress = 0;
-	static float    CATriangles       = 0;
-	static uint16_t CAi               = 0;
+        static float    benchmarkProgress = 0;
+        static float    CATriangles       = 0;
+        static uint16_t CAi               = 0;
     benchmarkProgress += timeSinceLastFrame;
-	CATriangles += ((float) (mWindow->getTriangleCount() - CATriangles)) / ((float) (++CAi));
-	// stop the benchmark after 8 seconds
-	if (benchmarkProgress > 8)
-	{
-		CAi               = 0;
-		benchmarkProgress = 0;
-		finishBenchmark(mBenchmarkStage, CATriangles);
-	}
+        CATriangles += ((float) (mWindow->getTriangleCount() - CATriangles)) / ((float) (++CAi));
+        // stop the benchmark after 8 seconds
+        if (benchmarkProgress > 8)
+        {
+                CAi               = 0;
+                benchmarkProgress = 0;
+                finishBenchmark(mBenchmarkStage, CATriangles);
+        }
 
-	// rotate the camera
+        // rotate the camera
     GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * timeSinceLastFrame, 0.0f, 0.0f, timeSinceLastFrame);
 
-	// update fps counter
-	float avgfps = mWindow->getAverageFPS(); // update fps
-	CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-	char szFPS[16];
-	sprintf(szFPS, "FPS: %.2f", avgfps);
-	fps->setText(szFPS);
+        // update fps counter
+        float avgfps = mWindow->getAverageFPS(); // update fps
+        CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+        char szFPS[16];
+        sprintf(szFPS, "FPS: %.2f", avgfps);
+        fps->setText(szFPS);
 }
 
 
@@ -555,99 +550,87 @@ void ClientGraphics::windowClosed (Ogre::RenderWindow* rw)
 
 void ClientGraphics::startBenchmark (uint8_t stage)
 {
-	Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
-	Ogre::Viewport* vp = mCamera->getViewport();
-	switch (stage)
-	{
-		case 0:	// all off
-			OutputDebugString("Starting benchmark...\n");
-			cm.removeCompositor(vp, "HDR");
-			cm.removeCompositor(vp, "Bloom");
-			cm.removeCompositor(vp, "MotionBlur");
-			cm.removeCompositor(vp, "RadialBlur");
-			break;
-		case 1: // just hdr on
-			cm.addCompositor(vp, "HDR");
-			loadHDR(vp, 0);
-			break;
-		case 2: // just bloom on
-			cm.removeCompositor(vp, "HDR");
-			cm.addCompositor(vp, "Bloom");
-			loadBloom(vp, 0, 0.15f, 1.0f);
-			break;
-		case 3: // just MotionBlur on
-			cm.removeCompositor(vp, "Bloom");
-			cm.addCompositor(vp, "MotionBlur");
-			loadMotionBlur(vp, 0, 0.1f);
-			break;
-		case 4: // just RadialBlur on
-			cm.removeCompositor(vp, "MotionBlur");
-			cm.addCompositor(vp, "RadialBlur");
-			cm.setCompositorEnabled(vp, "RadialBlur", true);
-			break;
-		case 5: // all on
-			cm.addCompositor(vp, "HDR");
-			loadHDR(vp, 0);
-			cm.addCompositor(vp, "Bloom");
-			loadBloom(vp, 0, 0.15f, 1.0f);
-			cm.addCompositor(vp, "MotionBlur");
-			loadMotionBlur(vp, 0, 0.1f);
-			break;
-	}
-	
-	mWindow->resetStatistics();
-	mBenchmarkStage = stage;
-	mGraphicsState = BENCHMARKING;
-}
-
-void ClientGraphics::setupProjector()
-{
-	mGraphicsState = PROJECTOR;
-	this->mBigScreen = new BigScreen();
-	this->mBigScreen->setupMapView();
-}
-
-GraphicsState ClientGraphics::getGraphicsState()
-{
-	return this->mGraphicsState;
+        Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
+        Ogre::Viewport* vp = mCamera->getViewport();
+        switch (stage)
+        {
+                case 0: // all off
+                        OutputDebugString("Starting benchmark...\n");
+                        cm.removeCompositor(vp, "HDR");
+                        cm.removeCompositor(vp, "Bloom");
+                        cm.removeCompositor(vp, "MotionBlur");
+                        cm.removeCompositor(vp, "RadialBlur");
+                        break;
+                case 1: // just hdr on
+                        cm.addCompositor(vp, "HDR");
+                        loadHDR(vp, 0);
+                        break;
+                case 2: // just bloom on
+                        cm.removeCompositor(vp, "HDR");
+                        cm.addCompositor(vp, "Bloom");
+                        loadBloom(vp, 0, 0.15f, 1.0f);
+                        break;
+                case 3: // just MotionBlur on
+                        cm.removeCompositor(vp, "Bloom");
+                        cm.addCompositor(vp, "MotionBlur");
+                        loadMotionBlur(vp, 0, 0.1f);
+                        break;
+                case 4: // just RadialBlur on
+                        cm.removeCompositor(vp, "MotionBlur");
+                        cm.addCompositor(vp, "RadialBlur");
+                        cm.setCompositorEnabled(vp, "RadialBlur", true);
+                        break;
+                case 5: // all on
+                        cm.addCompositor(vp, "HDR");
+                        loadHDR(vp, 0);
+                        cm.addCompositor(vp, "Bloom");
+                        loadBloom(vp, 0, 0.15f, 1.0f);
+                        cm.addCompositor(vp, "MotionBlur");
+                        loadMotionBlur(vp, 0, 0.1f);
+                        break;
+        }
+        
+        mWindow->resetStatistics();
+        mBenchmarkStage = stage;
+        mGraphicsState = BENCHMARKING;
 }
 
 void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)
 {
-	static float r[6];
-	static float triangles;
-	r[stage] = mWindow->getAverageFPS();
-	if (stage == 0)
-		triangles = averageTriangles;
+        static float r[6];
+        static float triangles;
+        r[stage] = mWindow->getAverageFPS();
+        if (stage == 0)
+                triangles = averageTriangles;
 
-	if (stage == 5)
-	{
-		std::ofstream rFile;
-		rFile.open("BenchmarkResults.txt", std::ios::out | std::ios::trunc);
-		rFile << std::fixed;
-		rFile << "              BENCHMARKING RESULTS\n";
-		rFile << " Average triangles per frame = " << std::setprecision(0) << triangles << "\n\n";
-		rFile << "+-----+-------+-----+-----+-------+-------+\n";
-		rFile << "| HDR | Bloom | MoB | RaB |  FPS  |  DIF  |\n";
-		rFile << "+-----+-------+-----+-----+-------+-------+\n";
-		rFile.precision(2);
-		rFile << "|  0  |   0   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[0] << " | 00.00 |\n";
-		rFile << "|  1  |   0   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[1] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[1] << " |\n";
-		rFile << "|  0  |   1   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[2] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[2] << " |\n";
-		rFile << "|  0  |   0   |  1  |  0  | " << std::setw(5) << std::setfill(' ') << r[3] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[3] << " |\n";
-		rFile << "|  0  |   0   |  0  |  1  | " << std::setw(5) << std::setfill(' ') << r[4] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[4] << " |\n";
-		rFile << "|  1  |   1   |  1  |  1  | " << std::setw(5) << std::setfill(' ') << r[5] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[5] << " |\n";
-		rFile << "+-----+-------+-----+-----+-------+-------+\n";
-		rFile.close();
-		OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
-		Ogre::CompositorManager::getSingleton().removeCompositor(mCamera->getViewport(), "HDR");
+        if (stage == 5)
+        {
+                std::ofstream rFile;
+                rFile.open("BenchmarkResults.txt", std::ios::out | std::ios::trunc);
+                rFile << std::fixed;
+                rFile << "              BENCHMARKING RESULTS\n";
+                rFile << " Average triangles per frame = " << std::setprecision(0) << triangles << "\n\n";
+                rFile << "+-----+-------+-----+-----+-------+-------+\n";
+                rFile << "| HDR | Bloom | MoB | RaB |  FPS  |  DIF  |\n";
+                rFile << "+-----+-------+-----+-----+-------+-------+\n";
+                rFile.precision(2);
+                rFile << "|  0  |   0   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[0] << " | 00.00 |\n";
+                rFile << "|  1  |   0   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[1] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[1] << " |\n";
+                rFile << "|  0  |   1   |  0  |  0  | " << std::setw(5) << std::setfill(' ') << r[2] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[2] << " |\n";
+                rFile << "|  0  |   0   |  1  |  0  | " << std::setw(5) << std::setfill(' ') << r[3] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[3] << " |\n";
+                rFile << "|  0  |   0   |  0  |  1  | " << std::setw(5) << std::setfill(' ') << r[4] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[4] << " |\n";
+                rFile << "|  1  |   1   |  1  |  1  | " << std::setw(5) << std::setfill(' ') << r[5] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[5] << " |\n";
+                rFile << "+-----+-------+-----+-----+-------+-------+\n";
+                rFile.close();
+                OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
+                Ogre::CompositorManager::getSingleton().removeCompositor(mCamera->getViewport(), "HDR");
 
         mGraphicsState = IN_GAME;
-	}
-	else
-	{
-		startBenchmark(stage+1);
-	}
+        }
+        else
+        {
+                startBenchmark(stage+1);
+        }
 }
 
 
@@ -750,6 +733,8 @@ void SplashScreen::scriptParseEnded (const Ogre::String &scriptName, bool skippe
     if (resourceTotal > 0)
         updateProgressBar(++resourceCount * ((float) (100 / resourceTotal) * 0.5f));
 }
+
+
 
 
 /*------------------------------ MAIN FUNCTION ------------------------------*/

@@ -147,16 +147,16 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar)
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
     
 #ifdef COLLISION_DOMAIN_CLIENT
-    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
+    //mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
     //mHornSound->setPosition(Ogre::Vector3(0,0,0));
     //mHornSound->setRolloffFactor(2.f);
     //mHornSound->setReferenceDistance(10.f);
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
-    mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
-    mEngineSound->setPitch(2.0f);
+    //mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
+    //mEngineSound->setPitch(2.0f);
     
-    if (!silentCar) mEngineSound->play();
+//    if (!silentCar) mEngineSound->play();
 
     //mBodyNode->attachObject(mEngineSound);
 #endif
@@ -193,8 +193,8 @@ OutputDebugString(s.c_str());*/
 void SimpleCoupeCar::louderLocalSounds() {
     //mEngineSound->setVolume(0); return;
 
-    float increaseTo = mEngineSound->getVolume() + 0.25;
-    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+//    float increaseTo = mEngineSound->getVolume() + 0.25;
+  //  if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
 }
 
 

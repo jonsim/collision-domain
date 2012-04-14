@@ -14,10 +14,17 @@ class SteeringBehaviour;
 class Player;
 enum CarType;
 
+enum level
+{
+	easy,
+	normal,
+	hard
+};
+
 class AiPlayer
 {
 public:
-	AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* sceneManager, int flags);
+	AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* sceneManager, int flags, level diff);
 	AiPlayer() {};
 	~AiPlayer() {};
 
@@ -58,6 +65,7 @@ private:
 	double mFeelerDectionLength;
 	int turn, direction;
 	double targetDistance;
+	level difficulty;
 
 
 

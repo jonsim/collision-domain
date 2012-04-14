@@ -7,18 +7,18 @@
 #include "AiPlayer.h"
 
 //constructor
-AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* sceneManager, int flags)
+AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* sceneManager, int flags, level diff)
 {
 	mTolerance = 1.05;
 	//set the players name
 	mName = name;
+	difficulty = diff;
 	//create a player
-	mPlayer = new Player();
 	//add the aiplayer via the networkcore
 	RakNet::BitStream bsAiPlayer;
 	RakNet::StringCompressor().EncodeString(name.c_str(), 128, &bsAiPlayer);
 	mPacket = new RakNet::Packet();
-	mPacket->guid.g = GameCore::mPlayerPool->getNumberOfPlayers() + 1;
+	mPacket->guid.g = uint64_t(rand());
 	GameCore::mNetworkCore->PlayerJoin(&bsAiPlayer, mPacket);
 	mCarType = CAR_SMALL;
 	RakNet::BitStream bsCarType;
@@ -28,9 +28,7 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	//create a steering behaviour
 	mSteeringBehaviour = new SteeringBehaviour(mPlayer);
 	
-	//set steering behaviours
-	if((flags & wander) == wander)
-		mSteeringBehaviour->WanderOn();
+	mSteeringBehaviour->WanderOn();
 
 	mFeelerDectionLength = 40.0;
 	direction = turn = 0;
@@ -65,22 +63,10 @@ void AiPlayer::Update(double timeSinceLastFrame)
 	
 	if(mPlayer->getAlive())
 	{
-
-		//get out health our run away if someone is chasing us
-		if(mPlayer->getHP() < 30)
-		{
-			//set flee target as closest person on opposite team
-			Player* fleePlayer;
-			fleePlayer = GameCore::mPlayerPool->getClosestPlayer(mPlayer);
-			mSteeringBehaviour->FleeOn();
-			mSteeringBehaviour->SeekOff();
-			mSteeringBehaviour->SetFleeTarget(fleePlayer);
-		}
-
 		//check if we need to set a target
 		if(mSteeringBehaviour->On(seek))
 		{	
-			if(mSteeringBehaviour->GetSeekTarget() == NULL)
+			if(mSteeringBehaviour->GetSeekTarget() == NULL || mSteeringBehaviour->GetSeekTarget()->getAlive() == false)
 			{
 				//get a random player on other team
 				Player* seekPlayer;
@@ -92,6 +78,30 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			}
 		}
 
+		//get out health our run away if someone is chasing us
+		if(mPlayer->getHP() < 300 && difficulty >= level::normal)
+		{
+			//set flee target as closest person on opposite team
+			Player* fleePlayer;
+			fleePlayer = GameCore::mPlayerPool->getClosestPlayer(mPlayer);
+			mSteeringBehaviour->FleeOn();
+			mSteeringBehaviour->SeekOff();
+			mSteeringBehaviour->SetFleeTarget(fleePlayer);
+		}
+
+		if(difficulty == level::hard)
+		{
+			if(mSteeringBehaviour->On(flee))
+			{
+				//see if a powerup is nearer to us than flee target
+				Ogre::Vector3 powerupPos = GameCore::mPowerupPool->getNearestPowerUp(GetPos());
+				if(powerupPos.distance(GetPos()) < mSteeringBehaviour->GetFleeTarget()->getCar()->GetPos().distance(GetPos()))
+				{
+					mSteeringBehaviour->PowerupOn();
+					mSteeringBehaviour->SetPowerupTarget(powerupPos);
+				}
+			}
+		}
 
 		if(distance > 10)
 			mPlayer->getCar()->accelInputTick(true, false, false, timeSinceLastFrame);

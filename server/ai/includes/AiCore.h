@@ -9,6 +9,7 @@
 using namespace Ogre;
 using namespace std;
 
+enum level;
 class AiPlayer;
 
 class AiCore
@@ -17,7 +18,7 @@ public:
 	AiCore() { srand(time(NULL)); };
 	~AiCore() {};
 	void createNewAiAgent();
-	void createNewAiAgent(int flags);
+	void createNewAiAgent(int flags, level diff);
 	int getNumberOfAiPlayers() { return mAiPlayers.size(); } ;
 	void frameEvent(double timeSinceLastFrame);
 	AiPlayer* getPlayer(string name);

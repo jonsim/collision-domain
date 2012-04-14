@@ -141,14 +141,14 @@ TruckCar::TruckCar(int uniqueCarID, TeamID tid, bool silentCar)
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
 
 #ifdef COLLISION_DOMAIN_CLIENT
-    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID, NULL);
+    //mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_LOW, mUniqueCarID, NULL);
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
-    mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_TRUCK, mUniqueCarID, NULL, true);
-    mEngineSound->setPitch(2.0f);
+    //mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_TRUCK, mUniqueCarID, NULL, true);
+    //mEngineSound->setPitch(2.0f);
     
     #ifdef COLLISION_DOMAIN_CLIENT
-        if (!silentCar) mEngineSound->play();
+        //if (!silentCar) mEngineSound->play();
     #endif
 
     //mBodyNode->attachObject(mEngineSound);

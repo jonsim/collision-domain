@@ -62,6 +62,7 @@ void Player::createPlayer (CarType carType, TeamID tid)
 	int spawnX = rand() % 100 - 50;
 	int spawnZ = rand() % 100 - 50;
     mCar->moveTo(btVector3(spawnX,0.5,spawnZ));
+	mSpawned = true;
 }
 
 

@@ -1,6 +1,6 @@
 /**
- * @file	AudioCore.cpp
- * @brief 	An interface for firing off sounds
+ * @file        AudioCore.cpp
+ * @brief       An interface for firing off sounds
  */
 
 #include "stdafx.h"
@@ -36,6 +36,9 @@ AudioCore::AudioCore()
     mSoundManager = OgreOggSound::OgreOggSoundManager::getSingletonPtr();
     mSoundDeletesPending = new std::list<OgreOggISound*>;
     
+	if(!mSoundManager)
+		return;
+
     mInitOK = mSoundManager->init() && OUTPUT_ENABLED;
 
     // don't bother with some stuff unless we have openal

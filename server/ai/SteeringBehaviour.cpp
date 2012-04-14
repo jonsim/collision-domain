@@ -65,23 +65,22 @@ Vector3 SteeringBehaviour::CalculatePrioritized(void)
 
 	  if(On(flee))
 	  {
-		  force += Flee(GetFleeTarget()->getCar()->GetPos()) * mWeightFlee;
+		  if(GetFleeTarget()->isReady())
+			force = Flee(GetFleeTarget()->getCar()->GetPos());
 	  }
 	  
 	  if(On(seek))
 	  {
-		force = Seek(GetSeekTarget()->getCar()->GetPos());
-		return force;
+		  if(GetSeekTarget()->isReady())
+			force = Seek(GetSeekTarget()->getCar()->GetPos());
 	  }
-	  /*
-	  if(On(pursuit))
+	  
+	  if(On(powerup))
 	  {
-		assert(mTargetPlayer1 && "pursuit target not assigned");
-		force = Pursuit(mTargetPlayer1->getCar()) * mWeightPursuit;
-		if(!AccumulateForce(mSteeringForce, force))
-			return mSteeringForce;
+		  force = Seek(GetPowerup());
 	  }
 
+	  /*
 	  if(On(evade))
 	  {
 		assert(mTargetPlayer1 && "evader target not assigned");

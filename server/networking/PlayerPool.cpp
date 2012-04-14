@@ -69,14 +69,17 @@ Player* PlayerPool::getRandomPlayer()
 Player* PlayerPool::getClosestPlayer(Player* player)
 {
 	double minDist = numeric_limits<double>::infinity(), dist;
-	Player* closest;
+	Player* closest = NULL;
 	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
 	{
 		//closet player will be ourselves, therefore ignore
 		if(player->getTeam() == (*it)->getTeam())
 			continue;
 
-		dist = (player->getCar()->GetPos()).distance((*it)->getCar()->GetPos());
+		if((*it)->isReady())
+			dist = (player->getCar()->GetPos()).distance((*it)->getCar()->GetPos());
+		else
+			continue;
 
 		if(dist < minDist)
 		{
@@ -139,3 +142,5 @@ void PlayerPool::frameEvent( const float timeSinceLastFrame )
 	}
 
 }
+
+
