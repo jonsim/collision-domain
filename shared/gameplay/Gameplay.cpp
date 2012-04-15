@@ -284,29 +284,21 @@ void Gameplay::startGame()
 	this->setNewVIPs(); //TODO - Change this once we have multiple game modes
 	this->scheduleCountDown();
 	mGameActive = true;
-#ifdef COLLISION_DOMAIN_SERVER
-    GameCore::mGui->outputToConsole("Game started.\n");
-#endif
+	#ifdef COLLISION_DOMAIN_SERVER
+		GameCore::mGui->outputToConsole("Game started.\n");
+	#endif
 }
 
 void Gameplay::drawInfo()
 {
+	//Loop through all the info items
 	std::vector<InfoItem*>::iterator itr;
 	for(itr = mInfoItems.begin(); itr<mInfoItems.end(); ++itr)
 	{
 		InfoItem* tmpInfoItem = *itr;
+		//If the start time of the thing is less that the current time
 		if(RakNet::LessThan(tmpInfoItem->getStartTime(),RakNet::GetTime()))
 		{
-			
-			//if(tmpInfoItem->getDrawn())
-			//{
-				//if(RakNet::LessThan(tmpInfoItem->getEndTime(),RakNet::GetTime()))
-				//{
-					//handleInfoItem(tmpInfoItem,false);
-					//mInfoItems.erase(itr);
-				//}
-			//}
-			//else
 			if(!tmpInfoItem->getDrawn())
 			{
 				handleInfoItem(tmpInfoItem,true);
@@ -322,7 +314,7 @@ void Gameplay::drawInfo()
 					delete tmpInfoItem;
 				}
 			}
-			break;
+			break; //Can really only manage one a turn
 		}
 	}
 }
@@ -376,34 +368,55 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				tmpOLE->setPosition(0.45f, 0.1f);
 				tmpOLE->show();
 				*/
-				mSB->showForce();
+				#ifdef COLLISION_DOMAIN_CLIENT
+					mSB->showForce();
+				#endif
+
 				#ifdef COLLISION_DOMAIN_SERVER
+					GameCore::mGui->outputToConsole("Rounded Ended.\n");
+
 					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
 					mInfoItems.push_back(transitionII);
 					newGameII = new InfoItem(NEW_GAME_OT, 10000, 1000);
 					mInfoItems.push_back(newGameII);
 					this->calculateRoundScores();
+
+					//SYNC
+					//transitionII->sendPacket();
+					//newGameII->sendPacket();
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
-				#ifdef COLLISION_DOMAIN_SERVER
+				/*
+				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->hideForce();
-					//GameCore::mGraphicsApplication->bigScreen->hideScreen();
-
-					//Move the camera
-					//GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,0,80));
-					//GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
-					//GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,0,-300));
+					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
+						
+						GameCore::mClientGraphics->mBigScreen->hideScreen();
+						//Move the camera
+						GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,0,80));
+						GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
+						GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,0,-300));
+					}
 				#endif
+				#ifdef COLLISION_DOMAIN_SERVER
+
+				#endif
+				*/
 				break;
 			case NEW_GAME_OT:
+				/*
+				#ifdef COLLISION_DOMAIN_CLIENT
+					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
+						//Move the camera back
+						GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,10,0));
+						GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,100,0));
+						GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
+						GameCore::mClientGraphics->mBigScreen->showScreen();
+					}
+				#endif
+				*/
 				#ifdef COLLISION_DOMAIN_SERVER
-					//Move the camera back
-				    //GameCore::mGraphicsApplication->mCamera->setPosition(Ogre::Vector3(0,10,0));
-					//GameCore::mGraphicsApplication->mCamera->lookAt(Ogre::Vector3(0,100,0));
-					//GameCore::mGraphicsApplication->mCamera->setNearClipDistance(5);
-
-					//GameCore::mGraphicsApplication->bigScreen->showScreen();
 					this->scheduleCountDown();
 				#endif
 				break;
@@ -418,6 +431,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 void Gameplay::scheduleCountDown()
 {
 	#ifdef COLLISION_DOMAIN_SERVER
+		GameCore::mGui->outputToConsole("Scheduling countdown.\n");
 		InfoItem* threeII = new InfoItem(THREE_OT, 1000, 1000);
 		InfoItem* twoII = new InfoItem(TWO_OT, 2000, 1000);
 		InfoItem* oneII = new InfoItem(ONE_OT, 3000, 1000);
