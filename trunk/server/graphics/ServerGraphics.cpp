@@ -371,6 +371,11 @@ void ServerGraphics::updateState (const float timeSinceLastFrame)
     // There was a giant ass comment here about client interpolation, see r409 and sooner to find it.
     // Step physics. Minimum of 20 FPS (maxSubsteps=3) before physics becomes wrong.
     GameCore::mPhysicsCore->stepSimulation(timeSinceLastFrame, 4, physicsTimeStep);
+
+	// Process info items (Don't worry about the draw comment)
+	// This ensures gameplay events happen
+    //GameCore::mGameplay->drawInfo();
+    
 }
 
 
