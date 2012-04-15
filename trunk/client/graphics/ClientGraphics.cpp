@@ -331,7 +331,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
     }
-    else if (mGraphicsState == IN_GAME)
+    else if (mGraphicsState == IN_GAME || mGraphicsState == PROJECTOR)
     {
         // Capture input
         mUserInput.capture();
@@ -389,6 +389,11 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
                         GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
                 }
         }
+
+		if (mGraphicsState == PROJECTOR)		
+		{		
+			this->mBigScreen->updateMapView();		
+		}
 
         // Cleanup frame specific objects.
         delete inputSnapshot;
@@ -593,6 +598,18 @@ void ClientGraphics::startBenchmark (uint8_t stage)
         mWindow->resetStatistics();
         mBenchmarkStage = stage;
         mGraphicsState = BENCHMARKING;
+}
+
+void ClientGraphics::setupProjector()		
+{		
+	mGraphicsState = PROJECTOR;		
+	this->mBigScreen = new BigScreen();		
+	this->mBigScreen->setupMapView();		
+}		
+			
+GraphicsState ClientGraphics::getGraphicsState()		
+{		
+	return this->mGraphicsState;		
 }
 
 void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)

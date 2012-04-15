@@ -165,7 +165,9 @@ bool GameGUI::SpawnScreen_p1btnSpectator (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p1btnProjector (const CEGUI::EventArgs& args)
 {
-    showSpawnScreenErrorText("Feature not implemented yet.");
+	closeSpawnScreen();		
+	GameCore::mClientGraphics->mSpawnScreen->selectCar();		
+    GameCore::mClientGraphics->setupProjector();
 
     return true;
 }
