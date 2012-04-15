@@ -8,7 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "GameIncludes.h"
-
+#include "BigScreen.h"
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
@@ -38,6 +38,9 @@ public:
     void generateExplosion (Ogre::Vector3 location);
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
     void updateVIPLocation (int teamNumber, Ogre::Vector3 location);
+
+	//Setup the projector and set the correct game mode		
+	void setupProjector();
     
     // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
     virtual void loadLobby (void);
@@ -51,6 +54,9 @@ public:
 
     Ogre::Camera*       mCamera;
     SpawnScreen*        mSpawnScreen;
+
+	BigScreen*			mBigScreen;
+	GraphicsState getGraphicsState();
     
 
 protected:
