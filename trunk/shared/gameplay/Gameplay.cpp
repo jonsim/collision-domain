@@ -374,7 +374,9 @@ void Gameplay::drawInfo()
 
 void Gameplay::handleInfoItem(InfoItem* item, bool show)
 {
-	Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
+	#ifdef COLLISION_DOMAIN_CLIENT
+		Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
+	#endif
 	#ifdef COLLISION_DOMAIN_SERVER
 	    InfoItem* newGameII;
 		InfoItem* transitionII;
@@ -385,44 +387,48 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 		switch(item->getOverlayType())
 		{
 			case ONE_OT:
-				tmpOLE->setDimensions(0.1f, 0.1f);
-				tmpOLE->setMaterialName( "gear1" );
-				tmpOLE->setPosition(0.45f, 0.1f);
-				tmpOLE->show();
+				#ifdef COLLISION_DOMAIN_CLIENT
+					tmpOLE->setDimensions(0.1f, 0.1f);
+					tmpOLE->setMaterialName( "gear1" );
+					tmpOLE->setPosition(0.45f, 0.1f);
+					tmpOLE->show();
+				#endif
 				break;
 			case TWO_OT:
-				tmpOLE->setDimensions(0.1f,0.1f);
-				tmpOLE->setMaterialName( "gear2" );
-				tmpOLE->setPosition(0.45f, 0.1f);
-				tmpOLE->show();
+				#ifdef COLLISION_DOMAIN_CLIENT
+					tmpOLE->setDimensions(0.1f,0.1f);
+					tmpOLE->setMaterialName( "gear2" );
+					tmpOLE->setPosition(0.45f, 0.1f);
+					tmpOLE->show();
+				#endif
 				break;
 			case THREE_OT:
-				tmpOLE->setDimensions(0.1f, 0.1f);
-				tmpOLE->setMaterialName( "gear3" );
-				tmpOLE->setPosition(0.45f, 0.1f);
-				tmpOLE->show();
+				#ifdef COLLISION_DOMAIN_CLIENT
+					tmpOLE->setDimensions(0.1f, 0.1f);
+					tmpOLE->setMaterialName( "gear3" );
+					tmpOLE->setPosition(0.45f, 0.1f);
+					tmpOLE->show();
+				#endif
 				break;
 			case FOUR_OT:
-				tmpOLE->setDimensions(0.1f, 0.1f);
-				tmpOLE->setMaterialName( "gear4" );
-				tmpOLE->setPosition(0.45f, 0.1f);
-				tmpOLE->show();
+				#ifdef COLLISION_DOMAIN_CLIENT
+					tmpOLE->setDimensions(0.1f, 0.1f);
+					tmpOLE->setMaterialName( "gear4" );
+					tmpOLE->setPosition(0.45f, 0.1f);
+					tmpOLE->show();
+				#endif
 				break;
 			case FIVE_OT:
-				tmpOLE->setDimensions(0.1f, 0.1f);
-				tmpOLE->setMaterialName( "gear5" );
-				tmpOLE->setPosition(0.45f, 0.1f);
-				tmpOLE->show();
+				#ifdef COLLISION_DOMAIN_CLIENT
+					tmpOLE->setDimensions(0.1f, 0.1f);
+					tmpOLE->setMaterialName( "gear5" );
+					tmpOLE->setPosition(0.45f, 0.1f);
+					tmpOLE->show();
+				#endif
 				break;
 			case GAME_OVER_OT:
-				/*
-				tmpOLE->setDimensions(0.1f, 0.1f);
-				tmpOLE->setMaterialName( "map_top_1" );
-				tmpOLE->setPosition(0.45f, 0.1f);
-				tmpOLE->show();
-				*/
 				#ifdef COLLISION_DOMAIN_CLIENT
-					mSB->showForce();
+					//mSB->showForce();
 				#endif
 
 				#ifdef COLLISION_DOMAIN_SERVER
@@ -477,7 +483,9 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 	}
 	else
 	{
-		tmpOLE->hide();
+		#ifdef COLLISION_DOMAIN_CLIENT
+			tmpOLE->hide();
+		#endif
 	}
 }
 
