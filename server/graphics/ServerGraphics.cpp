@@ -375,6 +375,8 @@ void ServerGraphics::updateState (const float timeSinceLastFrame)
 	// Process info items (Don't worry about the draw comment)
 	// This ensures gameplay events happen
     GameCore::mGameplay->drawInfo();
+
+	GameCore::mGui->updatePlayerComboBox();
     
 }
 

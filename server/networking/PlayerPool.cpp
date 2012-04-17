@@ -128,6 +128,17 @@ Player* PlayerPool::getPlayer( RakNet::RakNetGUID playerid )
 	return NULL;
 }
 
+Player* PlayerPool::getPlayer( const char* nickname)
+{
+	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
+	{
+		if(!(strcmp(((Player*)(*it))->getNickname(), nickname)))
+			return (Player*)(*it);
+	}
+
+	return NULL;
+}
+
 void PlayerPool::frameEvent( const float timeSinceLastFrame )
 {
 	for( int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )

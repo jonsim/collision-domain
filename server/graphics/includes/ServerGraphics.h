@@ -27,6 +27,11 @@ public:
 
     float               mAverageFrameRate;
     Ogre::Camera*       mCamera;
+	CEGUI::Window* getGUIWindow() { return mGUIWindow;};
+
+#ifdef _WIN32
+	HINSTANCE getHInstance() { return mHInstance;};
+#endif
 
 protected:
     virtual bool initApplication (void);    // Determines flow from startup
@@ -67,6 +72,8 @@ protected:
         tv.tv_usec = usec%1000000L;
         return select(0, 0, 0, &dummy, &tv);
     }
+
+	HINSTANCE mHInstance;
 #endif
 
     // OIS Input device elements
