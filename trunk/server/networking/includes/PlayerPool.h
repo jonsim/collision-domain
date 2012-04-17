@@ -40,6 +40,7 @@ public:
 
 	Player* getPlayer( int index );
 	Player* getPlayer( RakNet::RakNetGUID playerid );
+	Player* getPlayer( const char* nickname);
 	//Player* getLocalPlayer();
 	//RakNet::RakNetGUID getLocalPlayerID();
 	RakNet::RakNetGUID getPlayerGUID( int index );

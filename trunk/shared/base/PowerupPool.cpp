@@ -223,4 +223,5 @@ std::vector<Powerup*> PowerupPool::getPowerups()
 		}
 	}
 	return tmpPowerupPool;
+
 }

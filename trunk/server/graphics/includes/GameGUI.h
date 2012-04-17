@@ -13,6 +13,10 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#ifdef _WIN32
+#include <tchar.h>
+#endif
+
 class StringCircularBuffer : public CircularBuffer<char*>
 {
 public:
@@ -57,10 +61,15 @@ public:
     void outputToConsole (const char* str, ...);
     void loadConsoleHistory (bool reverseLoading);
     void giveConsoleFocus (void);
+	void openAdminWindow();
+	void updatePlayerComboBox();
 
 private:
     StringCircularBuffer consoleHistory;
     uint8_t              consoleHistoryLocation;
+	CEGUI::Combobox* playerComboBox;
+	CEGUI::FrameWindow*   playerSelected;
+	CEGUI::Editbox* health;
 };
 
 #endif

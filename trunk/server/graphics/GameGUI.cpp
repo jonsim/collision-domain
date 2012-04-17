@@ -58,9 +58,9 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
         outputToConsole("start           Starts the game.\n");
         outputToConsole("ddinfo          Draws the death info.\n");
         outputToConsole("kill [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']          Kills player [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] (where [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] is their integer player index).\n");
-        outputToConsole("spawn wander [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the wander mechanic.\n");
-        outputToConsole("spawn seek [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the seek mechanic.\n");
-        outputToConsole("spawn flee [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the flee mechanic.\n");
+        outputToConsole("spawn easy [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with easy difficulty.\n");
+        outputToConsole("spawn normal [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with normal difficulty.\n");
+        outputToConsole("spawn hard [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with hard difficulty.\n");
         outputToConsole("get server fps  Returns the server's average fps.\n");
         outputToConsole("get gfx fps     Returns the server's graphics fps.\n");
     }
@@ -104,12 +104,17 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     }
     else if( !stricmp( inputChars, "get server fps" ) )
     {
-        outputToConsole("Serer's average fps: %.2f.\n", GameCore::mServerGraphics->mAverageFrameRate);
+        outputToConsole("Server's average fps: %.2f.\n", GameCore::mServerGraphics->mAverageFrameRate);
     }
     else if( !stricmp( inputChars, "get gfx fps" ) )
     {
-        outputToConsole("Serer's graphics average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
+        outputToConsole("Server's graphics average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
     }
+	else if( !strcasecmp(inputChars, "admin"))
+	{
+		outputToConsole("Opening admin window\n");
+		openAdminWindow();
+	}
     else
     {
         outputToConsole("Unrecognised command.\n");
@@ -200,4 +205,90 @@ void GameGUI::giveConsoleFocus (void)
     // Give the input box focus.
 	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
 	winMgr.getWindow("/Server/input")->activate();
+}
+
+void GameGUI::openAdminWindow()
+{
+	//create combo box displaying players
+	playerComboBox = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Combobox", (CEGUI::utf8*)"NameID");
+
+	//add each player to the combobox
+	updatePlayerComboBox();
+ 
+    playerComboBox->setSize(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25,0.0)));
+    playerComboBox->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.25,0.0)));
+    playerComboBox->setText("Players");
+    playerComboBox->setAlwaysOnTop(true);
+    GameCore::mServerGraphics->getGUIWindow()->addChildWindow(playerComboBox);
+    playerComboBox->show();
+
+	
+	playerSelected = static_cast<CEGUI::FrameWindow*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/FrameWindow"));
+	GameCore::mServerGraphics->getGUIWindow()->addChildWindow(playerSelected);
+	playerSelected->setSize(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.25,0.0)));
+	playerSelected->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.45,0.0)));
+	playerSelected->setAlwaysOnTop(true);
+
+	//create health box
+	CEGUI::Editbox* healthLabel = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Editbox"));
+	healthLabel->setText("Health");
+	healthLabel->setReadOnly(true);
+	playerSelected->addChildWindow(healthLabel);
+	healthLabel->setSize(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25,0.0)));
+	healthLabel->setPosition(CEGUI::UVector2(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.15,0.0)));
+	healthLabel->show();
+
+	health = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Editbox"));
+	playerSelected->addChildWindow(health);
+	health->setSize(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25,0.0)));
+	health->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.15,0.0)));
+	health->show();
+
+}
+
+//updates the list of players in the combo box
+void GameGUI::updatePlayerComboBox()
+{
+	if(playerComboBox == NULL)
+		return;
+
+	//get the list of players
+	std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+
+	//return if there are no players
+	if(players.size() == 0)
+		return;
+	
+	int i = 0;
+
+	if(GameCore::mPlayerPool->getNumberOfPlayers() != playerComboBox->getItemCount())
+	{
+		playerComboBox->resetList();
+		for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
+		{
+			Player* player = (Player*)(*it);
+			CEGUI::ListboxItem* playerItem = new CEGUI::ListboxTextItem((CEGUI::utf8*)player->getNickname(), 1);
+			playerComboBox->addItem(playerItem);
+		}
+	}
+
+
+	//now update the player selected box
+	CEGUI::ListboxItem* listItem = playerComboBox->getSelectedItem();
+	if(listItem)
+	{
+		CEGUI::String playerName = listItem->getText();
+		const char* nickname = playerName.c_str();
+		//now get the player
+		Player* player = GameCore::mPlayerPool->getPlayer(nickname);
+		//add the text to the player selected window
+		playerSelected->setText(playerName);
+		playerSelected->show();
+		//display the health
+		char hp[4];
+		sprintf(hp, "%d", player->getHP());
+		health->setText(hp);
+		health->show();
+	}
+
 }
