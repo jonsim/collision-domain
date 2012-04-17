@@ -105,7 +105,7 @@ void ScoreBoard::initialize()
 	textAreaHeader->setDimensions(0.9f, 0.3f);
 	textAreaHeader->setMetricsMode(Ogre::GMM_PIXELS);
 	textAreaHeader->setPosition(40, 40);
-	textAreaHeader->setParameter("font_name","StarWars");
+	textAreaHeader->setParameter("font_name","DejaVuSans");
 	textAreaHeader->setParameter("char_height", "30");
 	textAreaHeader->setColour(Ogre::ColourValue::White);
 	textAreaHeader->setCaption("Team 1 \t\t\t\t\t\t\t Team 2");
@@ -121,7 +121,7 @@ void ScoreBoard::initialize()
 	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
 	this->textAreaT1->setPosition(40,100);
 	
-	this->textAreaT1->setParameter("font_name","StarWars");
+	this->textAreaT1->setParameter("font_name","DejaVuSans");
 	this->textAreaT1->setParameter("char_height", "15");
 	this->textAreaT1->setColour(Ogre::ColourValue::White);
 

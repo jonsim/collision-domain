@@ -13,7 +13,7 @@
 
 Gameplay::Gameplay() : mGameActive(false)
 {
-	//mSB = new ScoreBoard();
+	mSB = new ScoreBoard();
 	//mHUD = new HUD();
 	//this->setNumberOfTeams(2); //Might as well default it to 2
     mTeams[0] = new Team(BLUE_TEAM);
