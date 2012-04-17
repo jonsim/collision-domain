@@ -47,6 +47,8 @@ void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
         p2btnConfirm->subscribeEvent(  CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameGUI::SpawnScreen_p2btnConfirm,   this));
 
         CEGUI::MouseCursor::getSingleton().show();
+
+        spawnScreenCarSelection = CAR_BANGER;
 }
 
 void GameGUI::showSpawnScreenPage1 (void)
@@ -131,7 +133,7 @@ bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
     hideSpawnScreenErrorText();
 
     spawnScreenTeamSelection = 1;
-    showSpawnScreenPage2();
+    GameCore::mNetworkCore->sendTeamSelect( BLUE_TEAM );
 
     return true;
 }
@@ -141,7 +143,7 @@ bool GameGUI::SpawnScreen_p1btnRedTeam (const CEGUI::EventArgs& args)
     hideSpawnScreenErrorText();
 
     spawnScreenTeamSelection = 2;
-    showSpawnScreenPage2();
+    GameCore::mNetworkCore->sendTeamSelect( RED_TEAM );
 
     return true;
 }
@@ -151,7 +153,7 @@ bool GameGUI::SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args)
     hideSpawnScreenErrorText();
 
     spawnScreenTeamSelection = 1;
-    showSpawnScreenPage2();
+    GameCore::mNetworkCore->sendTeamSelect( NO_TEAM );
 
     return true;
 }
@@ -187,6 +189,8 @@ bool GameGUI::SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args)
     else if (spawnScreenTeamSelection == 2)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
 
+    spawnScreenCarSelection = CAR_BANGER;
+
     return true;
 }
 
@@ -204,6 +208,8 @@ bool GameGUI::SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackBlue")));
     else if (spawnScreenTeamSelection == 2)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackRed")));
+
+    spawnScreenCarSelection = CAR_SMALL;
 
     return true;
 }
@@ -223,12 +229,15 @@ bool GameGUI::SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args)
     else if (spawnScreenTeamSelection == 2)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckRed")));
 
+    spawnScreenCarSelection = CAR_TRUCK;
+
     return true;
 }
 
 bool GameGUI::SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args)
 {
     closeSpawnScreen();
+    GameCore::mNetworkCore->sendSpawnRequest( spawnScreenCarSelection );
 
     return true;
 }

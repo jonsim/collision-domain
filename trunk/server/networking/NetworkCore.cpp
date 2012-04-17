@@ -283,9 +283,18 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 		{
 			RakNet::BitStream bsJoin;
 			bsJoin.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
+            bsJoin.Write( playerSend->getTeam() );
             //RakNet::RakString *strName = new RakNet::RakString("RemotePlayer");
 			//RakNet::StringCompressor().EncodeString( strName, 128, &bsJoin );
 			m_RPC->Signal( "PlayerJoin", &bsJoin, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
+
+            if( playerSend->getCar() )
+            {
+                RakNet::BitStream bsSpawn;
+				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
+                bsSpawn.Write( playerSend->getCarType() );
+				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
+            }
 		}
 	}
 
@@ -337,6 +346,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	// Alert other players that someone new has joined
 	bsNewPlayer.Write( pkt->guid );
+    bsNewPlayer.Write( NO_TEAM );
 	RakNet::StringCompressor().EncodeString( szNickname, 128, &bsNewPlayer );
 	m_RPC->Signal( "PlayerJoin", &bsNewPlayer, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, true, false );
 
@@ -422,7 +432,28 @@ void NetworkCore::sendChatMessage( const char *szMessage )
     m_RPC->Signal( "PlayerChat", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
-	
+void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    TeamID t;
+    bitStream->Read( t );
+
+    bool bResult = GameCore::mGameplay->addPlayer( pkt->guid, t );
+
+    RakNet::BitStream bsSend;
+    bsSend.Write( pkt->guid );
+    bsSend.Write( t );
+    bsSend.Write( bResult );
+
+    if( bResult )
+    {
+        m_RPC->Signal( "PlayerTeamSelect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
+    }
+    else
+    {
+        m_RPC->Signal( "PlayerTeamSelect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+    }
+}
+
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	// Do some checking here to make sure the player is allowed to spawn before sending the RPC back
@@ -430,11 +461,16 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     bitStream->Read( iCarType );
 	int size = GameCore::mPlayerPool->getNumberOfPlayers();
 
-    // TODO: something with iCarType
-
 	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
-	pPlayer->createPlayer( iCarType, NO_TEAM );
-    GameCore::mGameplay->declareNewPlayer(pkt->guid);
+
+    // Don't allow spawn if they haven't selected a team yet
+    if( pPlayer->getTeam() == NO_TEAM )
+        return;
+
+    // TODO:
+    // check for game in progress, maximum number of cars/trucks etc
+
+	pPlayer->createPlayer( iCarType, (TeamID) pPlayer->getTeam() );
 
     GameCore::mGui->outputToConsole("Player '%s' spawned.\n", pPlayer->getNickname());
 
@@ -444,29 +480,12 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	RakNet::BitStream bsSpawn;
 	bsSpawn.Write( pkt->guid );
     bsSpawn.Write( iCarType );
-    bsSpawn.Write( pPlayer->getTeam() );
+    //bsSpawn.Write( pPlayer->getTeam() );
 //	bsSpawn.Write( GameCore::mPlayerPool->getLocalPlayer()->getTeam());
 	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 
 	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
-	for( int i = 0; i < size; i ++ )
-	{
-		if( GameCore::mPlayerPool->getPlayerGUID( i ) == pkt->guid )
-			continue;
 
-		Player *pRemote = GameCore::mPlayerPool->getPlayer( i );
-		if( pRemote )
-		{
-			if( pRemote->getCar() )
-			{
-				RakNet::BitStream bsSpawn;
-				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( i ) );
-                bsSpawn.Write( GameCore::mPlayerPool->getPlayer( i )->getCarType() );
-				bsSpawn.Write( GameCore::mPlayerPool->getPlayer( i )->getTeam());
-				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
-			}
-		}
-	}
 }
 
 
@@ -477,10 +496,11 @@ void NetworkCore::RegisterRPCSlots()
     m_RPC = RakNet::RPC4::GetInstance();
 	m_pRak->AttachPlugin( m_RPC );
 
-	m_RPC->RegisterSlot( "PlayerJoin",		PlayerJoin, 0 );
-	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit, 0 );
-	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat, 0 );
-	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn, 0 );
+	m_RPC->RegisterSlot( "PlayerJoin",		    PlayerJoin, 0 );
+	m_RPC->RegisterSlot( "PlayerQuit",		    PlayerQuit, 0 );
+	m_RPC->RegisterSlot( "PlayerChat",		    PlayerChat, 0 );
+    m_RPC->RegisterSlot( "PlayerTeamSelect",    PlayerTeamSelect, 0 );
+	m_RPC->RegisterSlot( "PlayerSpawn",		    PlayerSpawn, 0 );
 }
 
 

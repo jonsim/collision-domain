@@ -73,6 +73,7 @@ private:
     CEGUI::Window*   spawnScreenImage;
     CEGUI::Imageset* spawnScreenImageSet;
     int              spawnScreenTeamSelection;
+    CarType          spawnScreenCarSelection;
 };
 
 #endif

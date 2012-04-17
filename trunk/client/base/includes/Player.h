@@ -42,7 +42,7 @@ public:
 	int	 getHP (void);
     void setVIP(bool newState) { mIsVIP = newState; }
     bool getVIP(void) { return mIsVIP; }
-    void setTeam(TeamID newTeam) { mTeam = newTeam; mCar->updateTeam(newTeam); }
+    void setTeam(TeamID newTeam) { mTeam = newTeam; if( mCar ) mCar->updateTeam(newTeam); }
     TeamID getTeam(void) { return mTeam; }
 
 	void setGUID(RakNet::RakNetGUID playerGUID);
