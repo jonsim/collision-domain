@@ -158,7 +158,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar)
     
     if (!silentCar) mEngineSound->play();
 
-    mBodyNode->attachObject(mEngineSound);
+    //mBodyNode->attachObject(mEngineSound);
 #endif
 }
 
