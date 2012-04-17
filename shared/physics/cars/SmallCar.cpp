@@ -159,14 +159,14 @@ SmallCar::SmallCar(int uniqueCarID, TeamID tid, bool silentCar)
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_HIGH, mUniqueCarID, NULL);
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
-    //mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_SMALL, mUniqueCarID, NULL, true);
-    //mEngineSound->setPitch(2.0f);
+    mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_SMALL, mUniqueCarID, NULL, true);
+    mEngineSound->setPitch(2.0f);
     
     #ifdef COLLISION_DOMAIN_CLIENT
-        //if (!silentCar) mEngineSound->play();
+        if (!silentCar) mEngineSound->play();
     #endif
 
-    //mBodyNode->attachObject(mEngineSound);
+    mBodyNode->attachObject(mEngineSound);
 #endif
 }
 
@@ -194,8 +194,8 @@ void SmallCar::louderLocalSounds() {
 #ifdef COLLISION_DOMAIN_CLIENT
     //mEngineSound->setVolume(0); return;
 
-    //float increaseTo = mEngineSound->getVolume() + 0.25;
-    //if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+    float increaseTo = mEngineSound->getVolume() + 0.25;
+    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
 #endif
 }
 
