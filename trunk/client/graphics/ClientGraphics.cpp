@@ -338,6 +338,11 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
         if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
             return false;
+		
+		if (mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))
+			GameCore::mGameplay->mSB->show();
+		else
+			GameCore::mGameplay->mSB->hide();
 
         // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
