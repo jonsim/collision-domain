@@ -165,8 +165,6 @@ SmallCar::SmallCar(int uniqueCarID, TeamID tid, bool silentCar)
     #ifdef COLLISION_DOMAIN_CLIENT
         if (!silentCar) mEngineSound->play();
     #endif
-
-    mBodyNode->attachObject(mEngineSound);
 #endif
 }
 
