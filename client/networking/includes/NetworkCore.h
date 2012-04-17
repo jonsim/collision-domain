@@ -91,6 +91,7 @@ public:
     void frameEvent(InputState *inputSnapshot);
     void ProcessPlayerState( RakNet::Packet *pkt );
 
+    void sendTeamSelect( TeamID t );
     void sendSpawnRequest( CarType iCarType );
     void sendChatMessage( const char *szMessage );
 	//void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
@@ -100,6 +101,7 @@ public:
     static void PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt );

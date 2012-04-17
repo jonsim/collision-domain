@@ -108,7 +108,61 @@ void Gameplay::setNewVIPs()
 	//}
 }
 
-void Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
+bool Gameplay::addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam )
+{
+    Team* teamToJoin;
+    Player* pPlayer = GameCore::mPlayerPool->getPlayer(playerid);
+
+    // If the requested team number is invalid autoassign the team, otherwise check 
+    // the team choice and join the team if possible or report an error.
+    if (requestedTeam == NO_TEAM)
+    {
+        teamToJoin = autoAssignTeam();
+    }
+    else
+    {
+        if (validateTeamChoice(requestedTeam))
+            teamToJoin = getTeam(requestedTeam);
+        else
+            return false;
+    }
+    
+    // Join the team.
+    teamToJoin->addPlayer(pPlayer);
+
+    //Check to see if we need to start game
+    if(this->mGameActive == false && GameCore::mPlayerPool->getNumberOfPlayers() >= NUM_PLAYERS_TO_START)
+    {
+        this->startGame();
+    }
+
+    return true;
+}
+ 
+/*TeamID Gameplay::autoAssignTeam()
+{
+#if NUM_TEAMS == 2
+    if (mTeams[0]->getTeamSize() > mTeams[1]->getTeamSize())
+        return RED_TEAM;
+    return BLUE_TEAM;
+#else
+    #error "Code not rewritten for !2 teams."
+#endif
+}*/
+
+bool Gameplay::validateTeamChoice(TeamID requestedTeam)
+{
+#if NUM_TEAMS != 2
+    #error "Code not written for !2 teams."
+#endif
+    TeamID otherTeam = (requestedTeam == BLUE_TEAM) ? RED_TEAM : BLUE_TEAM;
+
+    if (getTeam(requestedTeam)->getTeamSize() > getTeam(otherTeam)->getTeamSize())
+        return false;
+    return true;
+}
+
+/*void Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 {
 	Player* tmpPlayer   = GameCore::mPlayerPool->getPlayer(playerid);
 	Team*   teamToJoin  = autoAssignTeam();
@@ -119,7 +173,7 @@ void Gameplay::declareNewPlayer( RakNet::RakNetGUID playerid )
 	{
 		this->startGame();
 	}
-}
+}*/
 
 Team* Gameplay::autoAssignTeam()
 {

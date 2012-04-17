@@ -46,8 +46,11 @@ public:
 	void						setNewVIP(TeamID teamID);
     void                        setNewVIP(TeamID teamID, Player* newVIP);
 	void						setNewVIPs();
-	void						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
-	void						notifyDamage(Player* player);
+    bool                        addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam );
+    //TeamID                      autoAssignTeam();
+    bool                        validateTeamChoice(TeamID requestedTeam);
+	//void						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
+    void						notifyDamage(Player* player);
 	void						preparePlayers(); //Place the palyers in the correct place
 	void						resetAllHP();
 	void						positionPlayers();

@@ -205,6 +205,14 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 
 }
 
+void NetworkCore::sendTeamSelect( TeamID t )
+{
+    RakNet::BitStream bsSend;
+    bsSend.Write( t );
+
+    m_RPC->Signal( "PlayerTeamSelect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
+}
+
 void NetworkCore::sendSpawnRequest( CarType iCarType )
 {
     RakNet::BitStream bsSend;
@@ -238,7 +246,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
     // Show the spawn screen
-    GameCore::mClientGraphics->mSpawnScreen = new SpawnScreen( GameCore::mClientGraphics->mCamera );
+    //GameCore::mClientGraphics->mSpawnScreen = new SpawnScreen( GameCore::mClientGraphics->mCamera );
 
 	// If we're allowed to spawn, our spawn method will be called by the server automagically.
 }
@@ -248,13 +256,16 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	char szNickname[128];
 
 	RakNet::RakNetGUID playerid;
+    TeamID team;
 	bitStream->Read( playerid );
+    bitStream->Read( team );
 
 	log( "PlayerJoin : playerid %s", playerid.ToString() );
 
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 
 	GameCore::mPlayerPool->addPlayer( playerid, szNickname );
+    GameCore::mPlayerPool->getPlayer( playerid )->setTeam( team );
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -279,27 +290,59 @@ void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
         GameCore::mGui->chatboxAddMessage( GameCore::mPlayerPool->getPlayer( playerid )->getNickname(), szMessage );
 }
 
+void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    Player *pPlayer = NULL;
+	RakNet::RakNetGUID playerid;
+	TeamID teamID;
+    bool bResult;
+
+    bitStream->Read( playerid );
+    bitStream->Read( teamID );
+    bitStream->Read( bResult );
+
+    if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
+    {
+        if( !bResult )
+        {
+            GameCore::mGui->showSpawnScreenErrorText( "Error: selected team too full!" );
+            return;
+        }
+
+        pPlayer = GameCore::mPlayerPool->getLocalPlayer();
+        pPlayer->setTeam( teamID );
+
+        GameCore::mGui->showSpawnScreenPage2();
+    }
+    else
+    {
+        pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
+
+        if( !pPlayer )
+            return;
+
+        pPlayer->setTeam( teamID );
+    }
+}
+
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	Player *pPlayer = NULL;
 	RakNet::RakNetGUID playerid;
     CarType iCarType;
-	TeamID teamID;
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
-	bitStream->Read( teamID );
     OutputDebugString("ClientSpawn\n");
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
 	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	{
         // Get rid of our spawn screen
-        delete GameCore::mClientGraphics->mSpawnScreen;
-        GameCore::mClientGraphics->mSpawnScreen = NULL;
+        //delete GameCore::mClientGraphics->mSpawnScreen;
+        //GameCore::mClientGraphics->mSpawnScreen = NULL;
 
 		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-		pPlayer->createPlayer( iCarType, NO_TEAM );
-		pPlayer->setTeam(teamID);
+		pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
         pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
 	}
 	else
@@ -307,8 +350,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		if( pPlayer != NULL )
 		{
-			pPlayer->createPlayer( iCarType, NO_TEAM );
-			pPlayer->setTeam(teamID);
+			pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
 		}
 		else
 			log( "..invalid player" );
@@ -418,16 +460,17 @@ void NetworkCore::RegisterRPCSlots()
     m_RPC = RakNet::RPC4::GetInstance();
 	m_pRak->AttachPlugin( m_RPC );
 
-	m_RPC->RegisterSlot( "GameJoin",		GameJoin,       0 );
-	m_RPC->RegisterSlot( "PlayerJoin",		PlayerJoin,     0 );
-	m_RPC->RegisterSlot( "PlayerQuit",		PlayerQuit,     0 );
-	m_RPC->RegisterSlot( "PlayerChat",		PlayerChat,     0 );
-	m_RPC->RegisterSlot( "PlayerSpawn",		PlayerSpawn,    0 );
-    m_RPC->RegisterSlot( "PowerupCreate",   PowerupCreate,  0 );
-    m_RPC->RegisterSlot( "PowerupCollect",  PowerupCollect, 0 );
-	m_RPC->RegisterSlot( "InfoItemReceive", InfoItemReceive, 0 );
-	m_RPC->RegisterSlot( "PlayerDeath",		PlayerDeath, 0 );
-	m_RPC->RegisterSlot( "DeclareVIP",		DeclareVIP, 0 );
+	m_RPC->RegisterSlot( "GameJoin",		    GameJoin,       0 );
+	m_RPC->RegisterSlot( "PlayerJoin",		    PlayerJoin,     0 );
+	m_RPC->RegisterSlot( "PlayerQuit",		    PlayerQuit,     0 );
+	m_RPC->RegisterSlot( "PlayerChat",		    PlayerChat,     0 );
+    m_RPC->RegisterSlot( "PlayerTeamSelect",    PlayerTeamSelect, 0 );
+	m_RPC->RegisterSlot( "PlayerSpawn",		    PlayerSpawn,    0 );
+    m_RPC->RegisterSlot( "PowerupCreate",       PowerupCreate,  0 );
+    m_RPC->RegisterSlot( "PowerupCollect",      PowerupCollect, 0 );
+	m_RPC->RegisterSlot( "InfoItemReceive",     InfoItemReceive, 0 );
+	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath, 0 );
+	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
 }
 
 
