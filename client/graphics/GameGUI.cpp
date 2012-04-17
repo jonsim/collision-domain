@@ -312,19 +312,21 @@ bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
         {
             if( strTokens.at(0) == "exit" )
                 mWinMgr.getWindow( "/Console" )->hide();
-                        else if (!strnicmp(szInput, "weather ", 8))
-                                GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);
-                        else if (!stricmp(szInput, "benchmark"))
-                                GameCore::mClientGraphics->startBenchmark(0);
-                        else if (!strnicmp(szInput, "b1 ", 3))
+            else if (!strnicmp(szInput, "weather ", 8))
+                GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);
+            else if (!stricmp(szInput, "benchmark"))
+                GameCore::mClientGraphics->startBenchmark(0);
+            else if (!stricmp(szInput, "ass"))
+                GameCore::mClientGraphics->generateShrapnel(Ogre::Vector3(0, -9, 0), BLUE_TEAM);
+            else if (!strnicmp(szInput, "b1 ", 3))
                 GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
-                        else if (!strnicmp(szInput, "b2 ", 3))
-                                GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
-                        else if (!strnicmp(szInput, "mb ", 3))
-                                GameCore::mClientGraphics->loadMotionBlur(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]));
-                        else if (!stricmp(szInput, "wireframe on"))
+            else if (!strnicmp(szInput, "b2 ", 3))
+                GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
+            else if (!strnicmp(szInput, "mb ", 3))
+                GameCore::mClientGraphics->loadMotionBlur(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]));
+            else if (!stricmp(szInput, "wireframe on"))
                 GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
-                        else if (!stricmp(szInput, "wireframe off"))
+            else if (!stricmp(szInput, "wireframe off"))
                 GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_SOLID);
             else if (!stricmp(szInput, "bitsoff"))
                 GameCore::mPlayerPool->getLocalPlayer()->getCar()->makeBitsFallOff();

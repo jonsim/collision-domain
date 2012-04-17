@@ -36,10 +36,9 @@ Team* Gameplay::getTeam(TeamID teamID)
     {
         case BLUE_TEAM: return mTeams[0]; break;
         case RED_TEAM:  return mTeams[1]; break;
-        case NO_TEAM:
+        case NO_TEAM:   OutputDebugString("getTeam called with team NO_TEAM. IM GONNA GO RIGHT AHEAD AND CRASH NOW LOL.\n");
         default:        throw Ogre::Exception::ERR_INVALIDPARAMS; break;
     }
-    return NULL;
 }
 
 bool Gameplay::gameOver()

@@ -471,16 +471,74 @@ void ClientGraphics::updateParticleSystems (void)
     for (i = 0; i < mExplosionDebrisSystem->getNumEmitters(); i++)
         if (!mExplosionDebrisSystem->getEmitter(i)->getEnabled())
             mExplosionDebrisSystem->removeEmitter(i--);
+
+    // Check for stale shrapnel systems
+    Ogre::ParticleSystem* currentSystem;
+    while (!mShrapnelSystems.empty())
+    {
+        currentSystem = mShrapnelSystems.front();
+        if (!currentSystem->getEmitting() && currentSystem->getNumParticles() == 0)
+        {
+            mShrapnelSystems.pop();
+            GameCore::mSceneMgr->destroyParticleSystem(currentSystem);
+        }
+        else
+            break;
+    }
 }
 
 
-void ClientGraphics::updateVIPLocation (int teamNumber, Ogre::Vector3 location)
+/// @brief  Generates shrapnel particles which are automatically cleared up after they are depleted.
+/// @param  location    The location, in world space, for the shrapnel's origin to be placed.
+/// @param  shrapnelTeam    The team of the car that generated the shrapnel. Alternatively NO_TEAM leaves the shrapnel the default colour.
+/// @param  meanShrapnelQuantity    The average amount of shrapnel to create in one emission. The exact amount generated is randomised.
+/// @param  planeOffset The offset in the y axis of the plane for the shrapnel to collide with from the shrapnel's origin provided by 
+///                     the location parameter. This value should be negative.
+/// @param  planeNormal The normal of the plane with which the shrapnel is to collide.
+void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity, float planeOffset, Ogre::Vector3 planeNormal)
+{
+    // First create the particle system
+    Ogre::ParticleSystem* shrapnelSystem = GameCore::mSceneMgr->createParticleSystem(
+                                             "ShrapnelSystem" + boost::lexical_cast<std::string>(GameCore::mPhysicsCore->getUniqueEntityID()),
+                                             "CollisionDomain/Shrapnel");
+
+    // Configure the shrapnel emitter
+    Ogre::ParticleEmitter* shrapnelEmitter = shrapnelSystem->getEmitter(0);
+    shrapnelEmitter->setPosition(location);
+    if (shrapnelTeam == BLUE_TEAM)
+        shrapnelEmitter->setColour(Ogre::ColourValue(0.125f, 0.235f, 0.380f));
+    else if (shrapnelTeam == RED_TEAM)
+        shrapnelEmitter->setColour(Ogre::ColourValue(0.376f, 0.125f, 0.125f));
+    shrapnelEmitter->setEmissionRate(meanShrapnelQuantity * 10);
+
+    // Add the shrapnel plane with which it collides.
+    // Calculate the plane's properties and convert them to string representations.
+    Ogre::Vector3 planeLocation = location;
+    planeLocation.y += planeOffset;
+    char plane_point[32];
+    char plane_normal[32];
+    sprintf(plane_point,  "%.2f %.2f %.2f", planeLocation.x, planeLocation.y, planeLocation.z);
+    sprintf(plane_normal, "%.2f %.2f %.2f", planeNormal.x,   planeNormal.y,   planeNormal.z);
+    // Create and setup the plane affector
+    Ogre::ParticleAffector* planeAffector = shrapnelSystem->addAffector("DeflectorPlane");
+    planeAffector->setParameter("plane_point",  plane_point);
+    planeAffector->setParameter("plane_normal", plane_normal);
+    planeAffector->setParameter("bounce", "0.1");
+    
+    mShrapnelSystems.push(shrapnelSystem);
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(shrapnelSystem);
+}
+
+
+void ClientGraphics::updateVIPLocation (TeamID teamID, Ogre::Vector3 location)
 {
     location.y += 4;
-    if (teamNumber == 1)
+    if (teamID == BLUE_TEAM)
         mVIPIcon[0]->setPosition(location);
-    else
+    else if (teamID == RED_TEAM)
         mVIPIcon[1]->setPosition(location);
+    else
+        throw Ogre::Exception::ERR_INVALIDPARAMS;
 }
 
 

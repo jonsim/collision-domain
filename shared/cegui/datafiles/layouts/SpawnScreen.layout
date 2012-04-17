@@ -14,7 +14,6 @@
         <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Team" >
             <Property Name="Font" Value="DejaVuSans-10" />
             <Property Name="Text" Value="Select a Team" />
-            <Property Name="Visible" Value="False" />
             <Property Name="CaptionFont" Value="DejaVuSans-10" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="RollUpEnabled" Value="False" />
@@ -52,35 +51,34 @@
         </Window>
         <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Vehicle" >
             <Property Name="Text" Value="Select a Vehicle" />
-            <Property Name="Visible" Value="False" />
             <Property Name="CaptionFont" Value="DejaVuSans-10" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="SizingEnabled" Value="False" />
             <Property Name="TitlebarEnabled" Value="True" />
-            <Property Name="UnifiedAreaRect" Value="{{0.25,0},{0.32,0},{0.75,0},{0.68,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.29,0},{0.8,0},{0.71,0}}" />
             <Property Name="CloseButtonEnabled" Value="False" />
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCoupe" >
                 <Property Name="Text" Value="Coupe" />
-                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.38,0},{0.17,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.38,0},{0.15,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnHatchback" >
                 <Property Name="Text" Value="Hatchback" />
-                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.2,0},{0.38,0},{0.35,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.17,0},{0.38,0},{0.3,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnTruck" >
                 <Property Name="Text" Value="Truck" />
-                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.38,0},{0.38,0},{0.53,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.32,0},{0.38,0},{0.45,0}}" />
             </Window>
             <Window Type="GWEN/StaticImage" Name="/SpawnScreen/Vehicle/imgVehicle" >
                 <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0,0},{1,0},{1,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCancel" >
                 <Property Name="Text" Value="Cancel" />
-                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.83,0},{0.38,0},{0.98,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.86,0},{0.38,0},{0.99,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnConfirm" >
                 <Property Name="Text" Value="Confirm" />
-                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.65,0},{0.38,0},{0.8,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.71,0},{0.38,0},{0.84,0}}" />
             </Window>
         </Window>
         <Window Type="GWEN/StaticText" Name="/SpawnScreen/txtError" >

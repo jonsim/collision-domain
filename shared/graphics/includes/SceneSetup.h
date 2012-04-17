@@ -83,6 +83,7 @@ protected:
     Ogre::ParticleSystem* mExplosionNucleusSystem;
     Ogre::ParticleSystem* mExplosionSmokeSystem;
     Ogre::ParticleSystem* mExplosionDebrisSystem;
+    std::queue<Ogre::ParticleSystem*> mShrapnelSystems;
     // Particle System configurations
     Ogre::NameValuePairList mSparkParams;
     Ogre::NameValuePairList mExplosionNucleusParams;
