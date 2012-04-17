@@ -326,7 +326,9 @@ void Gameplay::positionPlayers()
 			std::stringstream debugString;
 			debugString << "Alignment Car Pos X: "<< x << " Y: "<<y<<"\n";
 			OutputDebugString(debugString.str().c_str());
-			tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
+			
+			if(tmpPlayer->getCar() != NULL)
+				tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
 		}
 	}	
 }
