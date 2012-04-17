@@ -430,7 +430,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				break;
 			case GAME_OVER_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
-					//mSB->showForce();
+					mSB->showForce();
 				#endif
 
 				#ifdef COLLISION_DOMAIN_SERVER
@@ -443,14 +443,14 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					this->calculateRoundScores();
 
 					//SYNC
-					//transitionII->sendPacket();
-					//newGameII->sendPacket();
+					transitionII->sendPacket();
+					newGameII->sendPacket();
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
-				/*
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->hideForce();
+					/*
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
 						
 						GameCore::mClientGraphics->mBigScreen->hideScreen();
@@ -459,11 +459,12 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 						GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
 						GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,0,-300));
 					}
+					*/
 				#endif
 				#ifdef COLLISION_DOMAIN_SERVER
 
 				#endif
-				*/
+				
 				break;
 			case NEW_GAME_OT:
 				/*
