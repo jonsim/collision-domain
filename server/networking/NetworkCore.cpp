@@ -441,7 +441,7 @@ void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet
 
     RakNet::BitStream bsSend;
     bsSend.Write( pkt->guid );
-    bsSend.Write( t );
+    bsSend.Write( GameCore::mPlayerPool->getPlayer(pkt->guid)->getTeam() );
     bsSend.Write( bResult );
 
     if( bResult )

@@ -20,6 +20,9 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	mPacket = new RakNet::Packet();
 	mPacket->guid.g = uint64_t(rand());
 	GameCore::mNetworkCore->PlayerJoin(&bsAiPlayer, mPacket);
+    RakNet::BitStream bsAiTeam;
+    bsAiTeam.Write( NO_TEAM );
+    GameCore::mNetworkCore->PlayerTeamSelect(&bsAiTeam, mPacket);
 	mCarType = CAR_SMALL;
 	RakNet::BitStream bsCarType;
 	bsCarType.Write(mCarType);
