@@ -117,13 +117,11 @@ void Input::processInterfaceControls()
 	    else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleConsole();
 //#ifdef COLLISION_DOMAIN_CLIENT
-        if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false )
-        {
-            if( mKeyboard->isKeyDown( OIS::KC_TAB ) )
-            {
+        if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false ) {
+            if( mKeyboard->isKeyDown( OIS::KC_TAB ) ) {
                 GameCore::mPlayerPool->spectateNext();
             }
-        }
+        } 
 //#endif
     }
 #endif
@@ -177,6 +175,20 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
         else if( evt.key == OIS::KC_RETURN )
             GameCore::mClientGraphics->mSpawnScreen->selectCar();
     }
+
+
+	if(evt.key == OIS::KC_1) {
+		GameCore::mPlayerPool->getLocalPlayer()->cameraLookLeft();
+	} else if(evt.key == OIS::KC_2) {
+		GameCore::mPlayerPool->getLocalPlayer()->cameraLookBack();
+	} else if(evt.key == OIS::KC_3) {
+		GameCore::mPlayerPool->getLocalPlayer()->cameraLookRight();
+	}
+
+	if(evt.key == OIS::KC_K) {
+		GameCore::mPlayerPool->getLocalPlayer()->cycleCameraView();
+	}
+		
 #endif
 #ifdef COLLISION_DOMAIN_SERVER
     // Inject UP to the GUI. Has to be done here to prevent rollover as a button is
@@ -197,6 +209,14 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 bool Input::keyReleased (const OIS::KeyEvent &evt)
 {
 	CEGUI::System::getSingleton().injectKeyUp(evt.key);
+
+	#ifdef COLLISION_DOMAIN_CLIENT
+
+	if(evt.key == OIS::KC_1 || evt.key == OIS::KC_2 || evt.key == OIS::KC_3) {
+		GameCore::mPlayerPool->getLocalPlayer()->revertCamera();
+	}
+		
+	#endif
 
     return true;
 }

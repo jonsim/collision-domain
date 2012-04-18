@@ -78,6 +78,12 @@ public:
 	void midDamageCallBack(std::string causedBy);
 	void highDamageCallBack(std::string causedBy);
 
+	void cameraLookLeft(void);
+	void cameraLookRight(void);
+	void cameraLookBack(void);
+	void revertCamera(void);
+	void cycleCameraView(void);
+
 
 private:
     const float								   cameraRotationConstant;
@@ -94,6 +100,11 @@ private:
     CarType									   mCarType;
 
 	Ogre::OverlayElement* mOLE;
+
+	int                                        numCameraViews;
+	int										   cameraView;
+	btVector3                                  cameraViews[3];
+	btVector3                                  cameraLookViews[3];
 	/*bool									   processingCollision;
 	std::map<std::string, std::vector<float> >			   collisionDamages;
 	std::map<std::string, std::vector<float> >::iterator	   collisionDamagesItr;
@@ -112,6 +123,8 @@ private:
 	int                                        mediumDamageSpeed;
 	int                                        highDamageSpeed;
 	RakNet::RakNetGUID mPlayerGUID;
+
+
 
     GameCamera*      mCamera;
 	int roundScore;

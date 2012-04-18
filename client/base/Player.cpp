@@ -10,6 +10,8 @@
 
 #define INITIAL_HEALTH 1200
 #define NEWCAM 1
+#define MAX_DAMAGE 400 // used cap damage for individual crashes so that deformations are more managable
+#define BIG_CRASH_THRESHOLD 80
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -25,6 +27,18 @@ Player::Player (void) : cameraRotationConstant(0.08f),
 	//processingCollision = false;
 	numCollisionDataPoints = 0;
 	this->mOLE = NULL;
+
+	numCameraViews = 3;
+
+	cameraView = 0;
+	cameraViews[0]     = btVector3( 0.f, 5.f,  -10.f ); //default
+	cameraViews[1]     = btVector3( 0.f, 3.8f, -9.f ); //lower+closer
+	cameraViews[2]     = btVector3( 0.f, 3.8f, 5.f ); //windshield
+
+	cameraLookViews[0] = btVector3( 0, 0, 3.0f );
+	cameraLookViews[1] = btVector3( 0, 0, 3.0f );
+	cameraLookViews[2] = btVector3( 0, 0, 8.0f );
+
 	//averageCollisionPoint.setZero();
 
 	// Damage Level Thresholds: how many calls to collisionTickCallback have been seen
@@ -84,19 +98,97 @@ void Player::createPlayer (CarType carType, TeamID tid)
 /// @param  speed			The speed of the impact in the direction of the normal to the collision point
 /// @param  causedByPlayer	Pointer to the other player in the collision.
 void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer) {
-	/*float hisSpeed = causedByPlayer->getCar()->getCarMph();
-	float mySpeed = getCar()->getCarMph();
-	if(depth < 
-	if(speed >= lowDamageSpeed && speed < mediumDamageSpeed) {
-		lowDamageCallBack(causedByPlayer->getGUID());
-	} else if(speed >= mediumDamageSpeed && speed < highDamageSpeed) {
-		midDamageCallBack(causedByPlayer->getGUID());
-	} else if(speed >= highDamageSpeed) {
-		highDamageCallBack(causedByPlayer->getGUID());
-	}*/
-	GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint);
+	// convert the hitPoint to an ogre vector in our local space, to pass to deformer
+	Ogre::Vector3 adjust = this->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)hitPoint);
+	// calculate the unsigned yaw rotation to the adjusted hitpoint, gives us a crude but usable mapping for the damage HUD
+	Ogre::Real or1 = this->getCar()->mBodyNode->getPosition().getRotationTo(adjust).getYaw().valueDegrees()+180;
+	
+	if(adjust.x == 0.f && adjust.y == 0.f && adjust.z == 0.f) {
+		OutputDebugString("ZERO collision Point\n");
+	}
+
+	// combine speeds of both cars, gives approximation of total force in collision
+	float p1Speed = this->getCar()->getCarMph();
+	float p2Speed = causedByPlayer->getCar()->getCarMph();
+	float combinedSpeed = p1Speed + p2Speed;
+
+	// calculate ratio of damage to each player from the combined speed
+	// these will then be multiplied by the totalDamage to get amount of damage to each car
+	float damageShareTo1 = p2Speed / combinedSpeed;
+	float damageShareTo2 = p1Speed / combinedSpeed;
+
+	float totalDamage = abs(depth * 1000);
+	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
+	float damageToThis = totalDamage * damageShareTo1;
+
+	std::stringstream ss;
+	//ss << "totDamage " << totalDamage << "\n";
+	//OutputDebugString(ss.str().c_str());
+
+	// differentiate between differnt collision types
+	if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed > 40 || p2Speed > 40)) {
+		OutputDebugString("Gleam\n");
+	} else if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed < 40 && p2Speed < 40)) {
+		OutputDebugString("Bump\n");
+	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
+		OutputDebugString("Bang\n");
+		//ss <<
+		GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis);
+	}
+	// map damage to HUD
+	//std::stringstream ss;
+	if(or1 >= 0 && or1 < 90) {
+		//ss << "front right ";
+	} else if(or1 >= 90 && or1 < 180) {
+		//ss << "front left ";
+	} else if(or1 >= 180 && or1 < 270) {
+		//ss << "back left ";
+	} else if(or1 >= 270 && or1 < 360) {
+		//ss << "back right ";
+	}
+	//Ogre::Real or2;
+	//Ogre::Real or3;
+	
+	//ss << "\n" << "depth " << depth << "\n";
+	//ss << "local in A: " << pt.m_localPointA.x() << "\n";
+	//OutputDebugString(ss.str().c_str());
 }
 
+int prick = 0;
+
+void Player::cameraLookLeft(void) {
+	OutputDebugString("look left\n");
+}
+
+void Player::cameraLookRight(void) {
+	OutputDebugString("look right\n");
+}
+
+void Player::cameraLookBack(void) {
+	prick = 1;
+}
+
+void Player::revertCamera(void) {
+	prick = 0;
+}
+
+void Player::cycleCameraView(void) {
+
+	int index = (++cameraView) & numCameraViews;
+
+	mCamera->setOffset( cameraViews[index] );
+    mCamera->setLookOffset( cameraLookViews[index] );
+
+	switch(index) {
+		case 0 :
+		case 1 :
+			mCamera->setCamType( CAM_CHASE );
+			break;
+		case 2 :
+			mCamera->setCamType( CAM_FIXED );
+			break;
+	}
+}
 
 /// @brief  Attaches a camera to the player.
 /// @param  cam   The camera object to attach to the player.

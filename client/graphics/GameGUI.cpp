@@ -604,7 +604,7 @@ void GameGUI::updateCounters (void)
 
 void GameGUI::setupDamageDisplay (void)
 {
-    int width = 82, height = 169;
+    int width = 123, height = 200;
 
     // setup body image
     {
@@ -632,19 +632,23 @@ void GameGUI::setupDamageDisplay (void)
         damage->add2D( oleDamage );
     }
 
-    // setup individual parts
-    oleDamageEngine = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ENGINE" );
-    oleDamageFL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FL" );
-    oleDamageFR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FR" );
-    oleDamageRL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RL" );
-    oleDamageRR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RR" );
+    // setup individual parts    
 
-        oleDamageEngine->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageFL    ->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageFR    ->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageRL    ->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageRR    ->setMetricsMode( Ogre::GMM_PIXELS );
-    
+	damageHUD_Body	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BODY");
+	damageHUD_TL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TL" );
+	damageHUD_TR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TR" );
+	damageHUD_BL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BL" );
+	damageHUD_BR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BR" );
+	damageHUD_ML	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ML" );
+	damageHUD_MR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_MR" );
+																  
+	damageHUD_Body->setMetricsMode( Ogre::GMM_PIXELS );		  
+	damageHUD_TL->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_TR->setMetricsMode( Ogre::GMM_PIXELS );
+    damageHUD_BL->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_BR->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_ML->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_MR->setMetricsMode( Ogre::GMM_PIXELS );
         /*oleDamageEngine->setDimensions( width, height );
     oleDamageFL    ->setDimensions( width, height );
     oleDamageFR    ->setDimensions( width, height );

@@ -10,6 +10,7 @@ MeshDeformer::MeshDeformer(void) {
 void MeshDeformer::deformMesh(
 		const Ogre::MeshPtr    mesh,
 		const Ogre::Vector3    &epicentre,
+		float				   damage,
         const Ogre::Vector3    &position,
         const Ogre::Quaternion &orient,
 		const Ogre::Vector3    &scale) {
@@ -19,6 +20,9 @@ void MeshDeformer::deformMesh(
     size_t shared_offset = 0;
     size_t next_offset = 0;
     size_t index_offset = 0;
+
+	float dentSize = damage / 400;
+	float distanceCheck = 55 + (15 * dentSize);
  
     // Run through the submeshes again, adding the data into the arrays
     for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i) {
@@ -43,7 +47,7 @@ void MeshDeformer::deformMesh(
             
 			//Ogre::Vector3 tp(100, 90+(-10+(rand()%20)), 250+(-10+(rand()%20)));
 			Ogre::Vector3 diff;
-			Ogre::Vector3 origin = Ogre::Vector3::ZERO;
+			Ogre::Vector3 origin(0, 30, 0);
 			// x0+d*(x1-x0)/|x1-x0|
 
 			int once = 0;
@@ -52,12 +56,16 @@ void MeshDeformer::deformMesh(
 				
                 posElem->baseVertexPointerToElement(vertex, &pReal);
                 Ogre::Vector3 pt(pReal[0], pReal[1], pReal[2]);
-                //vertices[current_offset + j] = (orient * (pt * scale)) + position;
+                //pt = (orient * (pt * scale)) + position;
 				// x0+d*(x1-x0)/|x1-x0|
-				if(pt.distance(epicentre) <= 100) {
+				//std::stringstream ss;
+				//ss << "dist " << pt.distance(epicentre) << "\n";
+				//OutputDebugString(ss.str().c_str());
+				if(pt.distance(epicentre) <= distanceCheck) {
+					//OutputDebugString("deform\n");
 					diff = origin - pt;
 					diff.normalise();
-					diff *= 1.0f;
+					diff *= 10.f+(dentSize*10.f);
 
 					pReal[0] += (diff.x);
 					pReal[1] += (diff.y);
@@ -84,7 +92,7 @@ void MeshDeformer::traceNodeHierarchy(Ogre::SceneNode *rootnode) {
 	//DBOUT("number ofchild nodes: " << rootnode->numChildren() << "\n");
 }
 
-void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre) {
+void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage) {
 	Ogre::Vector3 adjust = vehicle->convertWorldToLocalPosition(epicentre);
 	Ogre::SceneNode::ChildNodeIterator kids = vehicle->getChildIterator();
 	Ogre::SceneNode::ObjectIterator childEnts = vehicle->getAttachedObjectIterator();
@@ -99,7 +107,7 @@ void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 
 			/*std::stringstream ss;
 	 		ss << "deform: " << currentEnt->getName() << "\n";
 			OutputDebugString(ss.str().c_str());*/
-			deformMesh(currentEnt->getMesh(), adjust);
+			deformMesh(currentEnt->getMesh(), adjust, damage);
 		}
 
 		//deformMesh(currentEnt->getMesh(), adjust);
@@ -108,7 +116,7 @@ void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 
 	Ogre::SceneNode *currentChild;
 	while(kids.hasMoreElements()) {
 		currentChild = (Ogre::SceneNode*) kids.getNext();
-		collisonDeform(currentChild, epicentre);
+		collisonDeform(currentChild, epicentre, damage);
 	}
 	//DBOUT("adjusted: " << adjust << "\n");
 }
