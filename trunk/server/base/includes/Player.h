@@ -70,6 +70,7 @@ public:
 	void addToGameScore(int amount);
     int lastsenthp;
 	bool isReady() { return mSpawned;};
+	void setHP(int newHP) { hp = newHP;};
 
 	//Operator overides
 	//bool operator<(Player *other) { return this->getRoundScore()<this->getRoundScore(); } //Used in the sort function

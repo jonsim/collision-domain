@@ -63,6 +63,7 @@ public:
     void giveConsoleFocus (void);
 	void openAdminWindow();
 	void updatePlayerComboBox();
+	bool healthChanged(const CEGUI::EventArgs &args);
 
 private:
     StringCircularBuffer consoleHistory;
