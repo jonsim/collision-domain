@@ -36,90 +36,61 @@ PlayerCollisions::~PlayerCollisions()
 static int numColls = 0;
 
 /// 
-void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
-{
-	//OutputDebugString("COLLISION!\n");
-    // New damage calculations
-    //Ogre::Real p1MPH = p1->getCar()->getCarMph();
-    //Ogre::Real p2MPH = p2->getCar()->getCarMph();
-    //Ogre::Real damage  = abs(p1MPH - p2MPH) * 0.25;  // quarter the difference in speeds
+void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold) {
 
-	
-    /*if (p1MPH > 15 || p2MPH > 15)
-    {
-        if (p1MPH > p2MPH)
-        {
-            p1->collisionTickCallback(damage * 0.4, p2);
-            p2->collisionTickCallback(damage, p1);
-        }
-        else
-        {
-            p1->collisionTickCallback(damage, p2);
-            p2->collisionTickCallback(damage * 0.4, p1);
-        }
-    }*/
+    // **NOTE** WE MUST NOT REMEMBER TO READ THE FOLLOWING COMMENT
     
     // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION
-    for (int i=0; i < contactManifold->getNumContacts(); i++)
-    {
-        const btManifoldPoint &pt = contactManifold->getContactPoint(i);
 
-        btScalar combinedLateralFriction = pt.m_combinedFriction;
-        btScalar appliedImpulse = pt.getAppliedImpulse();
-        btScalar distance = pt.getDistance();
-        btScalar lifetime = pt.getLifeTime();
-        btScalar lateralImpulse1 = pt.m_appliedImpulseLateral1;
-        btScalar lateralImpulse2 = pt.m_appliedImpulseLateral2;
-        
-        btVector3 localA = pt.m_localPointA;
-        btVector3 localB = pt.m_localPointB;
-        btVector3 normalOnB = pt.m_normalWorldOnB;
-        // for deformation
+	// number of contact points usually > 1, so average all of the relevant values
+    btVector3 averageCollisionPointOnA(0, 0, 0);
+	btVector3 averageCollisionPointOnB(0, 0, 0);
+	//btVector3 averageNormOnB(0, 0, 0);
 
-        p1->getCar()->GetHeading();
+	btScalar averageOverlapDistance = 0.f;
+	int numContacts = contactManifold->getNumContacts();
 
-        btVector3 worldPosOnA = pt.getPositionWorldOnA();
-        btVector3 worldPosOnB = pt.getPositionWorldOnB();
-        // for sparks
+	Ogre::Real p1MPH = abs(p1->getCar()->getCarMph());
+    Ogre::Real p2MPH = abs(p2->getCar()->getCarMph());
 
-        //btVector3 contactCenter = (worldPosOnA + worldPosOnB) / 2.0;
-			/*std::stringstream ss;
-			ss << p1 << p2 << "   " << i << "   " <<
-				combinedLateralFriction << "   " <<
-				appliedImpulse << "   " <<
-				distance << "   " <<
-				lifetime 
-				<< "   x" << worldPosOnA.x()
-				<< " y" << worldPosOnA.y()
-				<< " z" << worldPosOnA.z()
+	for (int j = 0; j < numContacts; j++) {
+		btManifoldPoint& pt = contactManifold->getContactPoint(j);
+		if (pt.getDistance() < 0.f) {
+			averageCollisionPointOnA += pt.getPositionWorldOnA();
+			averageCollisionPointOnB += pt.getPositionWorldOnB();
+			averageOverlapDistance += pt.getDistance();
+			//averageNormOnB +=  pt.m_normalWorldOnB;
+		}
+	}
+	// some collisions dont have contact points (dickheads), ignore them
+	if(numContacts > 0) {
+		averageCollisionPointOnA /= numContacts;
+		averageCollisionPointOnB /= numContacts;
+		averageOverlapDistance /= numContacts;
+		// dont want to be thinking about damage if neither car is going morethan 15mph, or if there is no penetration
+		if ((p1MPH > 15 || p2MPH > 15) && averageOverlapDistance < 0) {
+			// there is a collision
+			/* 
+			     collisionDelays, keeps a counter of the number of frames since each player has been in a collision
+				 Cars are added to collisionDelays on first crash
+			*/
+			if(collisionDelays[p1] == NULL) {
+				collisionDelays[p1] = 20;
+			}
+			if(collisionDelays[p2] == NULL) {
+				collisionDelays[p2] = 20;
+			}
+			// if either player hasn't collided for more than 15 frames, let them collide again
+			if(collisionDelays[p1] > 90 || collisionDelays[p2] > 90) {
+				// reset frame counter
+				collisionDelays[p1] = collisionDelays[p2] = 0;
+				p1->collisionTickCallback(averageCollisionPointOnA, averageOverlapDistance, p2);
+				p2->collisionTickCallback(averageCollisionPointOnB, averageOverlapDistance, p1);
+			}
+		}
 
-				<< "   x" << worldPosOnB.x()
-				<< " y" << worldPosOnB.y()
-				<< " x" << worldPosOnB.z()
+	} 
 
-				<< "   " << lateralImpulse1
-				<< "   " << lateralImpulse2
-
-				<< "   x" << localA.x()
-				<< " y" << localA.y()
-				<< " z" << localA.z()
-
-				<< "   x" << localB.x()
-				<< " y" << localB.y()
-				<< " z" << localB.z()
-
-				<< "   x" << normalOnB.x()
-				<< " y" << normalOnB.y()
-				<< " z" << normalOnB.z()
-				<< "\n";
-			OutputDebugString(ss.str().c_str());*/
-    }
-
-
-
-    // contactManifold->getContactBreakingThreshold();
-    // contactManifold->getContactPoint();
-    // contactManifold->validContactDistance();
     
     // check if player pointer is already somewhere in the lists
     std::list<Player*>* player1AlreadySeen = NULL;
@@ -171,68 +142,20 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
         
     // append the damage dealt in this substep to what we have already
 	
-
-	btVector3 averageCollisionPointOnA(0, 0, 0);
-	btVector3 averageCollisionPointOnB(0, 0, 0);
-	btVector3 averageNormOnB(0, 0, 0);
-
-	btScalar averageOverlapDistance = 0.f;
-	
-
-	int numContacts = contactManifold->getNumContacts();
-	for (int j = 0; j < numContacts; j++)
-	{
-		btManifoldPoint& pt = contactManifold->getContactPoint(j);
-		if (pt.getDistance() < 0.f)
-		{
-			//pt.getposition
-			//const btVector3& ptA =
-			averageCollisionPointOnA += pt.getPositionWorldOnA();
-			averageOverlapDistance += pt.getDistance();
-			//averageNormOnA += pt.m_no// pt.m_normalWorldOnA;
-			//const btVector3& ptB = pt.getPositionWorldOnB();
-			//const btVector3& normalOnB = pt.m_normalWorldOnB;
-			averageCollisionPointOnB += pt.getPositionWorldOnB();
-			averageNormOnB +=  pt.m_normalWorldOnB;
-			//std::stringstream ss;
-			//ss << "point on car A: " << ptA.x() << "\n";
-			//ss << "local in A: " << pt.m_localPointA.x() << "\n";
-			//OutputDebugString(ss.str().c_str());
-		}
-	}
-
-	averageCollisionPointOnA /= numContacts;
-	averageCollisionPointOnB /= numContacts;
-	//averageOverlapDistance   /= (btScalar)numContacts;
-	//averageNormOnB           /= numContacts;
-	//float angleBetweenNorA;
-
-
-	Ogre::Real p1MPH = p1->getCar()->getCarMph();
-    Ogre::Real p2MPH = p2->getCar()->getCarMph();
-    Ogre::Real damage  = abs(p1MPH - p2MPH) * 0.25;
-
-	if (p1MPH > 15 || p2MPH > 15)
-    {
-        if (p1MPH > p2MPH)
-        {
-			p1->collisionTickCallback(averageCollisionPointOnA, damage * 0.4, p2);
-			p2->collisionTickCallback(averageCollisionPointOnB, damage, p1);
-        }
-        else
-        {
-            p1->collisionTickCallback(averageCollisionPointOnA, damage, p2);
-			p2->collisionTickCallback(averageCollisionPointOnB, damage * 0.4, p1);
-        }
-    }
-	
-
-	
 }
 
 
 void PlayerCollisions::frameEventEnd()
 {
+	collisionDelaysItr = collisionDelays.begin();
+	for(;collisionDelaysItr != collisionDelays.end(); collisionDelaysItr++) {
+		if(collisionDelaysItr->second < 100) {
+			collisionDelaysItr->second += 1;
+		}
+	}
+	/*std::stringstream ss;
+	ss << "frame toc " << rand() << "\n";
+	OutputDebugString(ss.str().c_str());*/
     // apply damage and dispatch collision sounds
     {
         //// the sound will only be played per group of collisions i.e. p1+p2+p4+p99 etc.

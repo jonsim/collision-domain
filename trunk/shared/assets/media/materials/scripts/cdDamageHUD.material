@@ -1,101 +1,268 @@
 import cd/GUIComponent from "cdBaseMaterials.material"
 
-// GREEN TEXTURES
-
-material damage_g_body : cd/GUIComponent
-{
-	set $texture g-body.png
+// car textures
+// white
+material damage_truck_white : cd/GUIComponent {
+    set $texture truck_white_HUD.png
 }
 
-material damage_g_engine : cd/GUIComponent
-{
-	set $texture g-engine.png
+material damage_banger_white : cd/GUIComponent {
+    set $texture banger_white_HUD.png
 }
 
-material damage_g_fl : cd/GUIComponent
-{
-	set $texture g-wheel-fl.png
+material damage_smallcar_white : cd/GUIComponent {
+    set $texture smallCar_white_HUD.png
 }
 
-material damage_g_fr : cd/GUIComponent
-{
-	set $texture g-wheel-fr.png
+// blue
+material damage_truck_blue : cd/GUIComponent {
+    set $texture truck_blue_HUD.png
 }
 
-material damage_g_rl : cd/GUIComponent
-{
-	set $texture g-wheel-rl.png
+material damage_banger_blue : cd/GUIComponent {
+    set $texture banger_blue_HUD.png
 }
 
-material damage_g_rr : cd/GUIComponent
-{
-	set $texture g-wheel-rr.png
+material damage_smallcar_blue : cd/GUIComponent {
+    set $texture smallCar_blue_HUD.png
 }
 
-
-
-// YELLOW TEXTURES
-
-material damage_y_body : cd/GUIComponent
-{
-	set $texture y-body.png
+// red
+material damage_truck_red : cd/GUIComponent {
+    set $texture truck_red_HUD.png
 }
 
-material damage_y_engine : cd/GUIComponent
-{
-	set $texture y-engine.png
+material damage_banger_red : cd/GUIComponent {
+    set $texture banger_red_HUD.png
 }
 
-material damage_y_fl : cd/GUIComponent
-{
-	set $texture y-wheel-fl.png
-}
-
-material damage_y_fr : cd/GUIComponent
-{
-	set $texture y-wheel-fr.png
-}
-
-material damage_y_rl : cd/GUIComponent
-{
-	set $texture y-wheel-rl.png
-}
-
-material damage_y_rr : cd/GUIComponent
-{
-	set $texture y-wheel-rr.png
+material damage_smallcar_red : cd/GUIComponent {
+    set $texture smallCar_red_HUD.png
 }
 
 
-
-// RED TEXTURES
-
-material damage_r_body : cd/GUIComponent
-{
-	set $texture r-body.png
+// damage areas for truck - RED
+material damage_truck_TL_red : cd/GUIComponent {
+    set $texture truck_TL_damage_r.png
 }
 
-material damage_r_engine : cd/GUIComponent
-{
-	set $texture r-engine.png
+material damage_truck_TR_red : cd/GUIComponent {
+    set $texture truck_TR_damage_r.png
 }
 
-material damage_r_fl : cd/GUIComponent
-{
-	set $texture r-wheel-fl.png
+material damage_truck_BL_red : cd/GUIComponent {
+    set $texture truck_BL_damage_r.png
 }
 
-material damage_r_fr : cd/GUIComponent
-{
-	set $texture r-wheel-fr.png
+material damage_truck_BR_red : cd/GUIComponent {
+    set $texture truck_BR_damage_r.png
 }
 
-material damage_r_rl : cd/GUIComponent
-{
-	set $texture r-wheel-rl.png
+material damage_truck_MR_red : cd/GUIComponent {
+    set $texture truck_MR_damage_r.png
 }
 
-material damage_r_rr : cd/GUIComponent
-{
-	set $texture r-wheel-rr.png
+material damage_truck_ML_red : cd/GUIComponent {
+    set $texture truck_ML_damage_r.png
+}
+
+// damage areas for truck - YELLOW
+material damage_truck_TL_yellow : cd/GUIComponent {
+    set $texture truck_TL_damage_y.png
+}
+
+material damage_truck_TR_yellow : cd/GUIComponent {
+    set $texture truck_TR_damage_y.png
+}
+
+material damage_truck_BL_yellow : cd/GUIComponent {
+    set $texture truck_BL_damage_y.png
+}
+
+material damage_truck_BR_yellow : cd/GUIComponent {
+    set $texture truck_BR_damage_y.png
+}
+
+material damage_truck_MR_yellow : cd/GUIComponent {
+    set $texture truck_MR_damage_y.png
+}
+
+material damage_truck_ML_yellow : cd/GUIComponent {
+    set $texture truck_ML_damage_y.png
+}
+
+// damage areas for truck - GREEN
+material damage_truck_TL_green : cd/GUIComponent {
+    set $texture truck_TL_damage_g.png
+}
+
+material damage_truck_TR_green : cd/GUIComponent {
+    set $texture truck_TR_damage_g.png
+}
+
+material damage_truck_BL_green : cd/GUIComponent {
+    set $texture truck_BL_damage_g.png
+}
+
+material damage_truck_BR_green : cd/GUIComponent {
+    set $texture truck_BR_damage_g.png
+}
+
+material damage_truck_MR_green : cd/GUIComponent {
+    set $texture truck_MR_damage_g.png
+}
+
+material damage_truck_ML_green : cd/GUIComponent {
+    set $texture truck_ML_damage_g.png
+}
+
+
+// damage areas for banger - RED
+material damage_banger_TL_red : cd/GUIComponent {
+    set $texture banger_TL_damage_r.png
+}
+
+material damage_banger_TR_red : cd/GUIComponent {
+    set $texture banger_TR_damage_r.png
+}
+
+material damage_banger_BL_red : cd/GUIComponent {
+    set $texture banger_BL_damage_r.png
+}
+
+material damage_banger_BR_red : cd/GUIComponent {
+    set $texture banger_BR_damage_r.png
+}
+
+material damage_banger_MR_red : cd/GUIComponent {
+    set $texture banger_MR_damage_r.png
+}
+
+material damage_banger_ML_red : cd/GUIComponent {
+    set $texture banger_ML_damage_r.png
+}
+
+// damage areas for banger - YELLOW
+material damage_banger_TL_yellow : cd/GUIComponent {
+    set $texture banger_TL_damage_y.png
+}
+
+material damage_banger_TR_yellow : cd/GUIComponent {
+    set $texture banger_TR_damage_y.png
+}
+
+material damage_banger_BL_yellow : cd/GUIComponent {
+    set $texture banger_BL_damage_y.png
+}
+
+material damage_banger_BR_yellow : cd/GUIComponent {
+    set $texture banger_BR_damage_y.png
+}
+
+material damage_banger_MR_yellow : cd/GUIComponent {
+    set $texture banger_MR_damage_y.png
+}
+
+material damage_banger_ML_yellow : cd/GUIComponent {
+    set $texture banger_ML_damage_y.png
+}
+
+// damage areas for banger - GREEN
+material damage_banger_TL_green : cd/GUIComponent {
+    set $texture banger_TL_damage_g.png
+}
+
+material damage_banger_TR_green : cd/GUIComponent {
+    set $texture banger_TR_damage_g.png
+}
+
+material damage_banger_BL_green : cd/GUIComponent {
+    set $texture banger_BL_damage_g.png
+}
+
+material damage_banger_BR_green : cd/GUIComponent {
+    set $texture banger_BR_damage_g.png
+}
+
+material damage_banger_MR_green : cd/GUIComponent {
+    set $texture banger_MR_damage_g.png
+}
+
+material damage_banger_ML_green : cd/GUIComponent {
+    set $texture banger_ML_damage_g.png
+}
+
+// damage areas for smallcar - RED
+material damage_smallcar_TL_red : cd/GUIComponent {
+    set $texture smallCar_TL_damage_r.png
+}
+
+material damage_smallcar_TR_red : cd/GUIComponent {
+    set $texture smallCar_TR_damage_r.png
+}
+
+material damage_smallcar_BL_red : cd/GUIComponent {
+    set $texture smallCar_BL_damage_r.png
+}
+
+material damage_smallcar_BR_red : cd/GUIComponent {
+    set $texture smallCar_BR_damage_r.png
+}
+
+material damage_smallcar_MR_red : cd/GUIComponent {
+    set $texture smallCar_MR_damage_r.png
+}
+
+material damage_smallcar_ML_red : cd/GUIComponent {
+    set $texture smallCar_ML_damage_r.png
+}
+
+// damage areas for smallcar - YELLOW
+material damage_smallcar_TL_yellow : cd/GUIComponent {
+    set $texture smallCar_TL_damage_y.png
+}
+
+material damage_smallcar_TR_yellow : cd/GUIComponent {
+    set $texture smallCar_TR_damage_y.png
+}
+
+material damage_smallcar_BL_yellow : cd/GUIComponent {
+    set $texture smallCar_BL_damage_y.png
+}
+
+material damage_smallcar_BR_yellow : cd/GUIComponent {
+    set $texture smallCar_BR_damage_y.png
+}
+
+material damage_smallcar_MR_yellow : cd/GUIComponent {
+    set $texture smallCar_MR_damage_y.png
+}
+
+material damage_smallcar_ML_yellow : cd/GUIComponent {
+    set $texture smallCar_ML_damage_y.png
+}
+
+// damage areas for smallcar - GREEN
+material damage_smallcar_TL_green : cd/GUIComponent {
+    set $texture smallCar_TL_damage_g.png
+}
+
+material damage_smallcar_TR_green : cd/GUIComponent {
+    set $texture smallCar_TR_damage_g.png
+}
+
+material damage_smallcar_BL_green : cd/GUIComponent {
+    set $texture smallCar_BL_damage_g.png
+}
+
+material damage_smallcar_BR_green : cd/GUIComponent {
+    set $texture smallCar_BR_damage_g.png
+}
+
+material damage_smallcar_MR_green : cd/GUIComponent {
+    set $texture smallCar_MR_damage_g.png
+}
+
+material damage_smallcar_ML_green : cd/GUIComponent {
+    set $texture smallCar_ML_damage_g.png
 }
