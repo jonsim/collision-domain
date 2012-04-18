@@ -229,19 +229,21 @@ void GameGUI::openAdminWindow()
 	playerSelected->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.45,0.0)));
 	playerSelected->setAlwaysOnTop(true);
 
-	//create health box
+	//create health label
 	CEGUI::Editbox* healthLabel = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Editbox"));
 	healthLabel->setText("Health");
 	healthLabel->setReadOnly(true);
 	playerSelected->addChildWindow(healthLabel);
-	healthLabel->setSize(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25,0.0)));
-	healthLabel->setPosition(CEGUI::UVector2(CEGUI::UDim(0.15, 0), CEGUI::UDim(0.15,0.0)));
+	healthLabel->setSize(CEGUI::UVector2(CEGUI::UDim(0.20, 0), CEGUI::UDim(0.25,0.0)));
+	healthLabel->setPosition(CEGUI::UVector2(CEGUI::UDim(0.03, 0), CEGUI::UDim(0.15,0.0)));
 	healthLabel->show();
 
+	//create box to show/edit health
 	health = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Editbox"));
 	playerSelected->addChildWindow(health);
-	health->setSize(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25,0.0)));
-	health->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.15,0.0)));
+	health->setSize(CEGUI::UVector2(CEGUI::UDim(0.2, 0), CEGUI::UDim(0.25,0.0)));
+	health->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.15,0.0)));
+	health->setReadOnly(false);
 	health->show();
 
 }
@@ -284,11 +286,35 @@ void GameGUI::updatePlayerComboBox()
 		//add the text to the player selected window
 		playerSelected->setText(playerName);
 		playerSelected->show();
-		//display the health
-		char hp[4];
-		sprintf(hp, "%d", player->getHP());
-		health->setText(hp);
-		health->show();
+
+		char hp[5];
+		//update the health box doesn't have input focus
+		if(health->hasInputFocus() == false)
+		{
+			//display the health
+			sprintf(hp, "%d", player->getHP());
+			health->setText(hp);
+			health->show();
+			health->subscribeEvent( CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber( &GameGUI::healthChanged, this ) );
+		}
 	}
 
+}
+
+bool GameGUI::healthChanged(const CEGUI::EventArgs &args)
+{
+	//validate health in editbox
+	const char* newHealth = health->getText().c_str();
+	int len = strlen(newHealth);
+	for(int i = 0;i < len;i++)
+	{
+		if(isdigit(newHealth[i]) == false)
+			return false;
+	}
+
+	//set the new health
+	Player *player = GameCore::mPlayerPool->getPlayer(playerSelected->getText().c_str());
+	int healthInt;
+	std::stringstream(newHealth) >> healthInt;
+	player->setHP(healthInt);
 }
