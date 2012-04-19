@@ -14,24 +14,12 @@
 Gameplay::Gameplay() : mGameActive(false)
 {
 	mSB = new ScoreBoard();
-	//mHUD = new HUD();
-	//this->setNumberOfTeams(2); //Might as well default it to 2
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
 
     //Set initialised variables
     wtInitalised = false;    
 }
-
-/*Ogre::Real Gameplay::getScorePercentage(std::string identifier)
-{
-	return 0.0;
-}
-
-int	Gameplay::getScoreValue(std::string identifier)
-{
-	return 0;
-}*/
 
 Team* Gameplay::getTeam(TeamID teamID)
 {
@@ -456,6 +444,8 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     else
                     {
                         //End of game II
+                        GameCore::mGui->outputToConsole("The game has ended [3 Rounds] \n");
+
                     }
 				#endif
 				break;

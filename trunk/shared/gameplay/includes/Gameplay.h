@@ -38,8 +38,6 @@ class Gameplay
 public:
 								Gameplay();
                                 ~Gameplay();
-	//Ogre::Real					getScorePercentage(std::string identifier);
-	//int							getScoreValue(std::string identifier);
 	bool						gameOver();
 	bool						hasWon(TeamID teamID);
 	void						checkIfGameOver();

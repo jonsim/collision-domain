@@ -59,28 +59,49 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 	return -1;
 }
 
-bool PlayerPool::cmp(Player* a, Player* b)
+bool PlayerPool::cmpRound(Player* a, Player* b)
 {
-	if(a == NULL)
-		return false;
-	if(b==NULL)
-		return true;
 	return a->getRoundScore() < b->getRoundScore();
+}
+
+bool PlayerPool::cmpGame(Player* a, Player* b)
+{
+    return a->getGameScore() < b->getGameScore();
 }
 
 //This returns all the players in the pool in sorted score order.
 std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 {
-	//Put all the players from the array into a vector
+	//This is a much nicer way of doing it
+	std::sort(this->mPlayers.begin(),this->mPlayers.end(),PlayerPool::cmpRound);
+	
 	std::vector<Player*> tmp;
-	for(unsigned int i=0;i<mPlayers.size();i++)
+	OutputDebugString("Sorted List");
+	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
 	{
-		if(mPlayers[i] != NULL)
-			tmp.push_back(mPlayers[i]);
+		std::stringstream tmpString;
+		tmpString << "Player: " << (*it)->getNickname() << " " << (*it)->getRoundScore() << "\n";
+		OutputDebugString(tmpString.str().c_str());
+		tmp.push_back((*it));
 	}
 	
-	//And sort the vector
-	std::sort(tmp.begin(),tmp.end(),PlayerPool::cmp);
+	//return this->mPlayers;
+	return tmp;
+}
+
+
+//This returns all the players in the pool in sorted game score order.
+std::vector<Player*> PlayerPool::getGameScoreOrderedPlayers()
+{
+	//This is a much nicer way of doing it
+	std::sort(this->mPlayers.begin(),this->mPlayers.end(),PlayerPool::cmpGame);
+	
+    //In theory this is not required
+	std::vector<Player*> tmp;
+	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
+	{
+		tmp.push_back((*it));
+	}
 	
 	//return this->mPlayers;
 	return tmp;

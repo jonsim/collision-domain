@@ -159,7 +159,7 @@ std::string ScoreBoard::buildScoreText()
 		std::vector<Player*> sortedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();
 		//Print out all the players names
 		//for(int i=0;i<numberOfPlayers;i++)
-		for(int i=(numberOfPlayers-1);i>=0;i--)
+		for(int i=(sortedPlayers.size()-1);i>=0;i--)
 		{
 			//Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
 			Player* tmpPlayer = sortedPlayers[i];
