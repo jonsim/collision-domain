@@ -108,12 +108,8 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 	std::sort(this->mPlayers.begin(),this->mPlayers.end(),PlayerPool::cmpRound);
 	
 	std::vector<Player*> tmp;
-	OutputDebugString("Sorted List");
 	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
 	{
-		std::stringstream tmpString;
-		tmpString << "Player: " << (*it)->getNickname() << " " << (*it)->getRoundScore() << "\n";
-		OutputDebugString(tmpString.str().c_str());
 		tmp.push_back((*it));
 	}
 	

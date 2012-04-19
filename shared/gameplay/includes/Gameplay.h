@@ -23,9 +23,11 @@
 #define NUM_TEAMS 2
 #define NUM_ROUNDS 3
 
+#define SELECTED_GAME TDM_MODE
+
 /*-------------------- ENUM TYPES -------------------*/
 // Represents a game mode. FFA = Free for all; TDM = Team deathmatch, KOTH = King of the hill.
-enum GameMode {FFA_MODE, TDM_MODE, KOTH_MODE, VIP_MODE};
+enum GameMode {FFA_MODE, TDM_MODE, VIP_MODE};
 enum TeamID   {NO_TEAM = 0, BLUE_TEAM = 1, RED_TEAM = 2};
 
 class Player;
@@ -42,13 +44,12 @@ public:
 	bool						hasWon(TeamID teamID);
 	void						checkIfGameOver();
 	void						setGameMode(GameMode gameMode);
+    GameMode                    getGameMode() { return mGameMode; }
 	void						setNewVIP(TeamID teamID);
     void                        setNewVIP(TeamID teamID, Player* newVIP);
 	void						setNewVIPs();
     bool                        addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam );
-    //TeamID                      autoAssignTeam();
     bool                        validateTeamChoice(TeamID requestedTeam);
-	//void						declareNewPlayer( RakNet::RakNetGUID playerid ); //Returns true if the player has been added to big screen
     void						notifyDamage(Player* player);
 	void						preparePlayers(); //Place the palyers in the correct place
 	void						resetAllHP();
@@ -84,6 +85,10 @@ private:
     void                        createWinnerTextOverlay();
     void                        showWinnerText(Player* winningPlayer, bool round);
     void                        hideWinnerText();
+
+    //Game type text suff
+    void                        showGameTypeText();
+    void                        hideGameTypeText();
 
     //Variables
     Team*                       mTeams[NUM_TEAMS];

@@ -17,6 +17,7 @@ Gameplay::Gameplay() : mGameActive(false)
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
 
+    this->setGameMode(SELECTED_GAME); //Set it to the selecte game, change at top of gampleay.h
     //Set initialised variables
     wtInitalised = false;    
 }
@@ -499,6 +500,36 @@ Player* Gameplay::getRoundWinner()
 {
     std::vector<Player*> orderedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();    
     return orderedPlayers[orderedPlayers.size()-1];
+}
+
+void Gameplay::showGameTypeText()
+{
+    if(!wtInitalised)
+        this->createWinnerTextOverlay();
+
+    if(this->getGameMode() == FFA_MODE)
+    {
+        this->textAreaT1->setCaption("FREE FOR ALL!!");
+    }
+    else if(this->getGameMode() == TDM_MODE)
+    {
+        this->textAreaT1->setCaption("TEAM DEATHMATCH");
+    }
+    else if(this->getGameMode() == VIP_MODE)
+    {
+        this->textAreaT1->setCaption("GET THE VIPS");
+    }
+    else
+    {
+        OutputDebugString("Not a recognised game mode");
+    }
+
+    this->wtOverlay->show();
+}
+
+void Gameplay::hideGameTypeText()
+{
+    this->wtOverlay->hide();
 }
 
 /* If round is set to true it does round winning screen if false it
