@@ -18,6 +18,9 @@ Gameplay::Gameplay() : mGameActive(false)
 	//this->setNumberOfTeams(2); //Might as well default it to 2
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
+
+    //Set initialised variables
+    wtInitalised = false;    
 }
 
 /*Ogre::Real Gameplay::getScorePercentage(std::string identifier)
@@ -428,7 +431,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					tmpOLE->show();
 				#endif
 				break;
-			case GAME_OVER_OT:
+			case ROUND_OVER_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->showForce();
 				#endif
@@ -436,49 +439,58 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_SERVER
 					GameCore::mGui->outputToConsole("Rounded Ended.\n");
 
+                    //Show the wining player II
 					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
 					mInfoItems.push_back(transitionII);
-					newGameII = new InfoItem(NEW_GAME_OT, 10000, 1000);
-					mInfoItems.push_back(newGameII);
-					this->calculateRoundScores();
-
-					//SYNC
 					transitionII->sendPacket();
-					newGameII->sendPacket();
+
+                    
+                    if(this->getRoundNumber() ==  NUM_ROUNDS)
+                    {
+                        //New Round II
+                        newRoundII = new InfoItem(NEW_ROUND_OT, 10000, 1000);
+					    mInfoItems.push_back(newRoundII);
+					    this->calculateRoundScores();
+                        newRoundII->sendPacket();
+                    }
+                    else
+                    {
+                        //End of game II
+                    }
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->hideForce();
-					/*
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
 						
 						GameCore::mClientGraphics->mBigScreen->hideScreen();
 						//Move the camera
-						GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,0,80));
-						GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
-						GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,0,-300));
+						//GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,0,80));
+						//GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
+						//GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,0,-300));
 					}
-					*/
+                    
+                    this->showWinnerText(GameCore::mPlayerPool->getLocalPlayer(),true);
 				#endif
 				#ifdef COLLISION_DOMAIN_SERVER
 
 				#endif
 				
 				break;
-			case NEW_GAME_OT:
-				/*
+			case NEW_ROUND_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    this->hideWinnerText();
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
 						//Move the camera back
-						GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,10,0));
-						GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,100,0));
-						GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
+						//GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,10,0));
+						//GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,100,0));
+						//GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
 						GameCore::mClientGraphics->mBigScreen->showScreen();
 					}
 				#endif
-				*/
 				#ifdef COLLISION_DOMAIN_SERVER
+                    this->incrementRoundNumber();
 					this->scheduleCountDown();
 				#endif
 				break;
@@ -490,6 +502,62 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 			tmpOLE->hide();
 		#endif
 	}
+}
+
+/* If round is set to true it does round winning screen if false it
+   does end of game winning screen */
+void Gameplay::showWinnerText(Player* winningPlayer, bool round)
+{
+    if(!wtInitalised)
+        this->createWinnerTextOverlay();
+
+    std::stringstream tmpString;
+    tmpString << winningPlayer->getNickname() << " won the ";
+
+    if(round)
+    {
+        tmpString << "round!!!";
+    }
+    else
+    {
+        tmpString << "game!!!";
+    }
+    
+    this->textAreaT1->setCaption(tmpString.str());
+    this->wtOverlay->show();
+}
+
+void Gameplay::hideWinnerText()
+{
+    this->wtOverlay->hide();
+}
+
+void Gameplay::createWinnerTextOverlay()
+{
+    wtOverlay = Ogre::OverlayManager::getSingleton().create( "WINNER_TEXT_OVERLAY" );
+    wtOverlay->setZOrder(601);
+
+    wtContainer = static_cast<Ogre::OverlayContainer*> ( 
+		Ogre::OverlayManager::getSingleton().
+			createOverlayElement( "Panel", "WINNER_TEXT_CONTAINER" ) );
+	wtOverlay->add2D(wtContainer);
+	wtContainer->setPosition(0.0f,0.0f);
+
+    //Text stuff
+    this->textAreaT1 = Ogre::OverlayManager::getSingleton().
+		createOverlayElement("TextArea","WINNER_TEXT_ELEMENT");
+
+	this->textAreaT1->setDimensions(0.9f, 0.6f);
+	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
+	this->textAreaT1->setPosition(100,100);
+	
+	this->textAreaT1->setParameter("font_name","DejaVuSans");
+	this->textAreaT1->setParameter("char_height", "60");
+	this->textAreaT1->setColour(Ogre::ColourValue::White);
+
+	this->wtContainer->addChild(this->textAreaT1);
+	this->wtOverlay->hide();
+    this->wtInitalised = true;
 }
 
 void Gameplay::scheduleCountDown()
@@ -519,8 +587,8 @@ void Gameplay::scheduleCountDown()
 		mInfoItems.push_back(oneEII);
 
 		//GAME OVER
-		InfoItem* goEII = new InfoItem(GAME_OVER_OT,120000,3000);
-		mInfoItems.push_back(goEII);
+		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,120000,3000);
+		mInfoItems.push_back(roEII);
 
 		//Send packets
 	
@@ -532,7 +600,7 @@ void Gameplay::scheduleCountDown()
 		threeEII->sendPacket();
 		twoEII->sendPacket();
 		oneEII->sendPacket();
-		goEII->sendPacket();
+		roEII->sendPacket();
 	#endif
 }
 

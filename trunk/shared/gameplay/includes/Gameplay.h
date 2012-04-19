@@ -21,6 +21,7 @@
 #define NUM_PLAYERS_TO_START 5
 #define NUM_TOP_PLAYERS 5
 #define NUM_TEAMS 2
+#define NUM_ROUNDS 3
 
 /*-------------------- ENUM TYPES -------------------*/
 // Represents a game mode. FFA = Free for all; TDM = Team deathmatch, KOTH = King of the hill.
@@ -67,16 +68,24 @@ public:
 	void						markDeath(Player* deadPlayer, Player* causedBy);
 	std::vector<DEATH*>			getDeathList();
 	void						restartGame();
+
+    void                        setRoundNumber(int newRound) {roundNumber = newRound;}
+    void                        incrementRoundNumber() { roundNumber++; }
+    int                         getRoundNumber() { return roundNumber; }
 private:
 	//Methods
 	bool						vipModeGameWon();
 	Team*						getTeam(TeamID teamID);
     Team*                       autoAssignTeam();
-	//Team*						getTeamToJoin();
 	void						printTeamStats();
 	void						scheduleCountDown();
-	//Variabels
-	//std::vector<Team*>			teams;
+
+    //Winner text stuff
+    void                        createWinnerTextOverlay();
+    void                        showWinnerText(Player* winningPlayer, bool round);
+    void                        hideWinnerText();
+
+    //Variables
     Team*                       mTeams[NUM_TEAMS];
 	GameMode					mGameMode;
 	
@@ -87,6 +96,14 @@ private:
 	std::vector<DEATH*>			deathList;
 	void						calculateRoundScores();
 	Player*						topPlayers[NUM_TOP_PLAYERS];
+
+    int                         roundNumber;
+
+    //Winner text stuff
+    bool                        wtInitalised;
+    Ogre::Overlay               *wtOverlay;
+    Ogre::OverlayContainer      *wtContainer;
+    Ogre::OverlayElement        *textAreaT1;
 };
 
 
