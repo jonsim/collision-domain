@@ -60,6 +60,7 @@ public:
 	void						setupOverlay();
 	void						drawDeathInfo();
 	void						initialize();
+    Player*                     getRoundWinner();
 
 	ScoreBoard*					mSB;
 	std::vector<InfoItem*>		mInfoItems;

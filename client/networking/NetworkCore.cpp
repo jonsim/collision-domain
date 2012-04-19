@@ -475,6 +475,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "InfoItemReceive",     InfoItemReceive, 0 );
 	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath, 0 );
 	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
+    //m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
 }
 
 
