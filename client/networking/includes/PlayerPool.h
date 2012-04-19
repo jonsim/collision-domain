@@ -28,8 +28,10 @@ public:
 	void                addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void                delPlayer( RakNet::RakNetGUID playerid );
 	int                 getNumberOfPlayers();
-	static bool cmp(Player* a, Player* b);
+	static bool cmpRound(Player* a, Player* b); //Sorts the players based on their round score
+    static bool cmpGame(Player* a, Player* b); //Sorts the players based on their game score
 	std::vector<Player*> getScoreOrderedPlayers();
+    std::vector<Player*> getGameScoreOrderedPlayers();
 	std::vector<Player*> getPlayers();
 
 	Player*             getPlayer( int index );
