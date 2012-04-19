@@ -28,7 +28,8 @@ using namespace OgreOggSound;
 #define FILE_POWERUP_HEAVY     "powerup-heavy.wav"
 #define FILE_POWERUP_RANDOM    "powerup-random.wav"
 
-#define FILE_BACKING_TRACK     "rockTrack.ogg"
+#define FILE_BACKING_TRACK     "Composer_Backing.ogg"
+#define FILE_MENU_TRACK        "Composer_Menu.ogg"
 
 AudioCore::AudioCore()
     : mInitOK(false)
@@ -211,7 +212,7 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     // if framerate is low, unscaled Velocity will be higher than expected. if framerate is high, unscaled velocity will be lower than expected.
 
     mSoundManager->getListener()->setPosition(earsPosition);
-    mSoundManager->getListener()->setOrientation(earsOrientation);
+    //mSoundManager->getListener()->setOrientation(earsOrientation);
 
     mSoundManager->getListener()->setVelocity(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getLinearVelocity());
 
