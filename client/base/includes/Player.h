@@ -67,7 +67,7 @@ public:
 	void setPlayerGUID(RakNet::RakNetGUID playerGUID);
 
 	CarSnapshot *mSnapshots;
-	
+    Player* mLastKiller;
 
 	
 	void addToScore(int amount);
@@ -94,7 +94,6 @@ private:
 	Ogre::SceneNode*						   camNode;
 	Ogre::SceneNode*						   camArmNode;
     CarType									   mCarType;
-
 	Ogre::OverlayElement* mOLE;
 	/*bool									   processingCollision;
 	std::map<std::string, std::vector<float> >			   collisionDamages;

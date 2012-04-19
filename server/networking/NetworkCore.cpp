@@ -290,7 +290,10 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 
             if( playerSend->getCar() )
             {
+                unsigned char packetid;
                 RakNet::BitStream bsSpawn;
+                packetid = ID_SPAWN_SUCCESS;
+                bsSpawn.Write( packetid );
 				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
                 bsSpawn.Write( playerSend->getCarType() );
 				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
@@ -340,6 +343,8 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
         return;
     }
+
+    GameCore::mPlayerPool->getPlayer( pkt->guid )->setPlayerState( PLAYER_STATE_TEAM_SEL );
 
 	RakNet::BitStream bsNewPlayer;
 	RakNet::BitStream bsSend;
@@ -396,6 +401,23 @@ void NetworkCore::InfoItemTransmit( RakNet::BitStream *bitStream, RakNet::Packet
     RakNet::StringCompressor().EncodeString( szMessage, 128, &bsSend );
 
     m_RPC->Signal( "InfoItemTransmit", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
+}
+
+void NetworkCore::sendPlayerSpawn( Player *pPlayer )
+{
+    unsigned char packetid;
+    RakNet::BitStream bsSpawn;
+
+    pPlayer->createPlayer( (CarType) pPlayer->getCarType(), (TeamID) pPlayer->getTeam() );
+    GameCore::mGui->outputToConsole( "Player '%s' spawned.\n", pPlayer->getNickname() );
+
+	packetid = ID_SPAWN_SUCCESS;
+    bsSpawn.Write( packetid );
+	bsSpawn.Write( pPlayer->getPlayerGUID() );
+    bsSpawn.Write( pPlayer->getCarType() );
+
+	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );   
+    pPlayer->setPlayerState( PLAYER_STATE_INGAME );
 }
 
 void NetworkCore::sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc )
@@ -466,29 +488,48 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 	Player *pPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid );
 
+    unsigned char packetid;
+    RakNet::BitStream bsSpawn;
+
     // Don't allow spawn if they haven't selected a team yet
     if( pPlayer->getTeam() == NO_TEAM )
+    {
+        packetid = ID_SPAWN_NO_TEAM;
+		bsSpawn.Write( packetid );
+        m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+        pPlayer->setPlayerState( PLAYER_STATE_TEAM_SEL );
         return;
+    }
 
-    // TODO:
-    // check for game in progress, maximum number of cars/trucks etc
+    if( GameCore::mGameplay->mGameActive == false )
+    {
+        packetid = ID_SPAWN_GAME_INACTIVE;
+		bsSpawn.Write( packetid );
+        m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+        pPlayer->setCarType( iCarType );
+        pPlayer->setPlayerState( PLAYER_STATE_WAIT_SPAWN );
 
-	pPlayer->createPlayer( iCarType, (TeamID) pPlayer->getTeam() );
+        // Check how many players we now have waiting to spawn
+        int size = GameCore::mPlayerPool->getNumberOfPlayers();
+        int c = 0;
+	    for(int i=0;i<size;i++)
+	    {
+		    Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+            if( tmpPlayer->getPlayerState() == PLAYER_STATE_WAIT_SPAWN )
+                c ++;
+        }
 
-    GameCore::mGui->outputToConsole("Player '%s' spawned.\n", pPlayer->getNickname());
+        // Start the game (will cause all waiting players to spawn)
+        if( GameCore::mGameplay->mGameActive == false && c >= NUM_PLAYERS_TO_START )
+            GameCore::mGameplay->startGame();
 
-	// Alert the BigScreen we've had a player spawned
-	//GameCore::mGraphicsApplication->bigScreen->declareNewPlayer(pkt->guid);
+        return;
+    }
 
-	RakNet::BitStream bsSpawn;
-	bsSpawn.Write( pkt->guid );
-    bsSpawn.Write( iCarType );
-    //bsSpawn.Write( pPlayer->getTeam() );
-//	bsSpawn.Write( GameCore::mPlayerPool->getLocalPlayer()->getTeam());
-	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
+    pPlayer->setCarType( iCarType );
+    GameCore::mNetworkCore->sendPlayerSpawn( pPlayer );
 
-	// Spawn all other players (here for now but will be moved to SetupGameForPlayer)
-
+    return;
 }
 
 

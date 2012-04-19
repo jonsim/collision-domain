@@ -382,6 +382,7 @@ void Player::killPlayer(Player* causedBy)
 {
 	this->killPlayer();
 	GameCore::mGameplay->markDeath(this,causedBy);
+    mLastKiller = causedBy;
 
 	if(this->getVIP())
 	{
@@ -391,6 +392,9 @@ void Player::killPlayer(Player* causedBy)
 	{
 		causedBy->addToScore(1);
 	}
+
+    InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3 );
+    GameCore::mGameplay->mInfoItems.push_back( spectate );
 }
 
 void Player::setOverlayElement(Ogre::OverlayElement* ole)

@@ -122,12 +122,6 @@ bool Gameplay::addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam )
     // Join the team.
     teamToJoin->addPlayer(pPlayer);
 
-    //Check to see if we need to start game
-    if(this->mGameActive == false && GameCore::mPlayerPool->getNumberOfPlayers() >= NUM_PLAYERS_TO_START)
-    {
-        this->startGame();
-    }
-
     return true;
 }
  
@@ -271,6 +265,22 @@ void Gameplay::resetAllHP()
 	}
 }
 
+void Gameplay::spawnPlayers()
+{
+#ifdef COLLISION_DOMAIN_SERVER
+    int size = GameCore::mPlayerPool->getNumberOfPlayers();
+
+	for(int i=0;i<size;i++)
+	{
+		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+        if( tmpPlayer->getPlayerState() == PLAYER_STATE_WAIT_SPAWN )
+        {
+            GameCore::mNetworkCore->sendPlayerSpawn( tmpPlayer );
+        }
+    }
+#endif
+}
+
 void Gameplay::positionPlayers()
 {
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
@@ -327,6 +337,7 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
+    this->spawnPlayers();
 	this->positionPlayers();
 	this->setNewVIPs(); //TODO - Change this once we have multiple game modes
 	this->scheduleCountDown();
@@ -486,6 +497,20 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					this->scheduleCountDown();
 				#endif
 				break;
+
+            case PLAYER_KILLED_OT:
+                #ifdef COLLISION_DOMAIN_CLIENT
+                    if( GameCore::mPlayerPool->getLocalPlayer()->mLastKiller != NULL )
+                    {
+                        GameCore::mPlayerPool->setSpectating( GameCore::mPlayerPool->getLocalPlayer()->mLastKiller->getPlayerGUID() );
+                        GameCore::mPlayerPool->getLocalPlayer()->mLastKiller = NULL;
+                    }
+                    else
+                    {
+                        GameCore::mPlayerPool->spectateNext();
+                    }
+                #endif
+                break;
 		}
 	}
 	else

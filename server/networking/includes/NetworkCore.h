@@ -44,8 +44,11 @@ void log( char *data, ... );
 enum
 {
 	ID_PLAYER_SNAPSHOT = ID_USER_PACKET_ENUM,
-	ID_PLAYER_INPUT
-
+	ID_PLAYER_INPUT,
+    ID_SPAWN_SUCCESS,
+    ID_SPAWN_NO_TEAM,
+    ID_SPAWN_GAME_INACTIVE,
+    ID_SPAWN_WAIT_NEXT_GAME,
 };
 
 struct PLAYER_INPUT_DATA
@@ -96,6 +99,7 @@ public:
 	void sendPlayerDeath(Player* player, Player* causedBy); 
 	void declareNewVIP(Player* player);
 
+    void sendPlayerSpawn( Player *pPlayer );
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
     void sendPowerupCollect( int pwrID, Player *player, PowerupType newtype = POWERUP_HEALTH );
     void sendChatMessage( const char *szMessage );
