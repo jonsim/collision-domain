@@ -616,6 +616,9 @@
     <ClInclude Include="..\..\client\graphics\includes\BigScreen.h">
       <Filter>client\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\base\includes\ClientHooks.h">
+      <Filter>client\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -1010,6 +1013,9 @@
     </ClCompile>
     <ClCompile Include="..\..\client\graphics\BigScreen.cpp">
       <Filter>client\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\base\ClientHooks.cpp">
+      <Filter>client\base</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

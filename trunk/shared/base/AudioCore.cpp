@@ -44,6 +44,10 @@ AudioCore::AudioCore()
 
     // don't bother with some stuff unless we have openal
     if (!mInitOK) return;
+    
+    mMenuTrack    = mSoundManager->createSound("menutrack",    FILE_MENU_TRACK,     false, true, true, GameCore::mSceneMgr, true);
+    mMenuTrack->setMaxVolume(0.5);
+    mMenuTrack->startFade(true, 0.5);
 
     // force the soundManager to buffer immediate sounds
     std::string tempName = "hello";
@@ -67,9 +71,7 @@ AudioCore::AudioCore()
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_RANDOM, false, false, true, GameCore::mSceneMgr));
 
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
-
-    mBackingTrack->setVolume(0.15f);
-    //playSoundOrRestart(mBackingTrack);
+    mBackingTrack->setMaxVolume(0.85f);
 
     // doppler effect is good now at the default 1.0
     //mSoundManager->setSpeedOfSound();
@@ -191,6 +193,13 @@ void AudioCore::deleteSoundInstance(OgreOggISound* sound)
     mSoundDeletesPending->insert(mSoundDeletesPending->end(), sound);
 }
 
+void AudioCore::localPlayerNowInArenaTrigger()
+{
+    mMenuTrack->startFade(false, 2.0);
+    
+    mBackingTrack->startFade(true, 2.0);
+}
+
 void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
 {
     if (!mInitOK) return;
@@ -212,7 +221,7 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     // if framerate is low, unscaled Velocity will be higher than expected. if framerate is high, unscaled velocity will be lower than expected.
 
     mSoundManager->getListener()->setPosition(earsPosition);
-    //mSoundManager->getListener()->setOrientation(earsOrientation);
+    mSoundManager->getListener()->setOrientation(earsOrientation);
 
     mSoundManager->getListener()->setVelocity(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getLinearVelocity());
 

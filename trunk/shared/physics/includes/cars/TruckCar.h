@@ -16,13 +16,14 @@
 class TruckCar : public Car
 {
 public:
-    TruckCar(int uniqueCarID, TeamID tid, bool silentCar = false);
+    TruckCar(int uniqueCarID, TeamID tid);
     virtual ~TruckCar(void);
     void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (TeamID tid);
     virtual void loadDestroyedModel (void);
+    void startEngineSound();
 
     virtual void makeBitsFallOff();
 

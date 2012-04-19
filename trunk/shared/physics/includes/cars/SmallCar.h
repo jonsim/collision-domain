@@ -16,7 +16,7 @@
 class SmallCar : public Car
 {
 public:
-    SmallCar(int uniqueCarID, TeamID tid, bool silentCar = false);
+    SmallCar(int uniqueCarID, TeamID tid);
     virtual ~SmallCar(void);
     void updateAudioPitchFrameEvent();
     void playCarHorn();
@@ -25,6 +25,7 @@ public:
     virtual void loadDestroyedModel (void);
 
     virtual void makeBitsFallOff();
+    void startEngineSound();
 
 private:
     void initTuning();

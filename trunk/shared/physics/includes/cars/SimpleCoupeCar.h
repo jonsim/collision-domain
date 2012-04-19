@@ -17,13 +17,14 @@
 class SimpleCoupeCar : Car
 {
 public:
-    SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar = false);
+    SimpleCoupeCar(int uniqueCarID, TeamID tid);
     virtual ~SimpleCoupeCar(void);
     void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (TeamID tid);
     virtual void loadDestroyedModel (void);
+    void startEngineSound();
 
     virtual void makeBitsFallOff();
 
