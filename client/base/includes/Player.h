@@ -70,9 +70,11 @@ public:
 	
 
 	
-	//Increase
 	void addToScore(int amount);
 	int getRoundScore();	
+    void setRoundScore( int rs ) { this->roundScore = rs; }
+    int getGameScore() { return this->gameScore; }
+    void setGameScore( int gs ) { this->gameScore = gs; }
 	void addToGameScore(int amount);
 	void lowDamageCallBack(std::string causedBy);
 	void midDamageCallBack(std::string causedBy);
