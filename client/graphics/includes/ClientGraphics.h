@@ -54,7 +54,7 @@ public:
         void startBenchmark (uint8_t stage);
 
     Ogre::Camera*       mCamera;
-    SpawnScreen*        mSpawnScreen;
+    //SpawnScreen*        mSpawnScreen;
 
 	BigScreen*			mBigScreen;
 	GraphicsState getGraphicsState();

@@ -68,7 +68,7 @@ AudioCore::AudioCore()
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
 
     mBackingTrack->setVolume(0.15f);
-    playSoundOrRestart(mBackingTrack);
+    //playSoundOrRestart(mBackingTrack);
 
     // doppler effect is good now at the default 1.0
     //mSoundManager->setSpeedOfSound();
@@ -120,20 +120,11 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
     // Apply some parameters to this sound
     switch (h)
     {
-        case HORN_LOW:      break;
-        case HORN_MID:      break;
-        case HORN_HIGH:     break;
-        case ENGINE_SMALL:
-            sound->setVolume(0.2f);
-            sound->setRolloffFactor(1.5f);
-            sound->setReferenceDistance(14.f);
+        case HORN_LOW: case HORN_MID: case HORN_HIGH:
+            sound->setVolume(0.55f);
+            sound->setRelativeToListener(true); // always on top of the listener
             break;
-        case ENGINE_COUPE:
-            sound->setVolume(0.2f);
-            sound->setRolloffFactor(1.5f);
-            sound->setReferenceDistance(14.f);
-            break;
-        case ENGINE_TRUCK:
+        case ENGINE_SMALL: case ENGINE_COUPE: case ENGINE_TRUCK:
             sound->setVolume(0.2f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);

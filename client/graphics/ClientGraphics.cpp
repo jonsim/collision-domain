@@ -23,7 +23,7 @@ ClientGraphics::ClientGraphics (void) : SceneSetup(),
                                         mCursorWasVisible(false),
                                         mDebrisVisible(false),
                                         mShutDown(false),
-                                        mSpawnScreen(0),
+                                        //mSpawnScreen(0),
                                         mGraphicsState(UNDEFINED)
 {
 }
@@ -217,7 +217,7 @@ void ClientGraphics::loadGame (void)
 
     // Build the scene.
     createScene();
-    mSpawnScreen = NULL;
+    //mSpawnScreen = NULL;
 
     // Clear the splash screen.
     splashScreen.clear();
