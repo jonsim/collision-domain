@@ -165,19 +165,6 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
     
-    // Had to put this in here for now, and the define.. because of shared includes.
-#ifdef COLLISION_DOMAIN_CLIENT
-    // This is safe, mSpawnScreen will only ever be not null if we are selecting
-    if( GameCore::mClientGraphics->mSpawnScreen != NULL )
-    {
-        if( evt.key == OIS::KC_LEFT || evt.key == OIS::KC_A )
-            GameCore::mClientGraphics->mSpawnScreen->switchCar( -1 );
-        else if( evt.key == OIS::KC_RIGHT || evt.key == OIS::KC_D )
-            GameCore::mClientGraphics->mSpawnScreen->switchCar( 1 );
-        else if( evt.key == OIS::KC_RETURN )
-            GameCore::mClientGraphics->mSpawnScreen->selectCar();
-    }
-#endif
 #ifdef COLLISION_DOMAIN_SERVER
     // Inject UP to the GUI. Has to be done here to prevent rollover as a button is
     // held down between frames, causing multiple actions from a single keypress.

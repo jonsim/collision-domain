@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\client\base\includes\Player.h" />
-    <ClInclude Include="..\..\client\base\includes\SpawnScreen.h" />
     <ClInclude Include="..\..\client\GameIncludes.h" />
     <ClInclude Include="..\..\client\graphics\includes\BigScreen.h" />
     <ClInclude Include="..\..\client\graphics\includes\ClientGraphics.h" />
@@ -207,7 +206,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp" />
-    <ClCompile Include="..\..\client\base\SpawnScreen.cpp" />
     <ClCompile Include="..\..\client\graphics\BigScreen.cpp" />
     <ClCompile Include="..\..\client\graphics\ClientGraphics.cpp" />
     <ClCompile Include="..\..\client\graphics\GameGUI.cpp" />
