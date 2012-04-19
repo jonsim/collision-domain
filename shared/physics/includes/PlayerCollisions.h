@@ -35,8 +35,10 @@ private:
         Player *p2);
     int getNumCollisionGroups();
 
+	std::map< Player*, int > collisionDelays;
+	std::map< Player*, int >::iterator collisionDelaysItr;
+
     std::list< std::list<Player*>* > *mCollisions;
 };
 
 #endif // #ifndef PLAYERCOLLISIONS_H
-
