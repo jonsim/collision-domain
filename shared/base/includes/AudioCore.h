@@ -39,6 +39,7 @@ public:
     OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID, Ogre::SceneNode *attachTo);
     void            deleteSoundInstance(OgreOggISound* sound);
     void            frameEvent(Ogre::Real timeSinceLastFrame);
+    void            localPlayerNowInArenaTrigger();
     
 private:
     void processSoundDeletesPending();
@@ -48,7 +49,7 @@ private:
     std::list<OgreOggISound*> *mSoundDeletesPending;
     bool mInitOK;
 
-    OgreOggISound *mBackingTrack;
+    OgreOggISound *mBackingTrack, *mMenuTrack;
 };
 
 #endif // #ifndef AUDIOCORE_H

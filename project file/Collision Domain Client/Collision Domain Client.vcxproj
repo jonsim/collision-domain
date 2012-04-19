@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\client\base\includes\ClientHooks.h" />
     <ClInclude Include="..\..\client\base\includes\Player.h" />
     <ClInclude Include="..\..\client\GameIncludes.h" />
     <ClInclude Include="..\..\client\graphics\includes\BigScreen.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\client\base\ClientHooks.cpp" />
     <ClCompile Include="..\..\client\base\Player.cpp" />
     <ClCompile Include="..\..\client\graphics\BigScreen.cpp" />
     <ClCompile Include="..\..\client\graphics\ClientGraphics.cpp" />

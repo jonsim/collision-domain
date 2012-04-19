@@ -348,6 +348,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 		    pPlayer = GameCore::mPlayerPool->getLocalPlayer();
 		    pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
             pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
+            ClientHooks::localPlayerNowInArena(pPlayer);
 	    }
 	    else
 	    {

@@ -41,6 +41,7 @@ public:
     virtual void playCarHorn() = 0;
     virtual void updateAudioPitchFrameEvent() = 0;
     virtual void louderLocalSounds() = 0;
+    virtual void startEngineSound() = 0;
 
     virtual void updateTeam (TeamID tid) = 0;
     virtual void loadDestroyedModel (void) = 0;

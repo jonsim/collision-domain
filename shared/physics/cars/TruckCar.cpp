@@ -109,7 +109,7 @@ void TruckCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-TruckCar::TruckCar(int uniqueCarID, TeamID tid, bool silentCar)
+TruckCar::TruckCar(int uniqueCarID, TeamID tid)
     : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
@@ -146,10 +146,6 @@ TruckCar::TruckCar(int uniqueCarID, TeamID tid, bool silentCar)
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_TRUCK, mUniqueCarID, NULL, true);
     mEngineSound->setPitch(2.0f);
-    
-    #ifdef COLLISION_DOMAIN_CLIENT
-        if (!silentCar) mEngineSound->play();
-    #endif
 #endif
 }
 
@@ -176,6 +172,11 @@ TruckCar::~TruckCar(void)
 void TruckCar::louderLocalSounds() {
     float increaseTo = mEngineSound->getVolume() + 0.25;
     if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+}
+
+
+void TruckCar::startEngineSound() {
+    mEngineSound->play();
 }
 
 

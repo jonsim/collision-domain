@@ -120,7 +120,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar)
+SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
     : Car(uniqueCarID)
 {
     mUniqueCarID = uniqueCarID;
@@ -148,15 +148,10 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid, bool silentCar)
     
 #ifdef COLLISION_DOMAIN_CLIENT
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
-    mHornSound->setPosition(Ogre::Vector3(0,0,0));
-    mHornSound->setRolloffFactor(2.f);
-    mHornSound->setReferenceDistance(10.f);
 
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
     mEngineSound->setPitch(2.0f);
-    
-    if (!silentCar) mEngineSound->play();
 #endif
 }
 
@@ -191,6 +186,11 @@ OutputDebugString(s.c_str());*/
 void SimpleCoupeCar::louderLocalSounds() {
     float increaseTo = mEngineSound->getVolume() + 0.25;
     if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+}
+
+
+void SimpleCoupeCar::startEngineSound() {
+    mEngineSound->play();
 }
 
 

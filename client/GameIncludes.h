@@ -17,6 +17,7 @@
 #include "GameGUI.h"
 #include "CarCam.h"
 #include "BigScreen.h"
+#include "ClientHooks.h"
 
 #endif // #ifndef CLIENTINCLUDES_H
  
