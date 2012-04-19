@@ -189,12 +189,8 @@ SmallCar::~SmallCar(void)
 
 
 void SmallCar::louderLocalSounds() {
-#ifdef COLLISION_DOMAIN_CLIENT
-    //mEngineSound->setVolume(0); return;
-
     float increaseTo = mEngineSound->getVolume() + 0.25;
     if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
-#endif
 }
 
 
