@@ -227,7 +227,7 @@ void Player::killPlayer()
 {
 	mAlive = false;
 
-	GameCore::mNetworkCore->sendPlayerDeath(this);
+	//GameCore::mNetworkCore->sendPlayerDeath(this);
 
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 500.0f, 0)); 
 }
@@ -244,7 +244,7 @@ void Player::killPlayer(Player* causedBy)
 {
 	this->killPlayer();
 	GameCore::mGameplay->markDeath(this,causedBy);
-
+    GameCore::mNetworkCore->sendPlayerDeath(this, causedBy);
 	if(this->getVIP())
 	{
 		causedBy->addToScore(5);

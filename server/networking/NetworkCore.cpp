@@ -547,11 +547,12 @@ void NetworkCore::sendInfoItem(InfoItem* ii)
 	m_RPC->Signal( "InfoItemReceive", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 
-void NetworkCore::sendPlayerDeath(Player* player)
+void NetworkCore::sendPlayerDeath(Player* player, Player* causedBy)
 {
 	OutputDebugString("Send Player Death\n");
 	RakNet::BitStream bs;
 	bs.Write(player->getPlayerGUID());
+    bs.Write(causedBy->getPlayerGUID());
 	m_RPC->Signal( "PlayerDeath", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 
