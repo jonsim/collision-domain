@@ -661,52 +661,27 @@ void Gameplay::restartGame()
 {
 	// Loop through all players setting health to full
 	this->resetAllHP();
-	// Set game to not active
-	this->mGameActive = false;
+    this->resetRoundScores();
 }
 
+void Gameplay::resetRoundScores() {
+    std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+
+    for(int i=0;i<players.size();i++)
+    {
+        players[i]->setRoundScore(0);
+    }
+}
+
+//This has been rewritten into a much nicer form
 void Gameplay::calculateRoundScores()
 {
-	for(int j=0;j<5;j++)
-		topPlayers[j] = NULL;
-
-	int size = GameCore::mPlayerPool->getNumberOfPlayers();
-
-	//Loop through each of the players in the game
-	for(int i=0;i<size;i++)
+    std::vector<Player*> players = GameCore::mPlayerPool->getScoreOrderedPlayers();
+    for(int i=(players.size()-1);i>=(players.size()-NUM_TOP_PLAYERS-1);i--)
 	{
-		//Only consider them if they're not NULL
-		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-		if(tmpPlayer != NULL)
-		{
-			//Loop through each of the top players inserting the new player in the correct place
-			for(int j=0;j<NUM_TOP_PLAYERS;j++)
-			{
-				//If they're is no player in this slot put it in
-				if(topPlayers[j] == NULL)
-				{
-					topPlayers[j] = tmpPlayer;
-					break;
-				}
-				else if(tmpPlayer->getRoundScore() >= topPlayers[j]->getRoundScore())
-				{
-					//IN the case where the socre is better than or comperable
-					//TODO - Do some randomness here it choosed either player some times
-					//Rotate the palyers array
-					for(int z=(NUM_TOP_PLAYERS-1);z>j;z--)
-					{
-						topPlayers[z] = topPlayers[z-1];
-					}
-					topPlayers[j] = tmpPlayer;
-
-				}
-			}
-		}
-	}
-
-	for(int i=0;i<NUM_TOP_PLAYERS;i++)
-	{
-		topPlayers[i]->addToGameScore(NUM_TOP_PLAYERS-i+1);
-		
+        //If there are not at NUM_TOP_PLAYERS this will save it from breaking
+        if(i<0)
+            break;
+		players[i]->addToGameScore(NUM_TOP_PLAYERS-i+1);
 	}
 }
