@@ -28,6 +28,7 @@ enum OverlayType
 	NEW_ROUND_OT,
 	SCOREBOARD_TO_WINNER_OT,
     PLAYER_KILLED_OT,
+    GO_OT
 };
 
 class InfoItem

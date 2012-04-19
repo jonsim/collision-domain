@@ -35,11 +35,11 @@ void AiCore::frameEvent(double timeSinceLastFrame)
 
 	std::vector<AiPlayer>::iterator i;
 
-	#pragma omp parallel num_threads(2)
+	//#pragma omp parallel num_threads(2)
 	{
 	for(i = mAiPlayers.begin();i != mAiPlayers.end();i++)
 	{
-		#pragma omp single nowait
+		//#pragma omp single nowait
 		{
 		i->Update(timeSinceLastFrame);
 		}

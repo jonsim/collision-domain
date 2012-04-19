@@ -17,6 +17,7 @@ Gameplay::Gameplay() : mGameActive(false)
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
 
+    roundNumber = -1;
     this->setGameMode(SELECTED_GAME); //Set it to the selecte game, change at top of gampleay.h
     //Set initialised variables
     wtInitalised = false;    
@@ -46,9 +47,31 @@ bool Gameplay::hasWon(TeamID teamID)
 	return false;
 }
 
+void Gameplay::cycleGameMode()
+{
+    switch(mGameMode)
+    {
+        case FFA_MODE:
+            this->setGameMode(TDM_MODE);
+            break;
+        case TDM_MODE:
+            this->setGameMode(VIP_MODE);
+            break;
+        case VIP_MODE:
+            this->setGameMode(FFA_MODE);
+            break;
+    }
+}
+
 void Gameplay::setGameMode(GameMode gameMode)
 {
 	mGameMode = gameMode;
+}
+
+void Gameplay::handleNewRound()
+{
+    this->cycleGameMode(); //Move onto the next game type;
+    this->incrementRoundNumber();
 }
 
 bool Gameplay::vipModeGameWon()
@@ -482,8 +505,10 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				
 				break;
 			case NEW_ROUND_OT:
+                this->handleNewRound();
 				#ifdef COLLISION_DOMAIN_CLIENT
                     this->hideWinnerText();
+                    this->showGameTypeText();
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
 						//Move the camera back
 						//GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,10,0));
@@ -493,7 +518,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					}
 				#endif
 				#ifdef COLLISION_DOMAIN_SERVER
-                    this->incrementRoundNumber();
+                    
 					this->scheduleCountDown();
 				#endif
 				break;
@@ -617,21 +642,20 @@ void Gameplay::scheduleCountDown()
 {
 	#ifdef COLLISION_DOMAIN_SERVER
 		GameCore::mGui->outputToConsole("Scheduling countdown.\n");
-		InfoItem* threeII = new InfoItem(THREE_OT, 1000, 1000);
-		InfoItem* twoII = new InfoItem(TWO_OT, 2000, 1000);
-		InfoItem* oneII = new InfoItem(ONE_OT, 3000, 1000);
-
+		InfoItem* threeII = new InfoItem(THREE_OT, 5000, 1000);
+		InfoItem* twoII = new InfoItem(TWO_OT, 6000, 1000);
+		InfoItem* oneII = new InfoItem(ONE_OT, 7000, 1000);
 
 		mInfoItems.push_back(threeII);
 		mInfoItems.push_back(twoII);
 		mInfoItems.push_back(oneII);
 
 		//Countdown Timer
-		InfoItem* fiveEII = new InfoItem(FIVE_OT,115000,1000);
-		InfoItem* fourEII = new InfoItem(FOUR_OT,116000,1000);
-		InfoItem* threeEII = new InfoItem(THREE_OT,117000,1000);
-		InfoItem* twoEII = new InfoItem(TWO_OT,118000,1000);
-		InfoItem* oneEII = new InfoItem(ONE_OT,119000,1000);
+		InfoItem* fiveEII = new InfoItem(FIVE_OT,119000,1000);
+		InfoItem* fourEII = new InfoItem(FOUR_OT,112000,1000);
+		InfoItem* threeEII = new InfoItem(THREE_OT,121000,1000);
+		InfoItem* twoEII = new InfoItem(TWO_OT,122000,1000);
+		InfoItem* oneEII = new InfoItem(ONE_OT,123000,1000);
 
 		mInfoItems.push_back(fiveEII);
 		mInfoItems.push_back(fourEII);
@@ -640,7 +664,7 @@ void Gameplay::scheduleCountDown()
 		mInfoItems.push_back(oneEII);
 
 		//GAME OVER
-		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,120000,3000);
+		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,124000,3000);
 		mInfoItems.push_back(roEII);
 
 		//Send packets

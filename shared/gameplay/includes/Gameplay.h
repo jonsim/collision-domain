@@ -23,7 +23,7 @@
 #define NUM_TEAMS 2
 #define NUM_ROUNDS 3
 
-#define SELECTED_GAME TDM_MODE
+#define SELECTED_GAME FFA_MODE
 
 /*-------------------- ENUM TYPES -------------------*/
 // Represents a game mode. FFA = Free for all; TDM = Team deathmatch, KOTH = King of the hill.
@@ -74,6 +74,9 @@ public:
     void                        setRoundNumber(int newRound) {roundNumber = newRound;}
     void                        incrementRoundNumber() { roundNumber++; }
     int                         getRoundNumber() { return roundNumber; }
+
+    void                        cycleGameMode();
+    void                        handleNewRound();
 private:
 	//Methods
 	bool						vipModeGameWon();
