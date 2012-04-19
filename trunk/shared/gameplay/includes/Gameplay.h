@@ -53,6 +53,7 @@ public:
     void						notifyDamage(Player* player);
 	void						preparePlayers(); //Place the palyers in the correct place
 	void						resetAllHP();
+    void                        spawnPlayers();
 	void						positionPlayers();
 	void						startGame();
 	void						drawInfo(); //Draws any info that we require

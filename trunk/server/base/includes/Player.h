@@ -15,6 +15,16 @@
 /**
  *  @brief 	Contains the Player nodes and the related data.
  */
+
+enum PLAYER_STATE : int
+{
+    PLAYER_STATE_TEAM_SEL,
+    PLAYER_STATE_SPAWN_SEL,
+    PLAYER_STATE_WAIT_SPAWN,
+    PLAYER_STATE_INGAME,
+    PLAYER_STATE_SPECTATE,
+};
+
 class Player
 {
  
@@ -22,10 +32,7 @@ public:
     Player (void);
     ~Player (void);
     void createPlayer (CarType carType, TeamID tid);
-    void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
-    void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth);
-	float getCameraYaw (void);
     Car* getCar (void);
     //void collisionTickCallback (int damage, Player *causedByPlayer);
 	void collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer);
@@ -33,6 +40,10 @@ public:
         
     const char *getNickname (void) { return mNickname; }
     int getCarType (void) { return mCarType; }
+    void setCarType( CarType t ) { mCarType = t; }
+
+    PLAYER_STATE getPlayerState() { return mPlayerState; }
+    void setPlayerState( PLAYER_STATE s ) { mPlayerState = s; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname (char *szNick) { mNickname = strdup( szNick ); }
@@ -84,12 +95,12 @@ private:
 	bool		     mAlive;
     bool             mIsVIP;
 	bool             mSpawned;
+    PLAYER_STATE     mPlayerState;
+
     char*            mNickname;
+
     Car*             mCar;
     CarSnapshot*     mCarSnapshot;
-	CarCam*	         mCarCam;
-	Ogre::SceneNode* camNode;
-	Ogre::SceneNode* camArmNode;
     CarType          mCarType;
 
 	Ogre::OverlayElement* mOLE;

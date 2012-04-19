@@ -98,24 +98,6 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float damage, Player *ca
 	}
 }
 
-
-/// @brief  Attaches a camera to the player.
-/// @param  cam   The camera object to attach to the player.
-void Player::attachCamera (Ogre::Camera* cam)
-{	
-	// only attach a camera to one of them!! Imagine the carnage if there were more
-    Ogre::SceneNode *camNode = mCar->attachCamNode();
-    Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
-
-    camArmNode->translate(0, 0.5, 0); // place camera y above car node
-    camArmNode->pitch(Ogre::Degree(25));
-    camNode->yaw(Ogre::Degree(180));
-    camNode->translate(0, 0, 62); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
-
-    camNode->attachObject(cam);
-}
-
-
 /// @brief  Applies the player controls to the car so it will move on next stepSimulation.
 /// @param  userInput               The latest user keypresses.
 /// @param  secondsSinceLastFrame   The time in seconds since the last frame, for framerate independence.
@@ -139,30 +121,6 @@ void Player::processControlsFrameEvent(
         mCar->accelInputTick(false, false, false, secondsSinceLastFrame);
     }
 }
-
-
-/// @brief  Updates the camera's rotation based on the values given.
-/// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
-/// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
-void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth)
-{
-    //Ogre::SceneNode *camArmNode = mCar->attachCamNode()->getParentSceneNode();
-
-    camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-    camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * YRotation), Ogre::Node::TS_LOCAL);
-
-    
-    camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
-
-	Ogre::Vector3 camPosition = camNode->getPosition();
-	ZDepth = -ZDepth;
-	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
-		camNode->translate(0, 0, ZDepth * 0.02f);
-
-    mCarCam->updatePosition(XRotation, YRotation);
-}
-
 
 /// @brief  Supplies the Car object which contains player position and methods on that. 
 /// @return The Car object which allows forcing a player to a given CarSnapshot or getting a CarSnapshot.
@@ -226,7 +184,7 @@ bool Player::getAlive()
 void Player::killPlayer()
 {
 	mAlive = false;
-
+    setPlayerState( PLAYER_STATE_SPECTATE );
 	//GameCore::mNetworkCore->sendPlayerDeath(this);
 
     mCar->applyForce(mCar->mBodyNode, Ogre::Vector3(0, 500.0f, 0)); 

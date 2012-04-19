@@ -328,38 +328,53 @@ void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet
 void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
 	Player *pPlayer = NULL;
+
+    unsigned char packetid;
 	RakNet::RakNetGUID playerid;
     CarType iCarType;
+    bitStream->Read( packetid );
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
+
     OutputDebugString("ClientSpawn\n");
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
-	if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
-	{
-        // Get rid of our spawn screen
-        //delete GameCore::mClientGraphics->mSpawnScreen;
-        //GameCore::mClientGraphics->mSpawnScreen = NULL;
+    switch( packetid )
+    {
+    case ID_SPAWN_SUCCESS:
 
-		pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-		pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
-        pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
-	}
-	else
-	{
-		pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
-		if( pPlayer != NULL )
-		{
-			pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
-		}
-		else
-			log( "..invalid player" );
-	}
+	    if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
+	    {
+		    pPlayer = GameCore::mPlayerPool->getLocalPlayer();
+		    pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
+            pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
+	    }
+	    else
+	    {
+		    pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
+		    if( pPlayer != NULL )
+		    {
+			    pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
+		    }
+		    else
+			    log( "..invalid player" );
+	    }
 
-	if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)		
-	{		
-		GameCore::mClientGraphics->mBigScreen->manageNewPlayer(pPlayer);		
-	}
+	    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)		
+	    {		
+		    GameCore::mClientGraphics->mBigScreen->manageNewPlayer(pPlayer);		
+	    }
+        
+        break;
+
+    case ID_SPAWN_NO_TEAM:
+        // This shouldn't really be possible
+        break;
+
+    case ID_SPAWN_GAME_INACTIVE:
+        // Switch to freeroam camera or something
+        break;
+    }
 }
 
 void NetworkCore::PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
