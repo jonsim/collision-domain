@@ -458,6 +458,32 @@ void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
     GameCore::mGameplay->setNewVIP(newPlayer->getTeam(), newPlayer);
 }
 
+void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    OutputDebugString("Syncing new scores\n");
+    
+    //Get the number of player scores being transmitted
+    int playersSize;
+    bitStream->Read(playersSize);
+    
+    for(int i=0; i<playersSize;i++)
+    {
+        RakNet::RakNetGUID pGUID;
+        bitStream->Read(pGUID);
+
+        int pRoundScore;
+        bitStream->Read(pRoundScore);
+
+        int pGameScore;
+        bitStream->Read(pGameScore);
+
+        Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(pGUID);
+        tmpPlayer->setRoundScore(pRoundScore);
+        tmpPlayer->setGameScore(pRoundScore);
+    }
+    
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -475,7 +501,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "InfoItemReceive",     InfoItemReceive, 0 );
 	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath, 0 );
 	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
-    //m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
+    m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
 }
 
 

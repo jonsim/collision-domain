@@ -108,7 +108,7 @@ public:
 	static void InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
-    //static void SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static bool bConnected;
 
 };

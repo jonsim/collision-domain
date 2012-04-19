@@ -285,7 +285,7 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 			bsJoin.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
             bsJoin.Write( playerSend->getTeam() );
             //RakNet::RakString *strName = new RakNet::RakString("RemotePlayer");
-			//RakNet::StringCompressor().EncodeString( strName, 128, &bsJoin );
+            RakNet::StringCompressor().EncodeString( playerSend->getNickname(), 128, &bsJoin );
 			m_RPC->Signal( "PlayerJoin", &bsJoin, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
 
             if( playerSend->getCar() )
@@ -356,6 +356,9 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
 	SetupGameForPlayer( pkt->guid );
+
+    GameCore::mNetworkCore->sendSyncScores();
+
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -566,5 +569,15 @@ void NetworkCore::declareNewVIP(Player* player)
 
 void NetworkCore::sendSyncScores()
 {
-
+    OutputDebugString("Sending sync of scores\n");
+    RakNet::BitStream bs;
+    std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+    bs.Write(players.size()); //Send the size
+    for(int i=0;i<players.size();i++)
+    {
+        //Write player GUID then round score and then score
+        bs.Write(players[i]->getGUID());
+        bs.Write(players[i]->getRoundScore());
+        bs.Write(players[i]->getGameScore());
+    }
 }
