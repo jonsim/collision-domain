@@ -383,7 +383,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 		Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
 	#endif
 	#ifdef COLLISION_DOMAIN_SERVER
-	    InfoItem* newGameII;
+	    InfoItem* newRoundII;
 		InfoItem* transitionII;
     #endif
 
