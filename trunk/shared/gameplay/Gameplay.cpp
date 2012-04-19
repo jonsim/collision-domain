@@ -445,7 +445,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					transitionII->sendPacket();
 
                     
-                    if(this->getRoundNumber() ==  NUM_ROUNDS)
+                    if(this->getRoundNumber() < NUM_ROUNDS)
                     {
                         //New Round II
                         newRoundII = new InfoItem(NEW_ROUND_OT, 10000, 1000);
