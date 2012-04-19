@@ -8,7 +8,7 @@ using namespace Ogre;
 void AiCore::createNewAiAgent()
 {
 	int flags = 0;
-	createNewAiAgent(flags, level::normal);
+	createNewAiAgent(flags, normal);
 }
 
 void AiCore::createNewAiAgent(int flags, level diff)

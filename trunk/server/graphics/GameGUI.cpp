@@ -18,12 +18,18 @@ void GameGUI::setupConsole (CEGUI::Window* guiWindow)
 	guiWindow->addChildWindow( pLayout );
 
 	// Get a handle to the input box
-	CEGUI::Window* inputText = winMgr.getWindow( "/Server/input" );
-	inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber( &GameGUI::receiveFromConsole, this ) );
+	CEGUI::Window* inputText   = winMgr.getWindow("/Server/input");
+    CEGUI::Window* adminWindow = winMgr.getWindow("/Server/admin");
+	CEGUI::Window* healthText  = winMgr.getWindow("/Server/admin/edtHealth");
+	inputText->subscribeEvent(  CEGUI::Editbox::EventTextAccepted,     CEGUI::Event::Subscriber(&GameGUI::receiveFromConsole, this));
+    adminWindow->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked, CEGUI::Event::Subscriber(&GameGUI::closeAdminWindow,   this));
+	healthText->subscribeEvent( CEGUI::Editbox::EventTextAccepted,     CEGUI::Event::Subscriber(&GameGUI::healthTextChanged,  this));
+
     
-    // Display the mouse and give the input box focus.
+    // Display the mouse, give the input box focus and hide the admin box.
 	CEGUI::MouseCursor::getSingleton().show();
 	winMgr.getWindow( "/Server/input" )->activate();
+    winMgr.getWindow( "/Server/admin" )->hide();
 }
 
 bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
@@ -87,19 +93,19 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     else if( !strnicmp( inputChars, "spawn easy", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
-		    GameCore::mAiCore->createNewAiAgent(seek, level::easy);
+		    GameCore::mAiCore->createNewAiAgent(seek, easy);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
     else if( !strnicmp( inputChars, "spawn normal", 12) )
     {
         for (int i = 0; i < atoi((inputChars+13)); i++)
-			GameCore::mAiCore->createNewAiAgent(seek, level::normal);
+			GameCore::mAiCore->createNewAiAgent(seek, normal);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+13)));
     }
     else if( !strnicmp( inputChars, "spawn hard", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
-		    GameCore::mAiCore->createNewAiAgent(seek, level::hard);
+		    GameCore::mAiCore->createNewAiAgent(seek, hard);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
     else if( !stricmp( inputChars, "get server fps" ) )
@@ -112,8 +118,8 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     }
 	else if( !strcasecmp(inputChars, "admin"))
 	{
-		outputToConsole("Opening admin window\n");
 		openAdminWindow();
+		outputToConsole("Admin window opened.\n");
 	}
     else
     {
@@ -207,52 +213,38 @@ void GameGUI::giveConsoleFocus (void)
 	winMgr.getWindow("/Server/input")->activate();
 }
 
-void GameGUI::openAdminWindow()
+
+/*-------------------- ADMIN WINDOW --------------------*/
+void GameGUI::openAdminWindow (void)
 {
-	//create combo box displaying players
-	playerComboBox = (CEGUI::Combobox*)CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Combobox", (CEGUI::utf8*)"NameID");
+	CEGUI::WindowManager& winMgr      = CEGUI::WindowManager::getSingleton();
+    CEGUI::FrameWindow*   adminWindow = static_cast<CEGUI::FrameWindow*>(winMgr.getWindow("/Server/admin"));
 
 	//add each player to the combobox
 	updatePlayerComboBox();
- 
-    playerComboBox->setSize(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.25,0.0)));
-    playerComboBox->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.25,0.0)));
-    playerComboBox->setText("Players");
-    playerComboBox->setAlwaysOnTop(true);
-    GameCore::mServerGraphics->getGUIWindow()->addChildWindow(playerComboBox);
-    playerComboBox->show();
+    adminWindow->show();
+}
 
-	
-	playerSelected = static_cast<CEGUI::FrameWindow*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/FrameWindow"));
-	GameCore::mServerGraphics->getGUIWindow()->addChildWindow(playerSelected);
-	playerSelected->setSize(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.25,0.0)));
-	playerSelected->setPosition(CEGUI::UVector2(CEGUI::UDim(0.45, 0), CEGUI::UDim(0.45,0.0)));
-	playerSelected->setAlwaysOnTop(true);
+bool GameGUI::closeAdminWindow (const CEGUI::EventArgs &args)
+{
+	CEGUI::WindowManager& winMgr      = CEGUI::WindowManager::getSingleton();
+    CEGUI::FrameWindow*   adminWindow = static_cast<CEGUI::FrameWindow*>(winMgr.getWindow("/Server/admin"));
 
-	//create health label
-	CEGUI::Editbox* healthLabel = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Editbox"));
-	healthLabel->setText("Health");
-	healthLabel->setReadOnly(true);
-	playerSelected->addChildWindow(healthLabel);
-	healthLabel->setSize(CEGUI::UVector2(CEGUI::UDim(0.20, 0), CEGUI::UDim(0.25,0.0)));
-	healthLabel->setPosition(CEGUI::UVector2(CEGUI::UDim(0.03, 0), CEGUI::UDim(0.15,0.0)));
-	healthLabel->show();
+    adminWindow->hide();
+    giveConsoleFocus();
 
-	//create box to show/edit health
-	health = static_cast<CEGUI::Editbox*>(CEGUI::WindowManager::getSingleton().createWindow((CEGUI::utf8*)"TaharezLook/Editbox"));
-	playerSelected->addChildWindow(health);
-	health->setSize(CEGUI::UVector2(CEGUI::UDim(0.2, 0), CEGUI::UDim(0.25,0.0)));
-	health->setPosition(CEGUI::UVector2(CEGUI::UDim(0.25, 0), CEGUI::UDim(0.15,0.0)));
-	health->setReadOnly(false);
-	health->show();
+	outputToConsole("Admin window closed.\n");
 
+    return true;
 }
 
 //updates the list of players in the combo box
 void GameGUI::updatePlayerComboBox()
 {
-	if(playerComboBox == NULL)
-		return;
+	CEGUI::WindowManager& winMgr         = CEGUI::WindowManager::getSingleton();
+    CEGUI::Combobox*      playerComboBox = static_cast<CEGUI::Combobox*>(winMgr.getWindow("/Server/admin/cmbPlayers"));
+    CEGUI::Editbox*       healthTextBox  = static_cast<CEGUI::Editbox*>( winMgr.getWindow("/Server/admin/edtHealth"));
+    CEGUI::Editbox*       playerTextBox  = static_cast<CEGUI::Editbox*>( winMgr.getWindow("/Server/admin/edtPlayer"));
 
 	//get the list of players
 	std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
@@ -262,50 +254,50 @@ void GameGUI::updatePlayerComboBox()
 		return;
 	
 	int i = 0;
-
-    
 	if(GameCore::mPlayerPool->getNumberOfPlayers() != playerComboBox->getItemCount())
 	{
 		playerComboBox->resetList();
 		for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
 		{
 			Player* player = (Player*)(*it);
-			CEGUI::ListboxItem* playerItem = new CEGUI::ListboxTextItem((CEGUI::utf8*)player->getNickname(), 1);
+			CEGUI::ListboxItem* playerItem = new CEGUI::ListboxTextItem("[colour='FF000000']" + CEGUI::String(player->getNickname()), 1);
 			playerComboBox->addItem(playerItem);
 		}
 	}
-
 
 	//now update the player selected box
 	CEGUI::ListboxItem* listItem = playerComboBox->getSelectedItem();
 	if(listItem)
 	{
-		CEGUI::String playerName = listItem->getText();
-		const char* nickname = playerName.c_str();
-		//now get the player
-		Player* player = GameCore::mPlayerPool->getPlayer(nickname);
+		//get the player
+		CEGUI::String playerName = listItem->getText().substr(19, listItem->getText().length() - 19);
+		Player* player = GameCore::mPlayerPool->getPlayer(playerName.c_str());
 		//add the text to the player selected window
-		playerSelected->setText(playerName);
-		playerSelected->show();
+		playerTextBox->setText(playerName);
+        playerComboBox->setText(playerName);
+		//playerSelected->show();
 
 		char hp[5];
 		//update the health box doesn't have input focus
-		if(health->hasInputFocus() == false)
+		if(healthTextBox->hasInputFocus() == false)
 		{
 			//display the health
 			sprintf(hp, "%d", player->getHP());
-			health->setText(hp);
-			health->show();
-			health->subscribeEvent( CEGUI::Editbox::EventTextAccepted, CEGUI::Event::Subscriber( &GameGUI::healthChanged, this ) );
+			healthTextBox->setText(hp);
 		}
 	}
 
 }
 
-bool GameGUI::healthChanged(const CEGUI::EventArgs &args)
+bool GameGUI::healthTextChanged(const CEGUI::EventArgs &args)
 {
+	CEGUI::WindowManager& winMgr         = CEGUI::WindowManager::getSingleton();
+    CEGUI::Combobox*      playerComboBox = static_cast<CEGUI::Combobox*>(winMgr.getWindow("/Server/admin/cmbPlayers"));
+    CEGUI::Editbox*       healthTextBox  = static_cast<CEGUI::Editbox*>( winMgr.getWindow("/Server/admin/edtHealth"));
+    CEGUI::Editbox*       playerTextBox  = static_cast<CEGUI::Editbox*>( winMgr.getWindow("/Server/admin/edtPlayer"));
+
 	//validate health in editbox
-	const char* newHealth = health->getText().c_str();
+	const char* newHealth = healthTextBox->getText().c_str();
 	int len = strlen(newHealth);
 	for(int i = 0;i < len;i++)
 	{
@@ -314,8 +306,10 @@ bool GameGUI::healthChanged(const CEGUI::EventArgs &args)
 	}
 
 	//set the new health
-	Player *player = GameCore::mPlayerPool->getPlayer(playerSelected->getText().c_str());
+	Player *player = GameCore::mPlayerPool->getPlayer(playerTextBox->getText().c_str());
 	int healthInt;
 	std::stringstream(newHealth) >> healthInt;
 	player->setHP(healthInt);
+
+    return true;
 }

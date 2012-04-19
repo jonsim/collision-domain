@@ -82,7 +82,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 		}
 
 		//get out health our run away if someone is chasing us
-		if(mPlayer->getHP() < 300 && difficulty >= level::normal)
+		if(mPlayer->getHP() < 300 && difficulty >= normal)
 		{
 			//set flee target as closest person on opposite team
 			Player* fleePlayer;
@@ -92,7 +92,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			mSteeringBehaviour->SetFleeTarget(fleePlayer);
 		}
 
-		if(difficulty == level::hard)
+		if(difficulty == hard)
 		{
 			if(mSteeringBehaviour->On(flee))
 			{

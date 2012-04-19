@@ -53,7 +53,7 @@ private:
 class GameGUI
 {
 public:
-    GameGUI (void) : consoleHistory(16), consoleHistoryLocation(0xFF) { this->playerComboBox = NULL;}
+    GameGUI (void) : consoleHistory(16), consoleHistoryLocation(0xFF) {}
     ~GameGUI (void) {}
         
 	void setupConsole (CEGUI::Window* guiWindow);
@@ -61,16 +61,17 @@ public:
     void outputToConsole (const char* str, ...);
     void loadConsoleHistory (bool reverseLoading);
     void giveConsoleFocus (void);
-	void openAdminWindow();
-	void updatePlayerComboBox();
-	bool healthChanged(const CEGUI::EventArgs &args);
+	void openAdminWindow (void);
+	bool closeAdminWindow (const CEGUI::EventArgs &args);
+	void updatePlayerComboBox (void);
+	bool healthTextChanged (const CEGUI::EventArgs &args);
 
 private:
     StringCircularBuffer consoleHistory;
     uint8_t              consoleHistoryLocation;
-	CEGUI::Combobox* playerComboBox;
-	CEGUI::FrameWindow*   playerSelected;
-	CEGUI::Editbox* health;
+	//CEGUI::Combobox* playerComboBox;
+	//CEGUI::FrameWindow*   playerSelected;
+	//CEGUI::Editbox* health;
 };
 
 #endif
