@@ -67,6 +67,7 @@ public:
 	void						markDeath(Player* deadPlayer, Player* causedBy);
 	std::vector<DEATH*>			getDeathList();
 	void						restartGame();
+    void                        resetRoundScores();
 
     void                        setRoundNumber(int newRound) {roundNumber = newRound;}
     void                        incrementRoundNumber() { roundNumber++; }

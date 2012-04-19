@@ -67,12 +67,13 @@ public:
 	//Increase
 	void addToScore(int amount);
 	int getRoundScore();	
+    void setRoundScore( int rs ) { this->roundScore = rs; }
+    int getGameScore() { return this->gameScore; }
+    void setGameScore( int gs ) { this->gameScore = gs; }
 	void addToGameScore(int amount);
     int lastsenthp;
 	bool isReady() { return mSpawned;};
 	void setHP(int newHP) { hp = newHP;};
-
-    int getGameScore() { return this->gameScore; }
 
 	//Operator overides
 	//bool operator<(Player *other) { return this->getRoundScore()<this->getRoundScore(); } //Used in the sort function
