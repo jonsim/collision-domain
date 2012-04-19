@@ -471,7 +471,8 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 						//GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,0,-300));
 					}
                     
-                    this->showWinnerText(GameCore::mPlayerPool->getLocalPlayer(),true);
+
+                    this->showWinnerText(this->getRoundWinner(),true);
 				#endif
 				#ifdef COLLISION_DOMAIN_SERVER
 
@@ -502,6 +503,12 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 			tmpOLE->hide();
 		#endif
 	}
+}
+
+Player* Gameplay::getRoundWinner()
+{
+    std::vector<Player*> orderedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();    
+    return orderedPlayers[orderedPlayers.size()-1];
 }
 
 /* If round is set to true it does round winning screen if false it

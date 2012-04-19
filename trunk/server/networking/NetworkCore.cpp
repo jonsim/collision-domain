@@ -563,3 +563,8 @@ void NetworkCore::declareNewVIP(Player* player)
 	bs.Write(player->getPlayerGUID());
 	m_RPC->Signal( "DeclareVIP", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
+
+void NetworkCore::sendSyncScores()
+{
+
+}
