@@ -135,14 +135,13 @@ SmallCar::SmallCar(int uniqueCarID, TeamID tid)
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.55f, 0.0f ) );
 
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
     initGraphics(tid);
 #endif
-    initBody(carPosition, chassisShift);
+    initBody(carPosition);
     initWheels();
 
     mLeftDoorBody = NULL;
@@ -172,10 +171,6 @@ SmallCar::~SmallCar(void)
     delete mVehicle;
     delete mVehicleRayCaster;
     delete mCarChassis;
-
-    // Cleanup Shapes:
-    delete compoundChassisShape;
-    delete chassisShape;
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
@@ -183,6 +178,23 @@ SmallCar::~SmallCar(void)
 #endif
 }
 
+void SmallCar::createCollisionShapes()
+{
+    btCompoundShape* compoundChassisShape = new btCompoundShape();
+    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.55f, 0.0f ) );
+    btConvexHullShape *convexHull = new btConvexHullShape( SmallCarVtx, SMALLCAR_VTX_COUNT, 3 * sizeof( btScalar ) );
+    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    compoundChassisShape->addChildShape( chassisShift, convexHull );
+
+    btBoxShape *doorShape = new btBoxShape( btVector3( 0.25f, 0.58f, 0.55f ) );
+    btBoxShape *fBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+    btBoxShape *rBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR, compoundChassisShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_DOOR, doorShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_FBUMPER, fBumperShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_RBUMPER, rBumperShape );
+}
 
 void SmallCar::louderLocalSounds() {
     float increaseTo = mEngineSound->getVolume() + 0.25;
@@ -341,35 +353,14 @@ void SmallCar::loadDestroyedModel (void)
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
-void SmallCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
+void SmallCar::initBody(Ogre::Vector3 carPosition)
 {
     // Load the collision mesh and create a collision shape out of it
     Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("SmallCarCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "small_car_collision.mesh");
     entity->setDebugDisplayEnabled( false );
-    compoundChassisShape = new btCompoundShape();
-
-    // Transformation matrix to scale the imported mesh
-    //Ogre::Matrix4 matScale(MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, MESH_SCALING_CONSTANT, 0, 0, 0, 0, 1.0);
-
-    // Create a compound shape from the mesh's vertices
-    //OgreBulletCollisions::StaticMeshToShapeConverter *trimeshConverter = 
-    //    new OgreBulletCollisions::StaticMeshToShapeConverter(entity, matScale);
-
-    //OgreBulletCollisions::CompoundCollisionShape *tmp = trimeshConverter->createConvexDecomposition();
-
-    //btConvexHullShape shape( SmallCarVtx, SMALLCAR_VTX_COUNT, 3*sizeof(btScalar) );
-    //shape.setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
-    btConvexHullShape *convexHull = new btConvexHullShape( SmallCarVtx, SMALLCAR_VTX_COUNT, 3 * sizeof( btScalar ) );
-    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
-    //convexHull->setLocalScaling( btVector3( 1.33f, 0.65f, 2.65f ) );
-
-    //delete trimeshConverter;
-
-
-    // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( chassisShift, convexHull );
 
     btVector3 inertia;
+    btCompoundShape *compoundChassisShape = (btCompoundShape*) GameCore::mPhysicsCore->getCollisionShape( PHYS_SHAPE_SMALLCAR );
     compoundChassisShape->calculateLocalInertia( mChassisMass, inertia );
 
     //BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mBodyNode );
@@ -451,9 +442,9 @@ void SmallCar::initWheels()
 void SmallCar::makeBitsFallOff()
 {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
-    removePiece( mLDoorNode, mLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.594f, 0.788f, 0.011f ) );
-    removePiece( mRDoorNode, mRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.594f, 0.788f, 0.011f ) );
+    removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  0.594f, 0.788f, 0.011f ) );
+    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3( -0.594f, 0.788f, 0.011f ) );
 
-    removePiece( mFBumperNode, mFBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.392f,  1.352f ) );
-    removePiece( mRBumperNode, mRBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.410f, -1.880f ) );
+    removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_SMALLCAR_FBUMPER, btVector3( 0.0f, 0.392f,  1.352f ) );
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_SMALLCAR_RBUMPER, btVector3( 0.0f, 0.410f, -1.880f ) );
 }

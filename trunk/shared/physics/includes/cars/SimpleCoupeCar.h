@@ -19,6 +19,8 @@ class SimpleCoupeCar : Car
 public:
     SimpleCoupeCar(int uniqueCarID, TeamID tid);
     virtual ~SimpleCoupeCar(void);
+    static void createCollisionShapes();
+
     void updateAudioPitchFrameEvent();
     void playCarHorn();
     void louderLocalSounds();
@@ -32,7 +34,7 @@ private:
     void initTuning();
     void initNodes();
     void initGraphics(TeamID tid);
-    void initBody(Ogre::Vector3 carPosition, btTransform& chassisShift);
+    void initBody(Ogre::Vector3 carPosition);
     void initWheels();
     
     // Car related Nodes (initNodes())

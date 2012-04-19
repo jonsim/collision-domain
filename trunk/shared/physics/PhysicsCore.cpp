@@ -57,14 +57,7 @@ PhysicsCore::~PhysicsCore(void)
         ++itBody;
     }
     // OgreBullet physic delete - Shapes
-    std::deque<btCollisionShape*>::iterator itShape = mShapes.begin();
-    while (mShapes.end() != itShape)
-    {   
-        delete *itShape;
-        ++itShape;
-    }
     mBodies.clear();
-    mShapes.clear();
     
     delete mSolver;
     delete mDispatcher;
@@ -170,6 +163,8 @@ int PhysicsCore::getUniqueEntityID()
 
 void PhysicsCore::attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionMeshName, float scaling )
 {
+    createCollisionShapes();
+
     Ogre::Entity* collisionEntity = GameCore::mSceneMgr->createEntity("CollisionMesh" + getUniqueEntityID(), collisionMeshName);
 
     Ogre::Matrix4 collisionScaling(scaling, 0,       0,       0,
@@ -192,6 +187,13 @@ void PhysicsCore::attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String
     mBodies.push_back(collisionBody);
 }
 
+void PhysicsCore::createCollisionShapes()
+{
+    SimpleCoupeCar::createCollisionShapes();
+    SmallCar::createCollisionShapes();
+    TruckCar::createCollisionShapes();
+}
+
 void PhysicsCore::addRigidBody( btRigidBody *body, short colGroup, short colMask )
 {
     mBulletWorld->addRigidBody( body, colGroup, colMask );
@@ -211,79 +213,3 @@ bool PhysicsCore::removeBody( btRigidBody *body )
         return true;
     }
 }
-
-
-/// @brief  Creates a cube and adds it to the physics world
-/// @param  instanceName  Name to be used for the imported cube mesh.
-/// @param  pos  Position for the resulting cube.
-/// @param  q  Rotation for the resulting cube.
-/// @param  size  Size for the resulting cube.
-/// @param  bodyRestitution  How bouncy the cube is.
-/// @param  bodyFriction  How slidey the cube is.
-/// @param  bodyMass  How heavy the cube is.
-/*void PhysicsCore::addCube(
-        Ogre::String instanceName,
-        Ogre::Vector3 pos,
-        Ogre::Quaternion q,
-        Ogre::Vector3 size,
-        Ogre::Real bodyRestitution,
-        Ogre::Real bodyFriction,
-        Ogre::Real bodyMass)
-{
-    Ogre::Entity *entity = GameCore::mSceneMgr->createEntity(instanceName , "Bulletbox.mesh");
-    // "Crate.mesh");
-    // "Crate1.mesh");
-    // "Crate2.mesh");
-
-
-    //entity->setQueryFlags (GEOMETRY_QUERY_MASK);
-#if (OGRE_VERSION < ((1 << 16) | (5 << 8) | 0)) // only applicable before shoggoth (1.5.0)
-    entity->setNormaliseNormals(true);
-#endif
-    entity->setCastShadows(true);
-
-    entity->setMaterialName("Bullet/box");
-
-    OgreBulletCollisions::BoxCollisionShape *sceneCubeShape = new OgreBulletCollisions::BoxCollisionShape(size);
-    
-    OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(instanceName, mWorld);
-
-    Ogre::SceneNode *node = GameCore::mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-    node->attachObject (entity);
-
-    defaultBody->setShape (node,  sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
-
-    mShapes.push_back(sceneCubeShape);
-    mBodies.push_back(defaultBody);
-
-}*/
-
-
-/// @brief  Creates a cube with velocity
-/*void PhysicsCore::newBox(
-        Ogre::SceneNode *node,
-        Ogre::Vector3 position,
-        Ogre::Vector3 size,
-        Ogre::Vector3 cameraDirectionNormalised,
-        float mass)
-{
-    size *= 0.05f; // don't forget to scale down the Bullet-box too
-    // after that create the Bullet shape with the calculated size
-    OgreBulletCollisions::BoxCollisionShape *sceneBoxShape = new OgreBulletCollisions::BoxCollisionShape(size);
-    // and the Bullet rigid body
-    OgreBulletDynamics::RigidBody *defaultBody = new OgreBulletDynamics::RigidBody(
-            "defaultBoxRigid" + Ogre::StringConverter::toString(getUniqueEntityID()),
-            mWorld);
-    defaultBody->setShape(node,
-                          sceneBoxShape,
-                          0.6f,         // dynamic body restitution
-                          0.6f,         // dynamic body friction
-                          mass,          // dynamic bodymass
-                          position,      // starting position of the box
-                          Ogre::Quaternion(0,0,2,1));// orientation of the box
-    defaultBody->setLinearVelocity(cameraDirectionNormalised * 7.0f ); // shooting speed
-        // push the created objects to the deques
-    mShapes.push_back(sceneBoxShape);
-    mBodies.push_back(defaultBody);
-}*/
-
