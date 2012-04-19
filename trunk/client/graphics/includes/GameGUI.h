@@ -74,15 +74,6 @@ private:
     CEGUI::Imageset* spawnScreenImageSet;
     int              spawnScreenTeamSelection;
     CarType          spawnScreenCarSelection;
-	Ogre::OverlayElement   *damageHUD_Body;
-	Ogre::OverlayElement   *damageHUD_TL;
-	Ogre::OverlayElement   *damageHUD_TR;
-	Ogre::OverlayElement   *damageHUD_BL;
-	Ogre::OverlayElement   *damageHUD_BR;
-	Ogre::OverlayElement   *damageHUD_ML;
-	Ogre::OverlayElement   *damageHUD_MR;
-
-    //Ogre::OverlayElement   *oleDamageEngine, *oleDamageFL, *oleDamageFR, *oleDamageRL, *oleDamageRR;
 };
 
 #endif

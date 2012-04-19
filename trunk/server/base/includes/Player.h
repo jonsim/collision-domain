@@ -28,7 +28,7 @@ public:
 	float getCameraYaw (void);
     Car* getCar (void);
     //void collisionTickCallback (int damage, Player *causedByPlayer);
-	void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
+	void collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer);
     void applyHealthBonus (void);
         
     const char *getNickname (void) { return mNickname; }
@@ -72,27 +72,11 @@ public:
 	bool isReady() { return mSpawned;};
 	void setHP(int newHP) { hp = newHP;};
 
-	void cameraLookLeft(void);
-	void cameraLookRight(void);
-	void cameraLookBack(void);
-	void revertCamera(void);
-
 	//Operator overides
 	//bool operator<(Player *other) { return this->getRoundScore()<this->getRoundScore(); } //Used in the sort function
 private:
     const float      cameraRotationConstant;
 	int		         hp;
-	int              initialHP;
-	int              frontLeftDamage;
-	int              frontRightDamage;
-	int              backLeftDamage;
-	int              backRightDamage;
-
-	float            frontLeftDamageShare;
-	float            frontRightDamageShare;
-	float            backLeftDamageShare;
-	float            backRightDamageShare;
-
     int              mTeam;
 	bool		     mAlive;
     bool             mIsVIP;
@@ -104,8 +88,6 @@ private:
 	Ogre::SceneNode* camNode;
 	Ogre::SceneNode* camArmNode;
     CarType          mCarType;
-
-	float            recalculateDamage(void);
 
 	Ogre::OverlayElement* mOLE;
 	RakNet::RakNetGUID mPlayerGUID;

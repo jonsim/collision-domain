@@ -8,9 +8,7 @@
 #include "GameIncludes.h"
 
 
-#define INITIAL_HEALTH 600
-#define MAX_DAMAGE 400 // used cap damage for individual crashes so that deformations are more managable
-#define BIG_CRASH_THRESHOLD 80
+#define INITIAL_HEALTH 1200
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -65,112 +63,41 @@ void Player::createPlayer (CarType carType, TeamID tid)
 	int spawnZ = rand() % 100 - 50;
     mCar->moveTo(btVector3(spawnX,0.5,spawnZ));
 	mSpawned = true;
-
-    initialHP = INITIAL_HEALTH;
-	backRightDamageShare = 0.3f;
-	backLeftDamageShare = 0.3f;
-	frontLeftDamageShare = 0.2f;
-	frontRightDamageShare = 0.2f;
 }
 
 
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 ///         In total this will even out to 60 calls per second :-)
 /// @param  damage   0 if no damage was done to this player in the collision, else 1.
-void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer) {
-		// convert the hitPoint to an ogre vector in our local space, to pass to deformer
-	Ogre::Vector3 adjust = this->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)hitPoint);
-	// calculate the unsigned yaw rotation to the adjusted hitpoint, gives us a crude but usable mapping for the damage HUD
-	Ogre::Real or1 = this->getCar()->mBodyNode->getPosition().getRotationTo(adjust).getYaw().valueDegrees()+180;
-	
-	if(adjust.x == 0.f && adjust.y == 0.f && adjust.z == 0.f) {
-		OutputDebugString("ZERO collision Point\n");
-	}
+void Player::collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer) {
+	if(numCollisionDataPoints < 150) {
 
-	// combine speeds of both cars, gives approximation of total force in collision
-	float p1Speed = this->getCar()->getCarMph();
-	float p2Speed = causedByPlayer->getCar()->getCarMph();
-	float combinedSpeed = p1Speed + p2Speed;
-
-	// calculate ratio of damage to each player from the combined speed
-	// these will then be multiplied by the totalDamage to get amount of damage to each car
-	float damageShareTo1 = p2Speed / combinedSpeed;
-	float damageShareTo2 = p1Speed / combinedSpeed;
-
-	float totalDamage = abs(depth * 1000);
-	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
-	float damageToThis = totalDamage * damageShareTo1;
-
-	std::stringstream ss;
-	//ss << "totDamage " << totalDamage << "\n";
-	//OutputDebugString(ss.str().c_str());
-
-	// differentiate between differnt collision types
-	if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed > 40 || p2Speed > 40)) {
-		//OutputDebugString("Gleam\n");
-	} else if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed < 40 && p2Speed < 40)) {
-		//OutputDebugString("Bump\n");
-	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
-		//OutputDebugString("Bang\n");
-		// Uncomment to have deformations on server!
-		//GameCore::mGraphicsCore->meshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis);
-	}
-	// map damage to HUD
-	//std::stringstream ss;
-	if(or1 >= 0 && or1 < 90) {
-		//ss << "front right ";
-		frontRightDamage += damageToThis;
-	} else if(or1 >= 90 && or1 < 180) {
-		//ss << "front left ";
-		frontLeftDamage += damageToThis;
-	} else if(or1 >= 180 && or1 < 270) {
-		//ss << "back left ";
-		backLeftDamage += damageToThis;
-	} else if(or1 >= 270 && or1 < 360) {
-		//ss << "back right ";
-		backRightDamage += damageToThis;
-	}
-	
-	//OutputDebugString("Sever collision\n");
-
-	if((GameCore::mGameplay->mGameActive && mAlive) || 2+2==4) {
-		hp = recalculateDamage();
 		std::stringstream ss;
-		ss << "hp = " << hp << "\n";
-		OutputDebugString(ss.str().c_str());
+        ss << "COLLISION " << causedByPlayer->getGUID() << "\n";
+        OutputDebugString(ss.str().c_str());
+		numCollisionDataPoints = 0;
+	}
+	numCollisionDataPoints++;
+	//collisionPositions[causedByPlayer->getGUID()] += hitPoint;
+	//collisionDamages[causedByPlayer->getGUID()] += damage
+    //OutputDebugString("Client: Player collision\n");
+
+    // p1 and p2 might not be the only two players who collided this physics step.
+    //OutputDebugString("Server: Player collision\n");
+	if(GameCore::mGameplay->mGameActive && mAlive)
+	{
+		hp-=damage; //Apply damage to player
 		GameCore::mGameplay->notifyDamage(this);
+
 		//Force health to never drop below 0
-		if(hp <= 0) {
+		if(hp <= 0)
+		{
 			hp = 0;
 			this->killPlayer(causedByPlayer);
 		}
 	}
 }
 
-float Player::recalculateDamage(void) {
-	return initialHP - (
-		backRightDamage  * backRightDamageShare +
-		backLeftDamage   * backLeftDamageShare +
-		frontRightDamage * frontRightDamageShare +
-		frontLeftDamage  * frontLeftDamageShare 
-    );
-}
-
-void Player::cameraLookLeft(void) {
-	OutputDebugString("look left\n");
-}
-
-void Player::cameraLookRight(void) {
-	OutputDebugString("look right\n");
-}
-
-void Player::cameraLookBack(void) {
-	OutputDebugString("look back\n");
-}
-
-void Player::revertCamera(void) {
-	OutputDebugString("revert\n");
-}
 
 /// @brief  Attaches a camera to the player.
 /// @param  cam   The camera object to attach to the player.
