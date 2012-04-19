@@ -438,8 +438,12 @@ void NetworkCore::PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	RakNet::RakNetGUID deadPlayerGUID;
 	bitStream->Read(deadPlayerGUID);
 
+    RakNet::RakNetGUID causedByPlayerGUID;
+    bitStream->Read(causedByPlayerGUID);
+
 	Player* deadPlayer = GameCore::mPlayerPool->getPlayer(deadPlayerGUID);
-	deadPlayer->killPlayer();
+    Player* causedBy   = GameCore::mPlayerPool->getPlayer(causedByPlayerGUID);
+    deadPlayer->killPlayer(causedBy);
 }
 
 void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

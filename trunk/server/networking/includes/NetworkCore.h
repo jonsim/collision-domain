@@ -93,7 +93,7 @@ public:
 	static void SetupGameForPlayer( RakNet::RakNetGUID playerid );
 
 	void sendInfoItem(InfoItem* ii);
-	void sendPlayerDeath(Player* player); 
+	void sendPlayerDeath(Player* player, Player* causedBy); 
 	void declareNewVIP(Player* player);
 
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
