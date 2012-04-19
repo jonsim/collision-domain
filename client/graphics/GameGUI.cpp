@@ -167,8 +167,7 @@ bool GameGUI::SpawnScreen_p1btnSpectator (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p1btnProjector (const CEGUI::EventArgs& args)
 {
-	closeSpawnScreen();		
-	GameCore::mClientGraphics->mSpawnScreen->selectCar();		
+	closeSpawnScreen();
     GameCore::mClientGraphics->setupProjector();
 
     return true;

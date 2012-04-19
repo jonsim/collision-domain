@@ -562,9 +562,6 @@
     <ClInclude Include="..\..\shared\base\includes\PowerupSpeed.h">
       <Filter>shared\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\client\base\includes\SpawnScreen.h">
-      <Filter>client\base</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\physics\includes\cars\SmallCar.h">
       <Filter>shared\physics\cars</Filter>
     </ClInclude>
@@ -962,9 +959,6 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\base\PowerupSpeed.cpp">
       <Filter>shared\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\client\base\SpawnScreen.cpp">
-      <Filter>client\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\cars\SmallCar.cpp">
       <Filter>shared\physics\cars</Filter>
