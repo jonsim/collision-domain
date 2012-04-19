@@ -263,6 +263,7 @@ void GameGUI::updatePlayerComboBox()
 	
 	int i = 0;
 
+    
 	if(GameCore::mPlayerPool->getNumberOfPlayers() != playerComboBox->getItemCount())
 	{
 		playerComboBox->resetList();

@@ -53,7 +53,7 @@ private:
 class GameGUI
 {
 public:
-    GameGUI (void) : consoleHistory(16), consoleHistoryLocation(0xFF) {}
+    GameGUI (void) : consoleHistory(16), consoleHistoryLocation(0xFF) { this->playerComboBox = NULL;}
     ~GameGUI (void) {}
         
 	void setupConsole (CEGUI::Window* guiWindow);
