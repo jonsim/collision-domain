@@ -126,14 +126,13 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.5f, 0.5f) );
 
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
     initGraphics(tid);
 #endif
-    initBody(carPosition, chassisShift);
+    initBody(carPosition);
     initWheels();
 
     mLeftDoorBody = NULL;
@@ -164,14 +163,28 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     delete mVehicleRayCaster;
     delete mCarChassis;
 
-    // Cleanup Shapes:
-    delete compoundChassisShape;
-    delete chassisShape;
-    
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
     GameCore::mAudioCore->deleteSoundInstance(mEngineSound);
 #endif
+}
+
+void SimpleCoupeCar::createCollisionShapes()
+{
+    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.5f, 0.5f) );
+    btCompoundShape *compoundChassisShape = new btCompoundShape();
+    btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    compoundChassisShape->addChildShape( chassisShift, convexHull );
+
+    btBoxShape *doorShape = new btBoxShape( btVector3( 0.25f, 0.58f, 0.55f ) );
+    btBoxShape *fBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+    btBoxShape *rBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER, compoundChassisShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER_DOOR, doorShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER_FBUMPER, fBumperShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER_RBUMPER, rBumperShape );
 }
 
 /*static float min = 99999;
@@ -347,20 +360,14 @@ void SimpleCoupeCar::loadDestroyedModel (void)
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
-void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
+void SimpleCoupeCar::initBody(Ogre::Vector3 carPosition)
 {
     // Load the collision mesh and create a collision shape out of it
     Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("BangerCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "banger_collision.mesh");
     entity->setDebugDisplayEnabled( false );
-    compoundChassisShape = new btCompoundShape();
-
-    btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
-    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
-
-    // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( chassisShift, convexHull );
 
     btVector3 inertia;
+    btCompoundShape *compoundChassisShape = (btCompoundShape*) GameCore::mPhysicsCore->getCollisionShape( PHYS_SHAPE_BANGER );
     compoundChassisShape->calculateLocalInertia( mChassisMass, inertia );
 
     mState = new CarState( mBodyNode );
@@ -440,11 +447,11 @@ void SimpleCoupeCar::initWheels()
 void SimpleCoupeCar::makeBitsFallOff()
 {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
-    removePiece( mFLDoorNode, mFLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.773f, 0.895f, 0.315f ) );
-    removePiece( mFRDoorNode, mFRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.773f, 0.895f, 0.315f ) );
-    removePiece( mRLDoorNode, mRLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  0.773f, 0.900f, 0.679f ) );
-    removePiece( mRRDoorNode, mRRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -0.773f, 0.900f, 0.679f ) );
+    removePiece( mFLDoorNode, mFLDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+    removePiece( mFRDoorNode, mFRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3( -0.773f, 0.895f, 0.315f ) );
+    removePiece( mRLDoorNode, mRLDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.900f, 0.679f ) );
+    removePiece( mRRDoorNode, mRRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3( -0.773f, 0.900f, 0.679f ) );
 
-    removePiece( mFBumperNode, mFBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.486f,  2.424f ) );
-    removePiece( mRBumperNode, mRBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.518f, -2.424f ) );
+    removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_BANGER_FBUMPER, btVector3( 0.0f, 0.486f,  2.424f ) );
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_BANGER_RBUMPER, btVector3( 0.0f, 0.518f, -2.424f ) );
 }

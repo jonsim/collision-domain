@@ -26,15 +26,18 @@ public:
     virtual ~PhysicsCore (void);
 	static void auto_scale_scenenode (Ogre::SceneNode* n);
     int getUniqueEntityID (void);
-    void attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionName, float scaling  );
-    void newBox(Ogre::SceneNode *node, Ogre::Vector3 position, Ogre::Vector3 size, Ogre::Vector3 cameraDirectionNormalised, float mass);
-    void addCube(const Ogre::String instanceName, const Ogre::Vector3 pos, const Ogre::Quaternion q, const Ogre::Vector3 size,
-                 const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, const Ogre::Real bodyMass);
+    void attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionName, float scaling );
+
     void stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep);
     
     btDynamicsWorld* getWorld() { return mBulletWorld; }
+
+    void createCollisionShapes();
+    btCollisionShape *getCollisionShape( PHYS_SHAPE shape ) { return mShapes[shape]; }
+    void setCollisionShape( PHYS_SHAPE shape, btCollisionShape *btshape ) { mShapes[shape] = btshape; }
     void addRigidBody( btRigidBody *body, short colGroup, short colMask );
     bool removeBody( btRigidBody *body );
+
     //OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
     PlayerCollisions* mPlayerCollisions;
@@ -58,7 +61,8 @@ private:
     btSequentialImpulseConstraintSolver *mSolver;
 
     std::deque<btRigidBody*>             mBodies;
-    std::deque<btCollisionShape*>        mShapes;
+    //std::deque<btCollisionShape*>      mShapes;
+    btCollisionShape                    *mShapes[PHYS_SHAPE_COUNT];
 
     BtOgre::DebugDrawer                 *dbgDraw;
 

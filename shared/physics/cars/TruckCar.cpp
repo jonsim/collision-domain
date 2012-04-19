@@ -115,16 +115,15 @@ TruckCar::TruckCar(int uniqueCarID, TeamID tid)
     mUniqueCarID = uniqueCarID;
     
     Ogre::Vector3 carPosition(16, 13, -15);
-    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.81f, 1.75f ) );
 
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
     initGraphics(tid);
 #endif
-    initBody(carPosition, chassisShift);
+    initBody(carPosition);
     initWheels();
-    initDoors(chassisShift);
+    //initDoors(chassisShift);
 
     testCar = NULL; /*new SmallCar( sceneMgr, world, GameCore::mPhysicsCore->getUniqueEntityID() );
 
@@ -157,10 +156,6 @@ TruckCar::~TruckCar(void)
     delete mVehicle;
     delete mVehicleRayCaster;
     delete mCarChassis;
-
-    // Cleanup Shapes:
-    delete compoundChassisShape;
-    delete chassisShape;
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
@@ -168,6 +163,21 @@ TruckCar::~TruckCar(void)
 #endif
 }
 
+void TruckCar::createCollisionShapes()
+{
+    btCompoundShape* compoundChassisShape = new btCompoundShape();
+    btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.81f, 1.75f ) );
+    btConvexHullShape *convexHull = new btConvexHullShape( TruckVtx, TRUCK_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    compoundChassisShape->addChildShape( chassisShift, convexHull );
+
+    btBoxShape *doorShape = new btBoxShape( btVector3( -1.094f, 1.665f, 1.768f ) );
+    btBoxShape *rBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK, compoundChassisShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK_DOOR, doorShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK_RBUMPER, rBumperShape );
+}
 
 void TruckCar::louderLocalSounds() {
     float increaseTo = mEngineSound->getVolume() + 0.25;
@@ -329,20 +339,14 @@ void TruckCar::loadDestroyedModel (void)
 
 
 /// @brief  Creates a physics car using the nodes (with attached meshes) and adds it to the physics world
-void TruckCar::initBody(Ogre::Vector3 carPosition, btTransform& chassisShift)
+void TruckCar::initBody(Ogre::Vector3 carPosition)
 {
     // Load the collision mesh and create a collision shape out of it
     Ogre::Entity* entity = GameCore::mSceneMgr->createEntity("TruckCollisionMesh" + boost::lexical_cast<std::string>(mUniqueCarID), "truck_collision.mesh");
     entity->setDebugDisplayEnabled( false );
-    compoundChassisShape = new btCompoundShape();
-
-    btConvexHullShape *convexHull = new btConvexHullShape( TruckVtx, TRUCK_VTX_COUNT, 3*sizeof(btScalar) );
-    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
-
-    // Shift the mesh (this does work in a physical sense, but the wireframe is still drawn in the wrong place)
-    compoundChassisShape->addChildShape( chassisShift, convexHull );
 
     btVector3 inertia;
+    btCompoundShape *compoundChassisShape = (btCompoundShape*) GameCore::mPhysicsCore->getCollisionShape( PHYS_SHAPE_TRUCK );
     compoundChassisShape->calculateLocalInertia( mChassisMass, inertia );
 
     //BtOgre::RigidBodyState *state = new BtOgre::RigidBodyState( mBodyNode );
@@ -394,7 +398,7 @@ void TruckCar::initDoors( btTransform& chassisShift )
     mLeftDoorBody  = new btRigidBody( 5.0f, lstate, leftDoor,  linertia );
     mRightDoorBody = new btRigidBody( 5.0f, rstate, rightDoor, rinertia );
 
-    GameCore::mPhysicsCore->addRigidBody( mLeftDoorBody,  COL_CAR, COL_ARENA | COL_CAR );
+    GameCore::mPhysicsCore->addRigidBody( mLeftDoorBody, COL_CAR, COL_ARENA | COL_CAR );
     GameCore::mPhysicsCore->addRigidBody( mRightDoorBody, COL_CAR, COL_ARENA | COL_CAR );
 
     mLeftDoorBody->setDamping( 0.2f, 0.5f );
@@ -491,8 +495,8 @@ void TruckCar::initWheels()
 void TruckCar::makeBitsFallOff()
 {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
-    removePiece( mLDoorNode, mLDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3(  1.094f, 1.665f, 1.768f ) );
-    removePiece( mRDoorNode, mRDoorBody, btVector3( 0.25f, 0.58f, 0.55f ), btVector3( -1.094f, 1.665f, 1.768f ) );
+    removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
+    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3( -1.094f, 1.665f, 1.768f ) );
 
-    removePiece( mRBumperNode, mRBumperBody, btVector3( 0.773f, 0.25f, 0.25f ), btVector3( 0.0f, 0.547f, 3.035f ) );
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_TRUCK_RBUMPER, btVector3( 0.0f, 0.547f, 3.035f ) );
 }

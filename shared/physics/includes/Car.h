@@ -66,7 +66,7 @@ public:
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
-    virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, btVector3& box, btVector3& offset );
+    virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3& offset );
     virtual void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
 
 	Ogre::Vector3 GetPos();
@@ -153,10 +153,6 @@ protected:
 	float mMaxSpeed;
 
     // Car physics objects
-
-    btBoxShape                          *chassisShape;
-    btCompoundShape                     *compoundChassisShape;
-
     btRigidBody                         *mCarChassis;
     btRigidBody                         *mLeftDoorBody;
     btRigidBody                         *mRightDoorBody;
