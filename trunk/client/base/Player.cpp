@@ -10,6 +10,9 @@
 
 #define INITIAL_HEALTH 1200
 #define NEWCAM 1
+
+#define MAX_DAMAGE 400
+#define BIG_CRASH_THRESHOLD 80
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
@@ -175,28 +178,28 @@ void Player::cameraLookRight(void) {
 }
 
 void Player::cameraLookBack(void) {
-	prick = 1;
+
 }
 
 void Player::revertCamera(void) {
-	prick = 0;
+
 }
 
 void Player::cycleCameraView(void) {
 
 	cameraView = (++cameraView) & numCameraViews;
 
-	mCamera->setOffset( cameraViews[cameraView] );
-    mCamera->setLookOffset( cameraLookViews[cameraView] );
+	GameCore::mClientGraphics->mGameCam->setOffset( cameraViews[cameraView] );
+    GameCore::mClientGraphics->mGameCam->setLookOffset( cameraLookViews[cameraView] );
 
     
 	switch(cameraView) {
 		case 0 :
 		case 1 :
-			mCamera->setCamType( CAM_CHASE );
+			GameCore::mClientGraphics->mGameCam->setCamType( CAM_CHASE );
 			break;
 		case 2 :
-			mCamera->setCamType( CAM_FIXED );
+			GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
 			break;
 	}
 }
