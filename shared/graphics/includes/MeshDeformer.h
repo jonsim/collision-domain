@@ -25,6 +25,8 @@ public:
 
 	void collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre);
 	void MeshDeformer::traceNodeHierarchy(Ogre::SceneNode *rootnode);
+
+    Ogre::ManualObject* drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end);
 	~MeshDeformer(void);
 
 protected :
@@ -36,7 +38,7 @@ protected :
 		const Ogre::Vector3    &scale      =  Ogre::Vector3::UNIT_SCALE
 	);
 
-	virtual Ogre::ManualObject* drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end);
+	
 
 	virtual unsigned time_seed();
 };

@@ -49,14 +49,14 @@ public:
 
     void updateSpeedo (void);
         void updateSpeedo (float fSpeed, int iGear);
-    void updateDamage (int part, int colour);
+    void updateDamage (CarType ct, int part, int colour);
 
     void updateCounters (void);
+    void setupDamageDisplay(CarType carType, TeamID tid);
     
 private:
     void setupSpeedo (void);
     void setupGearDisplay (void);
-    void setupDamageDisplay (void);
 
         Ogre::OverlayContainer* olcSpeedo;
     Ogre::OverlayContainer* oleDamage;
@@ -70,6 +70,19 @@ private:
     Ogre::OverlayElement* oleDamageRL;
     Ogre::OverlayElement* oleDamageRR;
 
+	Ogre::OverlayElement   *damageHUD_Body;
+	Ogre::OverlayElement   *damageHUD_TL;
+	Ogre::OverlayElement   *damageHUD_TR;
+	Ogre::OverlayElement   *damageHUD_BL;
+	Ogre::OverlayElement   *damageHUD_BR;
+	Ogre::OverlayElement   *damageHUD_ML;
+	Ogre::OverlayElement   *damageHUD_MR;
+
+    TeamID playerTeam;
+
+    CarType playerCarType; //
+
+    //Ogre::OverlayElement   *oleDamageEngine, *oleDamageFL, *oleDamageFR, *oleDamageRL, *oleDamageRR;
     CEGUI::Window*   spawnScreenImage;
     CEGUI::Imageset* spawnScreenImageSet;
     int              spawnScreenTeamSelection;

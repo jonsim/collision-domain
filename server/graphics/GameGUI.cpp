@@ -64,9 +64,9 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
         outputToConsole("start           Starts the game.\n");
         outputToConsole("ddinfo          Draws the death info.\n");
         outputToConsole("kill [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']          Kills player [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] (where [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] is their integer player index).\n");
-        outputToConsole("spawn easy [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with easy difficulty.\n");
-        outputToConsole("spawn normal [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with normal difficulty.\n");
-        outputToConsole("spawn hard [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with hard difficulty.\n");
+        outputToConsole("spawn wander [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']  Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the wander mechanic.\n");
+        outputToConsole("spawn seek [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the seek mechanic.\n");
+        outputToConsole("spawn flee [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the flee mechanic.\n");
         outputToConsole("get server fps  Returns the server's average fps.\n");
         outputToConsole("get gfx fps     Returns the server's graphics fps.\n");
     }
@@ -110,11 +110,11 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     }
     else if( !stricmp( inputChars, "get server fps" ) )
     {
-        outputToConsole("Server's average fps: %.2f.\n", GameCore::mServerGraphics->mAverageFrameRate);
+        outputToConsole("Serer's average fps: %.2f.\n", GameCore::mServerGraphics->mAverageFrameRate);
     }
     else if( !stricmp( inputChars, "get gfx fps" ) )
     {
-        outputToConsole("Server's graphics average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
+        outputToConsole("Serer's graphics average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
     }
 	else if( !strcasecmp(inputChars, "admin"))
 	{
