@@ -92,6 +92,11 @@ public:
 	void midDamageCallBack(std::string causedBy);
 	void highDamageCallBack(std::string causedBy);
 
+	void cameraLookLeft(void);
+	void cameraLookRight(void);
+	void cameraLookBack(void);
+	void revertCamera(void);
+	void cycleCameraView(void);
 
     void angleTest(void);
 
@@ -110,6 +115,7 @@ private:
 	Ogre::SceneNode*						   camNode;
 	Ogre::SceneNode*						   camArmNode;
     CarType									   mCarType;
+
 	int                                        numCameraViews;
 	int										   cameraView;
 	btVector3                                  cameraViews[3];

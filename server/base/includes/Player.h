@@ -51,7 +51,7 @@ public:
 
 	void setGUID(RakNet::RakNetGUID playerGUID);
 	std::string getGUID(void);
-	
+	void setHP(int newHP) { hp = newHP;}
 	void setOverlayElement (Ogre::OverlayElement* ole);
     void setSpawned (void); //Marks the car as spawned
     Ogre::OverlayElement* getOverlayElement (void);
@@ -83,7 +83,12 @@ public:
     void setGameScore( int gs ) { this->gameScore = gs; }
 	void addToGameScore(int amount);
     int lastsenthp;
-	bool isReady() { return mSpawned;};
+	bool isReady() { return mSpawned;}
+
+    void cameraLookLeft(void);
+	void cameraLookRight(void);
+	void cameraLookBack(void);
+	void revertCamera(void);
 
 private:
     const float      cameraRotationConstant;
@@ -103,6 +108,8 @@ private:
     float            damageShareTR; 
     float            damageShareBR;  
     float            damageShareMR;  
+
+    float            recalculateDamage(void);
 
     int              mTeam;
 	bool		     mAlive;

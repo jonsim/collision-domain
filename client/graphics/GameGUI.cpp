@@ -706,7 +706,7 @@ void GameGUI::updateDamage (CarType ct, int part, int colour) {
         "_red"
     };
     std::string col = colours[colour];
-    if(ct >= CarType::CAR_COUNT) {
+    if(ct >= CAR_COUNT) {
         throw Ogre::Exception::ERR_INVALIDPARAMS;
     } else {
         s += cartypes[ct];

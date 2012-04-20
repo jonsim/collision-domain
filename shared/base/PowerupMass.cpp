@@ -33,7 +33,9 @@ PowerupMass::~PowerupMass()
             
         GameCore::mPhysicsCore->removeBody( mRigidBody );
 
-        delete collisionShape;
+        if( collisionShape ) {
+            delete collisionShape;
+        } 
     }
     
 #ifdef COLLISION_DOMAIN_CLIENT

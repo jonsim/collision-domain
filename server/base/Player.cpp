@@ -87,8 +87,15 @@ void Player::createPlayer (CarType carType, TeamID tid)
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 ///         In total this will even out to 60 calls per second :-)
 /// @param  damage   0 if no damage was done to this player in the collision, else 1.
-void Player::collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer) {
-	if(numCollisionDataPoints < 150) {
+void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer) {
+		// convert the hitPoint to an ogre vector in our local space, to pass to deformer
+	Ogre::Vector3 adjust = this->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)hitPoint);
+	// calculate the unsigned yaw rotation to the adjusted hitpoint, gives us a crude but usable mapping for the damage HUD
+	Ogre::Real or1 = this->getCar()->mBodyNode->getPosition().getRotationTo(adjust).getYaw().valueDegrees()+180;
+	
+	if(adjust.x == 0.f && adjust.y == 0.f && adjust.z == 0.f) {
+		OutputDebugString("ZERO collision Point\n");
+	}
 
 	// combine speeds of both cars, gives approximation of total force in collision
 	float p1Speed = abs(this->getCar()->getCarMph());
@@ -152,10 +159,8 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float damage, Player *ca
 		ss << "hp = " << hp << "\n";
 		OutputDebugString(ss.str().c_str());*/
 		GameCore::mGameplay->notifyDamage(this);
-
 		//Force health to never drop below 0
-		if(hp <= 0)
-		{
+		if(hp <= 0) {
 			hp = 0;
 			this->killPlayer(causedByPlayer);
 		}
