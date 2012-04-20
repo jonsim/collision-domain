@@ -37,6 +37,7 @@ public:
     void setCollisionShape( PHYS_SHAPE shape, btCollisionShape *btshape ) { mShapes[shape] = btshape; }
     void addRigidBody( btRigidBody *body, short colGroup, short colMask );
     bool removeBody( btRigidBody *body );
+    void clearWorld();
 
     //OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 

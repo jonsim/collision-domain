@@ -54,6 +54,9 @@ RakNet::RakPeerInterface* NetworkCore::getRakInterface() { return m_pRak; }
 /// @brief  Deconstructor.
 NetworkCore::~NetworkCore()
 {
+    m_pRak->CloseConnection( serverGUID, true, 0, HIGH_PRIORITY );
+    while( m_pRak->GetConnectionState( serverGUID ) == RakNet::ConnectionState::IS_CONNECTED )
+        boost::this_thread::sleep( boost::posix_time::milliseconds( 10 ) );
 	RakNet::RakPeerInterface::DestroyInstance( m_pRak );
 }
 
@@ -270,8 +273,10 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
+    unsigned char reason;
 	RakNet::RakNetGUID playerid;
 	bitStream->Read( playerid );
+    bitStream->Read( reason );
 
 	GameCore::mPlayerPool->delPlayer( playerid );
 }

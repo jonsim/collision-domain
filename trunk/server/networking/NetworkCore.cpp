@@ -106,18 +106,16 @@ void NetworkCore::frameEvent()
 				break;
 			}
 
-			case ID_REMOTE_DISCONNECTION_NOTIFICATION:
+			case ID_DISCONNECTION_NOTIFICATION:
 			{
 				log( "Remote player disconnected" );
+                HandlePlayerQuit( pkt->guid, packetid );
 				break;
 			}
 
-			case ID_REMOTE_CONNECTION_LOST:
+			case ID_CONNECTION_LOST:
 				log( "Remote player connection lost" );
-				break;
-
-			case ID_REMOTE_NEW_INCOMING_CONNECTION:
-				log( "New incoming remote connection" );
+                HandlePlayerQuit( pkt->guid, packetid );
 				break;
 
 			case ID_PLAYER_INPUT:
@@ -317,6 +315,18 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 	GamestateUpdatePlayer( playerid );
 }
 
+void NetworkCore::HandlePlayerQuit( RakNet::RakNetGUID playerid, unsigned char reason )
+{
+    // Check the player exists first (don't want to send quit twice)
+    if( GameCore::mPlayerPool->delPlayer( playerid ) == false )
+        return;
+
+    RakNet::BitStream bsSend;
+    bsSend.Write( playerid );
+    bsSend.Write( reason );
+    m_RPC->Signal( "PlayerQuit", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0,  playerid, true, false );
+}
+
 
 /// @brief  Called once a frame and supplies the requested user position so it can be updated onscreen.
 /// @param  playerID  An identifier for a specific player in the game.
@@ -370,8 +380,7 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 {
 	// Check and make sure things from Player are deleted
 	// send an RPC to tell other clients they quit
-
-	GameCore::mPlayerPool->delPlayer( pkt->guid );
+    HandlePlayerQuit( pkt->guid, ID_REMOTE_DISCONNECTION_NOTIFICATION );
 }
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

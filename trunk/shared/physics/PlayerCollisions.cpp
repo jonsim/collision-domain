@@ -41,6 +41,9 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
     
     // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION
 
+    if( p1 == NULL || p2 == NULL )
+        return;
+
 	// number of contact points usually > 1, so average all of the relevant values
     btVector3 averageCollisionPointOnA(0, 0, 0);
 	btVector3 averageCollisionPointOnB(0, 0, 0);
@@ -82,6 +85,10 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 			// if either player hasn't collided for more than 15 frames, let them collide again
 			if(collisionDelays[p1] > 90 || collisionDelays[p2] > 90) {
 				// reset frame counter
+                if(p1 == NULL || p2 == NULL)
+                {
+                    return;
+                }
 				collisionDelays[p1] = collisionDelays[p2] = 0;
 				p1->collisionTickCallback(averageCollisionPointOnA, averageOverlapDistance, p2);
 				p2->collisionTickCallback(averageCollisionPointOnB, averageOverlapDistance, p1);
@@ -162,7 +169,7 @@ void PlayerCollisions::frameEventEnd()
     ////GameCore::mAudioCore->playCarCrash();
     
     // clear lists from previous frame
-    emptyLists();
+    //emptyLists();
 
 }
 

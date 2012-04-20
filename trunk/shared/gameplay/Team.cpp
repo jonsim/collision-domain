@@ -25,6 +25,13 @@ void Team::addPlayer(Player *player)
 	players.push_back(player);
 }
 
+void Team::delPlayer(Player *player)
+{
+    std::vector<Player*>::iterator itr = find(players.begin(), players.end(), player);
+    if(itr != players.end())
+        players.erase(itr);
+}
+
 std::vector<Player*> Team::getPlayers()
 {
 	return Team::players;

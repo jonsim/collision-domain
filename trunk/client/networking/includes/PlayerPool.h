@@ -26,7 +26,7 @@ public:
 	
 	int                addPlayer( RakNet::RakNetGUID playerid, char *szNickname );
 	void                addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname );
-	void                delPlayer( RakNet::RakNetGUID playerid );
+	bool                delPlayer( RakNet::RakNetGUID playerid );
 	int                 getNumberOfPlayers();
 	static bool cmpRound(Player* a, Player* b); //Sorts the players based on their round score
     static bool cmpGame(Player* a, Player* b); //Sorts the players based on their game score

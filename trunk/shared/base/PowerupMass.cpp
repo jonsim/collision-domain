@@ -30,14 +30,9 @@ PowerupMass::~PowerupMass()
     // delete the shape last
     if (mHasSpawned) {
         btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
+            
+        GameCore::mPhysicsCore->removeBody( mRigidBody );
 
-        if( mRigidBody->getMotionState() )
-            delete mRigidBody->getMotionState();
-
-        GameCore::mPhysicsCore->getWorld()->removeRigidBody( mRigidBody );
-        //GameCore::mPhysicsCore->getWorld()->removeCollisionObject( mRigidBody );
-
-        delete mRigidBody;
         delete collisionShape;
     }
     
