@@ -116,15 +116,6 @@ void Input::processInterfaceControls()
             GameCore::mGui->toggleChatbox();
 	    else if (mKeyboard->isKeyDown(OIS::KC_C))
             GameCore::mGui->toggleConsole();
-//#ifdef COLLISION_DOMAIN_CLIENT
-        if( GameCore::mPlayerPool->getLocalPlayer()->getAlive() == false )
-        {
-            if( mKeyboard->isKeyDown( OIS::KC_TAB ) )
-            {
-                GameCore::mPlayerPool->spectateNext();
-            }
-        }
-//#endif
     }
 #endif
 }
@@ -165,6 +156,18 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 	// Inject text seperately (for multi-lang keyboards)
 	sys.injectChar(evt.text);
     
+#ifdef COLLISION_DOMAIN_CLIENT
+    if( GameCore::mNetworkCore->bConnected )
+    {
+        if( GameCore::mPlayerPool->getLocalPlayer()->getPlayerState() == PLAYER_STATE_SPECTATE )
+        {
+            if( evt.key == OIS::KC_LEFT )
+                GameCore::mPlayerPool->spectateNext();
+            else if( evt.key == OIS::KC_RIGHT )
+                GameCore::mPlayerPool->spectateNext(true);
+        }
+    }
+#endif
 #ifdef COLLISION_DOMAIN_SERVER
     // Inject UP to the GUI. Has to be done here to prevent rollover as a button is
     // held down between frames, causing multiple actions from a single keypress.
