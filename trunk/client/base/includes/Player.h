@@ -93,6 +93,9 @@ public:
 	void highDamageCallBack(std::string causedBy);
 
 
+    void angleTest(void);
+
+
 private:
     const float								   cameraRotationConstant;
 	int										   hp;
@@ -107,6 +110,11 @@ private:
 	Ogre::SceneNode*						   camNode;
 	Ogre::SceneNode*						   camArmNode;
     CarType									   mCarType;
+	int                                        numCameraViews;
+	int										   cameraView;
+	btVector3                                  cameraViews[3];
+	btVector3                                  cameraLookViews[3];
+
 	Ogre::OverlayElement* mOLE;
 	/*bool									   processingCollision;
 	std::map<std::string, std::vector<float> >			   collisionDamages;
@@ -126,6 +134,14 @@ private:
 	int                                        mediumDamageSpeed;
 	int                                        highDamageSpeed;
 	RakNet::RakNetGUID mPlayerGUID;
+
+    float initialHP;
+	float backRightDamageShare;
+	float backLeftDamageShare;  
+	float frontLeftDamageShare;
+	float frontRightDamageShare;
+
+
 
 	int roundScore;
 	int gameScore;

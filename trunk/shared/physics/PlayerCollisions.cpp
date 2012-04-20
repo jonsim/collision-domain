@@ -64,6 +64,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 			//averageNormOnB +=  pt.m_normalWorldOnB;
 		}
 	}
+
 	// some collisions dont have contact points (dickheads), ignore them
 	if(numContacts > 0) {
 		averageCollisionPointOnA /= numContacts;

@@ -84,13 +84,26 @@ public:
 	void addToGameScore(int amount);
     int lastsenthp;
 	bool isReady() { return mSpawned;};
-	void setHP(int newHP) { hp = newHP;};
 
-	//Operator overides
-	//bool operator<(Player *other) { return this->getRoundScore()<this->getRoundScore(); } //Used in the sort function
 private:
     const float      cameraRotationConstant;
 	int		         hp;
+	int              initialHP;
+
+    float            damageTL;
+    float            damageBL;
+    float            damageML;
+    float            damageTR;
+    float            damageBR;
+    float            damageMR;
+
+    float            damageShareTL; 
+    float            damageShareBL; 
+    float            damageShareML; 
+    float            damageShareTR; 
+    float            damageShareBR;  
+    float            damageShareMR;  
+
     int              mTeam;
 	bool		     mAlive;
     bool             mIsVIP;

@@ -1021,4 +1021,7 @@
   <ItemGroup>
     <ResourceCompile Include="Collision Domain Client.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
+  </ItemGroup>
 </Project>

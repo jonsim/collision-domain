@@ -167,6 +167,27 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
                 GameCore::mPlayerPool->spectateNext(true);
         }
     }
+
+
+	if(evt.key == OIS::KC_1) {
+		GameCore::mPlayerPool->getLocalPlayer()->cameraLookLeft();
+	} else if(evt.key == OIS::KC_2) {
+		GameCore::mPlayerPool->getLocalPlayer()->cameraLookBack();
+	} else if(evt.key == OIS::KC_3) {
+		GameCore::mPlayerPool->getLocalPlayer()->cameraLookRight();
+	}
+
+	if(evt.key == OIS::KC_K) {
+		GameCore::mPlayerPool->getLocalPlayer()->cycleCameraView();
+	}
+
+    if(evt.key == OIS::KC_J) {
+        GameCore::mPlayerPool->getLocalPlayer()->angleTest();
+    }
+
+    /*if(evt.key == OIS::KC_SEMICOLON) {
+    }*/
+		
 #endif
 #ifdef COLLISION_DOMAIN_SERVER
     // Inject UP to the GUI. Has to be done here to prevent rollover as a button is

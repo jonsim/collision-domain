@@ -602,35 +602,43 @@ void GameGUI::updateCounters (void)
         fps->setText( szFPS );
 }
 
-void GameGUI::setupDamageDisplay (void)
-{
-    int width = 82, height = 169;
+void GameGUI::setupDamageDisplay(CarType carType, TeamID tid) {
+
+    int height = 200, width;
+    playerCarType = carType;
+    playerTeam = tid;
+
+    switch (carType) {
+        case CAR_BANGER:
+            width = 74;
+            break;
+        case CAR_SMALL:
+            width = 89;
+            break;
+        case CAR_TRUCK:
+            width = 123;
+            break;
+        default:
+            throw Ogre::Exception::ERR_INVALIDPARAMS;
+            break;
+    }
 
     // setup body image
-    {
-            oleDamage = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE" ) );
-            oleDamage->setMetricsMode( Ogre::GMM_PIXELS );
+    oleDamage = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE" ) );
+    oleDamage->setMetricsMode( Ogre::GMM_PIXELS );
+
+    // Bottom Right Aligned
+    oleDamage->setHorizontalAlignment( Ogre::GHA_RIGHT );
+    oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
+    oleDamage->setDimensions( width, height );
+    oleDamage->setPosition( -width - 20, -height - 20 );
         
-        /*{ // Bottom Left Aligned
-            oleDamage->setHorizontalAlignment( Ogre::GHA_LEFT );
-                oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
-                oleDamage->setDimensions( width, height );
-                oleDamage->setPosition( 20, -height - 290 );
-        }*/
 
-        { // Bottom Right Aligned
-            oleDamage->setHorizontalAlignment( Ogre::GHA_RIGHT );
-                oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
-                oleDamage->setDimensions( width, height );
-                oleDamage->setPosition( -width - 20, -height - 20 );
-        }
-
-            Ogre::Overlay *damage = Ogre::OverlayManager::getSingleton().create( "OVERLAY_DAMAGE" );
-            damage->setZOrder( 500 );
-            damage->show();
-        damage->setScale(1.0,1.0);
-        damage->add2D( oleDamage );
-    }
+    Ogre::Overlay *damage = Ogre::OverlayManager::getSingleton().create( "OVERLAY_DAMAGE" );
+    damage->setZOrder( 500 );
+    damage->show();
+    damage->setScale(1.0,1.0);
+    damage->add2D( oleDamage );
 
     // setup individual parts
     oleDamageEngine = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ENGINE" );
@@ -638,83 +646,90 @@ void GameGUI::setupDamageDisplay (void)
     oleDamageFR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FR" );
     oleDamageRL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RL" );
     oleDamageRR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RR" );
+	damageHUD_TL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TL" );
+	damageHUD_TR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TR" );
+	damageHUD_BL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BL" );
+	damageHUD_BR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BR" );
+	damageHUD_ML	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ML" );
+	damageHUD_MR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_MR" );
+		  
+	damageHUD_TL->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_TR->setMetricsMode( Ogre::GMM_PIXELS );
+    damageHUD_BL->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_BR->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_ML->setMetricsMode( Ogre::GMM_PIXELS );
+	damageHUD_MR->setMetricsMode( Ogre::GMM_PIXELS );
 
-        oleDamageEngine->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageFL    ->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageFR    ->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageRL    ->setMetricsMode( Ogre::GMM_PIXELS );
-    oleDamageRR    ->setMetricsMode( Ogre::GMM_PIXELS );
-    
-        /*oleDamageEngine->setDimensions( width, height );
-    oleDamageFL    ->setDimensions( width, height );
-    oleDamageFR    ->setDimensions( width, height );
-    oleDamageRL    ->setDimensions( width, height );
-    oleDamageRR    ->setDimensions( width, height );*/
-    
-    // this is necessary as the images didn't line up pixel perfect when
-    // wheel parts were the same size as the whole body (with transparency)
-    // (the ogre overlays appear to do some unexpected scaling / processing)
-    oleDamageEngine->setDimensions( 32, 43 );
-    oleDamageFL    ->setDimensions( 24, 49 );
-    oleDamageFR    ->setDimensions( 24, 49 );
-    oleDamageRL    ->setDimensions( 24, 49 );
-    oleDamageRR    ->setDimensions( 24, 49 );
-    oleDamageEngine->setPosition( 25, 9 );
-    oleDamageFL    ->setPosition( 0, 13 );
-    oleDamageFR    ->setPosition( 58, 13 );
-    oleDamageRL    ->setPosition( 0, 114 );
-    oleDamageRR    ->setPosition( 58, 114 );
+    damageHUD_TL->setDimensions(width, height);
+    damageHUD_TR->setDimensions(width, height);
+    damageHUD_BL->setDimensions(width, height);
+    damageHUD_BR->setDimensions(width, height);
+    damageHUD_ML->setDimensions(width, height);
+    damageHUD_MR->setDimensions(width, height);
 
-        oleDamage->addChild( oleDamageEngine );
-    oleDamage->addChild( oleDamageFL );
-    oleDamage->addChild( oleDamageFR );
-    oleDamage->addChild( oleDamageRL );
-    oleDamage->addChild( oleDamageRR );
+    std::string HUDOPTIONS[3][3] = {
+        {"damage_banger_white"  , "damage_banger_blue"  , "damage_banger_red"   },
+        {"damage_smallcar_white", "damage_smallcar_blue", "damage_smallcar_red" },
+        {"damage_truck_white"   , "damage_truck_blue"   , "damage_truck_red"    }
+    };
+
+    oleDamage->setMaterialName(HUDOPTIONS[carType][tid]);
+
+    //OutputDebugString((HUDOPTIONS[carType][tid] + "\n").c_str());
+    oleDamage->addChild( damageHUD_TL );
+    oleDamage->addChild( damageHUD_TR );
+    oleDamage->addChild( damageHUD_BL );
+    oleDamage->addChild( damageHUD_BR );
+    oleDamage->addChild( damageHUD_ML );
+    oleDamage->addChild( damageHUD_MR );
     
-    updateDamage(0, 0);
-    updateDamage(1, 0);
-    updateDamage(2, 0);
-    updateDamage(3, 0);
-    updateDamage(4, 0);
-    updateDamage(5, 0);
+    updateDamage(carType, 0, 0);
+    updateDamage(carType, 1, 0);
+    updateDamage(carType, 2, 0);
+    updateDamage(carType, 3, 0);
+    updateDamage(carType, 5, 0);
+    updateDamage(carType, 4, 0);
 }
 
-// part 0-body, 1-engine, 2-fl, 3-fr, 4-rl, 5-rr. colour 0-green, 1-yellow, 2-red
-void GameGUI::updateDamage (int part, int colour)
-{
+//0,1,2,3,4,5 => TL, TR, ML, MR, BL, BR
+//colour 0-green, 1-yellow, 2-red
+void GameGUI::updateDamage (CarType ct, int part, int colour) {
     std::string s = "damage_";
-
-    switch (colour)
-    {
-        case 0:
-            s += "g"; break;
-        case 1:
-            s += "y"; break;
-        case 2:
-            s += "r"; break;
-        default:
-            return;
+    std::string cartypes[3] = {
+        "banger_",
+        "smallcar_",
+        "truck_"
+    };
+    std::string colours[3] = {
+        "_green",
+        "_yellow",
+        "_red"
+    };
+    std::string col = colours[colour];
+    if(ct >= CarType::CAR_COUNT) {
+        throw Ogre::Exception::ERR_INVALIDPARAMS;
+    } else {
+        s += cartypes[ct];
     }
-    
-    switch (part)
-    {
+
+    switch (part) {
         case 0:
-            oleDamage->setMaterialName( s + "_body" );
+            damageHUD_TL->setMaterialName( s + "TL" + col );
             break;
         case 1:
-            oleDamageEngine->setMaterialName( s + "_engine" );
+            damageHUD_TR->setMaterialName( s + "TR" + col );
             break;
         case 2:
-            oleDamageFL->setMaterialName( s + "_fl" );
+            damageHUD_ML->setMaterialName( s + "ML" + col );
             break;
         case 3:
-            oleDamageFR->setMaterialName( s + "_fr" );
+            damageHUD_MR->setMaterialName( s + "MR" + col );
             break;
         case 4:
-            oleDamageRL->setMaterialName( s + "_rl" );
+            damageHUD_BL->setMaterialName( s + "BL" + col );
             break;
         case 5:
-            oleDamageRR->setMaterialName( s + "_rr" );
+            damageHUD_BR->setMaterialName( s + "BR" + col );
             break;
         default:
             return;
@@ -726,7 +741,5 @@ void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
     setupSpeedo();
     setupGearDisplay();
     updateSpeedo(0.0f, 0);
-    
-    setupDamageDisplay();
     //updateDamage();
 }

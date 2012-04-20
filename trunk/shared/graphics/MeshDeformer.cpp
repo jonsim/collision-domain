@@ -19,6 +19,9 @@ void MeshDeformer::deformMesh(
     size_t shared_offset = 0;
     size_t next_offset = 0;
     size_t index_offset = 0;
+
+	float dentSize = damage / 600;
+	float distanceCheck = 55 + (15 * dentSize);
  
     // Run through the submeshes again, adding the data into the arrays
     for (unsigned short i = 0; i < mesh->getNumSubMeshes(); ++i) {
@@ -124,7 +127,7 @@ unsigned MeshDeformer::time_seed() {
 }
 
 Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end) {
-	Ogre::ManualObject* manual = mSceneMgr->createManualObject("manual");
+	Ogre::ManualObject* manual = mSceneMgr->createManualObject("manual" + rand());
 	manual->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_STRIP);
 	manual->position(start);
 	manual->position(end);
