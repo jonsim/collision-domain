@@ -71,10 +71,6 @@ PowerupRandom::~PowerupRandom()
     btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
 
     GameCore::mPhysicsCore->removeBody( mRigidBody );
-
-    if( collisionShape ) {
-            delete collisionShape;
-        } 
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mSound);

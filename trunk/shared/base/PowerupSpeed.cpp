@@ -31,10 +31,7 @@ PowerupSpeed::~PowerupSpeed()
     if (mHasSpawned) {
         btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
 
-        GameCore::mPhysicsCore->removeBody( mRigidBody );
-        if( collisionShape ) {
-            delete collisionShape;
-        }   
+        GameCore::mPhysicsCore->removeBody( mRigidBody );  
     }
     
 #ifdef COLLISION_DOMAIN_CLIENT
