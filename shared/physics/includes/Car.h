@@ -35,7 +35,7 @@ class Car
 
 public:
     Car(int uniqueID);
-    ~Car();
+    virtual ~Car();
 
     // = 0 methods not implemented by Car yet!
     virtual void playCarHorn() = 0;

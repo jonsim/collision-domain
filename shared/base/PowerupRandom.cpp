@@ -70,13 +70,8 @@ PowerupRandom::~PowerupRandom()
     // delete the shape last
     btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
 
-    if( mRigidBody->getMotionState() )
-        delete mRigidBody->getMotionState();
+    GameCore::mPhysicsCore->removeBody( mRigidBody );
 
-    GameCore::mPhysicsCore->getWorld()->removeRigidBody( mRigidBody );
-        //GameCore::mPhysicsCore->getWorld()->removeCollisionObject( mRigidBody );
-
-    delete mRigidBody;
     delete collisionShape;
     
 #ifdef COLLISION_DOMAIN_CLIENT

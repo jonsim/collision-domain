@@ -94,6 +94,7 @@ public:
 	void BroadcastRPC( char *rpcName, RakNet::BitStream *bsData );
 	static void GamestateUpdatePlayer( RakNet::RakNetGUID playerid );
 	static void SetupGameForPlayer( RakNet::RakNetGUID playerid );
+    static void HandlePlayerQuit( RakNet::RakNetGUID playerid, unsigned char reason );
 
 	void sendInfoItem(InfoItem* ii);
 	void sendPlayerDeath(Player* player, Player* causedBy); 

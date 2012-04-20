@@ -38,6 +38,8 @@ Player::Player (void) : cameraRotationConstant(0.08f),
 /// @brief   Deconstructor.
 Player::~Player (void)
 {
+    if( mCar )
+	    delete( mCar );
 }
 
 

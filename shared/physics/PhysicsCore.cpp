@@ -49,15 +49,7 @@ PhysicsCore::PhysicsCore()
 /// @brief  Destructor to clean up
 PhysicsCore::~PhysicsCore(void)
 {
-    // OgreBullet physic delete - RigidBodies
-    std::deque<btRigidBody*>::iterator itBody = mBodies.begin();
-    while (mBodies.end() != itBody)
-    {   
-        delete *itBody;
-        ++itBody;
-    }
-    // OgreBullet physic delete - Shapes
-    mBodies.clear();
+    clearWorld();
     
     delete mSolver;
     delete mDispatcher;
@@ -208,8 +200,35 @@ bool PhysicsCore::removeBody( btRigidBody *body )
         return false;
     else
     {
-        //mBulletWorld->removeRigidBody( body );
+        if( body->getMotionState() )
+            delete body->getMotionState();
+
+        mBulletWorld->removeCollisionObject( body );
         mBodies.erase( it );
+
+        if( body )
+            delete body;
+
         return true;
+    }
+
+}
+
+void PhysicsCore::clearWorld()
+{
+    for( int i = mBulletWorld->getNumCollisionObjects() - 1; i >= 0; i -- )
+    {
+        btCollisionObject *obj = mBulletWorld->getCollisionObjectArray()[i];
+        btRigidBody *body = btRigidBody::upcast( obj );
+        removeBody( body );
+    }
+
+    mBodies.clear();
+
+    for( int j = 0; j < PHYS_SHAPE_COUNT; j ++ )
+    {
+        btCollisionShape *shape = mShapes[j];
+        if( shape )
+            delete shape;
     }
 }

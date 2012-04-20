@@ -123,7 +123,7 @@ void Gameplay::setNewVIPs()
 	//}
 }
 
-bool Gameplay::addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam )
+bool Gameplay::addPlayer(RakNet::RakNetGUID playerid, TeamID requestedTeam)
 {
     Team* teamToJoin;
     Player* pPlayer = GameCore::mPlayerPool->getPlayer(playerid);
@@ -146,6 +146,15 @@ bool Gameplay::addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam )
     teamToJoin->addPlayer(pPlayer);
 
     return true;
+}
+
+void Gameplay::playerQuit(Player *player)
+{
+    TeamID tid = (TeamID) player->getTeam();
+    Team *t = getTeam(tid);
+    while( t->getVIP() == player )
+        setNewVIP(tid);    
+    t->delPlayer(player);
 }
  
 /*TeamID Gameplay::autoAssignTeam()

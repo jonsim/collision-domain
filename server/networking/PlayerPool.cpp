@@ -36,14 +36,23 @@ void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 
 }
 
-void PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
+bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
 {
-	int iRemove = getPlayerIndex( playerid );
-	if( iRemove != -1 )
+	Player *pPlayer = getPlayer( playerid );
+	if( pPlayer )
 	{
-		delete mPlayers[iRemove];
-		mPlayers[iRemove] = NULL;
-	}
+        std::vector<Player*>::iterator it = find( mPlayers.begin(), mPlayers.end(), pPlayer );
+        if( it != mPlayers.end() )
+            mPlayers.erase( it );
+
+        std::vector<RakNet::RakNetGUID>::iterator it2 = find( mGUID.begin(), mGUID.end(), playerid );
+        if( it2 != mGUID.end() )
+            mGUID.erase( it2 );
+
+        delete pPlayer;
+        return true;
+    }
+    return false;
 }
 
 int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
@@ -51,7 +60,7 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 	int i = 0;
 	for (int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
 	{
-		if( mGUID[i] == playerid )
+		if( mGUID[i] == playerid && mPlayers[i] != NULL )
 			return i;
 	}
 

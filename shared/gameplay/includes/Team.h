@@ -20,6 +20,7 @@ class Team
 public:
 							Team(TeamID tid);
 	void					addPlayer(Player *player);
+    void                    delPlayer(Player *player);
 	std::vector<Player*>	getPlayers();
 	Player*					getRandomPlayer();
 	Player*					setNewVIP(Player* player);

@@ -49,6 +49,7 @@ public:
     void                        setNewVIP(TeamID teamID, Player* newVIP);
 	void						setNewVIPs();
     bool                        addPlayer( RakNet::RakNetGUID playerid, TeamID requestedTeam );
+    void                        playerQuit(Player *player);
     bool                        validateTeamChoice(TeamID requestedTeam);
     void						notifyDamage(Player* player);
 	void						preparePlayers(); //Place the palyers in the correct place
