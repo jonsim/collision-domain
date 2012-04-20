@@ -196,18 +196,22 @@ bool PhysicsCore::removeBody( btRigidBody *body )
 {
     std::deque<btRigidBody*>::iterator it = find( mBodies.begin(), mBodies.end(), body );
     
-    if ( it == mBodies.end() )
+    if ( it == mBodies.end() || body == NULL )
         return false;
     else
     {
         if( body->getMotionState() )
             delete body->getMotionState();
 
+        GameCore::mPhysicsCore->getWorld()->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs( body->getBroadphaseHandle(), getWorld()->getDispatcher() );
         mBulletWorld->removeCollisionObject( body );
         mBodies.erase( it );
 
         if( body )
+        {
             delete body;
+            body = NULL;
+        }
 
         return true;
     }
