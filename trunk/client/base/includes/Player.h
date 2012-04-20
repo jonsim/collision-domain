@@ -17,6 +17,16 @@ enum TeamID;
 /**
  *  @brief 	Contains the Player nodes and the related data.
  */
+
+enum PLAYER_STATE : int
+{
+    PLAYER_STATE_TEAM_SEL,
+    PLAYER_STATE_SPAWN_SEL,
+    PLAYER_STATE_WAIT_SPAWN,
+    PLAYER_STATE_INGAME,
+    PLAYER_STATE_SPECTATE,
+};
+
 class Player
 {
 public:
@@ -35,6 +45,9 @@ public:
     
     const char *getNickname (void) { return mNickname; }
     int getCarType (void) { return mCarType; }
+
+    PLAYER_STATE getPlayerState() { return mPlayerState; }
+    void setPlayerState( PLAYER_STATE s ) { mPlayerState = s; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
     void setNickname (char *szNick) { mNickname = strdup( szNick ); }
@@ -60,7 +73,6 @@ public:
 	void killPlayer();
 	void Player::killPlayer(Player* causedBy);
 	void resetHP();
-    GameCamera* getCamera() { return mCamera; }
     void serverSaysHealthChangedTo(float newHP);
 
 	RakNet::RakNetGUID getPlayerGUID();
@@ -88,6 +100,7 @@ private:
     char*									   mNickname;
     bool									   mIsVIP;
     bool									   mAlive;
+    PLAYER_STATE                               mPlayerState;
     Car*									   mCar;
     CarSnapshot*							   mCarSnapshot;
 	CarCam*									   mCarCam;
@@ -114,7 +127,6 @@ private:
 	int                                        highDamageSpeed;
 	RakNet::RakNetGUID mPlayerGUID;
 
-    GameCamera*      mCamera;
 	int roundScore;
 	int gameScore;
 };

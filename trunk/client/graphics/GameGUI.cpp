@@ -68,7 +68,7 @@ void GameGUI::showSpawnScreenPage1 (void)
 
 void GameGUI::showSpawnScreenPage2 (void)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
     // Get references to the pages.
     CEGUI::Window* mainWindow     = winMgr.getWindow("/SpawnScreen");
@@ -160,7 +160,8 @@ bool GameGUI::SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p1btnSpectator (const CEGUI::EventArgs& args)
 {
-    showSpawnScreenErrorText("Feature not implemented yet.");
+    closeSpawnScreen();
+    GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPECTATE );
 
     return true;
 }
@@ -175,10 +176,10 @@ bool GameGUI::SpawnScreen_p1btnProjector (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-        CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
-        CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
-        CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+    CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+    CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
     p2btnCoupe->setProperty(    "Disabled", "true");
     p2btnHatchback->setProperty("Disabled", "false");
     p2btnTruck->setProperty(    "Disabled", "false");
@@ -195,10 +196,10 @@ bool GameGUI::SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-        CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
-        CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
-        CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+    CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+    CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
     p2btnCoupe->setProperty(    "Disabled", "false");
     p2btnHatchback->setProperty("Disabled", "true");
     p2btnTruck->setProperty(    "Disabled", "false");
@@ -215,10 +216,10 @@ bool GameGUI::SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
-        CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
-        CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
-        CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* p2btnCoupe     = winMgr.getWindow("/SpawnScreen/Vehicle/btnCoupe");
+    CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
+    CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
     p2btnCoupe->setProperty(    "Disabled", "false");
     p2btnHatchback->setProperty("Disabled", "false");
     p2btnTruck->setProperty(    "Disabled", "true");
@@ -362,7 +363,7 @@ bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
                     try
                     {
                         CAM_TYPE t = (CAM_TYPE) boost::lexical_cast<int>(strTokens.at(1));
-                        GameCore::mPlayerPool->getLocalPlayer()->getCamera()->setCamType(t);
+                        GameCore::mClientGraphics->mGameCam->setCamType(t);
                     }
                     catch( boost::bad_lexical_cast &) {}
                 }

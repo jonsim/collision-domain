@@ -110,22 +110,6 @@ void Player::attachCamera (Ogre::Camera* cam)
     camNode->translate(0, 0, -20); // zoom in!! (50 is a fair way behind the car, 75 is in the car)
 
 #if NEWCAM
-    // Create game camera
-    mCamera = new GameCamera( cam );
-    // Set it to chase mode
-    mCamera->setCamType( CAM_CHASE );
-    mCamera->setCollidable( true );
-    // Set how much the camera 'snaps' to locations
-    // This gets multiplied by time since last frame
-    // For cinematic style camera 0.2 works quite well
-    mCamera->setTension( 2.8f );
-    // Positional offset - behind and above the vehicle
-    mCamera->setOffset( btVector3( 0.f, 5.f, -10.f ) );
-    // Focus offset - slightly in front of car's local origin
-    mCamera->setLookOffset( btVector3( 0, 0, 3.0f ) );
-    // Put the camera up in the air
-    mCamera->setTransform( btVector3( 0, 20, 0 ) );
-
     GameCore::mPlayerPool->setSpectating( GameCore::mPlayerPool->getLocalPlayerID() );
 #else
     mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
@@ -172,10 +156,10 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
 		camNode->translate(0, 0, ZDepth * 0.02f);
 
 #if NEWCAM
-    if( mCamera->getCamType() == CAM_FIXED )
-        mCamera->update( Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation) );
-    else
-        mCamera->update(time);
+    //if( mCamera->getCamType() == CAM_FIXED )
+    //    mCamera->update( Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation) );
+    //else
+    //    mCamera->update(time);
 #endif
    
 	//Update the camera

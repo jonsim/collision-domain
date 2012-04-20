@@ -202,8 +202,7 @@ void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )
 {
     if( playerid == mLocalGUID )
     {
-        GameCamera *cam = mLocalPlayer->getCamera();
-        cam->setTarget( mLocalPlayer->getCar()->mBodyNode );
+        GameCore::mClientGraphics->mGameCam->setTarget( mLocalPlayer->getCar()->mBodyNode );
     }
     int idx = getPlayerIndex( playerid );
     if( idx != -1 )
@@ -215,23 +214,22 @@ void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )
 
 void PlayerPool::setSpectating( int idx )
 {
-    // THIS IS ABSOLUTELY FILTHY
-    // TAKE THE CAMERA OUT OF PLAYER ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! ! 
-    GameCamera *cam = mLocalPlayer->getCamera();
-    cam->setTarget( mPlayers[idx]->getCar()->mBodyNode );
+    GameCore::mClientGraphics->mGameCam->setTarget( mPlayers[idx]->getCar()->mBodyNode );
 }
 
-void PlayerPool::spectateNext()
+void PlayerPool::spectateNext( bool reverse )
 {
     int curIdx = getPlayerIndex( mSpectating );
     int nextIdx = -1;
 
+    unsigned int i = reverse ? curIdx - 1 : curIdx + 1;
+
     // Check for an alive player further forward in player array
-	for( unsigned int i = ++curIdx; i < mPlayers.size(); i ++ )
+	for( ; i < mPlayers.size() && i >= 0; reverse ? i -- : i ++ )
     {
         if( mPlayers[i] )
         {
-            if( mPlayers[i]->getAlive() )
+            if( mPlayers[i]->getCar() && mPlayers[i]->getAlive() )
             {
                 nextIdx = i;
                 break;
@@ -242,11 +240,11 @@ void PlayerPool::spectateNext()
     // Check for an alive player wrap-around
     if( nextIdx == -1 )
     {
-        for( int i = 0; i < curIdx; i ++ )
+        for( int i = reverse ? mPlayers.size()-1 : 0; reverse ? i > curIdx : i < curIdx; reverse ? i -- : i ++ )
         {
             if( mPlayers[i] )
             {
-                if( mPlayers[i]->getAlive() )
+                if(  mPlayers[i]->getCar() && mPlayers[i]->getAlive() )
                 {
                     nextIdx = i;
                     break;

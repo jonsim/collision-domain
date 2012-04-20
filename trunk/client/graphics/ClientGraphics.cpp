@@ -154,6 +154,22 @@ void ClientGraphics::createCamera (void)
     mCamera->setNearClipDistance(0.5);
     mCamera->setFarClipDistance(2500);
 
+    // Create game camera
+    mGameCam = new GameCamera( mCamera );
+    // Set it to chase mode
+    mGameCam->setCamType( CAM_CHASE );
+    mGameCam->setCollidable( true );
+    // Set how much the camera 'snaps' to locations
+    // This gets multiplied by time since last frame
+    // For cinematic style camera 0.2 works quite well
+    mGameCam->setTension( 2.8f );
+    // Positional offset - behind and above the vehicle
+    mGameCam->setOffset( btVector3( 0.f, 5.f, -10.f ) );
+    // Focus offset - slightly in front of car's local origin
+    mGameCam->setLookOffset( btVector3( 0, 0, 3.0f ) );
+    // Put the camera up in the air
+    mGameCam->setTransform( btVector3( 0, 20, 0 ) );
+
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
 
@@ -393,6 +409,8 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
                         GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
                         GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
                 }
+
+                mGameCam->update( evt.timeSinceLastFrame );
         }
 
 		if (mGraphicsState == PROJECTOR)		

@@ -374,9 +374,11 @@ void Gameplay::startGame()
 	this->setNewVIPs(); //TODO - Change this once we have multiple game modes
 	this->scheduleCountDown();
 	mGameActive = true;
-	#ifdef COLLISION_DOMAIN_SERVER
-		GameCore::mGui->outputToConsole("Game started.\n");
-	#endif
+
+#ifdef COLLISION_DOMAIN_SERVER
+    GameCore::mGui->outputToConsole("Game started.\n");
+#endif
+
 }
 
 void Gameplay::drawInfo()
@@ -429,6 +431,9 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					tmpOLE->setMaterialName( "gear1" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
+
+                    if( GameCore::mPlayerPool->getLocalPlayer()->getPlayerState() == PLAYER_STATE_SPECTATE )
+                        GameCore::mPlayerPool->spectateNext();
 				#endif
 				break;
 			case TWO_OT:
@@ -536,6 +541,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                 #ifdef COLLISION_DOMAIN_CLIENT
                     if( GameCore::mPlayerPool->getLocalPlayer()->mLastKiller != NULL )
                     {
+                        GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPECTATE );
                         GameCore::mPlayerPool->setSpectating( GameCore::mPlayerPool->getLocalPlayer()->mLastKiller->getPlayerGUID() );
                         GameCore::mPlayerPool->getLocalPlayer()->mLastKiller = NULL;
                     }

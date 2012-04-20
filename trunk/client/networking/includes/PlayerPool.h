@@ -41,7 +41,7 @@ public:
 
     RakNet::RakNetGUID  getSpectating() { return mSpectating; }
     void                setSpectating( RakNet::RakNetGUID playerid );
-    void                spectateNext();
+    void                spectateNext( bool reverse = false );
 
 	void                frameEvent( const float timeSinceLastFrame );
 
