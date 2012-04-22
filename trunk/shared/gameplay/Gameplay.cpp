@@ -70,7 +70,7 @@ void Gameplay::setGameMode(GameMode gameMode)
 
 void Gameplay::handleNewRound()
 {
-    this->cycleGameMode(); //Move onto the next game type;
+    //this->cycleGameMode(); //Move onto the next game type;
     this->incrementRoundNumber();
 }
 
@@ -369,10 +369,16 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
+    //Spawn the start new round thing
+    InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
+	mInfoItems.push_back(newRoundII);
+	this->calculateRoundScores();
+    newRoundII->sendPacket();
+
     this->spawnPlayers();
 	this->positionPlayers();
 	this->setNewVIPs(); //TODO - Change this once we have multiple game modes
-	this->scheduleCountDown();
+	//this->scheduleCountDown();
 	mGameActive = true;
 
 #ifdef COLLISION_DOMAIN_SERVER
@@ -446,6 +452,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				break;
 			case THREE_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    this->hideGameTypeText();
 					tmpOLE->setDimensions(0.1f, 0.1f);
 					tmpOLE->setMaterialName( "gear3" );
 					tmpOLE->setPosition(0.45f, 0.1f);
@@ -469,13 +476,14 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#endif
 				break;
 			case ROUND_OVER_OT:
+                this->cycleGameMode(); //Cycle game mode
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->showForce();
 				#endif
 
 				#ifdef COLLISION_DOMAIN_SERVER
 					GameCore::mGui->outputToConsole("Rounded Ended.\n");
-
+                    
                     //Show the wining player II
 					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
 					mInfoItems.push_back(transitionII);
@@ -622,6 +630,9 @@ void Gameplay::showWinnerText(Player* winningPlayer, bool round)
 
 void Gameplay::hideWinnerText()
 {
+    if(!wtInitalised)
+        this->createWinnerTextOverlay();
+    
     this->wtOverlay->hide();
 }
 
