@@ -88,11 +88,11 @@ void Car::moveTo(const btVector3 &position, const btQuaternion &rotation)
     //mCarChassis->setWorldTransform( transform );
     //mCarChassis->setInterpolationWorldTransform( transform );
     reset( mCarChassis, transform );
-    if( mLeftDoorBody != NULL )
+    /*if( mLeftDoorBody != NULL )
     {
         reset( mLeftDoorBody, transform );
         reset( mRightDoorBody, transform, false );
-    }
+    }*/
     //GameCore::mPhysicsCore->getWorld()->addRigidBody( mCarChassis );
 }
 
@@ -463,7 +463,7 @@ void Car::setMaterial(const std::string &materialName, Ogre::SceneNode *attached
 
 void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )
 {
-    GameCore::mPhysicsCore->getWorld()->removeRigidBody( body );
+    //GameCore::mPhysicsCore->getWorld()->removeRigidBody( body );
 
     if( dotrans )
     {
@@ -471,7 +471,7 @@ void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )
         body->setInterpolationWorldTransform( trans );
     }
 
-    GameCore::mPhysicsCore->getWorld()->addRigidBody( body );
+    //GameCore::mPhysicsCore->getWorld()->addRigidBody( body );
 
     body->setLinearVelocity( btVector3( 0, 0, 0 ) );
     body->setAngularVelocity( btVector3( 0, 0, 0 ) );
