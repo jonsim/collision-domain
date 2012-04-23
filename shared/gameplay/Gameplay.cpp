@@ -758,6 +758,67 @@ void Gameplay::markDeath(Player* deadPlayer, Player* causedBy)
 	deathList.push_back(&newDeath);
 }
 
+/* This handles the various scoring modes dependent on the gameplay
+    mode
+*/
+void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
+{
+    switch(this->mGameMode)
+    {
+        case FFA_MODE:
+            causedBy->addToScore(1);
+            break;
+        case TDM_MODE:
+            if(causedBy->getTeam() != deadPlayer->getTeam())
+            {
+                //If they're on different teams
+                causedBy->addToScore(1);
+            }
+            else
+            {
+                //If they're on the same team (BAD!!)
+                causedBy->addToScore(-1); //Deduct!!!!
+            }
+            break;
+        case VIP_MODE:
+            //In this game mode we're going to finish the round if a VIP is killed
+            //Please note normal score calculations still apply
+            if(causedBy->getTeam() != deadPlayer->getTeam())
+            {
+                //If they're on different teams
+                causedBy->addToScore(1);
+                if(deadPlayer->getVIP())
+                {
+                    causedBy->addToGameScore(3); //Give him some score for winning
+                    //Now add 1 to all players on that team
+                    std::vector<Player*> tmpPlayers = GameCore::mPlayerPool->getPlayers();
+                    for(int i=0;i<tmpPlayers.size();i++)
+                    {
+                        if(tmpPlayers[i]->getTeam() == causedBy->getTeam())
+                        {
+                            tmpPlayers[i]->addToGameScore(1);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //If they're on the same team (BAD!!)
+                causedBy->addToScore(-1);
+                if(deadPlayer->getVIP())
+                {
+                    causedBy->addToGameScore(-5); //THIS IS REALLY BAD SO WE'LL HURT THEIR GAME SCORE
+                }
+            }
+            break;
+        default:
+            //This is here just in case of a bug...
+            //Shouldn't ever get called but better than no game
+            OutputDebugString("No game mode detected!!\n");
+            causedBy->addToScore(1);
+    }
+}
+
 std::vector<DEATH*> Gameplay::getDeathList()
 {
 	return this->deathList;
