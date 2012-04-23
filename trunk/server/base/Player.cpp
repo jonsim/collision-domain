@@ -302,14 +302,7 @@ void Player::killPlayer(Player* causedBy)
 	this->killPlayer();
 	GameCore::mGameplay->markDeath(this,causedBy);
     GameCore::mNetworkCore->sendPlayerDeath(this, causedBy);
-	if(this->getVIP())
-	{
-		causedBy->addToScore(5);
-	}
-	else
-	{
-		causedBy->addToScore(1);
-	}
+    GameCore::mGameplay->handleDeath(this,causedBy);
 }
 
 void Player::addToScore(int amount)
