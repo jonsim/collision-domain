@@ -58,6 +58,8 @@ private:
     
     OgreOggISound *mHornSound;
     OgreOggISound *mEngineSound;
+
+    bool mHasLocalSounds;
 };
 
 #endif // #ifndef __TRUCKCAR_H

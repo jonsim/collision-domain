@@ -110,7 +110,7 @@ void TruckCar::initTuning()
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
 TruckCar::TruckCar(int uniqueCarID, TeamID tid)
-    : Car(uniqueCarID)
+    : Car(uniqueCarID), mHasLocalSounds(false)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -186,8 +186,21 @@ void TruckCar::createCollisionShapes()
 }
 
 void TruckCar::louderLocalSounds() {
+    mHasLocalSounds = true;
+
     float increaseTo = mEngineSound->getVolume() + 0.25;
-    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+    if (increaseTo < 1) {
+        //mEngineSound->setMinVolume(increaseTo);
+        mEngineSound->setVolume(increaseTo);
+    }
+    
+    mEngineSound->setRelativeToListener(true);
+    mEngineSound->setPosition(0,0,0);
+    mEngineSound->setVelocity(0,0,0);
+    
+    Car::mGearSound->setRelativeToListener(true);
+    Car::mGearSound->setPosition(0,0,0);
+    Car::mGearSound->setVelocity(0,0,0);
 }
 
 
@@ -217,9 +230,14 @@ void TruckCar::updateAudioPitchFrameEvent()
     pitch = pitch * maxPitch + 1;
 
     mEngineSound->setPitch(pitch);
-    
-    mEngineSound->setPosition(mBodyNode->getPosition());
-    mEngineSound->setVelocity(Car::getLinearVelocity());
+
+    if (!mHasLocalSounds) {
+        mEngineSound->setPosition(mBodyNode->getPosition());
+        mEngineSound->setVelocity(Car::getLinearVelocity());
+
+        Car::mGearSound->setPosition(mBodyNode->getPosition());
+        Car::mGearSound->setVelocity(Car::getLinearVelocity());
+    }
 #endif
 }
 

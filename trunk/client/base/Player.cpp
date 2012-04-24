@@ -106,12 +106,6 @@ void Player::createPlayer (CarType carType, TeamID tid)
     
     mCar->moveTo(btVector3(0,0.5,0));
 
-    //cos(
-    
-    
-
-   
-
     //GameCore::mGui->updateDamage(0, 2-(rand()%2));
 }
 

@@ -313,13 +313,16 @@ void Car::updateRPM()
         mEngineRPM = fRPMCir / (Ogre::Math::PI * (2 * mWheelRadius*3.2808399));
         fPrevGear /= (Ogre::Math::PI * (2 * mWheelRadius*3.2808399));
 
+        bool justShiftedUp = false;
+
         // Check for shift-up
-        if( mEngineRPM > mRevLimit -1500 )
+        if( mEngineRPM > mRevLimit - 1500 )
         {
             mEngineRPM = ( mRevLimit - 200 ) + ( rand() % 400 );
             if( mCurrentGear < mGearCount )
             {
                 mCurrentGear ++;
+                justShiftedUp = true;
 #ifdef COLLISION_DOMAIN_CLIENT
                 GameCore::mAudioCore->playSoundOrRestart(mGearSound);
 #endif
@@ -327,7 +330,7 @@ void Car::updateRPM()
         }
         
         // Check for shift-down
-        if( fPrevGear < mRevLimit -1500 && mCurrentGear > 1 )
+        if( fPrevGear < mRevLimit - 1700 && mCurrentGear > 1 && !justShiftedUp )
         {
             mCurrentGear --;
 #ifdef COLLISION_DOMAIN_CLIENT

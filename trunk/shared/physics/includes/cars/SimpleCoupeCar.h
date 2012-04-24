@@ -61,6 +61,8 @@ private:
     
     OgreOggISound *mHornSound;
     OgreOggISound *mEngineSound;
+
+    bool mHasLocalSounds;
 };
 
 #endif // #ifndef __SimpleCoupeCar_h_
