@@ -145,7 +145,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	float damageShareTo1 = p2Speed / combinedSpeed;
 	float damageShareTo2 = p1Speed / combinedSpeed;
 
-	float totalDamage = abs(depth * 1000);
+	float totalDamage = abs(depth * 20000);
 	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
 	float damageToThis = totalDamage * damageShareTo1;
 
@@ -158,7 +158,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 		//OutputDebugString("Bump\n");
 	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
 		//OutputDebugString("Bang\n");
-		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis);
+		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.5);
 	}
 }
 
@@ -467,8 +467,11 @@ void Player::killPlayer(Player* causedBy)
 	GameCore::mGameplay->markDeath(this,causedBy);
     GameCore::mGameplay->handleDeath(this,causedBy);
     mLastKiller = causedBy;
-    InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3 );
-    GameCore::mGameplay->mInfoItems.push_back( spectate );
+    if( this == GameCore::mPlayerPool->getLocalPlayer() )
+    {
+        InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3000 );
+        GameCore::mGameplay->mInfoItems.push_back( spectate );
+    }
 }
 
 void Player::setOverlayElement(Ogre::OverlayElement* ole)
