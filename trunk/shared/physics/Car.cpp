@@ -483,6 +483,9 @@ void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )
 
 void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3& offset )
 {
+    if( node->getParentSceneNode() != mBodyNode )
+        return;
+
     mBodyNode->removeChild( node->getName() );
     GameCore::mSceneMgr->getRootSceneNode()->addChild( node );
     node->setPosition( mBodyNode->getPosition() );

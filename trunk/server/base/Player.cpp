@@ -107,7 +107,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	float damageShareTo1 = p2Speed / combinedSpeed;
 	float damageShareTo2 = p1Speed / combinedSpeed;
 
-	float totalDamage = abs(depth * 1000);
+	float totalDamage = abs(depth * 20000);
 	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
 	float damageToThis = totalDamage * damageShareTo1;
 
@@ -151,7 +151,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
         damageTR += damageToThis;
     }
 
-	if((GameCore::mGameplay->mGameActive && mAlive) || 2+2==4) {
+	if((GameCore::mGameplay->mGameActive && mAlive) {
 		hp = recalculateDamage();
         ss << "hp = " << hp << "\n";
         //OutputDebugString(ss.str().c_str());

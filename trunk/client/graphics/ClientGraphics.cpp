@@ -378,13 +378,18 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         GameCore::mNetworkCore->frameEvent(inputSnapshot);
         
         // Process the player pool. Perform updates on other players
-            if (NetworkCore::bConnected)
-                GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
+        if (NetworkCore::bConnected)
+        {
 
-        /*  NOTE TO SELF (JAMIE)
-            Client doesn't want to do PowerupPool::frameEvent() when powerups are networked
-            All powerup removals handled by the server's collision events
-            In fact, client probably shouldn't register any collision callbacks for powerups */
+            GameCore::mPlayerPool->frameEvent(evt.timeSinceLastFrame);
+            if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+            {
+                    
+                GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
+                GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
+            }
+        }
+
         GameCore::mPowerupPool->frameEvent(evt.timeSinceLastFrame);
 
         //-PHYSICS-STEP--------------------------------------------------------------------
@@ -392,10 +397,10 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, physicsTimeStep);
         //-PHYSICS-STEP--------------------------------------------------------------------
 
-            //Draw info items
-            GameCore::mGameplay->drawInfo();
+        //Draw info items
+        GameCore::mGameplay->drawInfo();
     
-            // Apply controls the player (who will be moved on frameEnd and frameStart).
+        // Apply controls the player (who will be moved on frameEnd and frameStart).
         if (NetworkCore::bConnected)
         {
                 if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
@@ -405,9 +410,6 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
                 GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
                 GameCore::mGui->updateCounters();
                 GameCore::mGui->updateSpeedo();
-
-                        GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
-                        GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
                 }
 
                 mGameCam->update( evt.timeSinceLastFrame );
