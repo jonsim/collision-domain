@@ -121,7 +121,7 @@ void SimpleCoupeCar::initTuning()
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
 SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
-    : Car(uniqueCarID)
+    : Car(uniqueCarID), mHasLocalSounds(false)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -147,7 +147,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
     
 #ifdef COLLISION_DOMAIN_CLIENT
     mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
-
+    
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
     mEngineSound->setPitch(2.0f);
@@ -206,8 +206,21 @@ OutputDebugString(s.c_str());*/
 
 
 void SimpleCoupeCar::louderLocalSounds() {
+    mHasLocalSounds = true;
+
     float increaseTo = mEngineSound->getVolume() + 0.25;
-    if (increaseTo < 1) mEngineSound->setVolume(increaseTo);
+    if (increaseTo < 1) {
+        //mEngineSound->setMinVolume(increaseTo);
+        mEngineSound->setVolume(increaseTo);
+    }
+    
+    mEngineSound->setRelativeToListener(true);
+    mEngineSound->setPosition(0,0,0);
+    mEngineSound->setVelocity(0,0,0);
+    
+    Car::mGearSound->setRelativeToListener(true);
+    Car::mGearSound->setPosition(0,0,0);
+    Car::mGearSound->setVelocity(0,0,0);
 }
 
 
@@ -234,9 +247,14 @@ void SimpleCoupeCar::updateAudioPitchFrameEvent()
     pitch = pitch * maxPitch + 1;
 
     mEngineSound->setPitch(pitch);
+    
+    if (!mHasLocalSounds) {
+        mEngineSound->setPosition(mBodyNode->getPosition());
+        mEngineSound->setVelocity(Car::getLinearVelocity());
 
-    mEngineSound->setPosition(mBodyNode->getPosition());
-    mEngineSound->setVelocity(Car::getLinearVelocity());
+        Car::mGearSound->setPosition(mBodyNode->getPosition());
+        Car::mGearSound->setVelocity(Car::getLinearVelocity());
+    }
 #endif
 }
 

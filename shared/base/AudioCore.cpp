@@ -134,7 +134,8 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
             break;
         case GEAR_CHANGE:
             sound->setVolume(0.7f);
-            sound->setRelativeToListener(true); // Gear changes are not positional yet (but every car does have a (loud) one)
+            sound->setRolloffFactor(1.5f);
+            sound->setReferenceDistance(14.f);
             break;
         case CAR_CRASH:     break;
         case EXPLOSION:
