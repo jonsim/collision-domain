@@ -151,7 +151,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
         damageTR += damageToThis;
     }
 
-	if((GameCore::mGameplay->mGameActive && mAlive) {
+	if((GameCore::mGameplay->mGameActive && mAlive)) {
 		hp = recalculateDamage();
         ss << "hp = " << hp << "\n";
         //OutputDebugString(ss.str().c_str());
