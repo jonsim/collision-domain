@@ -19,6 +19,7 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	RakNet::StringCompressor().EncodeString(name.c_str(), 128, &bsAiPlayer);
 	mPacket = new RakNet::Packet();
 	mPacket->guid.g = uint64_t(rand());
+    mPacket->guid.systemIndex = -1;// = GameCore::mNetworkCore->m_pRak->GetMyGUID().systemIndex;
 	GameCore::mNetworkCore->PlayerJoin(&bsAiPlayer, mPacket);
     RakNet::BitStream bsAiTeam;
     bsAiTeam.Write( NO_TEAM );

@@ -158,7 +158,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 		//OutputDebugString("Bump\n");
 	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
 		//OutputDebugString("Bang\n");
-		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.5);
+		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.1);
 	}
 }
 
