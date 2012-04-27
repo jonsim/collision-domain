@@ -22,6 +22,8 @@ public:
     {
     }
 
+    ~Vehicle() { btRaycastVehicle::~btRaycastVehicle(); }
+
     virtual void    updateVehicle( btScalar step );
 	virtual void 	updateFriction( btScalar timeStep );
 
