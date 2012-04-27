@@ -126,16 +126,15 @@ bool PlayerPool::cmpGame(Player* a, Player* b)
 //This returns all the players in the pool in sorted score order.
 std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 {
-	//This is a much nicer way of doing it
-	std::sort(this->mPlayers.begin(),this->mPlayers.end(),PlayerPool::cmpRound);
-	
+	// What a waste of all our time ... Sorting the main player pool ...
 	std::vector<Player*> tmp;
 	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
 	{
 		tmp.push_back((*it));
 	}
+
+	std::sort(tmp.begin(),tmp.end(),PlayerPool::cmpRound);
 	
-	//return this->mPlayers;
 	return tmp;
 }
 
@@ -143,17 +142,15 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 //This returns all the players in the pool in sorted game score order.
 std::vector<Player*> PlayerPool::getGameScoreOrderedPlayers()
 {
-	//This is a much nicer way of doing it
-	std::sort(this->mPlayers.begin(),this->mPlayers.end(),PlayerPool::cmpGame);
-	
-    //In theory this is not required
+	// What a waste of all our time ... Sorting the main player pool ...
 	std::vector<Player*> tmp;
 	for(std::vector<Player*>::iterator it = mPlayers.begin();it != mPlayers.end();it++)
 	{
 		tmp.push_back((*it));
 	}
+
+	std::sort(tmp.begin(),tmp.end(),PlayerPool::cmpGame);
 	
-	//return this->mPlayers;
 	return tmp;
 }
 
