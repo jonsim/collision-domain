@@ -128,7 +128,7 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
             sound->setRelativeToListener(true); // always on top of the listener
             break;
         case ENGINE_SMALL: case ENGINE_COUPE: case ENGINE_TRUCK:
-            sound->setVolume(0.2f);
+            sound->setVolume(0.55f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
@@ -212,11 +212,31 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     
     // This ifdef is here to stop getLocalPlayer problems (server has no local player).
 #ifdef COLLISION_DOMAIN_CLIENT
-    // Attach ears to the car instead of the camera. Otherwise it just sounds weird!
-    //GameCore::mGraphicsCore->mCamera->getPosition(),
-    //GameCore::mGraphicsCore->mCamera->getOrientation()
-    Ogre::Vector3 earsPosition = GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->getPosition();
-    Ogre::Quaternion earsOrientation = GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->getOrientation();
+    // Attach ears to the car instead of the camera (unless at spawn screen). Otherwise it just sounds weird!
+    Player *localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    Car *localPlayerCar = localPlayer->getCar();
+
+    Ogre::Vector3 earsPosition;
+    Ogre::Quaternion earsOrientation;
+    Ogre::Vector3 linearVelocity;
+    if (localPlayer && localPlayerCar)
+    {
+        earsPosition    = localPlayerCar->mBodyNode->getPosition();
+        earsOrientation = localPlayerCar->mBodyNode->getOrientation();
+        linearVelocity  = localPlayerCar->getLinearVelocity();
+    }
+    else if (GameCore::mClientGraphics->mCamera)
+    {
+        earsPosition = GameCore::mClientGraphics->mCamera->getPosition();
+        earsOrientation = GameCore::mClientGraphics->mCamera->getOrientation();
+        linearVelocity = Ogre::Vector3(0,0,0);
+    }
+    else
+    {
+        earsPosition = Ogre::Vector3(0,3,60);
+        earsOrientation = Ogre::Quaternion(Ogre::Radian(0.0), Ogre::Vector3(0,0,1));
+        linearVelocity = Ogre::Vector3(0,0,0);
+    }
 
     // if framerate is low, timeSinceLastFrame is larger.                   if framerate is high, timeSinceLastFrame is lower.
     // if framerate is low, unscaled Velocity will be higher than expected. if framerate is high, unscaled velocity will be lower than expected.
@@ -224,24 +244,22 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     mSoundManager->getListener()->setPosition(earsPosition);
     mSoundManager->getListener()->setOrientation(earsOrientation);
 
-    mSoundManager->getListener()->setVelocity(GameCore::mPlayerPool->getLocalPlayer()->getCar()->getLinearVelocity());
+    mSoundManager->getListener()->setVelocity(linearVelocity);
 
     // fire a frameevent for each car
     int numPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
     for (int i = 0; i < numPlayers; i++)
     {
         Player *player = GameCore::mPlayerPool->getPlayer(i);
-        if (player == NULL) continue;
         Car *car = player->getCar();
-        if (car == NULL) continue;
-        car->updateAudioPitchFrameEvent();
+
+        if (player && car) car->updateAudioPitchFrameEvent();
     }
     
     // fire a frameevent for the local player
-    Player *localPlayer = GameCore::mPlayerPool->getLocalPlayer();
-    if (localPlayer != NULL && localPlayer->getCar() != NULL)
+    if (localPlayer && localPlayerCar)
     {
-        localPlayer->getCar()->updateAudioPitchFrameEvent();
+        localPlayerCar->updateAudioPitchFrameEvent();
     }
 #endif
 }

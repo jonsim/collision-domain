@@ -361,9 +361,12 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 		    if( pPlayer != NULL )
 		    {
 			    pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
+                ClientHooks::nonLocalPlayerNowInArena(pPlayer);
 		    }
 		    else
+            {
 			    log( "..invalid player" );
+            }
 	    }
 
 	    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)		
