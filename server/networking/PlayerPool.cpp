@@ -43,11 +43,17 @@ bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
 	{
         std::vector<Player*>::iterator it = find( mPlayers.begin(), mPlayers.end(), pPlayer );
         if( it != mPlayers.end() )
+        {
+            //if (*it != pPlayer) assert(false);
             mPlayers.erase( it );
+        }
 
         std::vector<RakNet::RakNetGUID>::iterator it2 = find( mGUID.begin(), mGUID.end(), playerid );
         if( it2 != mGUID.end() )
+        {
+            //if (*it2 != playerid) assert(false);
             mGUID.erase( it2 );
+        }
 
         delete pPlayer;
         return true;
@@ -70,7 +76,7 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 Player* PlayerPool::getRandomPlayer()
 {
 	int nPlayers = getNumberOfPlayers();
-	int i = rand() % (nPlayers + 1);
+	int i = rand() % nPlayers;
 
 	return mPlayers[i];
 }
