@@ -18,7 +18,7 @@ class PlayerPool
 private:
 	//Player* mPlayers[MAX_PLAYERS];
 	std::vector<Player*> mPlayers;
-	std::vector<RakNet::RakNetGUID> mGUID;
+	//std::vector<RakNet::RakNetGUID> mGUID;
 	Player* mLocalPlayer;
 	RakNet::RakNetGUID mLocalGUID;
 	//RakNet::RakNetGUID mGUID[MAX_PLAYERS];

@@ -13,7 +13,7 @@ class PlayerPool
 {
 private:
 	std::vector<Player*> mPlayers;
-	std::vector<RakNet::RakNetGUID> mGUID;
+	//std::vector<RakNet::RakNetGUID> mGUID;
 	Player*             mLocalPlayer;
 	RakNet::RakNetGUID  mLocalGUID;
 	int                 getPlayerIndex( RakNet::RakNetGUID playerid );
