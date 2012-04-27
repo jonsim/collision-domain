@@ -15,7 +15,7 @@ int PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	mPlayers.push_back(new Player());
 	mPlayers[iNew]->setPlayerGUID(playerid);
 	mPlayers[iNew]->setGUID(playerid);
-	mGUID.push_back(playerid);
+	//mGUID.push_back(playerid);
     mPlayers[iNew]->setNickname( szNickname );
 
 	return iNew;
@@ -34,7 +34,7 @@ void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	mLocalGUID = playerid;
 	
 	mPlayers.push_back(mLocalPlayer);
-	mGUID.push_back(playerid);
+	//mGUID.push_back(playerid);
 }
 
 bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
@@ -46,9 +46,9 @@ bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
         if( it != mPlayers.end() )
             mPlayers.erase( it );
 
-        std::vector<RakNet::RakNetGUID>::iterator it2 = find( mGUID.begin(), mGUID.end(), playerid );
-        if( it2 != mGUID.end() )
-            mGUID.erase( it2 );
+        //std::vector<RakNet::RakNetGUID>::iterator it2 = find( mGUID.begin(), mGUID.end(), playerid );
+        //if( it2 != mGUID.end() )
+        //    mGUID.erase( it2 );
 
         delete pPlayer;
         return true;
@@ -61,7 +61,8 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 	int i = 0;
 	for (int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
 	{
-		if( mGUID[i] == playerid )
+		//if( mGUID[i] == playerid )
+        if( mPlayers[i]->getPlayerGUID() == playerid )
 			return i;
 	}
 
@@ -257,7 +258,7 @@ void PlayerPool::spectateNext( bool reverse )
     if( nextIdx != -1 )
     {
         setSpectating( nextIdx );
-        mSpectating = mGUID[nextIdx];
+        mSpectating = mPlayers[nextIdx]->getPlayerGUID();//mGUID[nextIdx];
     }
 }
 

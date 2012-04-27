@@ -12,7 +12,7 @@ int PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	mPlayers.push_back(new Player());
 	mPlayers[iNew]->setPlayerGUID(playerid);
 	mPlayers[iNew]->setGUID(playerid);
-	mGUID.push_back(playerid);
+	//mGUID.push_back(playerid);
     mPlayers[iNew]->setNickname( szNickname );
 
 	return iNew;
@@ -32,7 +32,7 @@ void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 	mLocalGUID = playerid;
 	
 	mPlayers.push_back(mLocalPlayer);
-	mGUID.push_back(playerid);
+	//mGUID.push_back(playerid);
 
 }
 
@@ -48,11 +48,17 @@ bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
             mPlayers.erase( it );
         }
 
+<<<<<<< .mine
+        //std::vector<RakNet::RakNetGUID>::iterator it2 = find( mGUID.begin(), mGUID.end(), playerid );
+        //if( it2 != mGUID.end() )
+        //    mGUID.erase( it2 );
+=======
         std::vector<RakNet::RakNetGUID>::iterator it2 = find( mGUID.begin(), mGUID.end(), playerid );
         if( it2 != mGUID.end() )
         {
             //if (*it2 != playerid) assert(false);
             mGUID.erase( it2 );
+>>>>>>> .r493
         }
 
         delete pPlayer;
@@ -66,7 +72,8 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 	int i = 0;
 	for (int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
 	{
-		if( mGUID[i] == playerid && mPlayers[i] != NULL )
+		//if( mGUID[i] == playerid && mPlayers[i] != NULL )
+        if( mPlayers[i]->getPlayerGUID() == playerid )
 			return i;
 	}
 
@@ -76,7 +83,7 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 Player* PlayerPool::getRandomPlayer()
 {
 	int nPlayers = getNumberOfPlayers();
-	int i = rand() % nPlayers;
+	int i = rand() % (nPlayers + 1);
 
 	return mPlayers[i];
 }
@@ -151,7 +158,7 @@ std::vector<Player*> PlayerPool::getGameScoreOrderedPlayers()
 }
 
 
-RakNet::RakNetGUID PlayerPool::getPlayerGUID( int index ) { return mGUID[index]; }
+RakNet::RakNetGUID PlayerPool::getPlayerGUID( int index ) { return mPlayers[index]->getPlayerGUID(); /*mGUID[index];*/ }
 
 Player* PlayerPool::getPlayer( int index ) { return mPlayers[index]; }
 
@@ -180,8 +187,8 @@ void PlayerPool::frameEvent( const float timeSinceLastFrame )
 	for( int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
 	{
 		// Local player physics in GraphicsApplication
-		if( mGUID[i] == mLocalGUID )
-			continue;
+		//if( mGUID[i] == mLocalGUID )
+		//	continue;
 		if( mPlayers[i] == NULL )
 			return;
 		if( mPlayers[i]->newInput != NULL )
