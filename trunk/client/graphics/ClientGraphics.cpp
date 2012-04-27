@@ -338,7 +338,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         return false;
     if (mShutDown)
         return false;
-
+    
     if (mGraphicsState == IN_LOBBY)
     {
         // Capture input
@@ -403,23 +403,24 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Apply controls the player (who will be moved on frameEnd and frameStart).
         if (NetworkCore::bConnected)
         {
-                if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
-                {
+            if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
+            {
                 // Moved here as audio event needs frehest car position
                 GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
-                GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
                 GameCore::mGui->updateCounters();
                 GameCore::mGui->updateSpeedo();
-                }
+            }
 
-                mGameCam->update( evt.timeSinceLastFrame );
+            // AudioCore needs to be fed localPlayer even if NULL (to detect spawn screen)
+            GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
+            mGameCam->update( evt.timeSinceLastFrame );
         }
 
 		if (mGraphicsState == PROJECTOR)		
 		{		
 			this->mBigScreen->updateMapView();		
 		}
-
+        
         // Cleanup frame specific objects.
         delete inputSnapshot;
     }

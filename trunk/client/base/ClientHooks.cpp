@@ -14,3 +14,8 @@ void ClientHooks::localPlayerNowInArena(Player *localPlayer)
     GameCore::mAudioCore->localPlayerNowInArenaTrigger();
     localPlayer->getCar()->startEngineSound();
 }
+
+void ClientHooks::nonLocalPlayerNowInArena(Player *player)
+{
+    player->getCar()->startEngineSound();
+}

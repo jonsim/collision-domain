@@ -21,6 +21,7 @@ class ClientHooks
 {
 public:
     static void localPlayerNowInArena(Player *localPlayer);
+    static void nonLocalPlayerNowInArena(Player *player);
 };
 
 #endif // #ifndef CLIENTHOOKS_H

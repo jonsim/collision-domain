@@ -20,8 +20,6 @@ PowerupRandom::PowerupRandom(Ogre::Vector3 createAboveAt) : Powerup()
     // Create the powerup graphics
 #ifdef COLLISION_DOMAIN_CLIENT
     Ogre::Entity* pupEntity = GameCore::mSceneMgr->createEntity("Powerup" + boost::lexical_cast<std::string>(uniqueID) , "powerup_random.mesh");
-    //int GEOMETRY_QUERY_MASK = 1<<2;
-    //entity->setQueryFlags(GEOMETRY_QUERY_MASK);
     pupEntity->setCastShadows(true);
     mNode->attachObject(pupEntity);
 #endif

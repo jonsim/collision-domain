@@ -159,7 +159,7 @@ SmallCar::SmallCar(int uniqueCarID, TeamID tid)
     
     // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
     mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_SMALL, mUniqueCarID, NULL, true);
-    mEngineSound->setPitch(2.0f);
+    mEngineSound->setPitch(1.0f);
 #endif
 }
 
@@ -206,7 +206,7 @@ void SmallCar::createCollisionShapes()
 void SmallCar::louderLocalSounds() {
     mHasLocalSounds = true;
 
-    float increaseTo = mEngineSound->getVolume() + 0.25;
+    float increaseTo = mEngineSound->getVolume() + 0.15;
     if (increaseTo < 1) {
         //mEngineSound->setMinVolume(increaseTo);
         mEngineSound->setVolume(increaseTo);
