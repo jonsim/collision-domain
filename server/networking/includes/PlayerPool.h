@@ -16,12 +16,9 @@ class Player;
 class PlayerPool
 {
 private:
-	//Player* mPlayers[MAX_PLAYERS];
 	std::vector<Player*> mPlayers;
-	//std::vector<RakNet::RakNetGUID> mGUID;
 	Player* mLocalPlayer;
 	RakNet::RakNetGUID mLocalGUID;
-	//RakNet::RakNetGUID mGUID[MAX_PLAYERS];
 	int getPlayerIndex( RakNet::RakNetGUID playerid );
 
 public:
@@ -43,12 +40,9 @@ public:
 	Player* getPlayer( int index );
 	Player* getPlayer( RakNet::RakNetGUID playerid );
 	Player* getPlayer( const char* nickname);
-	//Player* getLocalPlayer();
-	//RakNet::RakNetGUID getLocalPlayerID();
 	RakNet::RakNetGUID getPlayerGUID( int index );
 
 	void frameEvent( const float timeSinceLastFrame );
-	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }
 };
 
 #endif
