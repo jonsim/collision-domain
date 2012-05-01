@@ -48,4 +48,7 @@
     #include "windows.h"
 #else
 	#include "BulletCollision/NarrowPhaseCollision/btGjkConvexCast.h"
+
+    // This would save debugging time ;)
+    #define OutputDebugString printf
 #endif
