@@ -6,8 +6,8 @@
             seperate frames. It will also dispatch noteable crashes to the big screen.
  */
 #include "stdafx.h"
-#include "SharedIncludes.h"
-
+#include "PlayerCollisions.h"
+#include "boost/lexical_cast.hpp"
 
 /// @brief  Constructor to create physics stuff
 /// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.
@@ -35,19 +35,19 @@ PlayerCollisions::~PlayerCollisions()
 
 static int numColls = 0;
 
-void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
-{
-    /*
-    // SET THESE:
-    btVector3 crashLocation(,,);
-    Car *eitherOfTheTwoCarObjectsItMakesNoDifference = ;
-    float crashIntensity = 0.8;
+void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold) {
 
-    // Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
-    eitherOfTheTwoCarObjectsItMakesNoDifference->triggerCrashSoundAt(
-        BtOgre::Convert::toOgre(crashLocation),
-        crashIntensity);
-    */
+	/*
+		    // SET THESE:
+		    btVector3 crashLocation(,,);
+		    Car *eitherOfTheTwoCarObjectsItMakesNoDifference = ;
+		    float crashIntensity = 0.8;
+
+		    // Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
+		    eitherOfTheTwoCarObjectsItMakesNoDifference->triggerCrashSoundAt(
+		        BtOgre::Convert::toOgre(crashLocation),
+		        crashIntensity);
+	*/
 
     // **NOTE** WE MUST NOT REMEMBER TO READ THE FOLLOWING COMMENT
     
@@ -189,7 +189,7 @@ void PlayerCollisions::frameEventEnd()
 
 void PlayerCollisions::printLists()
 {
-    OutputDebugString("___________________________\n");
+    //OutputDebugString("___________________________\n");
 
     std::list<std::list<Player*>*>::iterator i = mCollisions->begin();
     while (i != mCollisions->end())
@@ -199,7 +199,7 @@ void PlayerCollisions::printLists()
         std::string size = boost::lexical_cast<std::string>(subList->size());
         std::string output = "Size " + size + "\n";
         
-        OutputDebugString(output.c_str());
+        //OutputDebugString(output.c_str());
 
         std::list<Player*>::iterator jj = subList->begin();
         while (jj != subList->end())
@@ -209,7 +209,7 @@ void PlayerCollisions::printLists()
             std::string address = boost::lexical_cast<std::string>(element);
             std::string output = "      " + address + "\n";
         
-            OutputDebugString(output.c_str());
+            //OutputDebugString(output.c_str());
 
             ++jj;
         }

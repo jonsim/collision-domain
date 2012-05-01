@@ -1,5 +1,7 @@
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Powerup.h"
+#include "GameCore.h"
+#include "PowerupPool.h"
 
 PowerupPool::PowerupPool()
 {
@@ -17,10 +19,10 @@ void PowerupPool::spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int inde
     }
 
     if (mPowerups[index] != NULL)
-        OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup");
-    
+        //OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup");
+
     mPowerups[index] = new Powerup(type, spawnAt, index);
-    
+
     #ifdef COLLISION_DOMAIN_SERVER
         GameCore::mNetworkCore->sendPowerupCreate(index, type, spawnAt);
     #endif
@@ -48,11 +50,11 @@ void PowerupPool::deletePowerup( int index )
 /// @brief  Process state changes for powerups and delete collected ones
 void PowerupPool::frameEvent( const float timeSinceLastFrame )
 {
-	for( int i = 0; i < MAX_POWERUPS; i ++ )
+        for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
         if ( mPowerups[i] )
         {
-            // This has to be done here, because the instance can't be deleted in the collision  
+            // This has to be done here, because the instance can't be deleted in the collision
             // callback (you can't call delete() then return to the deleted object's method!)
             if ( mPowerups[i]->isPendingDelete() )
                 deletePowerup( i );
@@ -102,14 +104,14 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
 
     if ( GameCore::mPhysicsCore->singleObjectRaytest(rayFrom, rayTo, worldNormal, worldHitPoint) )
     {
-	    std::stringstream overlayNameSS;
-	    overlayNameSS << "x" << worldHitPoint.x() << "   y" << worldHitPoint.y() << "   z" << worldHitPoint.z() << "\n";
+            std::stringstream overlayNameSS;
+            overlayNameSS << "x" << worldHitPoint.x() << "   y" << worldHitPoint.y() << "   z" << worldHitPoint.z() << "\n";
 
-        OutputDebugString(overlayNameSS.str().c_str());
+        //OutputDebugString(overlayNameSS.str().c_str());
     }
     else
     {
-        OutputDebugString("No Hit\n");
+        //OutputDebugString("No Hit\n");
     }
 
 
@@ -119,24 +121,24 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
 // THIS WILL RETURN 0,0,0 IF THERE ARE NO POWERUPS
 Ogre::Vector3 PowerupPool::getNearestPowerUp(Ogre::Vector3 pos)
 {
-	float minDist = std::numeric_limits<float>::infinity();
+        float minDist = std::numeric_limits<float>::infinity();
     float distance;
 
-	Ogre::Vector3 ret(0,0,0);
+        Ogre::Vector3 ret(0,0,0);
 
-	for(int i = 0; i < MAX_POWERUPS; i++)
-	{
-		if(mPowerups[i])
-			distance = mPowerups[i]->getPosition().distance(pos);
-		else
-			distance = std::numeric_limits<float>::infinity();
+        for(int i = 0; i < MAX_POWERUPS; i++)
+        {
+                if(mPowerups[i])
+                        distance = mPowerups[i]->getPosition().distance(pos);
+                else
+                        distance = std::numeric_limits<float>::infinity();
 
-		if(distance < minDist)
-		{
-			minDist = distance;
-			ret = mPowerups[i]->getPosition();
-		}
-	}
+                if(distance < minDist)
+                {
+                        minDist = distance;
+                        ret = mPowerups[i]->getPosition();
+                }
+        }
 
-	return ret;
+        return ret;
 }

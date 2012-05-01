@@ -7,12 +7,13 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
 
 #include <math.h>
 #include <string>
 
 class Player;
+
+enum TeamID   {NO_TEAM = 0, BLUE_TEAM = 1, RED_TEAM = 2};
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 class Team

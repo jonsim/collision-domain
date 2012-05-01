@@ -6,8 +6,14 @@
 #define __PhysicsCore_h_
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
-#include "boost\lexical_cast.hpp"
+#include "PlayerCollisions.h"
+
+
+#ifdef _WIN32
+	#include "boost\lexical_cast.hpp"
+#else
+	#include "boost/lexical_cast.hpp"
+#endif
 
 // This is used for physics collision masks
 enum QueryFlags

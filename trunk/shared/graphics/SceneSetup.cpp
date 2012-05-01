@@ -4,7 +4,9 @@
  */
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "SceneSetup.h"
+#include "GameCore.h"
+#include "MeshDeformer.h"
 
 // The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
 #define SHADOW_METHOD 2

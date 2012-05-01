@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "HUD.h"
 
 HUD::HUD()
 {
@@ -21,7 +21,7 @@ void HUD::initialize()
 
 void HUD::setupWOD()
 {
-	OutputDebugString("Starting the HUD");
+	//OutputDebugString("Starting the HUD");
 	
 	//Creat the overlay and the container
 	wodOverlay = 

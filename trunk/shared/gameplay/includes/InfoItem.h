@@ -8,11 +8,10 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
 
 #include <math.h>
 #include <string>
-//#include "RakNetTypes.h"
+#include "RakNetTypes.h"
 
 
 enum OverlayType

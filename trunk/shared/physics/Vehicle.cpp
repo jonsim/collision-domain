@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Vehicle.h"
 
 struct btWheelContactPoint
 {

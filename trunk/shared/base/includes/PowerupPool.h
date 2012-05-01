@@ -6,19 +6,10 @@
 #define POWERUPPOOL_H
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
-
-#define MAX_POWERUPS 3
-
-enum PowerupType
-{
-    POWERUP_HEALTH,
-    POWERUP_MASS,
-    POWERUP_SPEED,
-    POWERUP_COUNT
-};
 
 #include "Powerup.h"
+
+#define MAX_POWERUPS 3
 
 class PowerupPool
 {

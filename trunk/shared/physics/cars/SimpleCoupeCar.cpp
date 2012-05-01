@@ -3,7 +3,12 @@
  * @brief 	A Car object with specific mesh and texture to create a simple coupe car
  */
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Car.h"
+#include "PhysicsCore.h"
+#include "SimpleCoupeCar.h"
+#include "Gameplay.h"
+#include "GameCore.h"
+#include "Vehicle.h"
 
 using namespace Ogre;
 

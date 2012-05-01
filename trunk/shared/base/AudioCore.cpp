@@ -4,18 +4,19 @@
  */
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "AudioCore.h"
+#include "GameCore.h"
 
 using namespace OgreOggSound;
 
 #define OUTPUT_ENABLED         true
 
-#define FILE_HORN_LOW          "car-horn-low.wav"
-#define FILE_HORN_MID          "car-horn-mid.wav"
-#define FILE_HORN_HIGH         "car-horn-high.wav"
+#define FILE_HORN_LOW          "car-horn-low.ogg"
+#define FILE_HORN_MID          "car-horn-mid.ogg"
+#define FILE_HORN_HIGH         "car-horn-high.ogg"
 
 #define FILE_CAR_CRASH         "car-crash-1.ogg"
-#define FILE_EXPLOSION         "explosion.wav"
+#define FILE_EXPLOSION         "explosion.ogg"
 
 // The same sound is ok as rpms modulate it differently per car
 #define FILE_ENGINE_SMALL      "own-truck-engine-idle.ogg"
@@ -23,9 +24,9 @@ using namespace OgreOggSound;
 #define FILE_ENGINE_TRUCK      "own-truck-engine-idle.ogg"
 #define FILE_GEAR_CHANGE       "own-gear-change.ogg"
 
-#define FILE_POWERUP_HEALTH    "powerup-health.wav"
-#define FILE_POWERUP_SPEED     "powerup-speed.wav"
-#define FILE_POWERUP_HEAVY     "powerup-heavy.wav"
+#define FILE_POWERUP_HEALTH    "powerup-health.ogg"
+#define FILE_POWERUP_SPEED     "powerup-speed.ogg"
+#define FILE_POWERUP_HEAVY     "powerup-heavy.ogg"
 
 #define FILE_BACKING_TRACK     "Composer_Backing.ogg"
 #define FILE_MENU_TRACK        "Composer_Menu.ogg"
@@ -122,16 +123,16 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
     switch (h)
     {
         case HORN_LOW: case HORN_MID: case HORN_HIGH:
-            sound->setMaxVolume(0.55f);
+        	sound->setMaxVolume(0.55f);
             sound->setRelativeToListener(true); // always on top of the listener
             break;
         case ENGINE_SMALL: case ENGINE_COUPE: case ENGINE_TRUCK:
-            sound->setMaxVolume(0.55f);
+        	sound->setMaxVolume(0.55f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
         case GEAR_CHANGE:
-            sound->setMaxVolume(0.7f);
+        	sound->setMaxVolume(0.7f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;

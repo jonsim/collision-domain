@@ -1,10 +1,11 @@
 /**
- * @file	AudioCore.cpp
- * @brief 	An interface for firing off sounds
+ * @file        AudioCore.cpp
+ * @brief       An interface for firing off sounds
  */
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Powerup.h"
+#include "GameCore.h"
 
 Powerup::Powerup(Ogre::Vector3 spawnAt, int poolIndex)
 {
@@ -38,7 +39,7 @@ Powerup::Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex)
         if ( GameCore::mClientGraphics->mBigScreen != NULL )
             mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPowerupOverlayElement(spawnAt, mUniqueID);
     #endif
-    
+
     #ifndef COLLISION_DOMAIN_CLIENT // SERVER
         //mRigidBody = ;
     #endif
@@ -48,13 +49,13 @@ Powerup::~Powerup()
 {
     #ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->deleteSoundInstance(mSound);
-        
+
         mNode->detachAllObjects();
         mNode->getParentSceneNode()->removeChild(mNode);
 
         // delete the big screen overlay element?
     #endif
-    
+
     #ifndef COLLISION_DOMAIN_CLIENT // SERVER
         // delete the shape last
         /*
@@ -77,10 +78,10 @@ void Powerup::playerCollision(Player* player)
     #ifdef COLLISION_DOMAIN_CLIENT
         if (player != NULL)
             GameCore::mAudioCore->playSoundOrRestart(mSound);
-        
+
         // remove mBigScreenOverlayElement from minimap
     #endif
-    
+
     #ifndef COLLISION_DOMAIN_CLIENT // SERVER
         if (player != NULL)
             switch (mPowerupType)

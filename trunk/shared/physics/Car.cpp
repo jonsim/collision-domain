@@ -6,7 +6,11 @@
                 car related and expose an interface to do stuff to the cars.
  */
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "stdafx.h"
+#include "PhysicsCore.h"
+#include "Car.h"
+#include "GameCore.h"
+#include "Gameplay.h"
 #include "boost/algorithm/string.hpp"
 
 #define WHEEL_FRICTION_CFM 0.6f
@@ -28,16 +32,15 @@ Car::~Car()
 #endif
 }
 
-// Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
 void Car::triggerCrashSoundAt(Ogre::Vector3 location, float intensity)
 {
 #ifdef COLLISION_DOMAIN_CLIENT
-    intensity = intensity < 0 ? 0 : intensity;
+	intensity = intensity < 0 ? 0 : intensity;
 
-    // maxVolume is limited in mAudioCore (0.8 currently)
-    mCrashSound->setVolume(intensity);
-    mCrashSound->setPosition(location);
-    GameCore::mAudioCore->playSoundOrRestart(mCrashSound);
+	// maxVolume is limited in mAudioCore (0.8 currently)
+	mCrashSound->setVolume(intensity);
+	mCrashSound->setPosition(location);
+	GameCore::mAudioCore->playSoundOrRestart(mCrashSound);
 #endif
 }
 
@@ -429,7 +432,7 @@ void Car::attachCollisionTickCallback(Player* player)
 /// @brief Applies the force vector to the car through the node supplied.
 /// @param node     The node to apply the force through. Use the chassis node if a central force is desired.
 /// @param force    The force vector to apply.
-void Car::applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force)
+void Car::applyForce(Ogre::SceneNode* node, Ogre::Vector3 force)
 {
     btVector3 btForce(force.x, force.y, force.z);
     btVector3 btPos(node->getPosition().x, node->getPosition().y, node->getPosition().z);
@@ -496,7 +499,11 @@ void Car::reset( btRigidBody *body, btTransform &trans, bool dotrans )
     GameCore::mPhysicsCore->getWorld()->getBroadphase()->getOverlappingPairCache()->cleanProxyFromPairs( body->getBroadphaseHandle(), GameCore::mPhysicsCore->getWorld()->getDispatcher() );
 }
 
+#ifdef _WIN32
 void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3& offset )
+#else
+void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3 offset )
+#endif
 {
     if( node->getParentSceneNode() != mBodyNode )
         return;

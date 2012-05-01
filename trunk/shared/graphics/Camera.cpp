@@ -6,7 +6,8 @@
  */
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Camera.h"
+#include "GameCore.h"
 
 void GameCamera::lookAtTarget()
 {

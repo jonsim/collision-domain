@@ -5,7 +5,9 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Team.h"
+#include "Player.h"
+#include "GameCore.h"
 
 /// @brief Constructor.
 /// @param teamName_P   The name for this team
@@ -46,7 +48,7 @@ Player*	Team::getRandomPlayer()
 	}
 	else
 	{
-		OutputDebugString("Unable to fetch player, No players in team\n");
+		//OutputDebugString("Unable to fetch player, No players in team\n");
 		return NULL;
 	}
 }
@@ -55,7 +57,7 @@ Player* Team::setNewVIP(Player* player)
 {
 	if(player!=NULL)
 	{
-		OutputDebugString("Set new VIP player\n");
+		//OutputDebugString("Set new VIP player\n");
         player->setVIP(true);
 		vipPlayer = player;
 		#ifdef COLLISION_DOMAIN_SERVER

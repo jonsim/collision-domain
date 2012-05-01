@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "ViewCamera.h"
+#include "RakNetTypes.h"
 
 ViewCamera::ViewCamera(Ogre::Camera* cam)
 {

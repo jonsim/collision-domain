@@ -7,7 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "Car.h"
 
 class CarCam //: public PhysicsEntity
 {

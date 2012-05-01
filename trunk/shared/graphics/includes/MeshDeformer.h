@@ -3,7 +3,6 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
 
 /*#include <OgreCamera.h>
 #include <OgreEntity.h>
@@ -24,7 +23,7 @@ public:
 	MeshDeformer(void);
 
 	void collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage);
-	void MeshDeformer::traceNodeHierarchy(Ogre::SceneNode *rootnode);
+	void traceNodeHierarchy(Ogre::SceneNode *rootnode);
 
     Ogre::ManualObject* drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end);
 	~MeshDeformer(void);

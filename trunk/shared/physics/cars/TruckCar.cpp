@@ -3,8 +3,10 @@
  * @brief 	A Car object with specific mesh and texture to create a simple coupe car
  */
 #include "stdafx.h"
-#include "SharedIncludes.h"
-
+#include "PhysicsCore.h"
+#include "TruckCar.h"
+#include "GameCore.h"
+#include "Gameplay.h"
 #include "BulletDynamics/ConstraintSolver/btPoint2PointConstraint.h"
 #include "BulletDynamics/ConstraintSolver/btHingeConstraint.h"
 
