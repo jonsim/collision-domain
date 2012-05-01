@@ -14,34 +14,34 @@
 class Powerup
 {
 public:
-	Powerup() { mOLE = NULL; }
+    Powerup(Ogre::Vector3 spawnAt, int poolIndex);
+	Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex);
+    ~Powerup();
 
-    virtual void playerCollision(Player* player) = 0;
-    virtual void playerCollision(Player* player, PowerupType pwrType) {} // For client removing randoms
-    virtual void frameEvent( const float timeSinceLastFrame ) = 0;
-    virtual bool isPendingDelete() = 0;
+    void playerCollision(Player* player);
+    void frameEvent(const float timeSinceLastFrame);
+    bool isPendingDelete();
 
-    int  getIndex() { return mPoolIndex; }
-    void setIndex( int x ) { mPoolIndex = x; }
+    PowerupType getType();
+    int  getIndex();
 
-    Ogre::Vector3 getPosition() { if( mNode ) return mNode->getPosition(); return Ogre::Vector3(); }
+    Ogre::Vector3 getPosition();
+    Ogre::OverlayElement* getBigScreenOverlayElement();
 
-	Ogre::OverlayElement* getOverlayElement() { return this->mOLE; }
-	void setOverlayElement(Ogre::OverlayElement* ole) { this->mOLE = ole; }
+private:
+    bool mHasBeenCollected;
+    OgreOggISound *mSound;
 
-    //int getPowerupType(); if you have to check this, its probably bad oo design
-    //void setPowerupType( int iType ); http://stackoverflow.com/questions/500493/c-equivalent-of-instanceof
-
-protected:
-    btRigidBody     *mRigidBody;
+    PowerupType mPowerupType;
+    int mPoolIndex;
+    int mUniqueID;
+    
+    Ogre::Vector3 position;
     Ogre::SceneNode *mNode;
-
-    bool            mHasBeenCollected;
-    OgreOggISound   *mSound;
-
-    int             mPoolIndex;
-
-	Ogre::OverlayElement* mOLE;
+    Ogre::OverlayElement* mBigScreenOverlayElement;
+    
+    // Used in the server only
+    btRigidBody *mRigidBody;
 };
 
 #endif // #ifndef POWERUP_H

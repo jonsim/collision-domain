@@ -39,6 +39,8 @@ public:
     bool removeBody( btRigidBody *body );
     void clearWorld();
 
+    bool singleObjectRaytest(const btVector3& rayFrom,const btVector3& rayTo,btVector3& worldNormal,btVector3& worldHitPoint);
+
     //OgreBulletDynamics::DynamicsWorld *mWorld; // Collisions object
 
     PlayerCollisions* mPlayerCollisions;

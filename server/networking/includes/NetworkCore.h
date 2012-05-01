@@ -102,7 +102,7 @@ public:
 
     void sendPlayerSpawn( Player *pPlayer );
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
-    void sendPowerupCollect( int pwrID, Player *player, PowerupType newtype = POWERUP_HEALTH );
+    void sendPowerupCollect( int pwrID, Player *player );
     void sendChatMessage( const char *szMessage );
     void sendSyncScores();
 

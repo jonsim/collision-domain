@@ -178,16 +178,15 @@ void PlayerPool::processPlayer( Player *pPlayer )
         currentSnap = NULL;
 
 #else
-
         pPlayer->getCar()->restoreSnapshot( pPlayer->mSnapshots );
 #endif
         delete( pPlayer->mSnapshots );
         pPlayer->mSnapshots = NULL;
-
-        
-        if (pPlayer->getVIP())
-            GameCore::mClientGraphics->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
     }
+    
+    // improve the judderyness of the crown, it could still be better though
+    if (pPlayer->getVIP() && pPlayer->getCar() != NULL)
+        GameCore::mClientGraphics->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
 }
 
 void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )

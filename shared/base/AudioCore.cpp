@@ -14,7 +14,7 @@ using namespace OgreOggSound;
 #define FILE_HORN_MID          "car-horn-mid.wav"
 #define FILE_HORN_HIGH         "car-horn-high.wav"
 
-#define FILE_CAR_CRASH         "car-crash-1.wav"
+#define FILE_CAR_CRASH         "car-crash-1.ogg"
 #define FILE_EXPLOSION         "explosion.wav"
 
 // The same sound is ok as rpms modulate it differently per car
@@ -26,7 +26,6 @@ using namespace OgreOggSound;
 #define FILE_POWERUP_HEALTH    "powerup-health.wav"
 #define FILE_POWERUP_SPEED     "powerup-speed.wav"
 #define FILE_POWERUP_HEAVY     "powerup-heavy.wav"
-#define FILE_POWERUP_RANDOM    "powerup-random.wav"
 
 #define FILE_BACKING_TRACK     "Composer_Backing.ogg"
 #define FILE_MENU_TRACK        "Composer_Menu.ogg"
@@ -68,7 +67,6 @@ AudioCore::AudioCore()
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_HEALTH, false, false, true, GameCore::mSceneMgr));
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_SPEED,  false, false, true, GameCore::mSceneMgr));
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_HEAVY,  false, false, true, GameCore::mSceneMgr));
-    mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_RANDOM, false, false, true, GameCore::mSceneMgr));
 
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
     mBackingTrack->setMaxVolume(0.85f);
@@ -124,22 +122,26 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
     switch (h)
     {
         case HORN_LOW: case HORN_MID: case HORN_HIGH:
-            sound->setVolume(0.55f);
+            sound->setMaxVolume(0.55f);
             sound->setRelativeToListener(true); // always on top of the listener
             break;
         case ENGINE_SMALL: case ENGINE_COUPE: case ENGINE_TRUCK:
-            sound->setVolume(0.55f);
+            sound->setMaxVolume(0.55f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
         case GEAR_CHANGE:
-            sound->setVolume(0.7f);
+            sound->setMaxVolume(0.7f);
             sound->setRolloffFactor(1.5f);
             sound->setReferenceDistance(14.f);
             break;
-        case CAR_CRASH:     break;
+        case CAR_CRASH:
+            sound->setMaxVolume(0.8f);
+            sound->setRolloffFactor(1.5f);
+            sound->setReferenceDistance(14.f);
+            break;
         case EXPLOSION:
-            sound->setVolume(0.8f);
+            sound->setMaxVolume(0.8f);
             sound->setRolloffFactor(1.8f);
             sound->setReferenceDistance(20.f);
             break;
@@ -161,7 +163,6 @@ OgreOggISound* AudioCore::getSoundInstance(PowerupType p, int uniqueID, Ogre::Sc
     {
         case POWERUP_HEALTH: file = FILE_POWERUP_HEALTH; break;
         case POWERUP_MASS: file = FILE_POWERUP_HEAVY; break;
-        case POWERUP_RANDOM: file = FILE_POWERUP_RANDOM; break;
         case POWERUP_SPEED: file = FILE_POWERUP_SPEED; break;
         default: return NULL;
     }

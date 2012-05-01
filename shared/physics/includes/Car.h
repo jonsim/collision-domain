@@ -42,6 +42,7 @@ public:
     virtual void updateAudioPitchFrameEvent() = 0;
     virtual void louderLocalSounds() = 0;
     virtual void startEngineSound() = 0;
+    void triggerCrashSoundAt(Ogre::Vector3 location, float intensity);
 
     virtual void updateTeam (TeamID tid) = 0;
     virtual void loadDestroyedModel (void) = 0;
@@ -86,6 +87,7 @@ protected:
     
 //#ifdef COLLISION_DOMAIN_CLIENT
     OgreOggISound *mGearSound;
+    OgreOggISound *mCrashSound;
 //#endif
 
     // Camera node (if not null its attached to bodyNode) (attachCamNode())

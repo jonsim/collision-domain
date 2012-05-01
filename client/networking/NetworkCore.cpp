@@ -396,7 +396,7 @@ void NetworkCore::PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *p
     bitStream->Read( pwrType );
     bitStream->Read( pwrLoc );
 
-    GameCore::mPowerupPool->createPowerup( pwrType, pwrLoc, id );
+    GameCore::mPowerupPool->spawnPowerup( pwrType, pwrLoc, id );
 }
 
 void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -406,37 +406,21 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
 
     Powerup *pwrObject = GameCore::mPowerupPool->getPowerup( pwrID );
 
-    bool bPlayer;
-    bitStream->Read( bPlayer );
+    bool hasPlayer;
+    bitStream->Read( hasPlayer );
 
-    if( !bPlayer )
-    {
-        // Remove a powerup, nobody collected it
-        pwrObject->playerCollision( NULL );
-    }
-    else
+    Player *pPlayer = NULL;
+
+    if (hasPlayer)
     {
         RakNet::RakNetGUID playerid;
         bitStream->Read( playerid );
 
-        Player *pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
-
-        if( pPlayer == NULL )
-            return;
-
-        // Check if powerup was random
-        if( GameCore::mPowerupPool->getPowerupType( pwrID ) == POWERUP_RANDOM )
-        {
-            // Read the type that it turned into
-            PowerupType pwrType;
-            bitStream->Read( pwrType );
-            pwrObject->playerCollision( pPlayer, pwrType );
-        }
-        else
-        {
-            pwrObject->playerCollision( pPlayer );
-        }
+        pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
     }
+
+    // if pPlayer is null playerCollision will remove the player
+    pwrObject->playerCollision( pPlayer );
 }
 
 void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
