@@ -61,9 +61,6 @@
     <ClInclude Include="..\..\shared\base\includes\InputState.h">
       <Filter>shared\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\base\includes\stdafx.h">
-      <Filter>shared\base</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\physics\includes\Car.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
@@ -607,6 +604,9 @@
     <ClInclude Include="..\..\client\base\includes\ClientHooks.h">
       <Filter>client\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\client\base\includes\stdafx.h">
+      <Filter>client\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -622,9 +622,6 @@
       <Filter>shared\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\base\InputState.cpp">
-      <Filter>shared\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\base\stdafx.cpp">
       <Filter>shared\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\cars\SimpleCoupeCar.cpp">
@@ -991,6 +988,9 @@
       <Filter>client\graphics</Filter>
     </ClCompile>
     <ClCompile Include="..\..\client\base\ClientHooks.cpp">
+      <Filter>client\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\client\base\stdafx.cpp">
       <Filter>client\base</Filter>
     </ClCompile>
   </ItemGroup>

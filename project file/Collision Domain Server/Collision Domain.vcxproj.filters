@@ -70,9 +70,6 @@
     <ClInclude Include="..\..\shared\base\includes\InputState.h">
       <Filter>shared\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\base\includes\stdafx.h">
-      <Filter>shared\base</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\physics\includes\Car.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
@@ -613,6 +610,9 @@
     <ClInclude Include="..\..\shared\graphics\includes\SceneSetup.h">
       <Filter>shared\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\server\base\includes\stdafx.h">
+      <Filter>server\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Collision Domain.rc" />
@@ -634,9 +634,6 @@
       <Filter>shared\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\base\InputState.cpp">
-      <Filter>shared\base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\shared\base\stdafx.cpp">
       <Filter>shared\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\shared\physics\Car.cpp">
@@ -1001,6 +998,9 @@
     </ClCompile>
     <ClCompile Include="..\..\shared\graphics\SceneSetup.cpp">
       <Filter>shared\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\server\base\stdafx.cpp">
+      <Filter>server\base</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

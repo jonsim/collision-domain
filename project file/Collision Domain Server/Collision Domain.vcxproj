@@ -16,6 +16,7 @@
     <ClInclude Include="..\..\server\ai\includes\SteeringBehaviour.h" />
     <ClInclude Include="..\..\server\ai\includes\utils.h" />
     <ClInclude Include="..\..\server\base\includes\Player.h" />
+    <ClInclude Include="..\..\server\base\includes\stdafx.h" />
     <ClInclude Include="..\..\server\GameIncludes.h" />
     <ClInclude Include="..\..\server\graphics\includes\GameGUI.h" />
     <ClInclude Include="..\..\server\graphics\includes\ServerGraphics.h" />
@@ -29,7 +30,6 @@
     <ClInclude Include="..\..\shared\base\includes\InputState.h" />
     <ClInclude Include="..\..\shared\base\includes\Powerup.h" />
     <ClInclude Include="..\..\shared\base\includes\PowerupPool.h" />
-    <ClInclude Include="..\..\shared\base\includes\stdafx.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\Gameplay.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\HUD.h" />
     <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h" />
@@ -209,6 +209,11 @@
     <ClCompile Include="..\..\server\ai\AiPlayer.cpp" />
     <ClCompile Include="..\..\server\ai\SteeringBehaviour.cpp" />
     <ClCompile Include="..\..\server\base\Player.cpp" />
+    <ClCompile Include="..\..\server\base\stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\..\server\graphics\GameGUI.cpp" />
     <ClCompile Include="..\..\server\graphics\ServerGraphics.cpp" />
     <ClCompile Include="..\..\server\graphics\ViewportManager.cpp" />
@@ -220,10 +225,6 @@
     <ClCompile Include="..\..\shared\base\InputState.cpp" />
     <ClCompile Include="..\..\shared\base\Powerup.cpp" />
     <ClCompile Include="..\..\shared\base\PowerupPool.cpp" />
-    <ClCompile Include="..\..\shared\base\stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="..\..\shared\gameplay\Gameplay.cpp" />
     <ClCompile Include="..\..\shared\gameplay\HUD.cpp" />
     <ClCompile Include="..\..\shared\gameplay\InfoItem.cpp" />
@@ -381,7 +382,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\gameplay\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes;..\..\server\ai\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\physics\includes\cars;..\..\shared\graphics\includes;..\..\shared\gameplay\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes;..\..\server\ai\includes</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalOptions>-Zm163 -D_SCL_SECURE_NO_WARNINGS %(AdditionalOptions)</AdditionalOptions>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
@@ -406,9 +407,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\graphics\includes;..\..\shared\gameplay\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes;..\..\server\ai\includes</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(OGRE_HOME)\include;$(OGRE_HOME)\include\OIS;$(OGRE_HOME)\include\OGRE;$(OGRE_HOME)\Samples\Common\include;$(OGRE_HOME)\boost_1_44;$(OGRE_HOME)\boost_1_44\lib;$(BULLET_HOME)\src;..\..\server;..\..\shared;..\..\shared\base\includes;..\..\shared\physics\includes;..\..\shared\physics\includes\cars;..\..\shared\graphics\includes;..\..\shared\gameplay\includes;..\..\shared\networking\includes;..\..\shared\cegui\include;..\..\shared\raknet;..\..\shared\ogreoggsound\include;..\..\shared\ogreoggsound\openal\include;..\..\server\base\includes;..\..\server\physics\includes;..\..\server\graphics\includes;..\..\server\gameplay\includes;..\..\server\networking\includes;..\..\server\ai\includes</AdditionalIncludeDirectories>
       <ForcedIncludeFiles>stdafx.h</ForcedIncludeFiles>
       <AdditionalOptions>-Zm163 %(AdditionalOptions)</AdditionalOptions>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
