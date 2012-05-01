@@ -7,10 +7,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
 #include "CarCam.h"
-
-enum TeamID;
+#include "Team.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

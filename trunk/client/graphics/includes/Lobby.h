@@ -7,7 +7,6 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
 
 class Lobby
 {

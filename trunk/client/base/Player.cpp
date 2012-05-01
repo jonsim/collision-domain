@@ -5,8 +5,14 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "Player.h"
+#include "GameCore.h"
 #include <sstream>
+#include "MeshDeformer.h"
+#include "Car.h"
+#include "SimpleCoupeCar.h"
+#include "SmallCar.h"
+#include "TruckCar.h"
 
 #define INITIAL_HEALTH 1200
 #define NEWCAM 1
@@ -43,7 +49,7 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     std::stringstream ss;
     ss << "car type: " << mCarType << "\n";
     ss << "our team: " << mTeam << "\n";
-    OutputDebugString(ss.str().c_str());
+    //OutputDebugString(ss.str().c_str());
 
 	//averageCollisionPoint.setZero();
 
@@ -132,7 +138,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	Ogre::Real or1 = this->getCar()->mBodyNode->getPosition().getRotationTo(adjust).getYaw().valueDegrees()+180;
 	
 	if(adjust.x == 0.f && adjust.y == 0.f && adjust.z == 0.f) {
-		OutputDebugString("ZERO collision Point\n");
+		//OutputDebugString("ZERO collision Point\n");
 	}
 
 	// combine speeds of both cars, gives approximation of total force in collision
@@ -164,11 +170,11 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 
 
 void Player::cameraLookLeft(void) {
-	OutputDebugString("look left\n");
+	//OutputDebugString("look left\n");
 }
 
 void Player::cameraLookRight(void) {
-	OutputDebugString("look right\n");
+	//OutputDebugString("look right\n");
 }
 
 void Player::cameraLookBack(void) {
@@ -378,7 +384,7 @@ void Player::serverSaysHealthChangedTo(float newHP)
     std::stringstream ss;
     ss << "localplayer health changed to " << newHP << "\n";
 
-    OutputDebugString(ss.str().c_str());
+    //OutputDebugString(ss.str().c_str());
 
 
     // update damage HUD

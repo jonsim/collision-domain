@@ -7,10 +7,10 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
 #include "CarCam.h"
-
-enum TeamID;
+#include "Team.h"
+#include "Car.h"
+#include "InputState.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
@@ -71,7 +71,7 @@ public:
 
 	//Now have a "Kill" method that will also set the call backs
 	void killPlayer();
-	void Player::killPlayer(Player* causedBy);
+	void killPlayer(Player* causedBy);
 	void resetHP();
     void serverSaysHealthChangedTo(float newHP);
 

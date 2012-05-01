@@ -7,7 +7,9 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "ClientHooks.h"
+#include "Player.h"
+#include "GameCore.h"
 
 void ClientHooks::localPlayerNowInArena(Player *localPlayer)
 {

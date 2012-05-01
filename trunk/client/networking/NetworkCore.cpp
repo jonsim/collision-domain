@@ -4,8 +4,11 @@
  */
 
 #include "stdafx.h"
-#include "GameIncludes.h"
-
+#include "RakNetTypes.h"
+#include "NetworkCore.h"
+#include "Player.h"
+#include "GameCore.h"
+#include "ClientHooks.h"
 
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
 RakNet::RPC4* NetworkCore::m_RPC;
@@ -55,7 +58,7 @@ RakNet::RakPeerInterface* NetworkCore::getRakInterface() { return m_pRak; }
 NetworkCore::~NetworkCore()
 {
     m_pRak->CloseConnection( serverGUID, true, 0, HIGH_PRIORITY );
-    while( m_pRak->GetConnectionState( serverGUID ) == RakNet::ConnectionState::IS_CONNECTED )
+    while( m_pRak->GetConnectionState( serverGUID ) == RakNet::IS_CONNECTED )
         boost::this_thread::sleep( boost::posix_time::milliseconds( 10 ) );
 	RakNet::RakPeerInterface::DestroyInstance( m_pRak );
 }
@@ -341,7 +344,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
 
-    OutputDebugString("ClientSpawn\n");
+    //OutputDebugString("ClientSpawn\n");
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );
 
     switch( packetid )
@@ -411,21 +414,22 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
 
     Player *pPlayer = NULL;
 
-    if (hasPlayer)
+    if(hasPlayer)
     {
-        RakNet::RakNetGUID playerid;
-        bitStream->Read( playerid );
+    	RakNet::RakNetGUID playerid;
+    	bitStream->Read( playerid );
 
-        pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
+    	pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
     }
 
     // if pPlayer is null playerCollision will remove the player
     pwrObject->playerCollision( pPlayer );
+
 }
 
 void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-	OutputDebugString("Received Info Item\n");
+	//OutputDebugString("Received Info Item\n");
 
 	//Read in all the info need to rebuild the InfoItem
 	OverlayType ot;
@@ -442,7 +446,7 @@ void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet 
 
 void NetworkCore::PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-	OutputDebugString("Player Death Notice Received\n");
+	//OutputDebugString("Player Death Notice Received\n");
 	RakNet::RakNetGUID deadPlayerGUID;
 	bitStream->Read(deadPlayerGUID);
 
@@ -456,19 +460,19 @@ void NetworkCore::PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
 void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-	OutputDebugString("New VIP assignment notice Received\n");
+	//OutputDebugString("New VIP assignment notice Received\n");
 	RakNet::RakNetGUID vipPlayerGUID;
 	bitStream->Read(vipPlayerGUID);
 
 	Player* newPlayer = GameCore::mPlayerPool->getPlayer(vipPlayerGUID);
     if (newPlayer == NULL)
-        OutputDebugString("NetworkCore::DeclareVIP, new vipPlayer does not exist. Incoming NULL pointer exception lol.\n");
+        //OutputDebugString("NetworkCore::DeclareVIP, new vipPlayer does not exist. Incoming NULL pointer exception lol.\n");
     GameCore::mGameplay->setNewVIP(newPlayer->getTeam(), newPlayer);
 }
 
 void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-    OutputDebugString("Syncing new scores\n");
+    //OutputDebugString("Syncing new scores\n");
     
     //Get the number of player scores being transmitted
     int playersSize;

@@ -7,7 +7,10 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+
+#include "ViewCamera.h"
+#include "Powerup.h"
+#include "Player.h"
 
 #include "RakNetTypes.h"
 #include <vector>
@@ -26,7 +29,8 @@ public:
 	void						updateMapView();
 	void						hideScreen();
 	void						showScreen();
-    Ogre::OverlayElement*       createPowerupOverlayElement(Ogre::Vector3 powerupPosition, int uniqueID);
+	Ogre::OverlayElement*       createPowerupOverlayElement(Ogre::Vector3 powerupPosition, int uniqueID);
+
 private:
 	//ViewportManager*			mViewportManager;
 	std::vector<ViewCamera*>	viewCameraVector;
