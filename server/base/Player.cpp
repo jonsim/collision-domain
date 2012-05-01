@@ -5,7 +5,12 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "Player.h"
+#include "GameCore.h"
+#include "SimpleCoupeCar.h"
+#include "TruckCar.h"
+#include "SmallCar.h"
+
 
 
 #define INITIAL_HEALTH 1200
@@ -94,7 +99,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	Ogre::Real or1 = this->getCar()->mBodyNode->getPosition().getRotationTo(adjust).getYaw().valueDegrees()+180;
 	
 	if(adjust.x == 0.f && adjust.y == 0.f && adjust.z == 0.f) {
-		OutputDebugString("ZERO collision Point\n");
+		//OutputDebugString("ZERO collision Point\n");
 	}
 
 	// combine speeds of both cars, gives approximation of total force in collision
@@ -115,7 +120,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 
     if(std::strstr(this->getNickname(), "AiPlayer") == NULL) {
         ss << damageShareTo1 << " : " << damageShareTo2 << " : " << (damageShareTo1 + damageShareTo2) << "\n";
-        OutputDebugString(ss.str().c_str());
+        //OutputDebugString(ss.str().c_str());
     }
 	//ss << "totDamage " << totalDamage << "\n";
 	//OutputDebugString(ss.str().c_str());
@@ -179,19 +184,19 @@ float Player::recalculateDamage(void) {
 }
 
 void Player::cameraLookLeft(void) {
-	OutputDebugString("look left\n");
+	//OutputDebugString("look left\n");
 }
 
 void Player::cameraLookRight(void) {
-	OutputDebugString("look right\n");
+	//OutputDebugString("look right\n");
 }
 
 void Player::cameraLookBack(void) {
-	OutputDebugString("look back\n");
+	//OutputDebugString("look back\n");
 }
 
 void Player::revertCamera(void) {
-	OutputDebugString("revert\n");
+	//OutputDebugString("revert\n");
 }
 
 

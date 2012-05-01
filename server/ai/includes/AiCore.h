@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 #include "AiPlayer.h"
-#include "GameIncludes.h"
 
 using namespace Ogre;
 using namespace std;

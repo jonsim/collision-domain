@@ -1,7 +1,7 @@
 #ifndef STEERINGBEHAVIOUR_H
 #define STEERINGBEHAVIOUR_H
 
-#include "GameIncludes.h"
+#include "Player.h"
 #include "AiPlayer.h"
 #include "utils.h"
 

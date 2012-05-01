@@ -7,7 +7,14 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "SceneSetup.h"
+#include "Input.h"
+
+#ifdef _WIN32
+#include "Winsock2.h"
+#endif
+
+//#define COLLISION_DOMAIN_SERVER
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

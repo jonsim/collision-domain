@@ -5,7 +5,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "ServerGraphics.h"
+#include "GameCore.h"
 
 
 // SERVER_FPS defines the rate at which the server processes requests and updates player states. This is NOT a maximum FPS, nor is it
@@ -212,13 +213,15 @@ bool ServerGraphics::configureRenderer (void)
     // If it wasn't, default to the first renderer
     if (rs == NULL)
     {
-        OutputDebugString("OpenGL not found, defaulting to the first item.\n");
+        //OutputDebugString("OpenGL not found, defaulting to the first item.\n");
         rs = *systems.begin();
     }
 
     Root::getSingleton().setRenderSystem(rs);
     rs->setConfigOption("Video Mode", "640 x 480");
+#ifdef _WIN32
     rs->setConfigOption("Colour Depth", "32");
+#endif
     rs->setConfigOption("Full Screen", "No");
     rs->setConfigOption("FSAA", "0");
 
@@ -413,7 +416,7 @@ void ServerGraphics::windowResized (Ogre::RenderWindow* rw)
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
     ShowCursor(true);
 #else
-    #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+    //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
 
     GameCore::mGui->giveConsoleFocus();

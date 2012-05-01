@@ -7,8 +7,9 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
-#include "CarCam.h"
+#include "Car.h"
+#include "InputState.h"
+#include "RakNetTypes.h"
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/

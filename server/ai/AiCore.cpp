@@ -1,5 +1,6 @@
 
 #include "AiCore.h"
+#include "GameCore.h"
 #include <sstream>
 
 using namespace std;

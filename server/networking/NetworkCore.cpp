@@ -6,7 +6,13 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "stdafx.h"
+#include "RakNetTypes.h"
+#include "NetworkCore.h"
+#include "CarSnapshot.h"
+#include "GameCore.h"
+#include "Player.h"
+#include "PlayerPool.h"
 #include <vector>
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
@@ -591,7 +597,7 @@ void NetworkCore::linkBigScreen(BigScreen* bigScreen_P)
 
 void NetworkCore::sendInfoItem(InfoItem* ii)
 {
-	OutputDebugString("Sending Info Item\n");
+	//OutputDebugString("Sending Info Item\n");
 	RakNet::BitStream bs;
 	bs.Write(ii->getOverlayType());
 	bs.Write(ii->getStartTime());
@@ -601,7 +607,7 @@ void NetworkCore::sendInfoItem(InfoItem* ii)
 
 void NetworkCore::sendPlayerDeath(Player* player, Player* causedBy)
 {
-	OutputDebugString("Send Player Death\n");
+	//OutputDebugString("Send Player Death\n");
 	RakNet::BitStream bs;
 	bs.Write(player->getPlayerGUID());
     bs.Write(causedBy->getPlayerGUID());
@@ -610,7 +616,7 @@ void NetworkCore::sendPlayerDeath(Player* player, Player* causedBy)
 
 void NetworkCore::declareNewVIP(Player* player)
 {
-	OutputDebugString("Sending new VIP decleartion\n");
+	//OutputDebugString("Sending new VIP decleartion\n");
 	RakNet::BitStream bs;
 	bs.Write(player->getPlayerGUID());
 	m_RPC->Signal( "DeclareVIP", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
@@ -618,7 +624,7 @@ void NetworkCore::declareNewVIP(Player* player)
 
 void NetworkCore::sendSyncScores()
 {
-    OutputDebugString("Sending sync of scores\n");
+    //OutputDebugString("Sending sync of scores\n");
     RakNet::BitStream bs;
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
     bs.Write(players.size()); //Send the size

@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+#define COLLISION_DOMAIN_SERVER
+
 class StringCircularBuffer : public CircularBuffer<char*>
 {
 public:

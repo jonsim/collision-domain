@@ -2,10 +2,9 @@
 #define AIPLAYER_H
 
 #include <string>
-#include "GameIncludes.h"
 #include "SteeringBehaviour.h"
-#include "stdafx.h"
 #include "utils.h"
+#include "RakNetTypes.h"
 
 using namespace std;
 using namespace Ogre;

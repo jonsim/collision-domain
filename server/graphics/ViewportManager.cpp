@@ -5,7 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h" 
+#include "ViewportManager.h"
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 ViewportManager::ViewportManager(int numViewports_P, Ogre::RenderWindow* window_P)
