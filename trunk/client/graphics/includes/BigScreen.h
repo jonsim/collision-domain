@@ -26,8 +26,7 @@ public:
 	void						updateMapView();
 	void						hideScreen();
 	void						showScreen();
-	void						handlePowerups();
-	void						manageNewPowerup(Powerup* pu);
+    Ogre::OverlayElement*       createPowerupOverlayElement(Ogre::Vector3 powerupPosition, int uniqueID);
 private:
 	//ViewportManager*			mViewportManager;
 	std::vector<ViewCamera*>	viewCameraVector;

@@ -16,6 +16,7 @@ Car::Car (int uniqueID)
 {
 #ifdef COLLISION_DOMAIN_CLIENT
     mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
+    mCrashSound = GameCore::mAudioCore->getSoundInstance(CAR_CRASH, uniqueID, NULL);
 #endif
 }
 
@@ -23,6 +24,20 @@ Car::~Car()
 {
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mGearSound);
+    GameCore::mAudioCore->deleteSoundInstance(mCrashSound);
+#endif
+}
+
+// Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
+void Car::triggerCrashSoundAt(Ogre::Vector3 location, float intensity)
+{
+#ifdef COLLISION_DOMAIN_CLIENT
+    intensity = intensity < 0 ? 0 : intensity;
+
+    // maxVolume is limited in mAudioCore (0.8 currently)
+    mCrashSound->setVolume(intensity);
+    mCrashSound->setPosition(location);
+    GameCore::mAudioCore->playSoundOrRestart(mCrashSound);
 #endif
 }
 

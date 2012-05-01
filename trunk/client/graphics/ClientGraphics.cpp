@@ -23,7 +23,7 @@ ClientGraphics::ClientGraphics (void) : SceneSetup(),
                                         mCursorWasVisible(false),
                                         mDebrisVisible(false),
                                         mShutDown(false),
-                                        //mSpawnScreen(0),
+                                        mBigScreen(0),
                                         mGraphicsState(UNDEFINED)
 {
 }

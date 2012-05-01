@@ -38,6 +38,7 @@
 #include "BtOgrePG.h"
 #include "BtOgreGP.h"
 #include "BtOgreExtras.h"
+#include "BulletCollision\NarrowPhaseCollision\btGjkConvexCast.h"
 
 // Windows specific include
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32

@@ -124,9 +124,8 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
             if (powerup && player)
             {
                 powerup->playerCollision(player);
-                // If it's a random powerup, leave the collision func to deal with the send once the replacement is decided
-                if( GameCore::mPowerupPool->getPowerupType( powerup->getIndex() ) != POWERUP_RANDOM )
-                    GameCore::mNetworkCore->sendPowerupCollect( powerup->getIndex(), player );
+
+                GameCore::mNetworkCore->sendPowerupCollect( powerup->getIndex(), player );
             }
         }
 #endif
@@ -166,6 +165,8 @@ void PhysicsCore::attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String
     
     BtOgre::StaticMeshToShapeConverter collisionShapeConverter(collisionEntity, collisionScaling);
     btCollisionShape *collisionShape = collisionShapeConverter.createTrimesh();
+
+    mShapes[PHYS_SHAPE_ARENA] = collisionShape;
     
     short collisionGroup = COL_ARENA;
     short collisionMask  = COL_CAR;
@@ -235,4 +236,73 @@ void PhysicsCore::clearWorld()
         if( shape )
             delete shape;
     }
+}
+
+bool PhysicsCore::singleObjectRaytest(const btVector3& rayFrom, const btVector3& rayTo, btVector3& worldNormal, btVector3& worldHitPoint)
+{
+	btScalar closestHitResults = 1.f;
+
+	btCollisionWorld::ClosestRayResultCallback resultCallback(rayFrom,rayTo);
+
+	bool hasHit = false;
+	btConvexCast::CastResult rayResult;
+	btSphereShape pointShape(0.0f);
+	btTransform rayFromTrans;
+	btTransform rayToTrans;
+
+	rayFromTrans.setIdentity();
+	rayFromTrans.setOrigin(rayFrom);
+	rayToTrans.setIdentity();
+	rayToTrans.setOrigin(rayTo);
+
+    int numObjects = 1;
+
+    btCollisionShape* shapePtr[1];
+    shapePtr[0] = mShapes[PHYS_SHAPE_ARENA];
+
+
+    btTransform transforms[1];
+    transforms[0].setIdentity();
+    transforms[0].setOrigin(btVector3(0,0,0));
+    
+	for (int s = 0; s < numObjects; s++)
+	{
+		//comment-out next line to get all hits, instead of just the closest hit
+		//resultCallback.m_closestHitFraction = 1.f;
+
+		//do some culling, ray versus aabb
+		btVector3 aabbMin,aabbMax;
+
+		shapePtr[s]->getAabb(transforms[s],aabbMin,aabbMax);
+
+		btScalar hitLambda = 1.f;
+
+		btVector3 hitNormal;
+
+		btCollisionObject	tmpObj;
+
+		tmpObj.setWorldTransform(transforms[s]);
+        
+    
+
+		if (btRayAabb(rayFrom,rayTo,aabbMin,aabbMax,hitLambda,hitNormal))
+		{
+			//reset previous result
+
+			btCollisionWorld::rayTestSingle(rayFromTrans,rayToTrans, &tmpObj, shapePtr[s], transforms[s], resultCallback);
+			if (resultCallback.hasHit())
+			{
+                worldHitPoint = resultCallback.m_hitPointWorld;
+
+				//float fog = 1.f - 0.1f * rayResult.m_fraction;
+				resultCallback.m_hitNormalWorld.normalize();//.m_normal.normalize();
+				worldNormal = resultCallback.m_hitNormalWorld;
+				//worldNormal = transforms[s].getBasis() *rayResult.m_normal;
+				worldNormal.normalize();
+				hasHit = true;
+			}
+		}
+	}
+
+	return hasHit;
 }

@@ -35,7 +35,19 @@ PlayerCollisions::~PlayerCollisions()
 
 static int numColls = 0;
 
-void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold) {
+void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold)
+{
+    /*
+    // SET THESE:
+    btVector3 crashLocation(,,);
+    Car *eitherOfTheTwoCarObjectsItMakesNoDifference = ;
+    float crashIntensity = 0.8;
+
+    // Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
+    eitherOfTheTwoCarObjectsItMakesNoDifference->triggerCrashSoundAt(
+        BtOgre::Convert::toOgre(crashLocation),
+        crashIntensity);
+    */
 
     // **NOTE** WE MUST NOT REMEMBER TO READ THE FOLLOWING COMMENT
     
