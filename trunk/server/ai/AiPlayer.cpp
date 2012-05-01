@@ -5,6 +5,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "AiPlayer.h"
+#include "GameCore.h"
 
 //constructor
 AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* sceneManager, int flags, level diff)

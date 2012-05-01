@@ -16,7 +16,9 @@
 
 // Game includes
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "Powerup.h"
+#include "CarSnapshot.h"
+
 
 // RakNet includes
 #include "BitStream.h"

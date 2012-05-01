@@ -1,5 +1,7 @@
 #include "stdafx.h"
-#include "GameIncludes.h"
+#include "PlayerPool.h"
+#include "GameCore.h"
+#include <limits>
 
 PlayerPool::PlayerPool() : mLocalPlayer(0)
 {

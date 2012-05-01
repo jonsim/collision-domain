@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "GameGUI.h"
+#include "GameCore.h"
 
-#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+#ifdef _WIN32
 	#define strncasecmp strnicmp
 	#define strcasecmp  stricmp
 #endif
@@ -70,49 +71,49 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
         outputToConsole("get server fps  Returns the server's average fps.\n");
         outputToConsole("get gfx fps     Returns the server's graphics fps.\n");
     }
-	else if( !stricmp( inputChars,  "prep" ) )
+	else if( !strcasecmp( inputChars,  "prep" ) )
     {
 		GameCore::mGameplay->preparePlayers();
         outputToConsole("Prepared players.\n");
     }
-	else if( !stricmp( inputChars,  "start" ) )
+	else if( !strcasecmp( inputChars,  "start" ) )
     {
 		GameCore::mGameplay->startGame();
         outputToConsole("Game started.\n");
     }
-	else if( !stricmp( inputChars,  "ddinfo" ) )
+	else if( !strcasecmp( inputChars,  "ddinfo" ) )
     {
 		GameCore::mGameplay->drawDeathInfo();
         outputToConsole("Drawn death info.\n");
     }
-    else if( !strnicmp( inputChars, "kill", 4) )
+    else if( !strncasecmp( inputChars, "kill", 4) )
     {
         GameCore::mPlayerPool->getPlayer(atoi((inputChars+5)))->killPlayer();
         outputToConsole("Killed player %d.\n", atoi((inputChars+5)));
     }
-    else if( !strnicmp( inputChars, "spawn easy", 10) )
+    else if( !strncasecmp( inputChars, "spawn easy", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(seek, easy);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
-    else if( !strnicmp( inputChars, "spawn normal", 12) )
+    else if( !strncasecmp( inputChars, "spawn normal", 12) )
     {
         for (int i = 0; i < atoi((inputChars+13)); i++)
 			GameCore::mAiCore->createNewAiAgent(seek, normal);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+13)));
     }
-    else if( !strnicmp( inputChars, "spawn hard", 10) )
+    else if( !strncasecmp( inputChars, "spawn hard", 10) )
     {
         for (int i = 0; i < atoi((inputChars+11)); i++)
 		    GameCore::mAiCore->createNewAiAgent(seek, hard);
         outputToConsole("Spawned %d AI players.\n", atoi((inputChars+11)));
     }
-    else if( !stricmp( inputChars, "get server fps" ) )
+    else if( !strcasecmp( inputChars, "get server fps" ) )
     {
         outputToConsole("Server's average fps: %.2f.\n", GameCore::mServerGraphics->mAverageFrameRate);
     }
-    else if( !stricmp( inputChars, "get gfx fps" ) )
+    else if( !strcasecmp( inputChars, "get gfx fps" ) )
     {
         outputToConsole("Server's graphics average fps: %.2f.\n", GameCore::mServerGraphics->mWindow->getAverageFPS());
     }

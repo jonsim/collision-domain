@@ -1,7 +1,6 @@
 
 
 #include "SteeringBehaviour.h"
-#include "GameIncludes.h"
 
 using namespace Ogre;
 using namespace std;
@@ -156,7 +155,6 @@ Ogre::Vector3 SteeringBehaviour::Wander()
 
 	//prevent the vehicle from floating/sinking
 	ret.y = mAiPlayer->getCar()->GetPos().y;
-	cout << ret.x << " " << ret.z << endl;
 	return ret;
 }
 
