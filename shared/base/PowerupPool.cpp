@@ -19,7 +19,9 @@ void PowerupPool::spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int inde
     }
 
     if (mPowerups[index] != NULL)
-        //OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup");
+    {
+        OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup");
+    }
 
     mPowerups[index] = new Powerup(type, spawnAt, index);
 
@@ -97,23 +99,17 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
     // the arena was modelled as round, but its oval
     z *= (float) arenaZRadius / (float) arenaXRadius;
 
-    btVector3 rayFrom(x,10,z);
-    btVector3 rayTo(x,-200, z);
+    btVector3 rayFrom( x, 10, z );
+    btVector3 rayTo( x, -200, z );
     btVector3 worldNormal;
-    btVector3 worldHitPoint;
 
-    if ( GameCore::mPhysicsCore->singleObjectRaytest(rayFrom, rayTo, worldNormal, worldHitPoint) )
+    // If the ray misses because of some error we can just spawn it under the floor
+    btVector3 worldHitPoint( 0, -100, 0 );
+
+    if ( ! GameCore::mPhysicsCore->singleObjectRaytest(rayFrom, rayTo, worldNormal, worldHitPoint) )
     {
-            std::stringstream overlayNameSS;
-            overlayNameSS << "x" << worldHitPoint.x() << "   y" << worldHitPoint.y() << "   z" << worldHitPoint.z() << "\n";
-
-        //OutputDebugString(overlayNameSS.str().c_str());
+        OutputDebugString("Powerup floor finder ray missed\n");
     }
-    else
-    {
-        //OutputDebugString("No Hit\n");
-    }
-
 
     return Ogre::Vector3(x, worldHitPoint.y() + 0.5, z);
 }
@@ -121,24 +117,24 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
 // THIS WILL RETURN 0,0,0 IF THERE ARE NO POWERUPS
 Ogre::Vector3 PowerupPool::getNearestPowerUp(Ogre::Vector3 pos)
 {
-        float minDist = std::numeric_limits<float>::infinity();
+    float minDist = std::numeric_limits<float>::infinity();
     float distance;
 
-        Ogre::Vector3 ret(0,0,0);
+    Ogre::Vector3 ret(0,0,0);
 
-        for(int i = 0; i < MAX_POWERUPS; i++)
+    for(int i = 0; i < MAX_POWERUPS; i++)
+    {
+        if(mPowerups[i])
+            distance = mPowerups[i]->getPosition().distance(pos);
+        else
+            distance = std::numeric_limits<float>::infinity();
+
+        if(distance < minDist)
         {
-                if(mPowerups[i])
-                        distance = mPowerups[i]->getPosition().distance(pos);
-                else
-                        distance = std::numeric_limits<float>::infinity();
-
-                if(distance < minDist)
-                {
-                        minDist = distance;
-                        ret = mPowerups[i]->getPosition();
-                }
+            minDist = distance;
+            ret = mPowerups[i]->getPosition();
         }
+    }
 
-        return ret;
+    return ret;
 }
