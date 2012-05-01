@@ -32,6 +32,7 @@ Car::~Car()
 #endif
 }
 
+// Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
 void Car::triggerCrashSoundAt(Ogre::Vector3 location, float intensity)
 {
 #ifdef COLLISION_DOMAIN_CLIENT
