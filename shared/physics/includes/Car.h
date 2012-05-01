@@ -9,8 +9,15 @@
 #define __Car_h_
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Gameplay.h"
 #include "BulletDynamics/ConstraintSolver/btTypedConstraint.h"
+#include "Vehicle.h"
+#include "CarSnapshot.h"
+#include "SharedIncludes.h"
+#include "Team.h"
+#include "OgreOggSound.h"
+
+using namespace OgreOggSound;
 
 class Player;
 class WheelFrictionConstraint;
@@ -59,7 +66,7 @@ public:
     float getGear() { return mCurrentGear; }
     btRaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
-    void applyForce(Ogre::SceneNode* node, Ogre::Vector3 &force);
+    void applyForce(Ogre::SceneNode* node, Ogre::Vector3 force);
     
     void readTuning( char *szFile );
     float getRPM() { return mEngineRPM; }
@@ -67,7 +74,11 @@ public:
 
 	float getMaxSpeed() { return mMaxSpeed; }
 
+#ifdef _WIN32
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3& offset );
+#else
+	virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3 offset );
+#endif
     virtual void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
 
 	Ogre::Vector3 GetPos();

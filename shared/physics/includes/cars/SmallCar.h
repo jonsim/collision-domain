@@ -7,6 +7,7 @@
 
 #include "stdafx.h"
 #include "SharedIncludes.h"
+
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
 	#include "boost\lexical_cast.hpp"
 #else

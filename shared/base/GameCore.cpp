@@ -5,7 +5,7 @@
  */
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "GameCore.h"
 
 
 Ogre::SceneManager* GameCore::mSceneMgr = NULL;

@@ -5,7 +5,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "ScoreBoard.h"
+#include "GameCore.h"
 #include <sstream>
 #include <math.h>
 
@@ -85,7 +86,7 @@ void ScoreBoard::update()
 
 void ScoreBoard::initialize()
 {
-	OutputDebugString("Starting the scoreboard");
+	//OutputDebugString("Starting the scoreboard");
 	
 	//Creat the overlay and the container
 	sbOverlay = 

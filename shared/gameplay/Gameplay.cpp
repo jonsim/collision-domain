@@ -5,7 +5,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Gameplay.h"
+#include "GameCore.h"
 #include <sstream>
 #include <math.h>
 
@@ -29,7 +30,7 @@ Team* Gameplay::getTeam(TeamID teamID)
     {
         case BLUE_TEAM: return mTeams[0]; break;
         case RED_TEAM:  return mTeams[1]; break;
-        case NO_TEAM:   OutputDebugString("getTeam called with team NO_TEAM. IM GONNA GO RIGHT AHEAD AND CRASH NOW LOL.\n");
+        case NO_TEAM:   //OutputDebugString("getTeam called with team NO_TEAM. IM GONNA GO RIGHT AHEAD AND CRASH NOW LOL.\n");
         default:        throw Ogre::Exception::ERR_INVALIDPARAMS; break;
     }
 }
@@ -249,7 +250,7 @@ void Gameplay::printTeamStats()
     for (int i = 0; i < NUM_TEAMS; i++)
         tmpOutputString << "  teams[" << i << "]: " << teams[i]->getTotalTeamHP() << " health\n";
 #endif
-    OutputDebugString(tmpOutputString.str().c_str());
+    //OutputDebugString(tmpOutputString.str().c_str());
 }
 
 /*Team* Gameplay::checkIfGameOver()
@@ -359,7 +360,7 @@ void Gameplay::positionPlayers()
 			//TODO - Move cars to correct positions
 			std::stringstream debugString;
 			debugString << "Alignment Car Pos X: "<< x << " Y: "<<y<<"\n";
-			OutputDebugString(debugString.str().c_str());
+			//OutputDebugString(debugString.str().c_str());
 			
 			if(tmpPlayer->getCar() != NULL)
 				tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
@@ -594,7 +595,7 @@ void Gameplay::showGameTypeText()
     }
     else
     {
-        OutputDebugString("Not a recognised game mode");
+        //OutputDebugString("Not a recognised game mode");
     }
 
     this->wtOverlay->show();
@@ -814,7 +815,7 @@ void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
         default:
             //This is here just in case of a bug...
             //Shouldn't ever get called but better than no game
-            OutputDebugString("No game mode detected!!\n");
+            //OutputDebugString("No game mode detected!!\n");
             causedBy->addToScore(1);
     }
 }

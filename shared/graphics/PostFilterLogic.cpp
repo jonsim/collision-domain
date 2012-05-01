@@ -7,7 +7,7 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "PostFilterLogic.h"
 
 
 

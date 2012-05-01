@@ -10,7 +10,6 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
 
 // The basic compositor logics will all do the same thing: attach a listener to the created
 // compositor. Define a shared definition to keep things minimal.
@@ -79,7 +78,7 @@ public:
 /*-------------------- COMPOSITOR LISTENERS --------------------*/
 class HDRListener : public Ogre::CompositorInstance::Listener
 {
-friend HDRLogic;
+friend class HDRLogic;
 private:
 	int mVpWidth, mVpHeight;
 	int bloomSize;
@@ -97,7 +96,7 @@ public:
 
 class BloomListener : public Ogre::CompositorInstance::Listener
 {
-friend BloomLogic;
+friend class BloomLogic;
 private:
 	float blurWeight;
 	float originalWeight;
@@ -109,7 +108,7 @@ public:
 
 class RadialBlurListener : public Ogre::CompositorInstance::Listener
 {
-friend RadialBlurLogic;
+friend class RadialBlurLogic;
 private:
 	float blurDistance;
 	float blurStrength;
@@ -123,7 +122,7 @@ public:
 
 class MotionBlurListener : public Ogre::CompositorInstance::Listener
 {
-friend MotionBlurLogic;
+friend class MotionBlurLogic;
 private:
 	float blurStrength;
 public:

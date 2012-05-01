@@ -6,13 +6,13 @@
 #define SCENESETUP_H
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "PostFilterLogic.h"
+#include <stdint.h>
 
-
+class MeshDeformer;
 /**
  *  @brief     Will contain PlayerPool, PhysicsCore, AudioCore etc.
  */
-class MeshDeformer;
 
 class SceneSetup
 {

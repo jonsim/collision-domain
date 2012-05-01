@@ -41,13 +41,18 @@ public:
     void            removeTarget()                                  { mTarget = NULL; }
 
     btVector3&      getTransform()                                  { return mWorldPos; }
-    void            setTransform( btVector3& t )                    { mWorldPos = t; }
-
     btVector3&      getOffset()                                     { return mLocalOffset; }
-    void            setOffset( btVector3& offset )                  { mLocalOffset = offset; }
-
     btVector3&      getLookOffset()                                 { return mLookOffset; }
-    void            setLookOffset( btVector3& offset )              { mLookOffset = offset; }
+
+#ifdef _WIN32
+    void            setLookOffset( btVector3 &offset )              { mLookOffset = offset; }
+	void            setOffset( btVector3 &offset )                  { mLocalOffset = offset; }
+	void            setTransform( btVector3 &t )                    { mWorldPos = t; }
+#else
+	void            setLookOffset( btVector3 offset )              { mLookOffset = offset; }
+	void            setOffset( btVector3 offset )                  { mLocalOffset = offset; }
+	void            setTransform( btVector3 t )                    { mWorldPos = t; }
+#endif
 
     void            lookAtTarget();
 

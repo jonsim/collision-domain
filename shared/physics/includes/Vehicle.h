@@ -2,7 +2,6 @@
 #define __Vehicle_h_
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
 
 class Vehicle : public btRaycastVehicle
 {
@@ -21,8 +20,6 @@ public:
         : btRaycastVehicle( tuning, chassis, raycaster )
     {
     }
-
-    ~Vehicle() { btRaycastVehicle::~btRaycastVehicle(); }
 
     virtual void    updateVehicle( btScalar step );
 	virtual void 	updateFriction( btScalar timeStep );

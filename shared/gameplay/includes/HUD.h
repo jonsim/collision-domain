@@ -7,18 +7,19 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
+
+class Player;
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 class HUD
 {
 public:
 			HUD();
-	void	HUD::initialize();
-	void	HUD::drawDeathMessage(Player* killer, Player* killed);
+	void	initialize();
+	void	drawDeathMessage(Player* killer, Player* killed);
 	
 private:
-	void HUD::setupWOD(); // Setup wall of DEATH
+	void setupWOD(); // Setup wall of DEATH
 
 	Ogre::Overlay*			wodOverlay;
 	Ogre::OverlayContainer* wodContainer;

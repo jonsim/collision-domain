@@ -6,9 +6,21 @@
 #define GAMECORE_H
 
 #include "stdafx.h"
+#include "PlayerPool.h"
+#include "PowerupPool.h"
+#include "GameGUI.h"
+#include "PhysicsCore.h"
+
+#ifdef COLLISION_DOMAIN_CLIENT
+#include "ClientGraphics.h"
+#include "AudioCore.h"
+#else
+#include "ServerGraphics.h"
+#include "AiCore.h"
+#endif
 
 // needed for non-shared variables like GraphicsCore and NetworkCore
-#include "GameIncludes.h"
+
 class PlayerPool;
 class NetworkCore;
 #ifdef COLLISION_DOMAIN_CLIENT

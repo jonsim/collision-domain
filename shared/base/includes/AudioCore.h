@@ -7,12 +7,11 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
 #include "OgreOggSound.h"
+#include "Powerup.h"
 
 using namespace OgreOggSound;
 
-enum PowerupType; // from PowerupPool
 enum SoundType
 {
     HORN_LOW,
@@ -27,7 +26,7 @@ enum SoundType
 };
 
 /**
- *  @brief 	An uneditable snapshot of the player's input state 
+ *  @brief 	An uneditable snapshot of the player's input state
  */
 class AudioCore
 {

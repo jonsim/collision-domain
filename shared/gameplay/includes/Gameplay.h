@@ -7,11 +7,12 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
-//#include "InfoItem.h"
-//#include "ScoreBoard.h"
+#include "InfoItem.h"
+#include "ScoreBoard.h"
 #include "HUD.h"
 #include "Death.h"
+#include "Team.h"
+
 
 #include <math.h>
 #include <string>
@@ -28,7 +29,6 @@
 /*-------------------- ENUM TYPES -------------------*/
 // Represents a game mode. FFA = Free for all; TDM = Team deathmatch, KOTH = King of the hill.
 enum GameMode {FFA_MODE, TDM_MODE, VIP_MODE};
-enum TeamID   {NO_TEAM = 0, BLUE_TEAM = 1, RED_TEAM = 2};
 
 class Player;
 class InfoItem;

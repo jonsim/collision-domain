@@ -5,6 +5,8 @@
 #ifndef DEATH_H
 #define DEATH_H
 	
+class Player;
+
 struct DEATH
 {
 	Player* player;

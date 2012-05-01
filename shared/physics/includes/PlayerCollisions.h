@@ -9,7 +9,7 @@
 #define PLAYERCOLLISIONS_H
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Player.h"
 
 class PlayerCollisions
 {

@@ -6,7 +6,18 @@
 #define POWERUP_H
 
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Player.h"
+#include "OgreOggSound.h"
+
+using namespace OgreOggSound;
+
+enum PowerupType
+{
+	POWERUP_HEALTH,
+	POWERUP_MASS,
+	POWERUP_SPEED,
+	POWERUP_COUNT
+};
 
 /**
  *  @brief 	Headers for powerup
@@ -15,7 +26,7 @@ class Powerup
 {
 public:
     Powerup(Ogre::Vector3 spawnAt, int poolIndex);
-	Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex);
+        Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex);
     ~Powerup();
 
     void playerCollision(Player* player);
@@ -35,11 +46,11 @@ private:
     PowerupType mPowerupType;
     int mPoolIndex;
     int mUniqueID;
-    
+
     Ogre::Vector3 position;
     Ogre::SceneNode *mNode;
     Ogre::OverlayElement* mBigScreenOverlayElement;
-    
+
     // Used in the server only
     btRigidBody *mRigidBody;
 };

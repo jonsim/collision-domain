@@ -5,7 +5,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "SharedIncludes.h"
+#include "Input.h"
+#include "GameCore.h"
 
 
 
@@ -237,7 +238,7 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
         ShowCursor(true);
 #else
-        #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+        //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
     }
     else
@@ -246,7 +247,7 @@ bool Input::mouseMoved (const OIS::MouseEvent& evt)
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
         ShowCursor(false);
 #else
-        #error "Currently no non-windows method has been implemented to hide the hardware cursor."
+        //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
     }
 #endif

@@ -4,8 +4,8 @@
  */
 
 #include "stdafx.h"
-#include "GameIncludes.h"
 #include "CarCam.h"
+#include "GameCore.h"
 
 #define BAD_CAMERA 0
 
