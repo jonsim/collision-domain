@@ -8,6 +8,9 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "NetworkCore.h"
+#include "Car.h"
+
+#define COLLISION_DOMAIN_CLIENT
 
 class GameGUI
 {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "GameIncludes.h"
-
+#include "Lobby.h"
+#include "GameCore.h"
 
 
 void Lobby::setup (const int screenWidth, const int screenHeight)
@@ -85,14 +85,14 @@ void Lobby::close (void)
 
 bool Lobby::connectPressed (const CEGUI::EventArgs &args)
 {
-    OutputDebugString("boobs\n");
+    //OutputDebugString("boobs\n");
     GameCore::mClientGraphics->loadGame();
     return true;
 }
 
 bool Lobby::refreshPressed (const CEGUI::EventArgs &args)
 {
-    OutputDebugString("noobs\n");
+    //OutputDebugString("noobs\n");
     return true;
 }
 

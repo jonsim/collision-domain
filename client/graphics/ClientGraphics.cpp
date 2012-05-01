@@ -5,8 +5,8 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
-
+#include "ClientGraphics.h"
+#include "GameCore.h"
 
 #define PHYSICS_FPS 60
 
@@ -645,7 +645,7 @@ void ClientGraphics::startBenchmark (uint8_t stage)
         switch (stage)
         {
                 case 0: // all off
-                        OutputDebugString("Starting benchmark...\n");
+                        //OutputDebugString("Starting benchmark...\n");
                         cm.removeCompositor(vp, "HDR");
                         cm.removeCompositor(vp, "Bloom");
                         cm.removeCompositor(vp, "MotionBlur");
@@ -724,7 +724,7 @@ void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)
                 rFile << "|  1  |   1   |  1  |  1  | " << std::setw(5) << std::setfill(' ') << r[5] << " | " << std::setw(5) << std::setfill(' ') << r[0] - r[5] << " |\n";
                 rFile << "+-----+-------+-----+-----+-------+-------+\n";
                 rFile.close();
-                OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
+                //OutputDebugString("Benchmark complete. See $(OGRE_HOME)/bin/debug/BenchmarkResults.txt for the results.\n");
                 Ogre::CompositorManager::getSingleton().removeCompositor(mCamera->getViewport(), "HDR");
 
         mGraphicsState = IN_GAME;

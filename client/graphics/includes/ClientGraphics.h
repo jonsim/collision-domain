@@ -7,8 +7,13 @@
 
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
-#include "GameIncludes.h"
 #include "BigScreen.h"
+#include "Lobby.h"
+#include "SceneSetup.h"
+#include "Camera.h"
+#include "Input.h"
+
+//#define COLLISION_DOMAIN_CLIENT
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
