@@ -466,7 +466,10 @@ void NetworkCore::DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	Player* newPlayer = GameCore::mPlayerPool->getPlayer(vipPlayerGUID);
     if (newPlayer == NULL)
+    {
         //OutputDebugString("NetworkCore::DeclareVIP, new vipPlayer does not exist. Incoming NULL pointer exception lol.\n");
+        return;
+    }
     GameCore::mGameplay->setNewVIP(newPlayer->getTeam(), newPlayer);
 }
 
