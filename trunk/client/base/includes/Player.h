@@ -40,6 +40,7 @@ public:
     void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);
 	float getCameraYaw (void);
     Car* getCar (void);
+    void delCar() { if( mCar ) delete mCar; }
     void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
     void applyHealthBonus (void);
     

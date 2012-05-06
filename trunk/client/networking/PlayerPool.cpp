@@ -192,6 +192,20 @@ void PlayerPool::processPlayer( Player *pPlayer )
 		GameCore::mClientGraphics->updateVIPLocation(pPlayer->getTeam(), pPlayer->getCar()->mBodyNode->getPosition());
 }
 
+void PlayerPool::roundEnd()
+{
+	int i = 0;
+	for (int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
+	{
+        mPlayers[i]->delCar();
+        // SERVER SHOULD HANDLE THESE
+        // mPlayers[i]->setAlive( true );
+        // mPlayers[i]->resetHP();
+        // Just want this for game end
+        // mPlayers[i]->setPlayerState( PLAYER_STATE_TEAM_SEL );
+	}
+}
+
 void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )
 {
     if( playerid == mLocalGUID )
