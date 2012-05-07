@@ -486,7 +486,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#endif
 
 				#ifdef COLLISION_DOMAIN_SERVER
-					GameCore::mGui->outputToConsole("Rounded Ended.\n");
+					GameCore::mGui->outputToConsole("Round Ended.\n");
                     
                     //Show the wining player II
 					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
@@ -681,11 +681,11 @@ void Gameplay::scheduleCountDown()
 		mInfoItems.push_back(oneII);
 
 		//Countdown Timer
-		InfoItem* fiveEII = new InfoItem(FIVE_OT,119000,1000);
-		InfoItem* fourEII = new InfoItem(FOUR_OT,112000,1000);
-		InfoItem* threeEII = new InfoItem(THREE_OT,121000,1000);
-		InfoItem* twoEII = new InfoItem(TWO_OT,122000,1000);
-		InfoItem* oneEII = new InfoItem(ONE_OT,123000,1000);
+		InfoItem* fiveEII = new InfoItem(FIVE_OT,184000,1000);
+		InfoItem* fourEII = new InfoItem(FOUR_OT,185000,1000);
+		InfoItem* threeEII = new InfoItem(THREE_OT,186000,1000);
+		InfoItem* twoEII = new InfoItem(TWO_OT,187000,1000);
+		InfoItem* oneEII = new InfoItem(ONE_OT,188000,1000);
 
 		mInfoItems.push_back(fiveEII);
 		mInfoItems.push_back(fourEII);
@@ -693,8 +693,8 @@ void Gameplay::scheduleCountDown()
 		mInfoItems.push_back(twoEII);
 		mInfoItems.push_back(oneEII);
 
-		//GAME OVER
-		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,124000,3000);
+		//Round over
+		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,189000,3000);
 		mInfoItems.push_back(roEII);
 
 		//Send packets
