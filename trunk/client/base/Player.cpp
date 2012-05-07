@@ -162,9 +162,10 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
 	float damageToThis = totalDamage * damageShareTo1;
 
-    std::stringstream ss;
-    ss << "dam " << (damageShareTo1+damageShareTo2) << "\n";
-    OutputDebugString(ss.str().c_str());
+    bool isFront = false;
+    if((or1 >= 0 && or1 < 60) || (or1 >= 300 && or1 < 360)) {
+		isFront = true;
+    }
 
 	// differentiate between differnt collision types
 	if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed > 40 || p2Speed > 40)) {
@@ -173,7 +174,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 		//OutputDebugString("Bump\n");
 	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
 		//OutputDebugString("Bang\n");
-		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.1);
+		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.1, isFront);
 	}
 }
 

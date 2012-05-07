@@ -22,7 +22,7 @@ class MeshDeformer {
 public:
 	MeshDeformer(void);
 
-	void collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage);
+	void collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage, bool isFront);
 	void traceNodeHierarchy(Ogre::SceneNode *rootnode);
 
     Ogre::ManualObject* drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end);
@@ -33,6 +33,7 @@ protected :
 		const Ogre::MeshPtr    mesh,
 		const Ogre::Vector3    &epicentre,
 		float                  damage,
+        bool                   isFront,
         const Ogre::Vector3    &position   =  Ogre::Vector3::ZERO,
         const Ogre::Quaternion &orient     =  Ogre::Quaternion::IDENTITY,
 		const Ogre::Vector3    &scale      =  Ogre::Vector3::UNIT_SCALE

@@ -11,6 +11,7 @@ void MeshDeformer::deformMesh(
 		const Ogre::MeshPtr    mesh,
 		const Ogre::Vector3    &epicentre,
 		float				   damage,
+        bool                   isFront,
         const Ogre::Vector3    &position,
         const Ogre::Quaternion &orient,
 		const Ogre::Vector3    &scale) {
@@ -22,6 +23,7 @@ void MeshDeformer::deformMesh(
     size_t index_offset = 0;
 
 	float dentSize = damage / 600;
+    if(isFront) dentSize *= 0.4;
 	float distanceCheck = 55 + (15 * dentSize);
  
     // Run through the submeshes again, adding the data into the arrays
@@ -92,7 +94,7 @@ void MeshDeformer::traceNodeHierarchy(Ogre::SceneNode *rootnode) {
 	//DBOUT("number ofchild nodes: " << rootnode->numChildren() << "\n");
 }
 
-void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage) {
+void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage, bool isFront) {
 	Ogre::Vector3 adjust = vehicle->convertWorldToLocalPosition(epicentre);
 	Ogre::SceneNode::ChildNodeIterator kids = vehicle->getChildIterator();
 	Ogre::SceneNode::ObjectIterator childEnts = vehicle->getAttachedObjectIterator();
@@ -107,7 +109,7 @@ void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 
 			/*std::stringstream ss;
 	 		ss << "deform: " << currentEnt->getName() << "\n";
 			OutputDebugString(ss.str().c_str());*/
-			deformMesh(currentEnt->getMesh(), adjust, damage);
+			deformMesh(currentEnt->getMesh(), adjust, damage, isFront);
 		}
 
 		//deformMesh(currentEnt->getMesh(), adjust);
@@ -116,7 +118,7 @@ void MeshDeformer::collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 
 	Ogre::SceneNode *currentChild;
 	while(kids.hasMoreElements()) {
 		currentChild = (Ogre::SceneNode*) kids.getNext();
-		collisonDeform(currentChild, epicentre, damage);
+		collisonDeform(currentChild, epicentre, damage, isFront);
 	}
 	//DBOUT("adjusted: " << adjust << "\n");
 }
