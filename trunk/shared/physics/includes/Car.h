@@ -76,6 +76,7 @@ public:
     
 	//Overlay Element stuff for the big screen view
 	Ogre::OverlayElement* getBigScreenOverlayElement();
+    void reinitBigScreenOverlayElementIfNull();
 
 #ifdef _WIN32
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3& offset );
@@ -186,6 +187,7 @@ protected:
 
 private:
 	Ogre::OverlayElement *mBigScreenOverlayElement;
+    int mUniqueID;
 
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);

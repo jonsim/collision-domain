@@ -17,7 +17,8 @@
 
 Car::Car (int uniqueID)
   : mGearSound(NULL),
-    mBigScreenOverlayElement(NULL)
+    mBigScreenOverlayElement(NULL),
+    mUniqueID(uniqueID)
 {
     #ifdef COLLISION_DOMAIN_CLIENT
         mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
@@ -857,8 +858,18 @@ void CarState::setWheel( int wheelnum, Ogre::SceneNode *node, const Ogre::Vector
     node->setPosition( connectionPoint );
 }
 
-
 Ogre::OverlayElement* Car::getBigScreenOverlayElement()
 {
     return mBigScreenOverlayElement;
+}
+
+void Car::reinitBigScreenOverlayElementIfNull()
+{
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if ( !mBigScreenOverlayElement
+            && GameCore::mClientGraphics->mBigScreen )
+        {
+            mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPlayerOverlayElement(mUniqueID);
+        }
+    #endif
 }

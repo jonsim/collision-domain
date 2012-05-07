@@ -23,6 +23,7 @@ public:
 
     Ogre::Vector3 getNearestPowerUp(Ogre::Vector3 pos);
     Powerup *getPowerup( int id );
+    std::vector<Powerup *> getPowerups();
     
 private:
 
