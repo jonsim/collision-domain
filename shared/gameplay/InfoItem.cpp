@@ -15,7 +15,7 @@ InfoItem::InfoItem(OverlayType ot, RakNet::Time startTime, RakNet::Time endTime)
 	mStartTime	= startTime;
 	mEndTime	= endTime;
 	mDrawn		= false;
-	this->sendPacket();
+	//this->sendPacket();
 }
 
 InfoItem::InfoItem(OverlayType ot, RakNet::Time startTime, int seconds)
@@ -24,7 +24,7 @@ InfoItem::InfoItem(OverlayType ot, RakNet::Time startTime, int seconds)
 	mStartTime	 = startTime;
 	mEndTime	 = startTime + RakNet::Time(seconds);
 	mDrawn		= false;
-	this->sendPacket();
+	//this->sendPacket();
 }
 
 InfoItem::InfoItem(OverlayType ot, int delay, int seconds)
@@ -33,7 +33,7 @@ InfoItem::InfoItem(OverlayType ot, int delay, int seconds)
 	mStartTime = RakNet::GetTime() + RakNet::Time(delay);
 	mEndTime   = mStartTime + RakNet::Time(seconds);
 	mDrawn		= false;
-	this->sendPacket();
+	//this->sendPacket();
 }
 
 void InfoItem::sendPacket()

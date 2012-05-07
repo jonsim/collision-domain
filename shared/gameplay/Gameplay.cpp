@@ -395,8 +395,8 @@ void Gameplay::drawInfo()
 	for(itr = mInfoItems.begin(); itr<mInfoItems.end(); ++itr)
 	{
 		InfoItem* tmpInfoItem = *itr;
-		//If the start time of the thing is less that the current time
-		if(RakNet::LessThan(tmpInfoItem->getStartTime(),RakNet::GetTime()))
+		//If GameTime is after the start of the item
+		if(RakNet::GreaterThan(RakNet::GetTime(),tmpInfoItem->getStartTime()))
 		{
 			if(!tmpInfoItem->getDrawn())
 			{
@@ -413,7 +413,11 @@ void Gameplay::drawInfo()
 					delete tmpInfoItem;
 				}
 			}
-			break; //Can really only manage one a turn
+			// This stops it crashing as we've changed the underlyign vector it's accessing.
+            // Is not a problem really as it gets called every frame.
+            // Also ensures not to much work gets done per frame.
+            break;
+            
 		}
 	}
 }
@@ -434,47 +438,71 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 		{
 			case ONE_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f, 0.1f);
 					tmpOLE->setMaterialName( "gear1" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
-
+                    OutputDebugString("ONE!\n");
                     if( GameCore::mPlayerPool->getLocalPlayer()->getPlayerState() == PLAYER_STATE_SPECTATE )
                         GameCore::mPlayerPool->spectateNext();
 				#endif
+                #ifdef COLLISION_DOMAIN_SERVER
+                    GameCore::mGui->outputToConsole("One!\n");
+                #endif
 				break;
 			case TWO_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f,0.1f);
 					tmpOLE->setMaterialName( "gear2" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
+                    OutputDebugString("Two!\n");
 				#endif
+                #ifdef COLLISION_DOMAIN_SERVER
+                    GameCore::mGui->outputToConsole("Two!\n");
+                #endif
 				break;
 			case THREE_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    tmpOLE->hide();
                     this->hideGameTypeText();
 					tmpOLE->setDimensions(0.1f, 0.1f);
 					tmpOLE->setMaterialName( "gear3" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
+                    OutputDebugString("Three!\n");
 				#endif
+                #ifdef COLLISION_DOMAIN_SERVER
+                    GameCore::mGui->outputToConsole("Three!\n");
+                #endif
 				break;
 			case FOUR_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f, 0.1f);
 					tmpOLE->setMaterialName( "gear4" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
+                    OutputDebugString("Four!\n");
 				#endif
+                #ifdef COLLISION_DOMAIN_SERVER
+                    GameCore::mGui->outputToConsole("Four!\n");
+                #endif
 				break;
 			case FIVE_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
+                    tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f, 0.1f);
 					tmpOLE->setMaterialName( "gear5" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
+                    OutputDebugString("Five!\n");
 				#endif
+                #ifdef COLLISION_DOMAIN_SERVER
+                    GameCore::mGui->outputToConsole("Five!\n");
+                #endif
 				break;
 			case ROUND_OVER_OT:
                 this->cycleGameMode(); //Cycle game mode
@@ -672,20 +700,20 @@ void Gameplay::scheduleCountDown()
 {
 	#ifdef COLLISION_DOMAIN_SERVER
 		GameCore::mGui->outputToConsole("Scheduling countdown.\n");
-		InfoItem* threeII = new InfoItem(THREE_OT, 5000, 1000);
-		InfoItem* twoII = new InfoItem(TWO_OT, 6000, 1000);
-		InfoItem* oneII = new InfoItem(ONE_OT, 7000, 1000);
+		InfoItem* threeII = new InfoItem(THREE_OT, 5000, 900);
+		InfoItem* twoII = new InfoItem(TWO_OT, 6000, 900);
+		InfoItem* oneII = new InfoItem(ONE_OT, 7000, 900);
 
 		mInfoItems.push_back(threeII);
 		mInfoItems.push_back(twoII);
 		mInfoItems.push_back(oneII);
 
 		//Countdown Timer
-		InfoItem* fiveEII = new InfoItem(FIVE_OT,184000,1000);
-		InfoItem* fourEII = new InfoItem(FOUR_OT,185000,1000);
-		InfoItem* threeEII = new InfoItem(THREE_OT,186000,1000);
-		InfoItem* twoEII = new InfoItem(TWO_OT,187000,1000);
-		InfoItem* oneEII = new InfoItem(ONE_OT,188000,1000);
+		InfoItem* fiveEII = new InfoItem(FIVE_OT,184000,900);
+		InfoItem* fourEII = new InfoItem(FOUR_OT,185000,900);
+		InfoItem* threeEII = new InfoItem(THREE_OT,186000,900);
+		InfoItem* twoEII = new InfoItem(TWO_OT,187000,900);
+		InfoItem* oneEII = new InfoItem(ONE_OT,188000,900);
 
 		mInfoItems.push_back(fiveEII);
 		mInfoItems.push_back(fourEII);
@@ -694,7 +722,7 @@ void Gameplay::scheduleCountDown()
 		mInfoItems.push_back(oneEII);
 
 		//Round over
-		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,189000,3000);
+		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,189000,2900);
 		mInfoItems.push_back(roEII);
 
 		//Send packets
@@ -796,7 +824,7 @@ void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
                     causedBy->addToGameScore(3); //Give him some score for winning
                     //Now add 1 to all players on that team
                     std::vector<Player*> tmpPlayers = GameCore::mPlayerPool->getPlayers();
-                    for(int i=0;i<tmpPlayers.size();i++)
+                    for(unsigned int i=0;i<tmpPlayers.size();i++)
                     {
                         if(tmpPlayers[i]->getTeam() == causedBy->getTeam())
                         {
