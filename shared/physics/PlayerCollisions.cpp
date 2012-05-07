@@ -90,10 +90,10 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 				 Cars are added to collisionDelays on first crash
 			*/
 			if(collisionDelays[p1] == NULL) {
-				collisionDelays[p1] = 20;
+				collisionDelays[p1] = 100;
 			}
 			if(collisionDelays[p2] == NULL) {
-				collisionDelays[p2] = 20;
+				collisionDelays[p2] = 100;
 			}
 			// if either player hasn't collided for more than 15 frames, let them collide again
 			if(collisionDelays[p1] > 90 || collisionDelays[p2] > 90) {
