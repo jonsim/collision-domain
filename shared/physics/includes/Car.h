@@ -184,10 +184,7 @@ protected:
 private:
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
-
-
     void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );
-    
 
     inline float rpm2rads(float f){ return f * 0.1047197f; }
     inline float rads2rpm(float f){ return f * 9.5492966f; }

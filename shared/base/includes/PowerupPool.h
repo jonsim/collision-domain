@@ -19,6 +19,7 @@ public:
 
     void frameEvent( const float timeSinceLastFrame );
     void spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int index);
+    void replaceCurrentPowerups();
 
     Ogre::Vector3 getNearestPowerUp(Ogre::Vector3 pos);
     Powerup *getPowerup( int id );
