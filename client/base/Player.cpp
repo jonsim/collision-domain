@@ -33,7 +33,6 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     // PlayerState state configures constants and zeros values upon creation.
 	//processingCollision = false;
 	numCollisionDataPoints = 0;
-	this->mOLE = NULL;
 
 	numCameraViews = 3;
 	cameraView = 0;
@@ -50,6 +49,9 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     ss << "car type: " << mCarType << "\n";
     ss << "our team: " << mTeam << "\n";
     mFirstLaunch = true;
+
+    
+
     //OutputDebugString(ss.str().c_str());
 
 	//averageCollisionPoint.setZero();
@@ -483,9 +485,4 @@ void Player::killPlayer(Player* causedBy)
         InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3000 );
         GameCore::mGameplay->mInfoItems.push_back( spectate );
     }
-}
-
-void Player::setOverlayElement(Ogre::OverlayElement* ole)
-{
-        mOLE = ole;
 }

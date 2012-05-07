@@ -62,10 +62,6 @@ public:
 	void setGUID(RakNet::RakNetGUID playerGUID);
 	std::string getGUID(void);
 
-	//Overlay Element stuff for the big screen view
-	void setOverlayElement (Ogre::OverlayElement* ole);
-	Ogre::OverlayElement* getOverlayElement() { return this->mOLE; };
-
 	//Just some getters and setters
 	void setAlive(bool pAlive);
 	bool getAlive();
@@ -122,7 +118,6 @@ private:
 	btVector3                                  cameraViews[3];
 	btVector3                                  cameraLookViews[3];
 
-	Ogre::OverlayElement* mOLE;
 	/*bool									   processingCollision;
 	std::map<std::string, std::vector<float> >			   collisionDamages;
 	std::map<std::string, std::vector<float> >::iterator	   collisionDamagesItr;
@@ -131,8 +126,6 @@ private:
 
 	std::vector<btVector3>                    *currentPositions;
 	std::vector<float>                        *currentDamages;*/
-
-
 
 	int									       numCollisionDataPoints;
 	//btVector3							       averageCollisionPoint;

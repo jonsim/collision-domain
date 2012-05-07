@@ -502,7 +502,7 @@ void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
 void GameGUI::setupSpeedo (void)
 {
         // Create our speedometer overlays
-        Ogre::Overlay *olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
+        olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
         olSpeedo->setZOrder( 500 );
         olSpeedo->show();
 
@@ -750,4 +750,14 @@ void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
     setupGearDisplay();
     updateSpeedo(0.0f, 0);
     //updateDamage();
+}
+
+void GameGUI::hideOverlaysForBigScreen()
+{
+    olSpeedo->hide();
+}
+
+void GameGUI::showOverlaysForBigScreen()
+{
+    olSpeedo->show();
 }
