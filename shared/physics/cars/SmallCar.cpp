@@ -209,7 +209,7 @@ void SmallCar::createCollisionShapes()
 void SmallCar::louderLocalSounds() {
     mHasLocalSounds = true;
 
-    float increaseTo = mEngineSound->getVolume() + 0.15;
+    float increaseTo = mEngineSound->getVolume() + 0.25;
     if (increaseTo < 1) {
         //mEngineSound->setMinVolume(increaseTo);
         mEngineSound->setVolume(increaseTo);

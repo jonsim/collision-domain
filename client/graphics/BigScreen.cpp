@@ -126,19 +126,21 @@ void BigScreen::manageNewPlayer(Player* player)
 
 void BigScreen::updateMapView()
 {
-        std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
-        //Loop through all possible players
-        for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
+    std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+    //Loop through all possible players
+    for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
+    {
+        /*
+        if((*it)->getOverlayElement() == NULL)
         {
-                /*
-                if((*it)->getOverlayElement() == NULL)
-                {
-                        this->manageNewPlayer((*it));
-                }
-                */
-                //if((*it)->getOverlayElement() != NULL)
-                        updatePlayer((Player*)(*it), (*it)->getOverlayElement());
+        this->manageNewPlayer((*it));
         }
+        */
+        if((*it)->getOverlayElement() != NULL)
+        {
+            updatePlayer((Player*)(*it), (*it)->getOverlayElement());
+        }
+    }
 }
 
 inline float BigScreen::convertWorldToScreenX(float xPos)
@@ -171,60 +173,59 @@ inline float BigScreen::convertWorldToScreenY(float yPos)
 
 void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
 {
-        CarSnapshot *playerSnap = NULL;
+    CarSnapshot *playerSnap = NULL;
 
-    if(player->getCar() != NULL)
-        playerSnap = player->getCar()->getCarSnapshot();        
+    if (!player->getCar()) return;
+    playerSnap = player->getCar()->getCarSnapshot();        
 
-        if(playerSnap != NULL)
-        {
-                btVector3 localPlayerPos = playerSnap->mPosition;
-                float xPos = this->convertWorldToScreenX(localPlayerPos.getX()); 
-                float yPos = this->convertWorldToScreenY(localPlayerPos.getZ()); //Z as we're doing a 2D projection
+    if (!playerSnap) return;
 
-                //Correct the position to be relative of top left corner.
-                //xPos -= mapCorner.x;
-                //yPos -= mapCorner.z;
-                //Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
-                //Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
+    btVector3 localPlayerPos = playerSnap->mPosition;
+    float xPos = this->convertWorldToScreenX(localPlayerPos.getX()); 
+    float yPos = this->convertWorldToScreenY(localPlayerPos.getZ()); //Z as we're doing a 2D projection
+
+    //Correct the position to be relative of top left corner.
+    //xPos -= mapCorner.x;
+    //yPos -= mapCorner.z;
+    //Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
+    //Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
         
 
-                // Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
-        // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
-                btQuaternion q = playerSnap->mRotation;
-        Ogre::Radian rot = Ogre::Math::ATan2(      (2.0 * (q.getZ()*q.getX() + q.getY()*q.getW())),
-                                             1.0 - (2.0 * (q.getX()*q.getX() + q.getY()*q.getY())) );
-        //rot = (rot.valueRadians() > 0) ? rot.valueRadians() - Ogre::Math::PI : rot.valueRadians() + Ogre::Math::PI;
+    // Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
+    // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
+    btQuaternion q = playerSnap->mRotation;
+    Ogre::Radian rot = Ogre::Math::ATan2(      (2.0 * (q.getZ()*q.getX() + q.getY()*q.getW())),
+                                1.0 - (2.0 * (q.getX()*q.getX() + q.getY()*q.getY())) );
+    //rot = (rot.valueRadians() > 0) ? rot.valueRadians() - Ogre::Math::PI : rot.valueRadians() + Ogre::Math::PI;
                 
-        // Rotate the arrow.
-                Ogre::Material* matMarker = carOverlay->getMaterial().get();
-                Ogre::TextureUnitState* texMarker = matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
-                texMarker->setTextureRotate(rot);
+    // Rotate the arrow.
+    Ogre::Material* matMarker = carOverlay->getMaterial().get();
+    Ogre::TextureUnitState* texMarker = matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+    texMarker->setTextureRotate(rot);
 
-                // This is not really needed if the above code is working
-                if(xPos > 1)
-                        xPos = 1.0f;
-                if(yPos > 1)
-                        yPos = 1.0f;
+    // This is not really needed if the above code is working
+    if(xPos > 1)
+        xPos = 1.0f;
+    if(yPos > 1)
+        yPos = 1.0f;
 
 
-                //Only check if get VIP
-                if(player->getVIP())
-                {
-                        if(player->getTeam() == 1)
-                        {
-                                oleVIP1->setPosition(xPos,yPos-0.03f);
-                        }
-                        else
-                        {
-                                oleVIP2->setPosition(xPos,yPos-0.03f);
-                        }
-                }
-
-                carOverlay->setPosition(xPos,yPos);
-
-        delete playerSnap; //Fixes the memory leak
+    //Only check if get VIP
+    if(player->getVIP())
+    {
+        if(player->getTeam() == 1)
+        {
+                oleVIP1->setPosition(xPos,yPos-0.03f);
         }
+        else
+        {
+                oleVIP2->setPosition(xPos,yPos-0.03f);
+        }
+    }
+
+    carOverlay->setPosition(xPos,yPos);
+
+    delete playerSnap; //Fixes the memory leak
 }
 
 void BigScreen::setMapCorner(Ogre::Vector3 corner)

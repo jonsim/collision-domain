@@ -201,19 +201,10 @@ void SimpleCoupeCar::createCollisionShapes()
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER_RBUMPER, rBumperShape );
 }
 
-/*static float min = 99999;
-static float max = 0;
-min = min > rpm ? rpm : min;
-max = max < rpm ? rpm : max;
-std::string s = "min ";
-s += boost::lexical_cast<std::string>(min) + "    max " + boost::lexical_cast<std::string>(max) + "\n";
-OutputDebugString(s.c_str());*/
-
-
 void SimpleCoupeCar::louderLocalSounds() {
     mHasLocalSounds = true;
 
-    float increaseTo = mEngineSound->getVolume() + 0.15;
+    float increaseTo = mEngineSound->getVolume() + 0.21;
     if (increaseTo < 1) {
         //mEngineSound->setMinVolume(increaseTo);
         mEngineSound->setVolume(increaseTo);
