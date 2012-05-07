@@ -8,7 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "stdafx.h"
 #include "SharedIncludes.h"
-
+#include "Team.h"
 
 /*-------------------- FUNCTION DEFINITIONS --------------------*/
 class ScoreBoard
@@ -23,15 +23,19 @@ public:
 	void	update();
 private:
 	void			displayScreen();
-	std::string		buildScoreText();
+    std::string		buildScoreText(TeamID teamID);
 	Ogre::Overlay *sbOverlay;
 	Ogre::OverlayContainer *sbContainer;
 	bool isInitialized;
 	bool isShown;
 	bool isForced;
+    std::vector<Ogre::OverlayElement*> redTeamStrips;
+    std::vector<Ogre::OverlayElement*> blueTeamStrips;
 
 	Ogre::OverlayElement *textAreaT1;
 	Ogre::OverlayElement *textAreaT2;
+
+    void    manageStrips();
 };
 
 

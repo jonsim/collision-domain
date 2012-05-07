@@ -5,3 +5,28 @@ material ConstructionScreen: cd/GUIComponent
 {
 	set $texture ConstructionScreen.png
 }
+
+material TeamBanner: cd/GUIComponent
+{
+	set $texture TeamBanners.png
+}
+
+material RedStripDark: cd/GUIComponent
+{
+	set $texture RedStripDark.png
+}
+
+material RedStripLight: cd/GUIComponent
+{
+	set $texture RedStripLight.png
+}
+
+material BlueStripDark: cd/GUIComponent
+{
+	set $texture BlueStripDark.png
+}
+
+material BlueStripLight: cd/GUIComponent
+{
+	set $texture BlueStripLight.png
+}

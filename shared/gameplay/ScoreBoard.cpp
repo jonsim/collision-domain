@@ -10,6 +10,8 @@
 #include <sstream>
 #include <math.h>
 
+#define STRIP_HEIGHT 0.05f
+
 /*
 	Used this for research - http://www.ogre3d.org/tikiwiki/Simple+Text+Output&structure=Cookbook
 */
@@ -32,6 +34,7 @@ void ScoreBoard::show()
 	if(!isInitialized)
 		this->initialize();
 
+    this->manageStrips();
 	this->update();
 
 	sbOverlay->show();
@@ -44,7 +47,7 @@ void ScoreBoard::showForce()
 	//Make sure it's been setup
 	if(!isInitialized)
 		this->initialize();
-
+    this->manageStrips();
 	this->update();
 
 	sbOverlay->show();
@@ -81,7 +84,8 @@ void ScoreBoard::hide()
 
 void ScoreBoard::update()
 {
-	this->textAreaT1->setCaption(this->buildScoreText());
+	this->textAreaT1->setCaption(this->buildScoreText(BLUE_TEAM));
+    this->textAreaT2->setCaption(this->buildScoreText(RED_TEAM));
 }
 
 void ScoreBoard::initialize()
@@ -102,39 +106,117 @@ void ScoreBoard::initialize()
 	//Create a textarea
 	Ogre::OverlayElement *textAreaHeader = 
 			Ogre::OverlayManager::getSingleton().
-				createOverlayElement("TextArea","SCOREBOARD_HEADER");
-	textAreaHeader->setDimensions(0.9f, 0.3f);
-	textAreaHeader->setMetricsMode(Ogre::GMM_PIXELS);
-	textAreaHeader->setPosition(40, 40);
-	textAreaHeader->setParameter("font_name","DejaVuSans");
-	textAreaHeader->setParameter("char_height", "30");
-	textAreaHeader->setColour(Ogre::ColourValue::White);
-	textAreaHeader->setCaption("Team 1 \t\t\t\t\t\t\t Team 2");
+				createOverlayElement("Panel","SCOREBOARD_HEADER");
+    textAreaHeader->setMetricsMode(Ogre::GMM_RELATIVE);
+	textAreaHeader->setDimensions(1.0f, 0.2f);
+	textAreaHeader->setPosition(0,0);
+    textAreaHeader->setMaterialName("TeamBanner");
 	sbContainer->addChild(textAreaHeader);
 
 	this->textAreaT1 = Ogre::OverlayManager::getSingleton().
-		createOverlayElement("TextArea","SCOREBOARD_ELEMENT");
-
-	//int screenWidth = GameCore::mGraphicsApplication->getMainViewPort()->getActualWidth();
-	//int screenHeight = GameCore::mGraphicsApplication->getMainViewPort()->getActualHeight();
-
-	this->textAreaT1->setDimensions(0.9f, 0.6f);
+		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT1");
+    this->textAreaT1->setDimensions(0.9f, 0.6f);
 	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
 	this->textAreaT1->setPosition(40,100);
 	
 	this->textAreaT1->setParameter("font_name","DejaVuSans");
 	this->textAreaT1->setParameter("char_height", "15");
 	this->textAreaT1->setColour(Ogre::ColourValue::White);
-
-	this->textAreaT1->setCaption(this->buildScoreText());
+	this->textAreaT1->setCaption(this->buildScoreText(BLUE_TEAM));
 	sbContainer->addChild(this->textAreaT1);	
+
+    this->textAreaT2 = Ogre::OverlayManager::getSingleton().
+		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT2");
+    this->textAreaT2->setDimensions(0.9f, 0.6f);
+	this->textAreaT2->setMetricsMode(Ogre::GMM_PIXELS);
+	this->textAreaT2->setPosition(440,100);
+	
+	this->textAreaT2->setParameter("font_name","DejaVuSans");
+	this->textAreaT2->setParameter("char_height", "15");
+	this->textAreaT2->setColour(Ogre::ColourValue::White);
+
+	this->textAreaT2->setCaption(this->buildScoreText(RED_TEAM));
+	sbContainer->addChild(this->textAreaT2);	
+
 	sbOverlay->hide();
 	
 	isShown = false;
 	isInitialized = true;
 }
 
-std::string ScoreBoard::buildScoreText()
+void ScoreBoard::manageStrips()
+{
+    int numRedPlayers = 0;
+    int numBluePlayers = 0;
+
+    std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+    for(int i=0;i<players.size();i++)
+    {
+        switch(players[i]->getTeam())
+        {
+            case BLUE_TEAM:
+                numBluePlayers++;
+                break;
+            case RED_TEAM:
+                numRedPlayers++;
+                break;
+        }
+    }
+
+
+
+    StringStream tmpSS2;
+    tmpSS2 << "Blue: "<<numBluePlayers<< " Red: " <<numRedPlayers<<"\n";
+    OutputDebugString(tmpSS2.str().c_str());
+
+    //Make sure we've got the correct number of strip overlays
+    if(blueTeamStrips.size() != numBluePlayers)
+    {
+        for(int i=blueTeamStrips.size()-1;i<numBluePlayers;i++) {
+            StringStream tmpSS;
+            tmpSS << "OLE_BLUESTRIP__"<<i;
+
+	        Ogre::OverlayElement *tmp = 
+			        Ogre::OverlayManager::getSingleton().
+                        createOverlayElement("Panel",tmpSS.str());
+	        tmp->setMetricsMode(Ogre::GMM_RELATIVE);
+            tmp->setDimensions(0.4f, STRIP_HEIGHT);
+            float yOffeset = STRIP_HEIGHT*i+0.2;
+            tmp->setPosition(0.05f,yOffeset);
+            if((i%2) == 0) 
+                tmp->setMaterialName("BlueStripDark");
+            else
+                tmp->setMaterialName("BlueStripLight");
+	        sbContainer->addChild(tmp);
+            blueTeamStrips.push_back(tmp);
+
+        }
+    }
+
+    if(redTeamStrips.size() != numRedPlayers)
+    {
+        for(int i=redTeamStrips.size()-1;i<numRedPlayers;i++) {
+            StringStream tmpSS;
+            tmpSS << "OLE_REDSTRIP__"<<i;
+
+	        Ogre::OverlayElement *tmp = 
+			        Ogre::OverlayManager::getSingleton().
+                        createOverlayElement("Panel",tmpSS.str());
+	        tmp->setMetricsMode(Ogre::GMM_RELATIVE);
+            tmp->setDimensions(0.4f, STRIP_HEIGHT);
+            float yOffeset = STRIP_HEIGHT*i+0.2;
+            tmp->setPosition(0.55f,yOffeset);
+            if((i%2) == 0) 
+                tmp->setMaterialName("RedStripDark");
+            else
+                tmp->setMaterialName("RedStripLight");
+	        sbContainer->addChild(tmp);
+            redTeamStrips.push_back(tmp);
+        }
+    }
+}
+
+std::string ScoreBoard::buildScoreText(TeamID teamID)
 {
 	std::stringstream buildingStream;
 
@@ -164,7 +246,8 @@ std::string ScoreBoard::buildScoreText()
 		{
 			//Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
 			Player* tmpPlayer = sortedPlayers[i];
-			buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
+            if(tmpPlayer->getTeam() == teamID)
+    			buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
 		}
 	//#endif
 
