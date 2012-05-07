@@ -38,6 +38,7 @@ void ScoreBoard::show()
 	this->update();
 
 	sbOverlay->show();
+    textScoreOverlay->show();
 
 	this->isShown = true;
 }
@@ -51,6 +52,7 @@ void ScoreBoard::showForce()
 	this->update();
 
 	sbOverlay->show();
+    textScoreOverlay->show();
 
 	this->isShown = true;
 	this->isForced = true;
@@ -65,6 +67,7 @@ void ScoreBoard::hideForce()
 
 	if(isShown) {
 		this->sbOverlay->hide();
+        textScoreOverlay->hide();
 		this->isShown = false;
 		this->isForced = false;
 	}
@@ -78,6 +81,7 @@ void ScoreBoard::hide()
 
 	if(isShown && !isForced) {
 		this->sbOverlay->hide();
+        textScoreOverlay->hide();
 		this->isShown = false;
 	}
 }
@@ -103,6 +107,15 @@ void ScoreBoard::initialize()
 	sbContainer->setPosition(0.0f,0.0f);
 	sbContainer->setMaterialName("ConstructionScreen");
 		
+    textScoreOverlay =
+        Ogre::OverlayManager::getSingleton().create( "SCOREBOARD_TEXT_OVERLAY" );
+	textScoreOverlay->setZOrder(602);
+	Ogre::OverlayContainer *textScoreContainer = static_cast<Ogre::OverlayContainer*> ( 
+		Ogre::OverlayManager::getSingleton().
+			createOverlayElement( "Panel", "SCOREBOARD_TEXT_CONTAINER" ) );
+	textScoreOverlay->add2D(textScoreContainer);
+	textScoreContainer->setPosition(0.0f,0.0f);
+
 	//Create a textarea
 	Ogre::OverlayElement *textAreaHeader = 
 			Ogre::OverlayManager::getSingleton().
@@ -123,7 +136,7 @@ void ScoreBoard::initialize()
 	this->textAreaT1->setParameter("char_height", "15");
 	this->textAreaT1->setColour(Ogre::ColourValue::White);
 	this->textAreaT1->setCaption(this->buildScoreText(BLUE_TEAM));
-	sbContainer->addChild(this->textAreaT1);	
+	textScoreContainer->addChild(this->textAreaT1);	
 
     this->textAreaT2 = Ogre::OverlayManager::getSingleton().
 		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT2");
@@ -136,7 +149,7 @@ void ScoreBoard::initialize()
 	this->textAreaT2->setColour(Ogre::ColourValue::White);
 
 	this->textAreaT2->setCaption(this->buildScoreText(RED_TEAM));
-	sbContainer->addChild(this->textAreaT2);	
+	textScoreContainer->addChild(this->textAreaT2);	
 
 	sbOverlay->hide();
 	
@@ -172,7 +185,7 @@ void ScoreBoard::manageStrips()
     //Make sure we've got the correct number of strip overlays
     if(blueTeamStrips.size() != numBluePlayers)
     {
-        for(int i=blueTeamStrips.size()-1;i<numBluePlayers;i++) {
+        for(int i=blueTeamStrips.size()-1;i<numBluePlayers-1;i++) {
             StringStream tmpSS;
             tmpSS << "OLE_BLUESTRIP__"<<i;
 
@@ -195,7 +208,7 @@ void ScoreBoard::manageStrips()
 
     if(redTeamStrips.size() != numRedPlayers)
     {
-        for(int i=redTeamStrips.size()-1;i<numRedPlayers;i++) {
+        for(int i=redTeamStrips.size()-1;i<numRedPlayers-1;i++) {
             StringStream tmpSS;
             tmpSS << "OLE_REDSTRIP__"<<i;
 
