@@ -26,7 +26,7 @@ class Powerup
 {
 public:
     Powerup(Ogre::Vector3 spawnAt, int poolIndex);
-        Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex);
+    Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex);
     ~Powerup();
 
     void playerCollision(Player* player);

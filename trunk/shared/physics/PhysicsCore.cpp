@@ -10,7 +10,7 @@
 #include "SmallCar.h"
 #include "GameCore.h"
 
-//#define DEBUG_FRAMES
+#define DEBUG_FRAMES
 
 
 /// @brief  Constructor to create physics stuff
@@ -173,7 +173,7 @@ void PhysicsCore::attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String
     mShapes[PHYS_SHAPE_ARENA] = collisionShape;
 
     short collisionGroup = COL_ARENA;
-    short collisionMask  = COL_CAR;
+    short collisionMask  = COL_CAR | COL_POWERUP;
 
     BtOgre::RigidBodyState *collisionBodyState = new BtOgre::RigidBodyState( targetNode );
     btRigidBody *collisionBody = new btRigidBody( 0.0f, collisionBodyState, collisionShape );

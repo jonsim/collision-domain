@@ -49,10 +49,20 @@ void PowerupPool::deletePowerup( int index )
     delete p;
 }
 
+void PowerupPool::replaceCurrentPowerups()
+{
+    #ifdef COLLISION_DOMAIN_SERVER
+        for (int i = 0; i < MAX_POWERUPS; i++)
+        {
+            if (mPowerups[i] != NULL) mPowerups[i]->playerCollision(NULL);
+        }
+    #endif
+}
+
 /// @brief  Process state changes for powerups and delete collected ones
 void PowerupPool::frameEvent( const float timeSinceLastFrame )
 {
-        for( int i = 0; i < MAX_POWERUPS; i ++ )
+    for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
         if ( mPowerups[i] )
         {
@@ -99,7 +109,7 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
     // the arena was modelled as round, but its oval
     z *= (float) arenaZRadius / (float) arenaXRadius;
 
-    btVector3 rayFrom( x, 10, z );
+    /*btVector3 rayFrom( x, 10, z );
     btVector3 rayTo( x, -200, z );
     btVector3 worldNormal;
 
@@ -109,9 +119,9 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
     if ( ! GameCore::mPhysicsCore->singleObjectRaytest(rayFrom, rayTo, worldNormal, worldHitPoint) )
     {
         OutputDebugString("Powerup floor finder ray missed\n");
-    }
+    }*/
 
-    return Ogre::Vector3(x, worldHitPoint.y() + 0.5, z);
+    return Ogre::Vector3(x, 10.0f/*worldHitPoint.y() + 0.5*/, z);
 }
 
 // THIS WILL RETURN 0,0,0 IF THERE ARE NO POWERUPS

@@ -122,6 +122,10 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
 		openAdminWindow();
 		outputToConsole("Admin window opened.\n");
 	}
+    else if( !strcasecmp(inputChars, "powerups"))
+    {
+        GameCore::mPowerupPool->replaceCurrentPowerups();
+    }
     else
     {
         outputToConsole("Unrecognised command.\n");

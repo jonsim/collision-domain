@@ -39,9 +39,38 @@ Powerup::Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex)
         if ( GameCore::mClientGraphics->mBigScreen != NULL )
             mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPowerupOverlayElement(spawnAt, mUniqueID);
     #endif
+    
+    // Add the physics box for both client and server. Make the client's not collide with anyone
+    
+    btScalar bodyRestitution = 0.3f;
+    btScalar bodyFriction = 1.0f;
+    btScalar bodyMass = 40.0f;
+    
+    btVector3 halfExtents(0.5,0.5,0.5);
+    btBoxShape* shape = new btBoxShape(halfExtents);
 
-    #ifndef COLLISION_DOMAIN_CLIENT // SERVER
-        //mRigidBody = ;
+    btVector3 inertia;
+    shape->calculateLocalInertia(bodyMass, inertia);
+    
+    #ifdef COLLISION_DOMAIN_SERVER
+        mRigidBody = new btRigidBody( bodyMass, NULL, shape, inertia );
+    #else
+        mRigidBody = new btRigidBody( bodyMass, (btMotionState *)( new BtOgre::RigidBodyState( mNode ) ), shape, inertia );
+    #endif
+    
+    mRigidBody->setRestitution( bodyRestitution );
+    mRigidBody->setFriction( bodyFriction );
+    
+    // We must set NO CONTACT COLLISIONS to allow cars to drive through the powerups
+    mRigidBody->setUserPointer( this );
+    mRigidBody->setActivationState( DISABLE_DEACTIVATION );
+    //mRigidBody->translate( BtOgre::Convert::toBullet( spawnAt ) );
+    mRigidBody->setWorldTransform( btTransform( btQuaternion::btQuaternion().getIdentity(), BtOgre::Convert::toBullet( spawnAt ) ) );
+
+    #ifdef COLLISION_DOMAIN_SERVER
+        GameCore::mPhysicsCore->addRigidBody( mRigidBody, COL_POWERUP, COL_CAR | COL_POWERUP | COL_ARENA );
+    #else
+        GameCore::mPhysicsCore->addRigidBody( mRigidBody, COL_POWERUP, COL_POWERUP | COL_ARENA );
     #endif
 }
 
@@ -55,16 +84,11 @@ Powerup::~Powerup()
 
         // delete the big screen overlay element?
     #endif
-
-    #ifndef COLLISION_DOMAIN_CLIENT // SERVER
-        // delete the shape last
-        /*
-        mRigidBody->setUserPointer(NULL);
-        btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
-        GameCore::mPhysicsCore->removeBody( mRigidBody );
-        delete collisionShape;
-        */
-    #endif
+    
+    // delete the shape last
+    btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
+    GameCore::mPhysicsCore->removeBody( mRigidBody );
+    delete collisionShape;
 }
 
 // player can be NULL and if it is, silently remove the powerup
@@ -81,9 +105,15 @@ void Powerup::playerCollision(Player* player)
 
         // remove mBigScreenOverlayElement from minimap
     #endif
+    
+    // don't delete this yet as it could be in the middle of a timestep
+    mRigidBody->setUserPointer(NULL);
+    
+    #ifdef COLLISION_DOMAIN_SERVER
+        GameCore::mNetworkCore->sendPowerupCollect( mPoolIndex, player );
 
-    #ifndef COLLISION_DOMAIN_CLIENT // SERVER
         if (player != NULL)
+        {
             switch (mPowerupType)
             {
             case POWERUP_HEALTH:
@@ -95,15 +125,33 @@ void Powerup::playerCollision(Player* player)
             default:
                 break;
             }
-
-        // don't delete this yet as it could be in the middle of a timestep
-        mRigidBody->setUserPointer(NULL);
+        }
     #endif
 }
 
 void Powerup::frameEvent(const float timeSinceLastFrame)
 {
+    /*if (hasFullyDroppedIn) return;
+    
+    #ifdef COLLISION_DOMAIN_CLIENT
+        Ogre::Vector3 currentPosition = mNode->getPosition();
+        float distanceToFinalPosition = SpawnAtPosition.y - currentPosition.y;
+        
+        distanceToFinalPosition *= 100;
+        distanceToFinalPosition *= 1.0f/60.0f * timeSinceLastFrame; // framerate independent drop
 
+        // the powerup, before being moved is within 6cm, lets just finish it
+        if (currentPosition.y - distanceToFinalPosition < SpawnAtPosition.y + 0.06 
+            && currentPosition.y - distanceToFinalPosition > SpawnAtPosition.y - 0.06 )
+        {
+            mNode->setPosition(SpawnAtPosition);
+            hasFullyDroppedIn = true;
+            return;
+        }
+        
+        currentPosition.y -= abs(distanceToFinalPosition);
+        mNode->setPosition(currentPosition);
+    #endif*/
 }
 
 bool Powerup::isPendingDelete()
@@ -123,6 +171,7 @@ int Powerup::getIndex()
 
 Ogre::Vector3 Powerup::getPosition()
 {
+    // The powerup will drop in, but just tell the ai where it will be in the end!
     return position;
 }
 
