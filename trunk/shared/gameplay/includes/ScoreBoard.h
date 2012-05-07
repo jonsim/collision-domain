@@ -26,6 +26,7 @@ private:
     std::string		buildScoreText(TeamID teamID);
 	Ogre::Overlay *sbOverlay;
 	Ogre::OverlayContainer *sbContainer;
+    Ogre::Overlay *textScoreOverlay;
 	bool isInitialized;
 	bool isShown;
 	bool isForced;
