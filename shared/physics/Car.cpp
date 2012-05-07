@@ -36,6 +36,11 @@ Car::~Car()
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mGearSound);
     GameCore::mAudioCore->deleteSoundInstance(mCrashSound);
+    
+    if ( GameCore::mClientGraphics->mBigScreen != NULL )
+    {
+        GameCore::mClientGraphics->mBigScreen->removeCarOverlayFromMap(mUniqueID);
+    }
 #endif
 }
 

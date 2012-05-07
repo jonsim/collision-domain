@@ -31,6 +31,9 @@ public:
 	Ogre::OverlayElement*       createPowerupOverlayElement(Ogre::Vector3 powerupPosition, int uniqueID);
     Ogre::OverlayElement*       createPlayerOverlayElement(int uniqueID);
 
+    void                        removePowerupOverlayFromMap(int uniqueID);
+    void                        removeCarOverlayFromMap(int uniqueID);
+
 private:
 	std::vector<ViewCamera*>	viewCameraVector;
 	Ogre::OverlayContainer*		olcMap;
@@ -42,6 +45,7 @@ private:
 	Ogre::OverlayElement*		oleVIP2;
 
 	void						updatePlayer(Car *car, Player *player, Ogre::OverlayElement* carOverlay);
+    void                        updatePowerup(Ogre::Vector3 location, btQuaternion &quat, Ogre::OverlayElement* powerupOverlay);
 	
 	void						setMapCorner(Ogre::Vector3 corner);
 	void						setMapSize(Ogre::Vector3 size);
