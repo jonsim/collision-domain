@@ -79,10 +79,11 @@ public:
 
     void                        cycleGameMode();
     void                        handleNewRound();
+    Team*						getTeam(TeamID teamID);
 private:
 	//Methods
 	bool						vipModeGameWon();
-	Team*						getTeam(TeamID teamID);
+	
     Team*                       autoAssignTeam();
 	void						printTeamStats();
 	void						scheduleCountDown();

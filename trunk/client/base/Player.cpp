@@ -486,3 +486,12 @@ void Player::killPlayer(Player* causedBy)
         GameCore::mGameplay->mInfoItems.push_back( spectate );
     }
 }
+
+void Player::setTeam(TeamID newTeam) 
+{ 
+    mTeam = newTeam; 
+    if( mCar ) mCar->updateTeam(newTeam); 
+    
+    //Add it to the gameplay teams
+    //GameCore::mGameplay->getTeam(newTeam)->addPlayer(this);
+}

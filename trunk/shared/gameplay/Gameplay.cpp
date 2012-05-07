@@ -14,9 +14,9 @@
 
 Gameplay::Gameplay() : mGameActive(false)
 {
-	mSB = new ScoreBoard();
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
+    mSB = new ScoreBoard();
 
     roundNumber = -1;
     this->setGameMode(SELECTED_GAME); //Set it to the selecte game, change at top of gampleay.h
