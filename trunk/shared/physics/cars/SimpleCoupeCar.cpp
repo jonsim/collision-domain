@@ -134,9 +134,9 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
 
     initTuning();
     initNodes();
-#ifdef COLLISION_DOMAIN_CLIENT
-    initGraphics(tid);
-#endif
+    #ifdef COLLISION_DOMAIN_CLIENT
+        initGraphics(tid);
+    #endif
     initBody(carPosition);
     initWheels();
 
@@ -150,13 +150,13 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
 
     GameCore::mPhysicsCore->getWorld()->addConstraint( fricConst );
     
-#ifdef COLLISION_DOMAIN_CLIENT
-    mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
+    #ifdef COLLISION_DOMAIN_CLIENT
+        mHornSound = GameCore::mAudioCore->getSoundInstance(HORN_MID, mUniqueCarID, NULL);
     
-    // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
-    mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
-    mEngineSound->setPitch(2.0f);
-#endif
+        // pitch is in play rate increase (4x max) (100 = 3.976x play rate)
+        mEngineSound = GameCore::mAudioCore->getSoundInstance(ENGINE_COUPE, mUniqueCarID, NULL, true);
+        mEngineSound->setPitch(2.0f);
+    #endif
 }
 
 
