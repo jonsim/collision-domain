@@ -65,6 +65,9 @@ public:
 	BigScreen*			mBigScreen;
 	GraphicsState getGraphicsState();
     
+    //Screen Specs
+    int screenWidth;
+    int screenHeight;
 
 protected:
     // Called when the application is first started.
@@ -117,6 +120,8 @@ protected:
     bool mCursorWasVisible;                  // Was the cursor visible before dialog appeared
     bool mDebrisVisible;
     bool mShutDown;
+
+
 };
 
 

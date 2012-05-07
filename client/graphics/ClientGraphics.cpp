@@ -179,8 +179,9 @@ void ClientGraphics::createViewports (void)
 {
     // Create one viewport, entire window
     Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-
-        // Set the background colour and match the aspect ratio to the window's.
+    this->screenWidth   = vp->getActualWidth();
+    this->screenHeight  = vp->getActualHeight();
+    // Set the background colour and match the aspect ratio to the window's.
     vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0));
     mCamera->setAspectRatio(Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 }

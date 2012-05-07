@@ -94,8 +94,7 @@ void ScoreBoard::update()
 
 void ScoreBoard::initialize()
 {
-	//OutputDebugString("Starting the scoreboard");
-	
+#ifdef COLLISION_DOMAIN_CLIENT
 	//Creat the overlay and the container
 	sbOverlay = 
 		Ogre::OverlayManager::getSingleton().create( "SCOREBOARD_OVERLAY" );
@@ -126,11 +125,20 @@ void ScoreBoard::initialize()
     textAreaHeader->setMaterialName("TeamBanner");
 	sbContainer->addChild(textAreaHeader);
 
+
+    int screenWidth = GameCore::mClientGraphics->screenWidth;
+    int screenHeight = GameCore::mClientGraphics->screenHeight;
+
+    int t1X = (50.0/800.0)*(float)screenWidth;
+    int t2X = (460.0/800.0)*(float)screenWidth;
+
+    int tY = (95.0/600.0)*(float)screenHeight;
+
 	this->textAreaT1 = Ogre::OverlayManager::getSingleton().
 		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT1");
     this->textAreaT1->setDimensions(0.9f, 0.6f);
 	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
-	this->textAreaT1->setPosition(50,95);
+	this->textAreaT1->setPosition(t1X,tY);
 	
 	this->textAreaT1->setParameter("font_name","DejaVuSans");
 	this->textAreaT1->setParameter("char_height", "30");
@@ -142,7 +150,7 @@ void ScoreBoard::initialize()
 		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT2");
     this->textAreaT2->setDimensions(0.9f, 0.6f);
 	this->textAreaT2->setMetricsMode(Ogre::GMM_PIXELS);
-	this->textAreaT2->setPosition(460,95);
+	this->textAreaT2->setPosition(t2X,tY);
 	
 	this->textAreaT2->setParameter("font_name","DejaVuSans");
 	this->textAreaT2->setParameter("char_height", "30");
@@ -155,6 +163,7 @@ void ScoreBoard::initialize()
 	
 	isShown = false;
 	isInitialized = true;
+#endif
 }
 
 void ScoreBoard::manageStrips()
