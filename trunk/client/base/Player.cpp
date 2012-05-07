@@ -149,8 +149,8 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	}
 
 	// combine speeds of both cars, gives approximation of total force in collision
-	float p1Speed = this->getCar()->getCarMph();
-	float p2Speed = causedByPlayer->getCar()->getCarMph();
+	float p1Speed = abs(this->getCar()->getCarMph());
+	float p2Speed = abs(causedByPlayer->getCar()->getCarMph());
 	float combinedSpeed = p1Speed + p2Speed;
 
 	// calculate ratio of damage to each player from the combined speed
@@ -162,7 +162,9 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
 	float damageToThis = totalDamage * damageShareTo1;
 
-	
+    std::stringstream ss;
+    ss << "dam " << (damageShareTo1+damageShareTo2) << "\n";
+    OutputDebugString(ss.str().c_str());
 
 	// differentiate between differnt collision types
 	if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed > 40 || p2Speed > 40)) {
