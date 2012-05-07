@@ -105,30 +105,30 @@ void BigScreen::updateMapView()
 
 inline float BigScreen::convertWorldToScreenX(float xPos)
 {
-        xPos = xPos/(mapSize.x);
-        xPos += MAP_WIDTH/2;
-        xPos *= MAP_WIDTH;
-        xPos -= MARKER_WIDTH;
+    xPos = xPos/(mapSize.x);
+    // This value lines up perfectly so the point of the arrow hits the wall if going straight on,
+    // and if riding sideways along the wall you are pretty much displayed on top of the boundary
+    xPos *= 0.76f;
 
-        //Some fluff fixing 
-        xPos *= 0.9f;
-        //xPos += 0.1;
+    xPos += MAP_WIDTH/2;
+    xPos *= MAP_WIDTH;
+    xPos -= 0.5 * MARKER_WIDTH;
 
-        return xPos;
+    return xPos;
 }
 
 inline float BigScreen::convertWorldToScreenY(float yPos)
 {
-        yPos = yPos/(mapSize.z);
-        yPos += MAP_HEIGHT/2;
-        yPos *= MAP_HEIGHT;
-        yPos -= MARKER_HEIGHT;
-        
-        //Some fluff fixing
-        yPos *= 0.8f;
-        yPos += 0.2f;
+    yPos = yPos/(mapSize.z);
+    // This value lines up perfectly so the point of the arrow hits the wall if going straight on,
+    // and if riding sideways along the wall you are pretty much displayed on top of the boundary
+    yPos *= 0.74f;
 
-        return yPos;
+    yPos += MAP_HEIGHT/2;
+    yPos *= MAP_HEIGHT;
+    yPos -= 0.5 * MARKER_HEIGHT;
+
+    return yPos;
 }
 
 void BigScreen::updatePlayer(Car *car, Player *player, Ogre::OverlayElement* carOverlay)
