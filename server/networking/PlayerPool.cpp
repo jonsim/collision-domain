@@ -175,4 +175,17 @@ void PlayerPool::frameEvent( const float timeSinceLastFrame )
 
 }
 
+void PlayerPool::roundEnd()
+{
+	int i = 0;
+	for (int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
+	{
+        mPlayers[i]->delCar();
+        // SERVER SHOULD HANDLE THESE
+        mPlayers[i]->setAlive( true );
+        // Just want this for game end
+        mPlayers[i]->setPlayerState( PLAYER_STATE_SPAWN_SEL );
+	}
+}
+
 

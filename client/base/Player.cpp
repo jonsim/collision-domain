@@ -49,6 +49,7 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     std::stringstream ss;
     ss << "car type: " << mCarType << "\n";
     ss << "our team: " << mTeam << "\n";
+    mFirstLaunch = true;
     //OutputDebugString(ss.str().c_str());
 
 	//averageCollisionPoint.setZero();
@@ -65,7 +66,10 @@ Player::Player (void) : cameraRotationConstant(0.08f),
 Player::~Player (void)
 {
     if( mCar )
-	    delete( mCar );
+    {
+        delete( mCar );
+        mCar = NULL;
+    }
 }
 
 
@@ -95,9 +99,10 @@ void Player::createPlayer (CarType carType, TeamID tid)
     }
     
     bool isLocalPlayer = this == GameCore::mPlayerPool->getLocalPlayer();
-    if (isLocalPlayer) {
+    if (isLocalPlayer && mFirstLaunch) {
         mCar->louderLocalSounds();
         GameCore::mGui->setupDamageDisplay(carType, tid);
+        mFirstLaunch = false;
     }
 
     hp                    = INITIAL_HEALTH;
@@ -230,7 +235,7 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame)
 {
 	//Only take input if the player is alive
-	if(this->mAlive)
+	if(this->mAlive && this->getCar())
 	{
 		// process steering and apply acceleration
 		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);

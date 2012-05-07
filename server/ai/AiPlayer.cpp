@@ -22,14 +22,9 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	mPacket->guid.g = GameCore::mNetworkCore->getRakInterface()->Get64BitUniqueRandomNumber();
     mPacket->guid.systemIndex = -1;// = GameCore::mNetworkCore->m_pRak->GetMyGUID().systemIndex;
 	GameCore::mNetworkCore->PlayerJoin(&bsAiPlayer, mPacket);
-    RakNet::BitStream bsAiTeam;
-    bsAiTeam.Write( NO_TEAM );
-    GameCore::mNetworkCore->PlayerTeamSelect(&bsAiTeam, mPacket);
-	mCarType = CAR_SMALL;
-	RakNet::BitStream bsCarType;
-	bsCarType.Write(mCarType);
-	GameCore::mNetworkCore->PlayerSpawn(&bsCarType, mPacket);
 	mPlayer = GameCore::mPlayerPool->getPlayer(mPacket->guid);
+    mPlayer->setPlayerState( PLAYER_STATE_TEAM_SEL );
+    Spawn();
 	//create a steering behaviour
 	mSteeringBehaviour = new SteeringBehaviour(mPlayer);
 	
@@ -39,6 +34,20 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	direction = turn = 0;
 	targetDistance = 1000000.0;
 
+}
+
+void AiPlayer::Spawn()
+{
+    if( mPlayer->getPlayerState() == PLAYER_STATE_TEAM_SEL )
+    {
+        RakNet::BitStream bsAiTeam;
+        bsAiTeam.Write( NO_TEAM );
+        GameCore::mNetworkCore->PlayerTeamSelect(&bsAiTeam, mPacket);
+    }
+	mCarType = CAR_SMALL;
+	RakNet::BitStream bsCarType;
+	bsCarType.Write(mCarType);
+	GameCore::mNetworkCore->PlayerSpawn(&bsCarType, mPacket);
 }
 
 void AiPlayer::CreateFeelers()
@@ -54,6 +63,15 @@ void AiPlayer::CreateFeelers()
 
 void AiPlayer::Update(double timeSinceLastFrame)
 {
+    if( mPlayer->getPlayerState() == PLAYER_STATE_TEAM_SEL || mPlayer->getPlayerState() == PLAYER_STATE_SPAWN_SEL )
+    {
+        Spawn();
+        return;
+    }
+
+    if( GameCore::mGameplay->mGameActive == false )
+        return;
+
 	//get the steering force
 	Ogre::Vector3 targetPos = mSteeringBehaviour->Calculate();
 	//get angle between current heading and desired heading
@@ -65,7 +83,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
 	double distance = pos.distance(targetPos);
 	double theta = heading.getYaw().valueRadians();
-	
+
 	if(mPlayer->getAlive())
 	{
 		//check if we need to set a target

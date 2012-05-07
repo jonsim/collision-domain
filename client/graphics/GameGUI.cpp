@@ -106,6 +106,8 @@ void GameGUI::showSpawnScreenPage2 (void)
     mainWindow->setVisible(true);
     page1->setVisible(false);
     page2->setVisible(true);
+
+    CEGUI::MouseCursor::getSingleton().show();
 }
 
 void GameGUI::showSpawnScreenErrorText (const char* errorText)

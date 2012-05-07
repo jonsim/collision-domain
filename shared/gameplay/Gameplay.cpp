@@ -478,6 +478,9 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				break;
 			case ROUND_OVER_OT:
                 this->cycleGameMode(); //Cycle game mode
+                this->mGameActive = false;
+                this->restartGame();
+                GameCore::mPlayerPool->roundEnd();
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->showForce();
 				#endif
@@ -491,7 +494,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					transitionII->sendPacket();
 
                     
-                    if(this->getRoundNumber() < NUM_ROUNDS)
+                    /*if(this->getRoundNumber() < NUM_ROUNDS)
                     {
                         //New Round II
                         newRoundII = new InfoItem(NEW_ROUND_OT, 10000, 1000);
@@ -504,7 +507,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                         //End of game II
                         GameCore::mGui->outputToConsole("The game has ended [3 Rounds] \n");
 
-                    }
+                    }*/
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:

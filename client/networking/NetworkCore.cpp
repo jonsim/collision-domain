@@ -499,11 +499,6 @@ void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
     
 }
 
-void NetworkCore::RoundEnd( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
-{
-    GameCore::mPlayerPool->roundEnd();
-}
-
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -522,7 +517,6 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath, 0 );
 	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
     m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
-    m_RPC->RegisterSlot( "RoundEnd",            RoundEnd, 0 );
 }
 
 

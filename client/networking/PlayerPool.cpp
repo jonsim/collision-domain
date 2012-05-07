@@ -199,11 +199,13 @@ void PlayerPool::roundEnd()
 	{
         mPlayers[i]->delCar();
         // SERVER SHOULD HANDLE THESE
-        // mPlayers[i]->setAlive( true );
+        mPlayers[i]->setAlive( true );
         // mPlayers[i]->resetHP();
         // Just want this for game end
-        // mPlayers[i]->setPlayerState( PLAYER_STATE_TEAM_SEL );
+        //mPlayers[i]->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 	}
+
+    GameCore::mGui->showSpawnScreenPage2();
 }
 
 void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )

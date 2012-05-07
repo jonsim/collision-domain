@@ -43,6 +43,8 @@ public:
 	RakNet::RakNetGUID getPlayerGUID( int index );
 
 	void frameEvent( const float timeSinceLastFrame );
+    void roundEnd();
 };
+
 
 #endif

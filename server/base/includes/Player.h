@@ -35,6 +35,7 @@ public:
     void createPlayer (CarType carType, TeamID tid);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     Car* getCar (void);
+    void delCar() { if( mCar ) { delete mCar; mCar = NULL; } }
     //void collisionTickCallback (int damage, Player *causedByPlayer);
 	void collisionTickCallback(btVector3 &hitPoint, float damage, Player *causedByPlayer);
     void applyHealthBonus (void);
