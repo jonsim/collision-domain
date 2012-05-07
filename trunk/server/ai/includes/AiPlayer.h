@@ -27,6 +27,7 @@ public:
 	AiPlayer() {};
 	~AiPlayer() {};
 
+    void Spawn();
 	void Update(double timeSinceLastFrame);
 	Vector3 GetFleeTarget() { return mFleeTarget; };
 	Vector3 GetSeekTarget() { return mSeekTarget; };

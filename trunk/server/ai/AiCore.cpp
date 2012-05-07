@@ -31,8 +31,8 @@ void AiCore::createNewAiAgent(int flags, level diff)
 void AiCore::frameEvent(double timeSinceLastFrame)
 {
 	//check if the game has started
-	if(GameCore::mGameplay->mGameActive == false)
-		return;
+	//if(GameCore::mGameplay->mGameActive == false)
+	//	return;
 
 	std::vector<AiPlayer>::iterator i;
 

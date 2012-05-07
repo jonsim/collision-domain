@@ -30,7 +30,10 @@ Player::Player (void) : cameraRotationConstant(0.08f), mSpawned(false), mAlive(f
 Player::~Player (void)
 {
 	if( mCar )
+    {
 		delete( mCar );
+        mCar = NULL;
+    }
 }
 
 
@@ -211,6 +214,9 @@ void Player::processControlsFrameEvent(
         Ogre::Real secondsSinceLastFrame,
         float targetPhysicsFrameRate)
 {
+    if( !this->getCar() )
+        return;
+
 	if(this->getAlive())
 	{
 		// process steering

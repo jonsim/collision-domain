@@ -40,7 +40,7 @@ public:
     void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);
 	float getCameraYaw (void);
     Car* getCar (void);
-    void delCar() { if( mCar ) delete mCar; }
+    void delCar() { if( mCar ) { delete mCar; mCar = NULL; } }
     void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
     void applyHealthBonus (void);
     
@@ -152,6 +152,8 @@ private:
 
 	int roundScore;
 	int gameScore;
+
+    bool mFirstLaunch;
 };
 
 #endif // #ifndef PLAYER_H

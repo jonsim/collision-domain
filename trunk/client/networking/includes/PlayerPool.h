@@ -43,6 +43,7 @@ public:
     void                spectateNext( bool reverse = false );
 
 	void                frameEvent( const float timeSinceLastFrame );
+    void                roundEnd();
 
     void                processPlayer( Player *pPlayer );
 	//LocalPlayer *getLocalPlayer() { return static_cast<LocalPlayer>(m_pPlayers[iLocalPlayer]); }

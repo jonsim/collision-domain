@@ -486,6 +486,7 @@ void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet
     if( bResult )
     {
         m_RPC->Signal( "PlayerTeamSelect", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
+        GameCore::mPlayerPool->getPlayer(pkt->guid)->setPlayerState( PLAYER_STATE_SPAWN_SEL );
     }
     else
     {
@@ -504,6 +505,11 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
     unsigned char packetid;
     RakNet::BitStream bsSpawn;
+
+    if( pPlayer->getPlayerState() != PLAYER_STATE_SPAWN_SEL )
+    {
+        return;
+    }
 
     // Don't allow spawn if they haven't selected a team yet
     if( pPlayer->getTeam() == NO_TEAM )
