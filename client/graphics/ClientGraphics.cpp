@@ -692,7 +692,24 @@ void ClientGraphics::setupProjector()
 {		
 	mGraphicsState = PROJECTOR;		
 	this->mBigScreen = new BigScreen();		
-	this->mBigScreen->setupMapView();		
+	this->mBigScreen->setupMapView();
+
+    // players and powerups spawned before the bigscreen will have a NULL overlayElement. Fix this.
+    std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+    for (int i = 0; i < players.size(); i++)
+    {
+        Car *car;
+        if (car = players[i]->getCar())
+        {
+            car->reinitBigScreenOverlayElementIfNull();
+        }
+    }
+
+    std::vector<Powerup *> powerups = GameCore::mPowerupPool->getPowerups();
+    for (int i = 0; i < powerups.size(); i++)
+    {
+        powerups[i]->reinitBigScreenOverlayElementIfNull();
+    }
 }		
 			
 GraphicsState ClientGraphics::getGraphicsState()		

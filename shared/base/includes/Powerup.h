@@ -38,6 +38,7 @@ public:
 
     Ogre::Vector3 getPosition();
     Ogre::OverlayElement* getBigScreenOverlayElement();
+    void reinitBigScreenOverlayElementIfNull();
 
 private:
     bool mHasBeenCollected;

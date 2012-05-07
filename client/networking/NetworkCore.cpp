@@ -419,7 +419,6 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
 
     // if pPlayer is null playerCollision will remove the player
     pwrObject->playerCollision( pPlayer );
-
 }
 
 void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

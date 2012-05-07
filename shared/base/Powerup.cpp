@@ -179,3 +179,14 @@ Ogre::OverlayElement* Powerup::getBigScreenOverlayElement()
 {
     return mBigScreenOverlayElement;
 }
+
+void Powerup::reinitBigScreenOverlayElementIfNull()
+{
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if ( !mBigScreenOverlayElement
+            && GameCore::mClientGraphics->mBigScreen )
+        {
+            mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPowerupOverlayElement(position, mUniqueID);
+        }
+    #endif
+}

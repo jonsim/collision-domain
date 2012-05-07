@@ -148,3 +148,18 @@ Ogre::Vector3 PowerupPool::getNearestPowerUp(Ogre::Vector3 pos)
 
     return ret;
 }
+
+std::vector<Powerup *> PowerupPool::getPowerups()
+{
+	//Put all the players from the array into a vector
+	std::vector<Powerup *> tmp;
+	for (unsigned int i = 0; i < MAX_POWERUPS; i++)
+	{
+		if (mPowerups[i])
+        {
+			tmp.push_back(mPowerups[i]);
+        }
+	}
+	
+	return tmp;
+}
