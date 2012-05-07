@@ -130,10 +130,10 @@ void ScoreBoard::initialize()
 		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT1");
     this->textAreaT1->setDimensions(0.9f, 0.6f);
 	this->textAreaT1->setMetricsMode(Ogre::GMM_PIXELS);
-	this->textAreaT1->setPosition(40,100);
+	this->textAreaT1->setPosition(50,95);
 	
 	this->textAreaT1->setParameter("font_name","DejaVuSans");
-	this->textAreaT1->setParameter("char_height", "15");
+	this->textAreaT1->setParameter("char_height", "30");
 	this->textAreaT1->setColour(Ogre::ColourValue::White);
 	this->textAreaT1->setCaption(this->buildScoreText(BLUE_TEAM));
 	textScoreContainer->addChild(this->textAreaT1);	
@@ -142,10 +142,10 @@ void ScoreBoard::initialize()
 		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT2");
     this->textAreaT2->setDimensions(0.9f, 0.6f);
 	this->textAreaT2->setMetricsMode(Ogre::GMM_PIXELS);
-	this->textAreaT2->setPosition(440,100);
+	this->textAreaT2->setPosition(460,95);
 	
 	this->textAreaT2->setParameter("font_name","DejaVuSans");
-	this->textAreaT2->setParameter("char_height", "15");
+	this->textAreaT2->setParameter("char_height", "30");
 	this->textAreaT2->setColour(Ogre::ColourValue::White);
 
 	this->textAreaT2->setCaption(this->buildScoreText(RED_TEAM));
