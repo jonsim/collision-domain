@@ -77,22 +77,12 @@ void BigScreen::setupMapView()
 
         olcMap->addChild(oleVIP1);
         olcMap->addChild(oleVIP2);
-
-        /*
-        //Go through all the players which will add anything pre existing players in
-        std::vector<Player*> tmpPlayers = GameCore::mPlayerPool->getPlayers();
-        for(int i=0;i<tmpPlayers.size();i++)
-        {
-                this->manageNewPlayer(tmpPlayers[i]);
-        }
-        */
 }
 
 void BigScreen::updateMapView()
 {
+    // Loop through all possible players
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
-
-    //Loop through all possible players
     for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
     {
         if ( (*it)->getCar()
@@ -100,6 +90,16 @@ void BigScreen::updateMapView()
         {
             updatePlayer( (*it)->getCar(), (*it), (*it)->getCar()->getBigScreenOverlayElement() );
         }
+    }
+
+    // Loop through all possible powerups
+    std::vector<Powerup *> powerups = GameCore::mPowerupPool->getPowerups();
+    for (int i = 0; i < powerups.size(); i++)
+    {
+        updatePowerup(
+            powerups[i]->getPosition(),
+            powerups[i]->getRotation(),
+            powerups[i]->getBigScreenOverlayElement());
     }
 }
 
@@ -133,21 +133,14 @@ inline float BigScreen::convertWorldToScreenY(float yPos)
 
 void BigScreen::updatePlayer(Car *car, Player *player, Ogre::OverlayElement* carOverlay)
 {
-    if (!car || !player) return;
+    if (!car || !player || !carOverlay) return;
 
     CarSnapshot *playerSnap = car->getCarSnapshot();
     if (!playerSnap) return;
 
     btVector3 localPlayerPos = playerSnap->mPosition;
-    float xPos = this->convertWorldToScreenX(localPlayerPos.getX()); 
-    float yPos = this->convertWorldToScreenY(localPlayerPos.getZ()); //Z as we're doing a 2D projection
-
-    //Correct the position to be relative of top left corner.
-    //xPos -= mapCorner.x;
-    //yPos -= mapCorner.z;
-    //Ogre::Entity* arenaEntity = GameCore::mGraphicsApplication->getArenaEntity();
-    //Ogre::Vector3 maxArena = arenaEntity->getBoundingBox().getMaximum();
-        
+    float xPos = convertWorldToScreenX(localPlayerPos.getX()); 
+    float yPos = convertWorldToScreenY(localPlayerPos.getZ()); //Z as we're doing a 2D projection
 
     // Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
     // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
@@ -167,7 +160,6 @@ void BigScreen::updatePlayer(Car *car, Player *player, Ogre::OverlayElement* car
     if(yPos > 1)
         yPos = 1.0f;
 
-
     //Only check if get VIP
     if(player->getVIP())
     {
@@ -184,6 +176,32 @@ void BigScreen::updatePlayer(Car *car, Player *player, Ogre::OverlayElement* car
     carOverlay->setPosition(xPos,yPos);
 
     delete playerSnap; //Fixes the memory leak
+}
+
+void BigScreen::updatePowerup(Ogre::Vector3 location, btQuaternion &quat, Ogre::OverlayElement* powerupOverlay)
+{
+    if (!powerupOverlay) return;
+
+    float xPos = convertWorldToScreenX(location.x); 
+    float yPos = convertWorldToScreenY(location.z); //Z as we're doing a 2D projection
+    
+    // Calculate rotation from the car's chassis. This is projected straight to +Z. This can be done by passing through
+    // Ogre's quaternions and using the getYaw() function (as in r314), it just seemed overly complicated.
+    Ogre::Radian rot = Ogre::Math::ATan2( ( 2.0 * ( quat.z() * quat.x() + quat.y() * quat.w() ) ),
+                                    1.0 - ( 2.0 * ( quat.x() * quat.x() + quat.y() * quat.y() ) ) );
+    
+    // Rotate the arrow.
+    Ogre::Material* matMarker = powerupOverlay->getMaterial().get();
+    Ogre::TextureUnitState* texMarker = matMarker->getTechnique(0)->getPass(0)->getTextureUnitState(0);
+    texMarker->setTextureRotate(rot);
+
+    // This is not really needed if the above code is working
+    if(xPos > 1)
+        xPos = 1.0f;
+    if(yPos > 1)
+        yPos = 1.0f;
+
+    powerupOverlay->setPosition(xPos,yPos);
 }
 
 void BigScreen::setMapCorner(Ogre::Vector3 corner)
@@ -206,6 +224,24 @@ void BigScreen::showScreen()
         this->olcMap->show();
 }
 
+// THIS MUST REMOVE IT, the calling class will try to destroy the overlay
+// once this is done, so if it is still used shit will explode
+void BigScreen::removePowerupOverlayFromMap(int uniqueID)
+{
+    std::stringstream overlayNameSS;
+    overlayNameSS << "PowerupOverlay" << uniqueID;  
+        
+    olcMap->removeChild(overlayNameSS.str());
+}
+
+void BigScreen::removeCarOverlayFromMap(int uniqueID)
+{
+    std::stringstream overlayNameSS;
+    overlayNameSS << "PlayerOverlay" << uniqueID;  
+        
+    olcMap->removeChild(overlayNameSS.str());
+}
+
 Ogre::OverlayElement* BigScreen::createPowerupOverlayElement(Ogre::Vector3 powerupPosition, int uniqueID)
 {
         std::stringstream overlayNameSS;
@@ -217,8 +253,15 @@ Ogre::OverlayElement* BigScreen::createPowerupOverlayElement(Ogre::Vector3 power
         tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
         tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
 
-        //Get a reference to the main material
-        tmpOLE->setMaterialName("powerupCrateIcon");
+        // Get a different material per powerup as it will be rotated
+        Ogre::MaterialPtr powerupMaterial = Ogre::MaterialManager::getSingleton().getByName("powerupCrateIcon");
+        
+        // Clone a new instance then we can assign the new material with a new name
+        std::stringstream newMaterialName;
+        newMaterialName << "PowerupIcon" << uniqueID;
+
+        powerupMaterial->clone(newMaterialName.str());
+        tmpOLE->setMaterialName(newMaterialName.str());
         
         float tmpX = convertWorldToScreenX(powerupPosition.x);
         float tmpY = convertWorldToScreenY(powerupPosition.z);
@@ -237,23 +280,22 @@ Ogre::OverlayElement* BigScreen::createPlayerOverlayElement(int uniqueID)
         
         Ogre::OverlayElement* tmpOLE
             = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", overlayNameSS.str());
-
+        
         tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
         tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
 
         //Get a reference to the main material
         Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DefaultIcon");
-        //Build a new name with GUID and the time so it should be unique
+        
+        //Clone a new instance then we can assign the new material with a new name
         std::stringstream newMaterialName;
         newMaterialName << "DefaultIcon" << uniqueID;
-        
-        //Clone a new instance
+
         arrowMaterial->clone(newMaterialName.str());
-        //We can now assign the new material with a new name
         tmpOLE->setMaterialName(newMaterialName.str());
         
-        float tmpX = convertWorldToScreenX(0);
-        float tmpY = convertWorldToScreenY(0);
+        float tmpX = convertWorldToScreenX(0.5);
+        float tmpY = convertWorldToScreenY(0.5);
 
         tmpOLE->setPosition(tmpX,tmpY);
         tmpOLE->show();

@@ -17,7 +17,6 @@ Powerup::Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex)
       mPowerupType(powerupType),
       mPoolIndex(poolIndex),
       mUniqueID(GameCore::mPhysicsCore->getUniqueEntityID()),
-      position(spawnAt),
       mSound(NULL),
       mNode(NULL),
       mBigScreenOverlayElement(NULL),
@@ -82,7 +81,13 @@ Powerup::~Powerup()
         mNode->detachAllObjects();
         mNode->getParentSceneNode()->removeChild(mNode);
 
-        // delete the big screen overlay element?
+        if ( GameCore::mClientGraphics->mBigScreen != NULL )
+        {
+            GameCore::mClientGraphics->mBigScreen->removePowerupOverlayFromMap(mUniqueID);
+        }
+
+        // don't destroy the big screen overlay element there are some race conditions
+        //Ogre::OverlayManager::getSingleton().destroyOverlayElement(mBigScreenOverlayElement);
     #endif
     
     // delete the shape last
@@ -103,7 +108,7 @@ void Powerup::playerCollision(Player* player)
         if (player != NULL)
             GameCore::mAudioCore->playSoundOrRestart(mSound);
 
-        // remove mBigScreenOverlayElement from minimap
+        // mBigScreenOverlayElement will be hidden when the destructor is called
     #endif
     
     // don't delete this yet as it could be in the middle of a timestep
@@ -171,8 +176,12 @@ int Powerup::getIndex()
 
 Ogre::Vector3 Powerup::getPosition()
 {
-    // The powerup will drop in, but just tell the ai where it will be in the end!
-    return position;
+    return BtOgre::Convert::toOgre(mRigidBody->getWorldTransform().getOrigin());
+}
+
+btQuaternion Powerup::getRotation()
+{
+    return mRigidBody->getWorldTransform().getRotation();
 }
 
 Ogre::OverlayElement* Powerup::getBigScreenOverlayElement()
@@ -186,7 +195,7 @@ void Powerup::reinitBigScreenOverlayElementIfNull()
         if ( !mBigScreenOverlayElement
             && GameCore::mClientGraphics->mBigScreen )
         {
-            mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPowerupOverlayElement(position, mUniqueID);
+            mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPowerupOverlayElement(getPosition(), mUniqueID);
         }
     #endif
 }

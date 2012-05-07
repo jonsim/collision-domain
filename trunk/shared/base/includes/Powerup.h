@@ -37,6 +37,8 @@ public:
     int  getIndex();
 
     Ogre::Vector3 getPosition();
+    btQuaternion getRotation();
+
     Ogre::OverlayElement* getBigScreenOverlayElement();
     void reinitBigScreenOverlayElementIfNull();
 
@@ -48,7 +50,6 @@ private:
     int mPoolIndex;
     int mUniqueID;
 
-    Ogre::Vector3 position;
     Ogre::SceneNode *mNode;
     Ogre::OverlayElement* mBigScreenOverlayElement;
 
