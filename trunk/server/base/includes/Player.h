@@ -125,7 +125,6 @@ private:
     CarSnapshot*     mCarSnapshot;
     CarType          mCarType;
 
-	Ogre::OverlayElement* mOLE;
 	RakNet::RakNetGUID mPlayerGUID;
 	bool							  processingCollision;
 	std::map<std::string, float>	  collisionDamages;

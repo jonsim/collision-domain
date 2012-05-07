@@ -16,12 +16,18 @@
 #define WHEEL_FRICTION_CFM 0.6f
 
 Car::Car (int uniqueID)
-    : mGearSound(NULL)
+  : mGearSound(NULL),
+    mBigScreenOverlayElement(NULL)
 {
-#ifdef COLLISION_DOMAIN_CLIENT
-    mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
-    mCrashSound = GameCore::mAudioCore->getSoundInstance(CAR_CRASH, uniqueID, NULL);
-#endif
+    #ifdef COLLISION_DOMAIN_CLIENT
+        mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
+        mCrashSound = GameCore::mAudioCore->getSoundInstance(CAR_CRASH, uniqueID, NULL);
+    
+        if ( GameCore::mClientGraphics->mBigScreen != NULL )
+        {
+            mBigScreenOverlayElement = GameCore::mClientGraphics->mBigScreen->createPlayerOverlayElement(uniqueID);
+        }
+    #endif
 }
 
 Car::~Car()
@@ -849,6 +855,10 @@ void CarState::setWheel( int wheelnum, Ogre::SceneNode *node, const Ogre::Vector
 {
     mWheelNode[wheelnum] = node;
     node->setPosition( connectionPoint );
+}
 
-    
+
+Ogre::OverlayElement* Car::getBigScreenOverlayElement()
+{
+    return mBigScreenOverlayElement;
 }

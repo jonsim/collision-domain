@@ -405,7 +405,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         {
             if (GameCore::mPlayerPool->getLocalPlayer()->getCar() != NULL)
             {
-                // Moved here as audio event needs frehest car position
+                // Moved here as audio event needs freshest car position
                 GameCore::mPlayerPool->getLocalPlayer()->updateLocalGraphics();
                 GameCore::mGui->updateCounters();
                 GameCore::mGui->updateSpeedo();
@@ -417,8 +417,11 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         }
 
 		if (mGraphicsState == PROJECTOR)		
-		{		
-			this->mBigScreen->updateMapView();		
+		{	
+            // sure, this gets called every frame but its still going to be super fast
+            GameCore::mGui->hideOverlaysForBigScreen();
+
+			this->mBigScreen->updateMapView();
 		}
         
         // Cleanup frame specific objects.

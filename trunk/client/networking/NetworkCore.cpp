@@ -371,11 +371,6 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 			    log( "..invalid player" );
             }
 	    }
-
-	    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)		
-	    {		
-		    GameCore::mClientGraphics->mBigScreen->manageNewPlayer(pPlayer);		
-	    }
         
         break;
 

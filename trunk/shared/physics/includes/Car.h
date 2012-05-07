@@ -73,6 +73,9 @@ public:
     float getRevLimit() { return mRevLimit; }
 
 	float getMaxSpeed() { return mMaxSpeed; }
+    
+	//Overlay Element stuff for the big screen view
+	Ogre::OverlayElement* getBigScreenOverlayElement();
 
 #ifdef _WIN32
     virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3& offset );
@@ -182,6 +185,8 @@ protected:
 
 
 private:
+	Ogre::OverlayElement *mBigScreenOverlayElement;
+
     void applySteeringValue();
     void moveTo(const btVector3 &position, const btQuaternion &rotation);
     void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );

@@ -27,8 +27,7 @@ Player::Player (void)
     mTeam(0),
     mCarSnapshot(NULL),
     newInput(NULL),
-    mCar(NULL),
-    mOLE(NULL)
+    mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
 }
@@ -262,16 +261,6 @@ void Player::resetHP()
 void Player::applyHealthBonus()
 {
 
-}
-
-void Player::setOverlayElement(Ogre::OverlayElement* ole)
-{
-        mOLE = ole;
-}
-
-Ogre::OverlayElement* Player::getOverlayElement()
-{
-        return mOLE;
 }
 
 void Player::setSpawned()

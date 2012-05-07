@@ -35,17 +35,19 @@ public:
     bool SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args);
     bool SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args);
 
-        void setupChatbox (CEGUI::Window* guiWindow);
-        void toggleChatbox (void);
-        inline bool chatboxVisible (void) { return CEGUI::WindowManager::getSingleton().getWindow("/Chatbox/input")->isVisible(); }
-        bool Chatbox_Send (const CEGUI::EventArgs& args);
+    void setupChatbox (CEGUI::Window* guiWindow);
+    void toggleChatbox (void);
+    inline bool chatboxVisible (void) { return CEGUI::WindowManager::getSingleton().getWindow("/Chatbox/input")->isVisible(); }
+    bool Chatbox_Send (const CEGUI::EventArgs& args);
     void chatboxAddMessage (const char *szNickname, char *szMessage);
 
-        void setupConsole (CEGUI::Window* guiWindow);
-        void toggleConsole (void);
-        inline bool consoleVisible (void) { return CEGUI::WindowManager::getSingleton().getWindow("/Console")->isVisible(); }
-        bool Console_Send (const CEGUI::EventArgs& args);
-        bool Console_Off (const CEGUI::EventArgs& args);
+    void setupConsole (CEGUI::Window* guiWindow);
+    void toggleConsole (void);
+    inline bool consoleVisible (void) { return CEGUI::WindowManager::getSingleton().getWindow("/Console")->isVisible(); }
+    bool Console_Send (const CEGUI::EventArgs& args);
+    bool Console_Off (const CEGUI::EventArgs& args);
+    void hideOverlaysForBigScreen();
+    void showOverlaysForBigScreen();
 
     void setupOverlays (CEGUI::Window* guiWindow);
     void setupFPSCounter (CEGUI::Window* guiWindow);
@@ -61,10 +63,11 @@ private:
     void setupSpeedo (void);
     void setupGearDisplay (void);
 
-        Ogre::OverlayContainer* olcSpeedo;
+    Ogre::Overlay           *olSpeedo;
+    Ogre::OverlayContainer* olcSpeedo;
     Ogre::OverlayContainer* oleDamage;
 
-        Ogre::OverlayElement* oleNeedle;
+    Ogre::OverlayElement* oleNeedle;
     Ogre::OverlayElement* oleGear;
 
     Ogre::OverlayElement* oleDamageEngine;

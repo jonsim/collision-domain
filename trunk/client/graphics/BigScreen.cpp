@@ -3,23 +3,20 @@
 #include "GameCore.h"
 
 #define MAP_WIDTH	1.0f
-#define MAP_HEIGHT	0.8f
+#define MAP_HEIGHT	1.0f // 0.8
 
 #define MARKER_WIDTH 0.03f
 #define MARKER_HEIGHT 0.04f
 
 BigScreen::BigScreen()
+  : viewCameraVector(NULL),
+  olcMap(NULL),
+  oleCar(NULL),
+  mapCorner(0,0,0),
+  mapSize(0,0,0),
+  oleVIP1(NULL),
+  oleVIP2(NULL)
 {
-
-}
-
-bool BigScreen::declareNewPlayer( RakNet::RakNetGUID playerid )
-{
-        Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(playerid);
-        //Manage new player for bigscreen view
-        this->manageNewPlayer(tmpPlayer);
-        //return mViewportManager->declareNewPlayer(tmpPlayer);
-        return true;
 }
 
 void BigScreen::addCamera(Ogre::Camera* cam) 
@@ -30,7 +27,6 @@ void BigScreen::addCamera(Ogre::Camera* cam)
 
 void BigScreen::setupMapView()
 {
-
         Ogre::Overlay *olMap = 
                 Ogre::OverlayManager::getSingleton().create( "OVERLAY_MAP" );
         olMap->setZOrder(500);
@@ -92,53 +88,17 @@ void BigScreen::setupMapView()
         */
 }
 
-void BigScreen::manageNewPlayer(Player* player)
-{
-        //Timestamp used to fix duplicate named overlays.
-        std::stringstream overlayNameSS;
-        overlayNameSS << "PlayerOverlay" << player->getGUID() << RakNet::GetTime();     
-        
-        Ogre::OverlayElement* tmpOLE = 
-                Ogre::OverlayManager::getSingleton().createOverlayElement(
-                "Panel",
-                overlayNameSS.str());
-
-
-        tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
-        tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
-
-        //Get a reference to the main material
-        Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DefaultIcon");
-        //Build a new name with GUID and the time so it should be unique
-        std::stringstream newMaterialName;
-        newMaterialName << "DefaultIcon" << player->getPlayerGUID().ToString() << RakNet::GetTime();
-        
-        //Clone a new instance
-        arrowMaterial->clone(newMaterialName.str());
-        //We can now assign the new material with a new name
-        tmpOLE->setMaterialName(newMaterialName.str());
-        
-        tmpOLE->setPosition(0.5f, 0.5f);
-        olcMap->addChild(tmpOLE);
-
-        player->setOverlayElement(tmpOLE);
-}
-
 void BigScreen::updateMapView()
 {
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+
     //Loop through all possible players
     for(std::vector<Player*>::iterator it = players.begin();it != players.end();it++)
     {
-        /*
-        if((*it)->getOverlayElement() == NULL)
+        if ( (*it)->getCar()
+            && (*it)->getCar()->getBigScreenOverlayElement() )
         {
-        this->manageNewPlayer((*it));
-        }
-        */
-        if((*it)->getOverlayElement() != NULL)
-        {
-            updatePlayer((Player*)(*it), (*it)->getOverlayElement());
+            updatePlayer( (*it)->getCar(), (*it), (*it)->getCar()->getBigScreenOverlayElement() );
         }
     }
 }
@@ -171,13 +131,11 @@ inline float BigScreen::convertWorldToScreenY(float yPos)
         return yPos;
 }
 
-void BigScreen::updatePlayer(Player* player, Ogre::OverlayElement* carOverlay)
+void BigScreen::updatePlayer(Car *car, Player *player, Ogre::OverlayElement* carOverlay)
 {
-    CarSnapshot *playerSnap = NULL;
+    if (!car || !player) return;
 
-    if (!player->getCar()) return;
-    playerSnap = player->getCar()->getCarSnapshot();        
-
+    CarSnapshot *playerSnap = car->getCarSnapshot();
     if (!playerSnap) return;
 
     btVector3 localPlayerPos = playerSnap->mPosition;
@@ -253,10 +211,8 @@ Ogre::OverlayElement* BigScreen::createPowerupOverlayElement(Ogre::Vector3 power
         std::stringstream overlayNameSS;
         overlayNameSS << "PowerupOverlay" << uniqueID;  
         
-        Ogre::OverlayElement* tmpOLE = 
-                Ogre::OverlayManager::getSingleton().createOverlayElement(
-                "Panel",
-        overlayNameSS.str());
+        Ogre::OverlayElement* tmpOLE
+            = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", overlayNameSS.str());
     
         tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
         tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
@@ -265,10 +221,44 @@ Ogre::OverlayElement* BigScreen::createPowerupOverlayElement(Ogre::Vector3 power
         tmpOLE->setMaterialName("powerupCrateIcon");
         
         float tmpX = convertWorldToScreenX(powerupPosition.x);
-        float tmpY = convertWorldToScreenY(powerupPosition.y);
+        float tmpY = convertWorldToScreenY(powerupPosition.z);
 
         tmpOLE->setPosition(tmpX,tmpY);
         olcMap->addChild(tmpOLE);
 
     return tmpOLE;
+}
+
+Ogre::OverlayElement* BigScreen::createPlayerOverlayElement(int uniqueID)
+{
+        //Timestamp used to fix duplicate named overlays.
+        std::stringstream overlayNameSS;
+        overlayNameSS << "PlayerOverlay" << uniqueID;     
+        
+        Ogre::OverlayElement* tmpOLE
+            = Ogre::OverlayManager::getSingleton().createOverlayElement("Panel", overlayNameSS.str());
+
+        tmpOLE->setMetricsMode( Ogre::GMM_RELATIVE );
+        tmpOLE->setDimensions(MARKER_WIDTH,MARKER_HEIGHT);
+
+        //Get a reference to the main material
+        Ogre::MaterialPtr arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DefaultIcon");
+        //Build a new name with GUID and the time so it should be unique
+        std::stringstream newMaterialName;
+        newMaterialName << "DefaultIcon" << uniqueID;
+        
+        //Clone a new instance
+        arrowMaterial->clone(newMaterialName.str());
+        //We can now assign the new material with a new name
+        tmpOLE->setMaterialName(newMaterialName.str());
+        
+        float tmpX = convertWorldToScreenX(0);
+        float tmpY = convertWorldToScreenY(0);
+
+        tmpOLE->setPosition(tmpX,tmpY);
+        tmpOLE->show();
+
+        olcMap->addChild(tmpOLE);
+
+        return tmpOLE;
 }
