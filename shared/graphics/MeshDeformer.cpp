@@ -1,6 +1,7 @@
 
 #include "stdafx.h"
 #include "MeshDeformer.h"
+#include <limits.h>
 
 
 MeshDeformer::MeshDeformer(void) {

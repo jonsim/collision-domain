@@ -178,7 +178,11 @@ void BigScreen::updatePlayer(Car *car, Player *player, Ogre::OverlayElement* car
     delete playerSnap; //Fixes the memory leak
 }
 
+#if _WIN32
 void BigScreen::updatePowerup(Ogre::Vector3 location, btQuaternion &quat, Ogre::OverlayElement* powerupOverlay)
+#else
+void BigScreen::updatePowerup(Ogre::Vector3 location, btQuaternion quat, Ogre::OverlayElement* powerupOverlay)
+#endif
 {
     if (!powerupOverlay) return;
 
