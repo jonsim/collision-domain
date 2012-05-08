@@ -13,7 +13,7 @@
 
 
 
-#define INITIAL_HEALTH 1200
+#define INITIAL_HEALTH 200
 #define MAX_DAMAGE 400 // used cap damage for individual crashes so that deformations are more managable
 #define BIG_CRASH_THRESHOLD 80
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -308,9 +308,13 @@ std::string Player::getGUID(void) {
 void Player::killPlayer(Player* causedBy)
 {
 	this->killPlayer();
+    //Send via chat a killed message
     char killMessage[200];
-    sprintf(killMessage,"%s killed %s",this->getNickname(),causedBy->getNickname());
+    sprintf(killMessage,"%s killed %s\n",causedBy->getNickname(),this->getNickname());
     GameCore::mNetworkCore->sendChatMessage( killMessage );
+    //Send to the server console the kill message
+    GameCore::mGui->outputToConsole(killMessage);
+
 	GameCore::mGameplay->markDeath(this,causedBy);
     GameCore::mNetworkCore->sendPlayerDeath(this, causedBy);
     GameCore::mGameplay->handleDeath(this,causedBy);
