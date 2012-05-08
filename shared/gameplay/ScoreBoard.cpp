@@ -172,7 +172,7 @@ void ScoreBoard::manageStrips()
     int numBluePlayers = 0;
 
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
-    for(int i=0;i<players.size();i++)
+    for(unsigned int i=0;i<players.size();i++)
     {
         switch(players[i]->getTeam())
         {

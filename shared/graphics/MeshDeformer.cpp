@@ -23,7 +23,7 @@ void MeshDeformer::deformMesh(
     size_t index_offset = 0;
 
 	float dentSize = damage / 600;
-    if(isFront) dentSize *= 0.4;
+    if(isFront) dentSize *= 0.4f;
 	float distanceCheck = 55 + (15 * dentSize);
  
     // Run through the submeshes again, adding the data into the arrays

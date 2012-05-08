@@ -94,7 +94,7 @@ void BigScreen::updateMapView()
 
     // Loop through all possible powerups
     std::vector<Powerup *> powerups = GameCore::mPowerupPool->getPowerups();
-    for (int i = 0; i < powerups.size(); i++)
+    for (unsigned int i = 0; i < powerups.size(); i++)
     {
         updatePowerup(
             powerups[i]->getPosition(),
