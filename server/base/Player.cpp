@@ -308,6 +308,9 @@ std::string Player::getGUID(void) {
 void Player::killPlayer(Player* causedBy)
 {
 	this->killPlayer();
+    char killMessage[200];
+    sprintf(killMessage,"%s killed %s",this->getNickname(),causedBy->getNickname());
+    GameCore::mNetworkCore->sendChatMessage( killMessage );
 	GameCore::mGameplay->markDeath(this,causedBy);
     GameCore::mNetworkCore->sendPlayerDeath(this, causedBy);
     GameCore::mGameplay->handleDeath(this,causedBy);
