@@ -781,6 +781,7 @@ void Gameplay::markDeath(Player* deadPlayer, Player* causedBy)
 */
 void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
 {
+#ifdef COLLISION_DOMAIN_SERVER
     switch(this->mGameMode)
     {
         case FFA_MODE:
@@ -835,6 +836,8 @@ void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
             //OutputDebugString("No game mode detected!!\n");
             causedBy->addToScore(1);
     }
+    GameCore::mNetworkCore->sendSyncScores();
+#endif
 }
 
 std::vector<DEATH*> Gameplay::getDeathList()
