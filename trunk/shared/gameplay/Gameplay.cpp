@@ -467,7 +467,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 			case THREE_OT:
 				#ifdef COLLISION_DOMAIN_CLIENT
                     tmpOLE->hide();
-                    this->hideGameTypeText();
+                    //this->hideGameTypeText();
 					tmpOLE->setDimensions(0.1f, 0.1f);
 					tmpOLE->setMaterialName( "gear3" );
 					tmpOLE->setPosition(0.45f, 0.1f);
