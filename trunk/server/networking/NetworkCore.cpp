@@ -634,7 +634,7 @@ void NetworkCore::sendSyncScores()
     RakNet::BitStream bs;
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
     bs.Write(players.size()); //Send the size
-    for(int i=0;i<players.size();i++)
+    for(unsigned int i=0;i<players.size();i++)
     {
         //Write player GUID then round score and then score
         bs.Write(players[i]->getGUID());

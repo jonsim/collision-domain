@@ -428,7 +428,6 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 		Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
 	#endif
 	#ifdef COLLISION_DOMAIN_SERVER
-	    InfoItem* newRoundII;
 		InfoItem* transitionII;
     #endif
 
@@ -866,7 +865,7 @@ void Gameplay::restartGame()
 void Gameplay::resetRoundScores() {
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
 
-    for(int i=0;i<players.size();i++)
+    for(unsigned int i=0;i<players.size();i++)
     {
         players[i]->setRoundScore(0);
     }
@@ -876,7 +875,7 @@ void Gameplay::resetRoundScores() {
 void Gameplay::calculateRoundScores()
 {
     std::vector<Player*> players = GameCore::mPlayerPool->getScoreOrderedPlayers();
-    for(int i=(players.size()-1);i>=(players.size()-NUM_TOP_PLAYERS-1);i--)
+    for(unsigned int i=(players.size()-1);i>=(players.size()-NUM_TOP_PLAYERS-1);i--)
 	{
         //If there are not at NUM_TOP_PLAYERS this will save it from breaking
         if(i<0)
