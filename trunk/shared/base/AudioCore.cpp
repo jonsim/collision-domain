@@ -193,8 +193,6 @@ void AudioCore::deleteSoundInstance(OgreOggISound* sound)
 {
     if (!sound) return;
 
-    OgreOggISound *newSound = new OgreOggISound *;
-
     mSoundDeletesPending->insert(mSoundDeletesPending->end(), sound);
 }
 
