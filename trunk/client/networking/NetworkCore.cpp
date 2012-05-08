@@ -432,10 +432,13 @@ void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet 
 	bitStream->Read(startTime);
 	RakNet::Time endTime;
 	bitStream->Read(endTime);
+    bool show;
+    bitStream->Read(show);
 
 	InfoItem* ii = new InfoItem(ot,startTime,endTime);
-	GameCore::mGameplay->mInfoItems.push_back(ii);
-	//GameCore::mGraphicsApplication
+    //Removed for RPC calls of InfoItems
+	//GameCore::mGameplay->mInfoItems.push_back(ii);
+    GameCore::mGameplay->handleInfoItem(ii,show);
 }
 
 void NetworkCore::PlayerDeath( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

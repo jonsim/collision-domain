@@ -42,7 +42,7 @@ public:
 	OverlayType		getOverlayType();
 	void			setDrawn();
 	bool			getDrawn();
-	void			sendPacket();
+	void			sendPacket(bool show);
 private:
 	OverlayType		mOT;
 	RakNet::Time	mStartTime;

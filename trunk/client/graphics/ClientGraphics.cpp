@@ -399,7 +399,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         //-PHYSICS-STEP--------------------------------------------------------------------
 
         //Draw info items
-        GameCore::mGameplay->drawInfo();
+        //GameCore::mGameplay->drawInfo();
     
         // Apply controls the player (who will be moved on frameEnd and frameStart).
         if (NetworkCore::bConnected)

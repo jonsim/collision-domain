@@ -374,7 +374,6 @@ void Gameplay::startGame()
     InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
 	mInfoItems.push_back(newRoundII);
 	this->calculateRoundScores();
-    newRoundII->sendPacket();
 
     this->spawnPlayers();
 	this->positionPlayers();
@@ -424,6 +423,8 @@ void Gameplay::drawInfo()
 
 void Gameplay::handleInfoItem(InfoItem* item, bool show)
 {
+    item->sendPacket(show); //Send the packet, will only happen on the server
+
 	#ifdef COLLISION_DOMAIN_CLIENT
 		Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
 	#endif
@@ -518,8 +519,6 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     //Show the wining player II
 					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
 					mInfoItems.push_back(transitionII);
-					transitionII->sendPacket();
-
                     
                     /*if(this->getRoundNumber() < NUM_ROUNDS)
                     {
@@ -723,18 +722,6 @@ void Gameplay::scheduleCountDown()
 		//Round over
 		InfoItem* roEII = new InfoItem(ROUND_OVER_OT,189000,2900);
 		mInfoItems.push_back(roEII);
-
-		//Send packets
-	
-		threeII->sendPacket();
-		twoII->sendPacket();
-		oneII->sendPacket();
-		fiveEII->sendPacket();
-		fourEII->sendPacket();
-		threeEII->sendPacket();
-		twoEII->sendPacket();
-		oneEII->sendPacket();
-		roEII->sendPacket();
 	#endif
 }
 
