@@ -24,7 +24,6 @@ InfoItem::InfoItem(OverlayType ot, RakNet::Time startTime, int seconds)
 	mStartTime	 = startTime;
 	mEndTime	 = startTime + RakNet::Time(seconds);
 	mDrawn		= false;
-	//this->sendPacket();
 }
 
 InfoItem::InfoItem(OverlayType ot, int delay, int seconds)
@@ -33,13 +32,12 @@ InfoItem::InfoItem(OverlayType ot, int delay, int seconds)
 	mStartTime = RakNet::GetTime() + RakNet::Time(delay);
 	mEndTime   = mStartTime + RakNet::Time(seconds);
 	mDrawn		= false;
-	//this->sendPacket();
 }
 
-void InfoItem::sendPacket()
+void InfoItem::sendPacket(bool show)
 {
 	#ifdef COLLISION_DOMAIN_SERVER
-		GameCore::mNetworkCore->sendInfoItem(this);
+		GameCore::mNetworkCore->sendInfoItem(this,show);
 	#endif
 }
 

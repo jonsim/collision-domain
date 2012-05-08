@@ -80,6 +80,7 @@ public:
     void                        cycleGameMode();
     void                        handleNewRound();
     Team*						getTeam(TeamID teamID);
+    void						handleInfoItem(InfoItem* item, bool show);
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -102,7 +103,7 @@ private:
 	GameMode					mGameMode;
 	
 	Ogre::OverlayContainer*		olContainer;
-	void						handleInfoItem(InfoItem* item, bool show);
+	
 
 	HUD*						mHUD;
 	std::vector<DEATH*>			deathList;

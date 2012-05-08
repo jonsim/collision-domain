@@ -601,13 +601,14 @@ void NetworkCore::linkBigScreen(BigScreen* bigScreen_P)
 }
 */
 
-void NetworkCore::sendInfoItem(InfoItem* ii)
+void NetworkCore::sendInfoItem(InfoItem* ii, bool show)
 {
 	//OutputDebugString("Sending Info Item\n");
 	RakNet::BitStream bs;
 	bs.Write(ii->getOverlayType());
 	bs.Write(ii->getStartTime());
 	bs.Write(ii->getEndTime());
+    bs.Write(show);
 	m_RPC->Signal( "InfoItemReceive", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 

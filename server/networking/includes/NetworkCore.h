@@ -98,7 +98,7 @@ public:
 	static void SetupGameForPlayer( RakNet::RakNetGUID playerid );
     static void HandlePlayerQuit( RakNet::RakNetGUID playerid, unsigned char reason );
 
-	void sendInfoItem(InfoItem* ii);
+	void sendInfoItem(InfoItem* ii, bool show);
 	void sendPlayerDeath(Player* player, Player* causedBy); 
 	void declareNewVIP(Player* player);
 
