@@ -1,0 +1,21 @@
+import cd/GUIComponent from "cdBaseMaterials.material"
+
+material rank_1st : cd/GUIComponent
+{
+	set $texture cd-rank-1st.png
+}
+
+material rank_2nd : cd/GUIComponent
+{
+	set $texture cd-rank-2nd.png
+}
+
+material rank_3rd : cd/GUIComponent
+{
+	set $texture cd-rank-3rd.png
+}
+
+material rank_grt_3rd : cd/GUIComponent
+{
+	set $texture cd-rank-grt-3rd.png
+}

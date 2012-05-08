@@ -747,6 +747,7 @@ void GameGUI::updateDamage (CarType ct, int part, int colour) {
 void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
 {
     setupSpeedo();
+    setupRank();
     setupGearDisplay();
     updateSpeedo(0.0f, 0);
     //updateDamage();
@@ -755,9 +756,57 @@ void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
 void GameGUI::hideOverlaysForBigScreen()
 {
     olSpeedo->hide();
+    olRank->hide();
 }
 
 void GameGUI::showOverlaysForBigScreen()
 {
     olSpeedo->show();
+    olRank->show();
+}
+
+void GameGUI::setupRank()
+{
+    olRank = Ogre::OverlayManager::getSingleton().create( "OVERLAY_RANKS" );
+    olRank->setZOrder( 500 );
+    olRank->show();
+
+    olRankContainer = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "RANK" ) );
+    olRankContainer->setMetricsMode( Ogre::GMM_PIXELS );
+    olRankContainer->setHorizontalAlignment( Ogre::GHA_LEFT );
+    olRankContainer->setVerticalAlignment( Ogre::GVA_BOTTOM );
+    olRankContainer->setDimensions( 250, 250 );
+    currentRankMaterialIndex = 2;
+    olRankContainer->setMaterialName( "rank_3rd" );
+    olRankContainer->setPosition( 269, -202 ); // 270 gives a weird vertical glitch 
+
+    olRank->add2D( olRankContainer );
+}
+
+// 0 = 1st, 1 = 2nd, 2 = 3rd, anything else = >3rd
+void GameGUI::updateRank(int rankIndex)
+{
+    switch (rankIndex)
+    {
+        case 0:
+            if (currentRankMaterialIndex == 0) break;
+            currentRankMaterialIndex = 0;
+            olRankContainer->setMaterialName( "rank_1st" );
+            break;
+        case 1:
+            if (currentRankMaterialIndex == 1) break;
+            currentRankMaterialIndex = 1;
+            olRankContainer->setMaterialName( "rank_2nd" );
+            break;
+        case 2:
+            if (currentRankMaterialIndex == 2) break;
+            currentRankMaterialIndex = 2;
+            olRankContainer->setMaterialName( "rank_3rd" );
+            break;
+        default:
+            if (currentRankMaterialIndex == 3) break;
+            currentRankMaterialIndex = 3;
+            olRankContainer->setMaterialName( "rank_grt_3rd" );
+            break;
+    }
 }

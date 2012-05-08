@@ -52,20 +52,25 @@ public:
     void setupOverlays (CEGUI::Window* guiWindow);
     void setupFPSCounter (CEGUI::Window* guiWindow);
 
+    void updateRank (int rankIndex);
     void updateSpeedo (void);
-        void updateSpeedo (float fSpeed, int iGear);
+    void updateSpeedo (float fSpeed, int iGear);
     void updateDamage (CarType ct, int part, int colour);
 
     void updateCounters (void);
     void setupDamageDisplay(CarType carType, TeamID tid);
     
 private:
+    int currentRankMaterialIndex;
+    void setupRank(void);
     void setupSpeedo (void);
     void setupGearDisplay (void);
-
-    Ogre::Overlay           *olSpeedo;
-    Ogre::OverlayContainer* olcSpeedo;
-    Ogre::OverlayContainer* oleDamage;
+    
+    Ogre::Overlay          *olRank;
+    Ogre::OverlayContainer *olRankContainer;
+    Ogre::Overlay          *olSpeedo;
+    Ogre::OverlayContainer *olcSpeedo;
+    Ogre::OverlayContainer *oleDamage;
 
     Ogre::OverlayElement* oleNeedle;
     Ogre::OverlayElement* oleGear;
