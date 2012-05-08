@@ -45,7 +45,11 @@ private:
 	Ogre::OverlayElement*		oleVIP2;
 
 	void						updatePlayer(Car *car, Player *player, Ogre::OverlayElement* carOverlay);
+#if _WIN32
     void                        updatePowerup(Ogre::Vector3 location, btQuaternion &quat, Ogre::OverlayElement* powerupOverlay);
+#else
+    void						updatePowerup(Ogre::Vector3 location, btQuaternion quat, Ogre::OverlayElement* powerupOverlay);
+#endif
 	
 	void						setMapCorner(Ogre::Vector3 corner);
 	void						setMapSize(Ogre::Vector3 size);
