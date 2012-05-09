@@ -52,6 +52,12 @@ enum
     ID_SPAWN_WAIT_NEXT_GAME,
 };
 
+struct SERVER_INFO_DATA
+{
+    unsigned int publicSeed;
+    int curMap;
+};
+
 struct PLAYER_INPUT_DATA
 {
     bool frwdPressed;
@@ -77,6 +83,7 @@ class NetworkCore
 private:
     static RakNet::RakPeerInterface *m_pRak;
     static RakNet::RPC4 *m_RPC;
+    
     RakNet::RakNetGUID serverGUID;
     std::string mPlayerName;
 
@@ -85,10 +92,10 @@ private:
 public:
     NetworkCore();
     ~NetworkCore (void);
-
+    char *m_szHost;
 	RakNet::RakNetGUID getServerGUID();
 
-	bool Connect( const char *szHost, int iPort, char *szPass );
+	bool Connect( const char *szHost = NULL, int iPort = SERVER_PORT, char *szPass = NULL );
     bool AutoConnect( int iPort );
 
     RakNet::RakPeerInterface* getRakInterface();
