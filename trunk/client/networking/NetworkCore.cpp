@@ -493,8 +493,12 @@ void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
         bitStream->Read(pGameScore);
 
         Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(pGUID);
-        tmpPlayer->setRoundScore(pRoundScore);
-        tmpPlayer->setGameScore(pRoundScore);
+        if(tmpPlayer != NULL) {
+            tmpPlayer->setRoundScore(pRoundScore);
+            tmpPlayer->setGameScore(pRoundScore);
+        } else {
+            OutputDebugString("Attempted to update score for non existent player\n");
+        }
     }
     
 }
