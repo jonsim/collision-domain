@@ -36,6 +36,7 @@ private:
 
 	Ogre::OverlayElement *textAreaT1;
 	Ogre::OverlayElement *textAreaT2;
+    Ogre::OverlayElement *textAreaT3;
 
     void    manageStrips();
 };
