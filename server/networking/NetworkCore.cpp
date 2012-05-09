@@ -647,4 +647,5 @@ void NetworkCore::sendSyncScores()
         bs.Write(players[i]->getRoundScore());
         bs.Write(players[i]->getGameScore());
     }
+    m_RPC->Signal( "SyncScores", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
