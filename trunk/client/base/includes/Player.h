@@ -36,7 +36,93 @@ struct PLAYER_DAMAGE_LOC
     float damageTR;
     float damageBR;
     float damageMR;
+};enum PowerupBoardType : int
+{
+    POWERUP_BOARD_HEAVY,
+    POWERUP_BOARD_LIGHT,
+    POWERUP_BOARD_HEALTH,
+    POWERUP_BOARD_SPEED
 };
+
+class PowerupBoardState
+{
+public:
+    PowerupBoardState()
+    {
+        PowerupBoardState(POWERUP_BOARD_HEAVY, -1.0f);
+    }
+
+    PowerupBoardState(PowerupBoardType type, float fadeOutInSeconds)
+      : fadeOutInSeconds(fadeOutInSeconds < 0 ? 0.001f : fadeOutInSeconds),
+        remaining       (fadeOutInSeconds <= 0 ? -1.0f : fadeOutInSeconds),
+        type            (type)
+    {}
+    
+    void timeElapsed(Ogre::Billboard *modify, float elapsedSeconds)
+    {
+        if (remaining < -0.001)
+        {
+            return;
+        }
+
+        remaining -= elapsedSeconds;
+        float alpha = 0.0f;
+
+        if (remaining > 0)
+        {
+            // display the powerup between 0.1 and 1.0,
+            // jump from 0.1 to 0.0 as its hard to tell in that range
+            alpha = remaining / fadeOutInSeconds;
+            if (alpha < 0.0f)
+            {
+                alpha = 0.0f;
+            }
+
+            modify->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, alpha));
+        }
+        else
+        {
+            finishNow(modify);
+        }
+    }
+
+    void finishNow(Ogre::Billboard *modify)
+    {
+        remaining = -1;
+        modify->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f));
+        
+        // fire Powerup finished event
+    }
+
+    bool isFinished()
+    {
+        return remaining < -0.001;
+    }
+
+    PowerupBoardType getType()
+    {
+        return type;
+    }
+
+    bool isType(PowerupBoardType isType)
+    {
+        if ( ( isType == POWERUP_BOARD_HEAVY && type == POWERUP_BOARD_LIGHT )
+            || ( isType == POWERUP_BOARD_LIGHT && type == POWERUP_BOARD_HEAVY ) )
+        {
+            return true;
+        }
+        else
+        {
+            return isType == type;
+        }
+    }
+
+private:
+    float fadeOutInSeconds;
+    float remaining;
+    PowerupBoardType type;
+};
+
 
 class Player
 {
@@ -54,6 +140,7 @@ public:
     void delCar() { if( mCar ) { mCar->mBodyNode->detachAllObjects(); delete mCar; mCar = NULL; } }
     void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
     void applyHealthBonus (void);
+    void frameEvent(float time);
     
     const char *getNickname (void) { return mNickname; }
     int getCarType (void) { return mCarType; }
@@ -90,7 +177,7 @@ public:
 	CarSnapshot *mSnapshots;
     Player* mLastKiller;
 
-	
+	void pushBackNewPowerupBoard(PowerupBoardType type, float fadeOutInSeconds);
 	void addToScore(int amount);
 	int getRoundScore();	
     void setRoundScore( int rs ) { this->roundScore = rs; }
@@ -124,6 +211,14 @@ private:
 	Ogre::SceneNode*						   camNode;
 	Ogre::SceneNode*						   camArmNode;
     CarType									   mCarType;
+
+    #define NUM_POWERUP_BOARDS 3
+
+    Ogre::BillboardSet*                        mPowerupBoards[NUM_POWERUP_BOARDS];
+    Ogre::Billboard*                           mPowerupBars  [NUM_POWERUP_BOARDS];
+    PowerupBoardState                          mPowerupStates[NUM_POWERUP_BOARDS];
+
+
     Ogre::BillboardSet*                        mBoards;
     Ogre::BillboardSet*                        mBacks;
     Ogre::Billboard*                           mHealthbar;
@@ -134,6 +229,7 @@ private:
 	int										   cameraView;
 	btVector3                                  cameraViews[3];
 	btVector3                                  cameraLookViews[3];
+    
 
 	/*bool									   processingCollision;
 	std::map<std::string, std::vector<float> >			   collisionDamages;

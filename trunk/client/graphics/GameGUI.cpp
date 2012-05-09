@@ -745,19 +745,20 @@ void GameGUI::setupOverlays (CEGUI::Window* guiWindow)
     setupRank();
     setupGearDisplay();
     updateSpeedo(0.0f, 0);
-    //updateDamage();
 }
 
 void GameGUI::hideOverlaysForBigScreen()
 {
     olSpeedo->hide();
     olRank->hide();
+    olPowerup->hide();
 }
 
 void GameGUI::showOverlaysForBigScreen()
 {
     olSpeedo->show();
     olRank->show();
+    olPowerup->show();
 }
 
 void GameGUI::setupRank()

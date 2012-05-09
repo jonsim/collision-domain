@@ -106,7 +106,25 @@ void Powerup::playerCollision(Player* player)
 
     #ifdef COLLISION_DOMAIN_CLIENT
         if (player != NULL)
+        {
             GameCore::mAudioCore->playSoundOrRestart(mSound);
+           
+            switch (mPowerupType)
+            {
+            case POWERUP_HEALTH:
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 2.0f);
+                break;
+            case POWERUP_MASS:
+                // POWERUP_BOARD_HEAVY, POWERUP_BOARD_LIGHT,
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 10.0f);
+                break;
+            case POWERUP_SPEED:
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 10.0f);
+                break;
+            default:
+                break;
+            }
+        }
 
         // mBigScreenOverlayElement will be hidden when the destructor is called
     #endif

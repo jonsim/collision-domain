@@ -66,6 +66,8 @@ private:
     void setupSpeedo (void);
     void setupGearDisplay (void);
     
+    Ogre::Overlay          *olPowerup;
+    Ogre::OverlayContainer *olPowerupContainer;
     Ogre::Overlay          *olRank;
     Ogre::OverlayContainer *olRankContainer;
     Ogre::Overlay          *olSpeedo;

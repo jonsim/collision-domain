@@ -50,6 +50,19 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     ss << "our team: " << mTeam << "\n";
     mFirstLaunch = true;
 
+    for (int i = 0; i < NUM_POWERUP_BOARDS; i++)
+    {
+        mPowerupBoards[i] = GameCore::mSceneMgr->createBillboardSet( 1 );
+        mPowerupBoards[i]->setDefaultDimensions( 1.0f, 1.0f );
+        mPowerupBoards[i]->setCastShadows( false );
+        mPowerupBoards[i]->setMaterialName( "board_powerup_good_heavy" );
+
+        mPowerupStates[i] = PowerupBoardState(POWERUP_BOARD_HEAVY, -1.0f);
+    }
+    mPowerupBars[0] = mPowerupBoards[0]->createBillboard( -0.65f, 3.3f, 0, Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f) );
+    mPowerupBars[1] = mPowerupBoards[1]->createBillboard( 0.66f, 3.3f, 0, Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f) );
+    mPowerupBars[2] = mPowerupBoards[2]->createBillboard( 0, 4.5f, 0, Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f) );
+
     mBoards = GameCore::mSceneMgr->createBillboardSet( 5 );
     mBoards->setDefaultDimensions( 1.5f, 0.18f );
 
@@ -165,6 +178,16 @@ void Player::createPlayer (CarType carType, TeamID tid)
 
         mFirstLaunch = false;
     }
+    
+    for (int i = 0; i < NUM_POWERUP_BOARDS; i++)
+    {
+        mCar->mBodyNode->attachObject( mPowerupBoards[i] );
+    }
+
+    pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 20);
+    pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 20);
+    pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 20);
+    pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 20);
 
     if( !isLocalPlayer )
     {
@@ -172,7 +195,7 @@ void Player::createPlayer (CarType carType, TeamID tid)
         //    mBoards->detachFromParent();
         //if( mBacks->isAttached() )
         //    mBacks->detachFromParent();
-
+        
         mCar->mBodyNode->attachObject( mBoards );
         mCar->mBodyNode->attachObject( mBacks );
         mCar->mBodyNode->attachObject( mNametag );
@@ -324,6 +347,109 @@ void Player::processControlsFrameEvent(
     }
 }
 
+void Player::pushBackNewPowerupBoard(PowerupBoardType type, float fadeOutInSeconds)
+{
+    int matchedIndex = -1, finishedIndex = -1;
+    for (int i = 0; i < NUM_POWERUP_BOARDS; i++)
+    {
+        // this method will return quickly if the powerup in question is already disabled
+        if (mPowerupStates[i].isFinished()) finishedIndex = i;
+        if (mPowerupStates[i].isType(type)) matchedIndex = i;
+    }
+
+    if (matchedIndex < 0 && finishedIndex < 0)
+    {
+        return;
+    }
+
+    switch (type)
+    {
+        case POWERUP_BOARD_HEAVY:
+            // find if a heavy powerup or light powerup is already active, and "refresh" it with full time
+            if (matchedIndex >= 0)
+            {
+                // finish the powerup if its not already finished
+                
+                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+                finishedIndex = matchedIndex;
+            }
+            else
+            {
+                // this is now a slot containing an inactive powerup
+                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+            }
+            
+            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_good_heavy" );
+            break;
+
+        case POWERUP_BOARD_LIGHT:
+            // find if a heavy powerup or light powerup is already active, and "refresh" it with full time
+            if (matchedIndex >= 0)
+            {
+                // finish the powerup if its not already finished
+                
+                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+                finishedIndex = matchedIndex;
+            }
+            else
+            {
+                // this is now a slot containing an inactive powerup
+                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+            }
+            
+            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_bad_light" );
+            break;
+
+        case POWERUP_BOARD_HEALTH:
+            // find if a health powerup is already active, and "refresh" it with full time
+            if (matchedIndex >= 0)
+            {
+                // finish the powerup if its not already finished
+                
+                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+                finishedIndex = matchedIndex;
+            }
+            else
+            {
+                // this is now a slot containing an inactive powerup
+                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+            }
+            
+            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_good_health" );
+            break;
+
+        case POWERUP_BOARD_SPEED:
+            // find if a speed powerup is already active, and "refresh" it with full time
+            if (matchedIndex >= 0)
+            {
+                // finish the powerup if its not already finished
+                
+                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+                finishedIndex = matchedIndex;
+            }
+            else
+            {
+                // this is now a slot containing an inactive powerup
+                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
+            }
+            
+            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_good_speed" );
+            break;
+
+        default:
+            // make it so we can never push back a powerup with invalid type
+            break;
+    }
+}
+
+void Player::frameEvent(float time)
+{
+    for (int i = 0; i < NUM_POWERUP_BOARDS; i++)
+    {
+        // this method will return quickly if the powerup in question is already disabled
+        mPowerupStates[i].timeElapsed(mPowerupBars[i], time);
+    }
+}
 
 /// @brief  Updates the camera's rotation based on the values given.
 /// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
