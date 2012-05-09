@@ -1,0 +1,42 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Leaf from "cdBaseMaterials.material"
+
+material brick_uv : cd/Base
+{
+    set $diffuse_map rubble_brick_uv.jpg
+}
+
+material chunk1_uv : cd/Base
+{
+    set $diffuse_map rubble_chunk_uv.jpg
+}
+
+material chunk2_uv : cd/Base
+{
+    set $diffuse_map rubble_chunk_uv.jpg
+}
+
+material chunk3_uv : cd/Base
+{
+    set $diffuse_map rubble_chunk_uv.jpg
+}
+
+material ramp_uv : cd/Base
+{
+    set $diffuse_map rubble_ramp_uv.jpg
+}
+
+material planter_uv : cd/Base
+{
+    set $diffuse_map planter_uv.jpg
+}
+
+material palm_tree_trunk_uv : cd/Base
+{
+    set $diffuse_map palm_tree_trunk.jpg
+}
+
+material palm_tree_leaf_uv : cd/Leaf
+{
+    set $diffuse_map palm_tree_leaf.png
+}

@@ -98,11 +98,12 @@ abstract material leaf_receiver/stencil
 		pass decal
 		{
 			ambient 1 1 1 1
-            diffuse 0.4 0.6 0.3
+            //diffuse 0.4 0.6 0.3
+            diffuse 1 1 1 1
             
 			scene_blend alpha_blend
 			depth_write on
-            alpha_rejection greater 192
+            alpha_rejection greater 128
             cull_hardware none
             cull_software none
             

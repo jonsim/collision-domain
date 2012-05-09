@@ -1,0 +1,12 @@
+import cd/Base from "cdBaseMaterials.material"
+import cd/Leaf from "cdBaseMaterials.material"
+
+material birch_trunk_uv : cd/Base
+{
+    set $diffuse_map birch_trunk.png
+}
+
+material birch_xbeam_uv : cd/Leaf
+{
+    set $diffuse_map birch_xbeam.png
+}
