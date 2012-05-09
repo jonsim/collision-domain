@@ -356,7 +356,8 @@ void BigScreen::updateRoundTimer()
 {
     char displayText[100];
     sprintf(displayText,"%ld",181-(time(NULL)-startTime));
-    this->oleTimerText->setCaption(displayText);
+    if(181-(time(NULL)-startTime) >= 0 && 181-(time(NULL)-startTime) < 180)
+        this->oleTimerText->setCaption(displayText);
 }
 
 

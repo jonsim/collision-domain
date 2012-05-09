@@ -32,6 +32,7 @@ private:
 	bool isForced;
     std::vector<Ogre::OverlayElement*> redTeamStrips;
     std::vector<Ogre::OverlayElement*> blueTeamStrips;
+    std::vector<Ogre::OverlayElement*> greyTeamStrips;
 
 	Ogre::OverlayElement *textAreaT1;
 	Ogre::OverlayElement *textAreaT2;
