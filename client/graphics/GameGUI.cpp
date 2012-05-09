@@ -751,14 +751,12 @@ void GameGUI::hideOverlaysForBigScreen()
 {
     olSpeedo->hide();
     olRank->hide();
-    olPowerup->hide();
 }
 
 void GameGUI::showOverlaysForBigScreen()
 {
     olSpeedo->show();
     olRank->show();
-    olPowerup->show();
 }
 
 void GameGUI::setupRank()
