@@ -118,7 +118,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			{
 				//see if a powerup is nearer to us than flee target
 				Ogre::Vector3 powerupPos = GameCore::mPowerupPool->getNearestPowerUp(GetPos());
-				if(powerupPos.distance(GetPos()) < mSteeringBehaviour->GetFleeTarget()->getCar()->GetPos().distance(GetPos()))
+				if(mSteeringBehaviour->GetFleeTarget() && powerupPos.distance(GetPos()) < mSteeringBehaviour->GetFleeTarget()->getCar()->GetPos().distance(GetPos()))
 				{
 					mSteeringBehaviour->PowerupOn();
 					mSteeringBehaviour->SetPowerupTarget(powerupPos);

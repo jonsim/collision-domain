@@ -391,7 +391,6 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
             {
                     
                 GameCore::mPlayerPool->getLocalPlayer()->processControlsFrameEvent(inputSnapshot, evt.timeSinceLastFrame);
-                GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame);
             }
         }
 
@@ -419,6 +418,8 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
             // AudioCore needs to be fed localPlayer even if NULL (to detect spawn screen)
             GameCore::mAudioCore->frameEvent(evt.timeSinceLastFrame);
             mGameCam->update( evt.timeSinceLastFrame );
+            if( GameCore::mPlayerPool->getLocalPlayer() && GameCore::mPlayerPool->getLocalPlayer()->getCar() )
+                GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(mUserInput.getMouseXRel(), mUserInput.getMouseYRel(), mUserInput.getMouseZRel(), evt.timeSinceLastFrame, mGameCam);
         }
 
 		if (mGraphicsState == PROJECTOR)		
@@ -478,7 +479,7 @@ void ClientGraphics::updateBenchmark (const float timeSinceLastFrame)
         }
 
         // rotate the camera
-    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * timeSinceLastFrame, 0.0f, 0.0f, timeSinceLastFrame);
+    GameCore::mPlayerPool->getLocalPlayer()->updateCameraFrameEvent(500 * timeSinceLastFrame, 0.0f, 0.0f, timeSinceLastFrame, mGameCam);
 
         // update fps counter
         float avgfps = mWindow->getAverageFPS(); // update fps
