@@ -276,10 +276,10 @@ void TruckCar::initNodes()
     
     // Body nodes.
     mChassisNode     = mBodyNode->createChildSceneNode("ChassisNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
-    //mLDoorNode       = mBodyNode->createChildSceneNode("LDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
-    mLDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
-    //mRDoorNode       = mBodyNode->createChildSceneNode("RDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
-    mRDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mLDoorNode       = mBodyNode->createChildSceneNode("LDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
+    //mLDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("LDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
+    mRDoorNode       = mBodyNode->createChildSceneNode("RDoorNode"       + boost::lexical_cast<std::string>(mUniqueCarID));
+    //mRDoorNode       = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("RDoorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRBumperNode     = mBodyNode->createChildSceneNode("RBumperNode"     + boost::lexical_cast<std::string>(mUniqueCarID));
     mLWingmirrorNode = mBodyNode->createChildSceneNode("LWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
     mRWingmirrorNode = mBodyNode->createChildSceneNode("RWingmirrorNode" + boost::lexical_cast<std::string>(mUniqueCarID));
