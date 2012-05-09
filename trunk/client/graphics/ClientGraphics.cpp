@@ -264,9 +264,9 @@ void ClientGraphics::loadResources (void)
 /// @brief  Creates the initial scene prior to the first render pass, adding objects etc.
 void ClientGraphics::createScene (void)
 {
-        // Setup the scene environment.
+    // Setup the scene environment.
     setupCompositorChain(mCamera->getViewport());
-        setupShadowSystem();
+    setupShadowSystem();
     setupLightSystem();
     setupParticleSystem();
 

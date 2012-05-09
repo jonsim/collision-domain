@@ -51,11 +51,11 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     mFirstLaunch = true;
 
     mBoards = GameCore::mSceneMgr->createBillboardSet( 5 );
-    mBoards->setDefaultDimensions( 1.5, 0.18 );
+    mBoards->setDefaultDimensions( 1.5f, 0.18f );
 
     mBacks = GameCore::mSceneMgr->createBillboardSet( 5 );
-    mBacks->setDefaultDimensions( 1.5, 0.18 );
-    mBacks->setRenderQueueGroup( Ogre::RenderQueueGroupID::RENDER_QUEUE_OVERLAY );
+    mBacks->setDefaultDimensions( 1.5f, 0.18f );
+    mBacks->setRenderQueueGroup( Ogre::RENDER_QUEUE_OVERLAY );
 
     mHealthbar = NULL;
     mHealthBg = NULL;
@@ -144,7 +144,7 @@ void Player::createPlayer (CarType carType, TeamID tid)
             txtIdent.append( mPlayerGUID.ToString() );
             mNametag = new MovableText( txtIdent, mNickname, "DejaVuSans", 0.3f );
             mNametag->setTextAlignment( MovableText::H_CENTER, MovableText::V_ABOVE );
-            mNametag->setGlobalTranslation( Ogre::Vector3(0, 1.8, 0) );
+            mNametag->setGlobalTranslation( Ogre::Vector3(0, 1.8f, 0) );
             mNametag->setCastShadows( false );
 
             // Set nametag colour according to team
@@ -476,7 +476,7 @@ void Player::serverSaysHealthChangedTo(float newHP)
 
     float healthPercent = newHP / (float) INITIAL_HEALTH;
     if( mHealthbar )
-        mHealthbar->setDimensions( 1.5 * healthPercent, 0.18 );
+        mHealthbar->setDimensions( 1.5f * healthPercent, 0.18f );
     
     // the last quarter is red
     if (newHP <= redLimit)

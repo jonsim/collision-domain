@@ -320,7 +320,7 @@ void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet
         pPlayer = GameCore::mPlayerPool->getLocalPlayer();
         pPlayer->setTeam( teamID );
 
-        GameCore::mGui->showSpawnScreenPage2();
+        GameCore::mGui->showSpawnScreenPage2(teamID);
     }
     else
     {
