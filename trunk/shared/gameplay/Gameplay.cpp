@@ -446,6 +446,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("ONE!\n");
+                    GameCore::mClientGraphics->mBigScreen->resetRoundTimer();
                     if( GameCore::mPlayerPool->getLocalPlayer()->getPlayerState() == PLAYER_STATE_SPECTATE )
                         GameCore::mPlayerPool->spectateNext();
 				#endif
