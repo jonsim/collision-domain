@@ -43,6 +43,7 @@ bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
 	Player *pPlayer = getPlayer( playerid );
 	if( pPlayer )
 	{
+        GameCore::mGameplay->playerQuit( pPlayer );
         std::vector<Player*>::iterator it = find( mPlayers.begin(), mPlayers.end(), pPlayer );
         if( it != mPlayers.end() )
             mPlayers.erase( it );
@@ -204,7 +205,7 @@ void PlayerPool::roundEnd()
         // Just want this for game end
         //mPlayers[i]->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 	}
-
+    GameCore::mClientGraphics->mGameCam->setTarget( NULL );
     GameCore::mGui->showSpawnScreenPage2();
 }
 

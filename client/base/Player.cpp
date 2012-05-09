@@ -14,7 +14,7 @@
 #include "SmallCar.h"
 #include "TruckCar.h"
 
-#define INITIAL_HEALTH 1200
+#define INITIAL_HEALTH 350
 #define NEWCAM 1
 
 #define MAX_DAMAGE 400
@@ -50,8 +50,16 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     ss << "our team: " << mTeam << "\n";
     mFirstLaunch = true;
 
-    
+    mBoards = GameCore::mSceneMgr->createBillboardSet( 5 );
+    mBoards->setDefaultDimensions( 1.5, 0.18 );
 
+    mBacks = GameCore::mSceneMgr->createBillboardSet( 5 );
+    mBacks->setDefaultDimensions( 1.5, 0.18 );
+    mBacks->setRenderQueueGroup( Ogre::RenderQueueGroupID::RENDER_QUEUE_OVERLAY );
+
+    mHealthbar = NULL;
+    mHealthBg = NULL;
+    mNametag = NULL;
     //OutputDebugString(ss.str().c_str());
 
 	//averageCollisionPoint.setZero();
@@ -74,6 +82,14 @@ Player::~Player (void)
     }
 }
 
+/// @brief  Set the player's nickname and update their nametag
+/// @param  szNick  String for player nickname
+void Player::setNickname (char *szNick)
+{
+    mNickname = strdup( szNick );
+    if( mNametag != NULL )
+        mNametag->setCaption( szNick );
+}
 
 /// @brief  Creates and positions the 3D player object (and space for a camera).
 /// @param  sm  The SceneManager to which the 3D player object is attached.
@@ -82,6 +98,9 @@ Player::~Player (void)
 /// @param  physicsCore   The class containing the physics world.
 void Player::createPlayer (CarType carType, TeamID tid)
 {
+    if( mCar )
+        delCar();
+
     mCarType = carType;
 
     switch (carType)
@@ -101,10 +120,60 @@ void Player::createPlayer (CarType carType, TeamID tid)
     }
     
     bool isLocalPlayer = this == GameCore::mPlayerPool->getLocalPlayer();
-    if (isLocalPlayer && mFirstLaunch) {
-        mCar->louderLocalSounds();
-        GameCore::mGui->setupDamageDisplay(carType, tid);
+    if (mFirstLaunch)
+    {
+        if(isLocalPlayer)
+        {
+            mCar->louderLocalSounds();
+            GameCore::mGui->setupDamageDisplay(carType, tid);
+        }
+        else
+        {
+            // Create the healthbar
+            mHealthbar = mBoards->createBillboard( 0, 2, 0, Ogre::ColourValue::Green );
+            mBoards->setCastShadows( false );
+            mBoards->setMaterialName( "board_health" );
+
+            // Create healthbar border
+            mHealthBg = mBacks->createBillboard( 0, 2, 0, Ogre::ColourValue(0,0,0) );
+            mBacks->setCastShadows( false );
+            mBacks->setMaterialName( "board_health_bg" );
+
+            // Create nametag
+            std::string txtIdent = "TXT_";
+            txtIdent.append( mPlayerGUID.ToString() );
+            mNametag = new MovableText( txtIdent, mNickname, "DejaVuSans", 0.3f );
+            mNametag->setTextAlignment( MovableText::H_CENTER, MovableText::V_ABOVE );
+            mNametag->setGlobalTranslation( Ogre::Vector3(0, 1.8, 0) );
+            mNametag->setCastShadows( false );
+
+            // Set nametag colour according to team
+            switch( mTeam )
+            {
+            /*case BLUE_TEAM:
+                mNametag->setColor( Ogre::ColourValue::Blue );
+                break;
+            case RED_TEAM:
+                mNametag->setColor( Ogre::ColourValue::Red );
+                break;*/
+            default:
+                mNametag->setColor( Ogre::ColourValue::White );
+            }
+        }
+
         mFirstLaunch = false;
+    }
+
+    if( !isLocalPlayer )
+    {
+        //if( mBoards->isAttached() )
+        //    mBoards->detachFromParent();
+        //if( mBacks->isAttached() )
+        //    mBacks->detachFromParent();
+
+        mCar->mBodyNode->attachObject( mBoards );
+        mCar->mBodyNode->attachObject( mBacks );
+        mCar->mBodyNode->attachObject( mNametag );
     }
 
     hp                    = INITIAL_HEALTH;
@@ -118,7 +187,6 @@ void Player::createPlayer (CarType carType, TeamID tid)
     mCar->attachCollisionTickCallback(this);
     
     mCar->moveTo(btVector3(0,0.5,0));
-
     //GameCore::mGui->updateDamage(0, 2-(rand()%2));
 }
 
@@ -385,11 +453,15 @@ void Player::addToGameScore(int amount)
 
 void Player::serverSaysHealthChangedTo(float newHP)
 {
-    if( this != GameCore::mPlayerPool->getLocalPlayer() )
-    {
-        this->hp = newHP;
-        return;
-    }
+    // NOTE TO WHOM IT MAY CONCERN:
+    // I Have removed the early exit if it's not the local player in order to adjust opponent healthbars
+    // When GUI stuff is uncomment, this check will need to surround GUI changes
+
+    //if( this != GameCore::mPlayerPool->getLocalPlayer() )
+    //{
+    //    this->hp = newHP;
+    //    return;
+    //}
 
     std::stringstream ss;
     ss << "localplayer health changed to " << newHP << "\n";
@@ -401,6 +473,10 @@ void Player::serverSaysHealthChangedTo(float newHP)
 
     float redLimit = (float) INITIAL_HEALTH / 4.0;
     float yelLimit = (float) INITIAL_HEALTH * 0.66;
+
+    float healthPercent = newHP / (float) INITIAL_HEALTH;
+    if( mHealthbar )
+        mHealthbar->setDimensions( 1.5 * healthPercent, 0.18 );
     
     // the last quarter is red
     if (newHP <= redLimit)
@@ -418,6 +494,8 @@ void Player::serverSaysHealthChangedTo(float newHP)
             //GameCore::mGui->updateDamage(3, 2-(rand()%2));
             //GameCore::mGui->updateDamage(4, 2-(rand()%2));
             //GameCore::mGui->updateDamage(5, 2-(rand()%2));
+            if( mHealthbar )
+                mHealthbar->setColour( Ogre::ColourValue::Red );
         }
     }
     else if (newHP <= yelLimit)
@@ -431,6 +509,8 @@ void Player::serverSaysHealthChangedTo(float newHP)
             //GameCore::mGui->updateDamage(3, 1-(rand()%2));
             //GameCore::mGui->updateDamage(4, 1-(rand()%2));
             //GameCore::mGui->updateDamage(5, 1-(rand()%2));
+            if( mHealthbar )
+                mHealthbar->setColour( Ogre::ColourValue( 1,1,0) );
         }
     }
     else
@@ -444,6 +524,8 @@ void Player::serverSaysHealthChangedTo(float newHP)
             //GameCore::mGui->updateDamage(3, 0);
             //GameCore::mGui->updateDamage(4, 0);
             //GameCore::mGui->updateDamage(5, 0);
+            if( mHealthbar )
+                mHealthbar->setColour( Ogre::ColourValue::Green );
         }
     }
     

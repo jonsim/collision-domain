@@ -116,22 +116,22 @@ void Powerup::playerCollision(Player* player)
     
     #ifdef COLLISION_DOMAIN_SERVER
         GameCore::mNetworkCore->sendPowerupCollect( mPoolIndex, player );
-
-        if (player != NULL)
-        {
-            switch (mPowerupType)
-            {
-            case POWERUP_HEALTH:
-                break;
-            case POWERUP_MASS:
-                break;
-            case POWERUP_SPEED:
-                break;
-            default:
-                break;
-            }
-        }
     #endif
+
+    if (player != NULL)
+    {
+        switch (mPowerupType)
+        {
+        case POWERUP_HEALTH:
+            break;
+        case POWERUP_MASS:
+            break;
+        case POWERUP_SPEED:
+            break;
+        default:
+            break;
+        }
+    }    
 }
 
 void Powerup::frameEvent(const float timeSinceLastFrame)

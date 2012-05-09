@@ -13,7 +13,7 @@
 
 
 
-#define INITIAL_HEALTH 200
+#define INITIAL_HEALTH 350
 #define MAX_DAMAGE 400 // used cap damage for individual crashes so that deformations are more managable
 #define BIG_CRASH_THRESHOLD 80
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -51,6 +51,9 @@ Player::~Player (void)
 /// @param  physicsCore   The class containing the physics world.
 void Player::createPlayer (CarType carType, TeamID tid)
 {
+    if( mCar )
+        delCar();
+
     mCarType = carType;
 
     switch (carType)

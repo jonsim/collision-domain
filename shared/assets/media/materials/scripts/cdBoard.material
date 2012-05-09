@@ -1,0 +1,31 @@
+import cd/GUIComponent from "cdBaseMaterials.material"
+
+material board_health : cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend alpha_blend
+		}
+	}
+	
+	set $texture healthbar.png
+}
+
+material board_health_bg : cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend alpha_blend
+		}
+	}
+	
+	set $texture healthbar-bg.png
+}

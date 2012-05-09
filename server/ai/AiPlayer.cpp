@@ -102,7 +102,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 		}
 
 		//get out health our run away if someone is chasing us
-		if(mPlayer->getHP() < 300 && difficulty >= normal)
+		if(mPlayer->getHP() < 100 && difficulty >= normal)
 		{
 			//set flee target as closest person on opposite team
 			Player* fleePlayer;

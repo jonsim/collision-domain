@@ -88,7 +88,7 @@ void SmallCar::initTuning()
 	mChassisAngularDamping  =   0.2f;
 	mChassisRestitution		=   0.6f;
 	mChassisFriction        =   0.6f;
-	mChassisMass            = 585.0f;
+	mChassisMass            = 1000.0f;//585.0f;
 
     mWheelRadius            =  0.2775f; // this is actually diameter!!
     mWheelWidth             =  0.153f;
@@ -178,9 +178,21 @@ SmallCar::~SmallCar(void)
 
     GameCore::mPhysicsCore->getWorld()->removeAction( mVehicle );
 
+    mBodyNode->removeAndDestroyAllChildren();
+    GameCore::mSceneMgr->destroySceneNode( mBodyNode );
+
+    mWheelsNode->removeAndDestroyAllChildren();
+    GameCore::mSceneMgr->destroySceneNode( mWheelsNode );
+
+    GameCore::mPhysicsCore->getWorld()->removeConstraint( fricConst );
+
     // Cleanup Bodies:
+    delete fricConst;
     delete mVehicle;
     delete mVehicleRayCaster;
+
+    mVehicle = NULL;
+    mVehicleRayCaster = NULL;
     
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);

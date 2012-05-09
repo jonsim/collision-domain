@@ -48,6 +48,20 @@ void AiCore::frameEvent(double timeSinceLastFrame)
 	}
 }
 
+void AiCore::playerQuit(Player *pPlayer)
+{    
+	std::vector<AiPlayer>::iterator i;
+
+	for(i = mAiPlayers.begin();i != mAiPlayers.end();i++)
+	{
+        if(i->getSteeringBehaviour()->GetFleeTarget() == pPlayer)
+            i->getSteeringBehaviour()->SetFleeTarget(NULL);
+
+       if(i->getSteeringBehaviour()->GetSeekTarget() == pPlayer)
+            i->getSteeringBehaviour()->SetSeekTarget(NULL);
+	}
+}
+
 AiPlayer* AiCore::getPlayer(string name)
 {
 	std::vector<AiPlayer>::iterator i;

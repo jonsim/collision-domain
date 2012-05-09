@@ -262,6 +262,10 @@ void NetworkCore::GamestateUpdatePlayer( RakNet::RakNetGUID playerid )
 
 		bitSend.Write( (char*)&playerState, sizeof( PLAYER_SYNC_DATA ) );
 
+        bitSend.Write( true );
+        bitSend.Write( sendPlayer->getHP() );
+        sendPlayer->lastsenthp = sendPlayer->getHP();
+
 		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, playerid, false );
 
 		delete( playerSnap );

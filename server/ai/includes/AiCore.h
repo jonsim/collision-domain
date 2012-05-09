@@ -20,6 +20,7 @@ public:
 	void createNewAiAgent(int flags, level diff);
 	int getNumberOfAiPlayers() { return mAiPlayers.size(); } ;
 	void frameEvent(double timeSinceLastFrame);
+    void playerQuit(Player *pPlayer);
 	AiPlayer* getPlayer(string name);
 
 
