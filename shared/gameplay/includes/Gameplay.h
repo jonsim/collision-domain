@@ -24,6 +24,7 @@
 #define NUM_TEAMS 2
 #define NUM_ROUNDS 3
 
+//#define SELECTED_GAME FFA_MODE
 #define SELECTED_GAME FFA_MODE
 
 /*-------------------- ENUM TYPES -------------------*/
@@ -81,6 +82,7 @@ public:
     void                        handleNewRound();
     Team*						getTeam(TeamID teamID);
     void						handleInfoItem(InfoItem* item, bool show);
+    void                        forceRoundEnd();
 private:
 	//Methods
 	bool						vipModeGameWon();

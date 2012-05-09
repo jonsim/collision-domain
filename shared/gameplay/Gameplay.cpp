@@ -788,6 +788,11 @@ void Gameplay::markDeath(Player* deadPlayer, Player* causedBy)
 void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
 {
 #ifdef COLLISION_DOMAIN_SERVER
+    StringStream tmpSS;
+    int redTeamAlive = 0;
+    int blueTeamAlive = 0;
+    int totalAlive = 0;
+
     switch(this->mGameMode)
     {
         case FFA_MODE:
@@ -804,6 +809,31 @@ void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
                 //If they're on the same team (BAD!!)
                 causedBy->addToScore(-1); //Deduct!!!!
             }
+            
+            //Check to see if team is all dead
+            for(int i=0;i<GameCore::mPlayerPool->getNumberOfPlayers();i++)
+            {
+                Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+                if(tmpPlayer->getAlive())
+                {
+                    totalAlive++;
+                    if(tmpPlayer->getTeam() == 1)
+                    {
+                        blueTeamAlive++;
+                    }
+                    else
+                    {
+                        redTeamAlive++;
+                    }
+                }
+            }
+
+            
+            //tmpSS << "Red Team Alive: " << redTeamAlive << " Blue team alive: " << blueTeamAlive << "\n";
+            //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
+            if(totalAlive <= 1 || redTeamAlive == 0 || blueTeamAlive == 0)
+                this->forceRoundEnd();
+
             break;
         case VIP_MODE:
             //In this game mode we're going to finish the round if a VIP is killed
@@ -824,6 +854,8 @@ void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
                             tmpPlayers[i]->addToGameScore(1);
                         }
                     }
+                    this->forceRoundEnd();
+                    break;
                 }
             }
             else
@@ -833,8 +865,22 @@ void Gameplay::handleDeath(Player* deadPlayer, Player* causedBy)
                 if(deadPlayer->getVIP())
                 {
                     causedBy->addToGameScore(-5); //THIS IS REALLY BAD SO WE'LL HURT THEIR GAME SCORE
+                    this->forceRoundEnd();
+                    break;
                 }
             }
+
+             //Check to see if all players are dead
+            for(int i=0;i<GameCore::mPlayerPool->getNumberOfPlayers();i++)
+            {
+                Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+                if(tmpPlayer->getAlive())
+                {
+                    totalAlive++;
+                }
+            }
+            if(totalAlive <= 1)
+                this->forceRoundEnd();
             break;
         default:
             //This is here just in case of a bug...
@@ -878,4 +924,15 @@ void Gameplay::calculateRoundScores()
             break;
 		players[i]->addToGameScore(NUM_TOP_PLAYERS-i+1);
 	}
+}
+
+// This method removes any InfoItems left over relating to this round and
+// Pushes a new round end in 1 seconds
+void Gameplay::forceRoundEnd()
+{
+    //Remove all existing round items
+    this->mInfoItems.empty();
+
+    //Spawn new round end
+	this->mInfoItems.push_back(new InfoItem(ROUND_OVER_OT,1000,2900));
 }
