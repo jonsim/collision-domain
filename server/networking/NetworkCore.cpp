@@ -644,7 +644,7 @@ void NetworkCore::sendSyncScores()
     for(int i=0;i<playerPoolSize;i++)
     {
         //Write player GUID then round score and then score
-        bs.Write(GameCore::mPlayerPool->getPlayer(i)->getGUID());
+        bs.Write(GameCore::mPlayerPool->getPlayer(i)->getPlayerGUID());
         bs.Write(GameCore::mPlayerPool->getPlayer(i)->getRoundScore());
         bs.Write(GameCore::mPlayerPool->getPlayer(i)->getGameScore());
     }
