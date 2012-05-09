@@ -17,6 +17,7 @@
 #include "RakNetTime.h"
 #include "GetTime.h"
 #include <sstream>
+#include <time.h>
 
 class BigScreen
 {
@@ -33,7 +34,10 @@ public:
 
     void                        removePowerupOverlayFromMap(int uniqueID);
     void                        removeCarOverlayFromMap(int uniqueID);
-
+    
+    void                        createRoundTimer();
+    void                        resetRoundTimer();
+    void                        updateRoundTimer();
 private:
 	std::vector<ViewCamera*>	viewCameraVector;
 	Ogre::OverlayContainer*		olcMap;
@@ -45,11 +49,11 @@ private:
 	Ogre::OverlayElement*		oleVIP2;
 
 	void						updatePlayer(Car *car, Player *player, Ogre::OverlayElement* carOverlay);
-#if _WIN32
-    void                        updatePowerup(Ogre::Vector3 location, btQuaternion &quat, Ogre::OverlayElement* powerupOverlay);
-#else
-    void						updatePowerup(Ogre::Vector3 location, btQuaternion quat, Ogre::OverlayElement* powerupOverlay);
-#endif
+    #if _WIN32
+        void                        updatePowerup(Ogre::Vector3 location, btQuaternion &quat, Ogre::OverlayElement* powerupOverlay);
+    #else
+        void						updatePowerup(Ogre::Vector3 location, btQuaternion quat, Ogre::OverlayElement* powerupOverlay);
+    #endif
 	
 	void						setMapCorner(Ogre::Vector3 corner);
 	void						setMapSize(Ogre::Vector3 size);
@@ -57,6 +61,11 @@ private:
 	inline float				convertWorldToScreenX(float xPos);
 	inline float				convertWorldToScreenY(float yPos);
 
+    //The timer elements
+    Ogre::OverlayElement    *oleTimerText;
+    bool                    isTimerSetup;
+    int                     timeLeft;
+    time_t                  startTime;
 };
 
 #endif // #ifndef BIGSCREENH

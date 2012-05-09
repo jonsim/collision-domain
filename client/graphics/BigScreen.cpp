@@ -2,6 +2,7 @@
 #include "BigScreen.h"
 #include "GameCore.h"
 
+
 #define MAP_WIDTH	1.0f
 #define MAP_HEIGHT	1.0f // 0.8
 
@@ -15,7 +16,8 @@ BigScreen::BigScreen()
   mapCorner(0,0,0),
   mapSize(0,0,0),
   oleVIP1(NULL),
-  oleVIP2(NULL)
+  oleVIP2(NULL),
+  isTimerSetup(false)
 {
 }
 
@@ -57,26 +59,29 @@ void BigScreen::setupMapView()
         OutputDebugString("Exception caught while creating the bigScreen view, arena not fully initialised.\n");
     }
 
-        //Start thinking about the cars
-        oleVIP1 = Ogre::OverlayManager::getSingleton().createOverlayElement( 
-                        "Panel", "VIP1" );
-        oleVIP2 = Ogre::OverlayManager::getSingleton().createOverlayElement( 
-                        "Panel", "VIP2" );
+    //Create the overlay elements for the cars, VIPS and anything else
+    oleVIP1 = Ogre::OverlayManager::getSingleton().createOverlayElement( 
+                    "Panel", "VIP1" );
+    oleVIP2 = Ogre::OverlayManager::getSingleton().createOverlayElement( 
+                    "Panel", "VIP2" );
 
-        oleVIP1->setMetricsMode( Ogre::GMM_RELATIVE );
-        oleVIP2->setMetricsMode( Ogre::GMM_RELATIVE );
+    oleVIP1->setMetricsMode( Ogre::GMM_RELATIVE );
+    oleVIP2->setMetricsMode( Ogre::GMM_RELATIVE );
 
-        oleVIP1->setDimensions(0.03f,0.03f);
-        oleVIP2->setDimensions(0.03f,0.03f);
+    oleVIP1->setDimensions(0.03f,0.03f);
+    oleVIP2->setDimensions(0.03f,0.03f);
         
-        oleVIP1->setMaterialName( "VIPIcon" );
-        oleVIP2->setMaterialName( "VIPIcon" );
+    oleVIP1->setMaterialName( "VIPIcon" );
+    oleVIP2->setMaterialName( "VIPIcon" );
 
-        oleVIP1->setPosition(0.0f,2.0f);
-        oleVIP2->setPosition(0.0f,2.0f);
+    oleVIP1->setPosition(0.0f,2.0f);
+    oleVIP2->setPosition(0.0f,2.0f);
 
-        olcMap->addChild(oleVIP1);
-        olcMap->addChild(oleVIP2);
+    olcMap->addChild(oleVIP1);
+    olcMap->addChild(oleVIP2);
+
+    //Create the round timer
+    this->createRoundTimer();
 }
 
 void BigScreen::updateMapView()
@@ -101,6 +106,8 @@ void BigScreen::updateMapView()
             powerups[i]->getRotation(),
             powerups[i]->getBigScreenOverlayElement());
     }
+
+    updateRoundTimer();
 }
 
 inline float BigScreen::convertWorldToScreenX(float xPos)
@@ -307,4 +314,53 @@ Ogre::OverlayElement* BigScreen::createPlayerOverlayElement(int uniqueID)
         olcMap->addChild(tmpOLE);
 
         return tmpOLE;
+}
+
+void BigScreen::createRoundTimer()
+{
+    //Create the overlay
+    Ogre::Overlay *textOverlay = 
+        Ogre::OverlayManager::getSingleton().create( "TIMER_TEXT_OVERLAY" );
+    textOverlay->setZOrder(602);
+
+    //Create the container
+    Ogre::OverlayContainer *textScoreContainer = static_cast<Ogre::OverlayContainer*> ( 
+		Ogre::OverlayManager::getSingleton().
+			createOverlayElement( "Panel", "TIMER_TEXT_CONTAINER" ));
+    textOverlay->add2D(textScoreContainer);
+
+    //Create the text element
+    this->oleTimerText = Ogre::OverlayManager::getSingleton().
+		createOverlayElement("TextArea","OLE_TIMER_TEXT1");
+    this->oleTimerText->setDimensions(0.3f, 0.3f);
+	this->oleTimerText->setMetricsMode(Ogre::GMM_PIXELS);
+    int screenHeight = GameCore::mClientGraphics->screenHeight;
+    int screenWidth  = GameCore::mClientGraphics->screenWidth;
+    this->oleTimerText->setPosition(screenWidth/2-60,10);
+
+    this->oleTimerText->setParameter("font_name","DejaVuSans");
+	this->oleTimerText->setParameter("char_height", "60");
+	this->oleTimerText->setColour(Ogre::ColourValue::White);
+	//this->oleTimerText->setCaption();
+    textScoreContainer->addChild(this->oleTimerText);
+
+    textOverlay->show();
+    textScoreContainer->show();
+    this->oleTimerText->show();
+
+    this->startTime = time(NULL);
+    isTimerSetup = true;
+}
+
+void BigScreen::updateRoundTimer()
+{
+    char displayText[100];
+    sprintf(displayText,"%ld",181-(time(NULL)-startTime));
+    this->oleTimerText->setCaption(displayText);
+}
+
+
+void BigScreen::resetRoundTimer()
+{
+    this->startTime = time(NULL);
 }
