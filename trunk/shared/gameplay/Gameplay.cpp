@@ -614,23 +614,28 @@ void Gameplay::showGameTypeText()
     if(!wtInitalised)
         this->createWinnerTextOverlay();
 
+    this->textAreaT1->setCaption("");
     if(this->getGameMode() == FFA_MODE)
     {
-        this->textAreaT1->setCaption("FREE FOR ALL!!");
+        this->oleGameMode->setMaterialName("GameModeFFA");
+        //this->textAreaT1->setCaption("FREE FOR ALL!!");
     }
     else if(this->getGameMode() == TDM_MODE)
     {
-        this->textAreaT1->setCaption("TEAM DEATHMATCH");
+        this->oleGameMode->setMaterialName("GameModeTDM");
+        //this->textAreaT1->setCaption("TEAM DEATHMATCH");
     }
     else if(this->getGameMode() == VIP_MODE)
     {
-        this->textAreaT1->setCaption("GET THE VIPS");
+        this->oleGameMode->setMaterialName("GameModeVIP");
+        //this->textAreaT1->setCaption("GET THE VIPS");
     }
     else
     {
         //OutputDebugString("Not a recognised game mode");
     }
 
+    this->oleGameMode->show();
     this->wtOverlay->show();
 }
 
@@ -638,6 +643,9 @@ void Gameplay::hideGameTypeText()
 {
     if(!wtInitalised)
         this->createWinnerTextOverlay();
+    
+    //Hid the game mode overaly
+    this->oleGameMode->hide();
 
     if(this->wtOverlay->isVisible())
         this->wtOverlay->hide();
@@ -698,8 +706,19 @@ void Gameplay::createWinnerTextOverlay()
 	this->textAreaT1->setColour(Ogre::ColourValue::White);
 
 	this->wtContainer->addChild(this->textAreaT1);
-	this->wtOverlay->hide();
+	
+    //Create the GameMode Overlay
+    this->oleGameMode = Ogre::OverlayManager::getSingleton().
+		createOverlayElement("Panel","GAME_MODE_ELEMENT");
+	this->oleGameMode->setPosition(0.0f,0.0f);
+    this->oleGameMode->setMaterialName("GameModeFFA");
+	this->wtContainer->addChild(oleGameMode);
+    
+    //Finish intialising
+    this->wtOverlay->hide();
     this->wtInitalised = true;
+
+    
 }
 
 void Gameplay::scheduleCountDown()

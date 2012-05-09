@@ -40,3 +40,18 @@ material GreyStripDark: cd/GUIComponent
 {
 	set $texture GreyStripDark.png
 }
+
+material GameModeFFA: cd/GUIComponent
+{
+	set $texture GameModeFreeForAll.png
+}
+
+material GameModeTDM: cd/GUIComponent
+{
+	set $texture GameModeTDM.png
+}
+
+material GameModeVIP: cd/GUIComponent
+{
+	set $texture GameModeVIP.png
+}
