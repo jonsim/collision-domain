@@ -16,7 +16,7 @@ bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore () : m_szHost( NULL ), mPlayerName("boobs")
+NetworkCore::NetworkCore () : mPlayerName("boobs"), m_szHost( NULL )
 {
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
@@ -261,17 +261,12 @@ void NetworkCore::sendChatMessage( const char *szMessage )
 
 void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
-    unsigned int seed;
 	char szNickname[128];
-
-    bitStream->Read( seed );
-    srand( seed );
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 
 	// Add ourselves to the player pool
 	GameCore::mPlayerPool->addLocalPlayer( m_pRak->GetMyGUID(), szNickname );
 	log( "GameJoin : local playerid %s", m_pRak->GetMyGUID().ToString() );
-
 	bConnected = true;
 	timeLastUpdate = 0;
 
