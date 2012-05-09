@@ -162,6 +162,8 @@ private:
 	int gameScore;
 
     bool mFirstLaunch;
+
+    int camShakeFrames;
 };
 
 #endif // #ifndef PLAYER_H
