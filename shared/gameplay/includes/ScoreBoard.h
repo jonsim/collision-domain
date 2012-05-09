@@ -25,8 +25,12 @@ private:
 	void			displayScreen();
     std::string		buildScoreText(TeamID teamID);
 	Ogre::Overlay *sbOverlay;
-	Ogre::OverlayContainer *sbContainer;
+	
+    Ogre::OverlayContainer *sbContainer;
+    Ogre::OverlayContainer *sbContainerFFA;
+
     Ogre::Overlay *textScoreOverlay;
+    Ogre::Overlay *textScoreOverlayFFA;
 	bool isInitialized;
 	bool isShown;
 	bool isForced;
