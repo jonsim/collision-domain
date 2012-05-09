@@ -213,7 +213,7 @@ bool PhysicsCore::removeBody( btRigidBody *body )
 
         if( body )
         {
-            delete body;
+            //delete body;
             body = NULL;
         }
 
