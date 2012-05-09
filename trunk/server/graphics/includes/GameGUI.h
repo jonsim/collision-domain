@@ -14,6 +14,7 @@
 #include <stdarg.h>
 
 #define COLLISION_DOMAIN_SERVER
+#define TIMESTAMP_CONSOLE
 
 class StringCircularBuffer : public CircularBuffer<char*>
 {
@@ -55,17 +56,18 @@ public:
     ~GameGUI (void) {}
         
 	void setupConsole (CEGUI::Window* guiWindow);
-    bool receiveFromConsole (const CEGUI::EventArgs &args);
     void outputToConsole (const char* str, ...);
+
+private:
+    bool receiveFromConsole (const CEGUI::EventArgs &args);
     void loadConsoleHistory (bool reverseLoading);
     void giveConsoleFocus (void);
     void scrollConsoleToBottom (void);
-	void openAdminWindow (void);
-	bool closeAdminWindow (const CEGUI::EventArgs &args);
 	void updatePlayerComboBox (void);
 	bool healthTextChanged (const CEGUI::EventArgs &args);
+	void openAdminWindow (void);
+	bool closeAdminWindow (const CEGUI::EventArgs &args);
 
-private:
     StringCircularBuffer consoleHistory;
     uint8_t              consoleHistoryLocation;
 	//CEGUI::Combobox* playerComboBox;

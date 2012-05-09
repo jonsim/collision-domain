@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "GameGUI.h"
 #include "GameCore.h"
+#include <time.h>
 
 #ifdef _WIN32
 	#define strncasecmp strnicmp
@@ -161,12 +162,37 @@ void GameGUI::outputToConsole (const char* str, ...)
         va_end(ap);
     }
 
-    // Output to the console window
+    // Get the references.
 	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
 	CEGUI::DefaultWindow* consoleBuffer = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Server/buffer"));
-	consoleBuffer->appendText(CEGUI::String(buffer));
 
-    // Scroll to the bottom of the pane.
+#ifdef TIMESTAMP_CONSOLE
+    // Get the time.
+    char timeString[13];
+    time_t     rawTime = time(NULL);
+    struct tm* usrTime  = localtime(&rawTime);
+    timeString[0]  = '\\';
+    timeString[1]  = '[';
+    timeString[2]  = '0' + (usrTime->tm_hour / 10);
+    timeString[3]  = '0' + (usrTime->tm_hour % 10);
+    timeString[4]  = ':';
+    timeString[5]  = '0' + (usrTime->tm_min / 10);
+    timeString[6]  = '0' + (usrTime->tm_min % 10);
+    timeString[7]  = ':';
+    timeString[8]  = '0' + (usrTime->tm_sec / 10);
+    timeString[9]  = '0' + (usrTime->tm_sec % 10);
+    timeString[10] = ']';
+    timeString[11] = ' ';
+    timeString[12] = 0;
+    
+    // Output to console
+    consoleBuffer->appendText(CEGUI::String(timeString) + CEGUI::String(buffer));
+#else
+    consoleBuffer->appendText(CEGUI::String(buffer));
+#endif
+
+
+    // Scroll to the bottom of the console.
     scrollConsoleToBottom();
 }
 
