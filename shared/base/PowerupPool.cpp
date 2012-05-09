@@ -77,7 +77,7 @@ void PowerupPool::frameEvent( const float timeSinceLastFrame )
         {
             // this will fill this null index with a powerup.
             #ifdef COLLISION_DOMAIN_SERVER
-                spawnPowerup( POWERUP_HEALTH, randomPointInArena(110, 73, 2), i );
+                spawnPowerup( (PowerupType) ( rand() % POWERUP_COUNT ), randomPointInArena(110, 73, 2), i );
             #endif
         }
     }

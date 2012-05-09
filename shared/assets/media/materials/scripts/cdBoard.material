@@ -29,3 +29,63 @@ material board_health_bg : cd/GUIComponent
 	
 	set $texture healthbar-bg.png
 }
+
+material board_powerup_good_heavy : cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend alpha_blend
+		}
+	}
+	
+	set $texture powerup_good_heavy.png
+}
+
+material board_powerup_good_health : cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend alpha_blend
+		}
+	}
+	
+	set $texture powerup_good_health.png
+}
+
+material board_powerup_good_speed : cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend alpha_blend
+		}
+	}
+	
+	set $texture powerup_good_speed.png
+}
+
+material board_powerup_bad_light : cd/GUIComponent
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			depth_write off
+			scene_blend alpha_blend
+		}
+	}
+	
+	set $texture powerup_bad_light.png
+}

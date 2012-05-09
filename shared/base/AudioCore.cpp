@@ -255,13 +255,19 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
         Player *player = GameCore::mPlayerPool->getPlayer(i);
         Car *car = player->getCar();
 
+        // just do it here for convenience
+        if (player) player->frameEvent(timeSinceLastFrame);
+
         if (player && car) car->updateAudioPitchFrameEvent();
     }
     
-    // fire a frameevent for the local player
-    if (localPlayer && localPlayerCar)
+    if (localPlayer)
     {
-        localPlayerCar->updateAudioPitchFrameEvent();
+        // just do it here for convenience
+        //localPlayer->frameEvent(timeSinceLastFrame);
+        
+    // fire a frameevent for the local player
+        if (localPlayerCar) localPlayerCar->updateAudioPitchFrameEvent();
     }
 #endif
 }
