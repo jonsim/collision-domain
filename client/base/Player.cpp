@@ -471,8 +471,8 @@ void Player::serverSaysHealthChangedTo(float newHP)
 
     // update damage HUD
 
-    float redLimit = (float) INITIAL_HEALTH / 4.0;
-    float yelLimit = (float) INITIAL_HEALTH * 0.66;
+    float redLimit = (float) INITIAL_HEALTH * 0.25f;
+    float yelLimit = (float) INITIAL_HEALTH * 0.66f;
 
     float healthPercent = newHP / (float) INITIAL_HEALTH;
     if( mHealthbar )
@@ -530,6 +530,12 @@ void Player::serverSaysHealthChangedTo(float newHP)
     }
     
     this->hp = newHP;
+}
+
+/// @brief  This is called when a client receives changes to their own local damage points
+void Player::processDamage( PLAYER_DAMAGE_LOC damageIn )
+{
+    // damageIn.damageBL = piss;
 }
 
 void Player::lowDamageCallBack(std::string causedBy) {

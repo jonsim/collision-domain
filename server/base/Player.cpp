@@ -93,12 +93,12 @@ void Player::createPlayer (CarType carType, TeamID tid)
     damageShareBR = 0.2f;
     damageShareMR = 0.2f;
 
-    damageTL = 0.f;
-    damageBL = 0.f;
-    damageML = 0.f;
-    damageTR = 0.f;
-    damageBR = 0.f;
-    damageMR = 0.f;
+    damageLoc.damageTL = 0.f;
+    damageLoc.damageBL = 0.f;
+    damageLoc.damageML = 0.f;
+    damageLoc.damageTR = 0.f;
+    damageLoc.damageBR = 0.f;
+    damageLoc.damageMR = 0.f;
 }
 
 
@@ -151,22 +151,22 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 
     if(or1 >= 0 && or1 < 60) {
 		ss << "front left ";
-        damageTL += damageToThis;
+        damageLoc.damageTL += damageToThis;
 	} else if(or1 >= 60 && or1 < 120) {
         ss << "mid left ";
-        damageML += damageToThis;
+        damageLoc.damageML += damageToThis;
 	} else if(or1 >= 120 && or1 < 180) {
         ss << "back left ";
-        damageBL += damageToThis;
+        damageLoc.damageBL += damageToThis;
     } else if(or1 >= 180 && or1 < 240) {
         ss << "back right ";
-        damageBR += damageToThis;
+        damageLoc.damageBR += damageToThis;
     } else if(or1 >= 240 && or1 < 300) {
         ss << "mid right ";
-        damageMR += damageToThis;
+        damageLoc.damageMR += damageToThis;
     } else if(or1 >= 300 && or1 < 360) {
         ss << "front right ";
-        damageTR += damageToThis;
+        damageLoc.damageTR += damageToThis;
     }
 
 	if((GameCore::mGameplay->mGameActive && mAlive)) {
@@ -187,12 +187,12 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 
 float Player::recalculateDamage(void) {
 	return initialHP - (
-		( damageTL * damageShareTL ) +
-        ( damageBL * damageShareBL ) +
-        ( damageML * damageShareML ) +
-        ( damageTR * damageShareTR ) +
-        ( damageBR * damageShareBR ) +
-        ( damageMR * damageShareMR )
+		( damageLoc.damageTL * damageShareTL ) +
+        ( damageLoc.damageBL * damageShareBL ) +
+        ( damageLoc.damageML * damageShareML ) +
+        ( damageLoc.damageTR * damageShareTR ) +
+        ( damageLoc.damageBR * damageShareBR ) +
+        ( damageLoc.damageMR * damageShareMR )
     );
 }
 

@@ -175,6 +175,15 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 				ProcessPlayerState( pkt );
 				break;
 
+            case ID_PLAYER_DAMAGE:
+            {
+                PLAYER_DAMAGE_LOC damageIn;
+                RakNet::BitStream bitStream( pkt->data, pkt->length, false );
+                bitStream.Read( (char*)&damageIn, sizeof( PLAYER_DAMAGE_LOC ) );
+                GameCore::mPlayerPool->getLocalPlayer()->processDamage( damageIn );
+                break;
+            }
+
 			default:
 				break;
 				//log( "Something else happened.. %d", packetid );
