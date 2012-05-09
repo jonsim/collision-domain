@@ -218,6 +218,10 @@ void NetworkCore::BroadcastUpdates()
             bitSend.Write( true );
             bitSend.Write( sendPlayer->getHP() );
             sendPlayer->lastsenthp = sendPlayer->getHP();
+            RakNet::BitStream bitDmgUpdate;
+            bitDmgUpdate.Write( (unsigned int) ID_PLAYER_DAMAGE );
+            bitDmgUpdate.Write( (char*)&(sendPlayer->damageLoc), sizeof( ID_PLAYER_DAMAGE ) );
+            m_pRak->Send( &bitDmgUpdate, HIGH_PRIORITY, RELIABLE_ORDERED, 0, sendPlayer->getPlayerGUID(), false );
         }
         else
         {

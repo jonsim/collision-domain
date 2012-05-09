@@ -28,6 +28,16 @@ enum PLAYER_STATE : int
     PLAYER_STATE_SPECTATE,
 };
 
+struct PLAYER_DAMAGE_LOC
+{
+    float damageTL;
+    float damageBL;
+    float damageML;
+    float damageTR;
+    float damageBR;
+    float damageMR;
+};
+
 class Player
 {
 public:
@@ -72,6 +82,7 @@ public:
 	void killPlayer(Player* causedBy);
 	void resetHP();
     void serverSaysHealthChangedTo(float newHP);
+    void processDamage( PLAYER_DAMAGE_LOC damageIn );
 
 	RakNet::RakNetGUID getPlayerGUID();
 	void setPlayerGUID(RakNet::RakNetGUID playerGUID);

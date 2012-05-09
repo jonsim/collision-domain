@@ -26,6 +26,16 @@ enum PLAYER_STATE : int
     PLAYER_STATE_SPECTATE,
 };
 
+struct PLAYER_DAMAGE_LOC
+{
+    float damageTL;
+    float damageBL;
+    float damageML;
+    float damageTR;
+    float damageBR;
+    float damageMR;
+};
+
 class Player
 {
  
@@ -92,17 +102,12 @@ public:
 	void cameraLookBack(void);
 	void revertCamera(void);
 
+    PLAYER_DAMAGE_LOC damageLoc;
+
 private:
     const float      cameraRotationConstant;
 	int		         hp;
 	int              initialHP;
-
-    float            damageTL;
-    float            damageBL;
-    float            damageML;
-    float            damageTR;
-    float            damageBR;
-    float            damageMR;
 
     float            damageShareTL; 
     float            damageShareBL; 
