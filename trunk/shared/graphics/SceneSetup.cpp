@@ -311,8 +311,8 @@ void SceneSetup::setupParticleSystem (void)
     Ogre::Entity* crownEntity2  = GameCore::mSceneMgr->createEntity("CrownEntity2",  "crown.mesh");
     GameCore::mPhysicsCore->auto_scale_scenenode(VIPMesh1);
     GameCore::mPhysicsCore->auto_scale_scenenode(VIPMesh2);
-    VIPMesh1->scale(1.5f, 0.8f, 0.8f);
-    VIPMesh2->scale(1.5f, 0.8f, 0.8f);
+    VIPMesh1->scale(0.9f, 0.48f, 0.48f);
+    VIPMesh2->scale(0.9f, 0.48f, 0.48f);
     VIPMesh1->attachObject(crownEntity1);
     VIPMesh2->attachObject(crownEntity2);
 }

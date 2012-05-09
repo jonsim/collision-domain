@@ -85,7 +85,7 @@ public:
     void setGameScore( int gs ) { this->gameScore = gs; }
 	void addToGameScore(int amount);
     int lastsenthp;
-	bool isReady() { return mSpawned;}
+	bool isReady() { return mSpawned && mCar;}
 
     void cameraLookLeft(void);
 	void cameraLookRight(void);

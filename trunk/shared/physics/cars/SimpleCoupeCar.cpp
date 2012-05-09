@@ -173,9 +173,21 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
 
     GameCore::mPhysicsCore->getWorld()->removeAction( mVehicle );
 
+    mBodyNode->removeAndDestroyAllChildren();
+    GameCore::mSceneMgr->destroySceneNode( mBodyNode );
+
+    mWheelsNode->removeAndDestroyAllChildren();
+    GameCore::mSceneMgr->destroySceneNode( mWheelsNode );
+
+    GameCore::mPhysicsCore->getWorld()->removeConstraint( fricConst );
+
     // Cleanup Bodies:
+    delete fricConst;
     delete mVehicle;
     delete mVehicleRayCaster;
+
+    mVehicle = NULL;
+    mVehicleRayCaster = NULL;
 
 #ifdef COLLISION_DOMAIN_CLIENT
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);

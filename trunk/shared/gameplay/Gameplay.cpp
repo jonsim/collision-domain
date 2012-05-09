@@ -153,8 +153,10 @@ void Gameplay::playerQuit(Player *player)
 {
     TeamID tid = (TeamID) player->getTeam();
     Team *t = getTeam(tid);
+#ifdef COLLISION_DOMAIN_SERVER
     while( t->getVIP() == player )
         setNewVIP(tid);    
+#endif
     t->delPlayer(player);
 }
  
@@ -506,9 +508,6 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				break;
 			case ROUND_OVER_OT:
                 this->cycleGameMode(); //Cycle game mode
-                this->mGameActive = false;
-                this->restartGame();
-                GameCore::mPlayerPool->roundEnd();
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->showForce();
 				#endif
@@ -537,6 +536,9 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
+                this->mGameActive = false;
+                this->restartGame();
+                GameCore::mPlayerPool->roundEnd();
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->hideForce();
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
@@ -869,7 +871,7 @@ void Gameplay::resetRoundScores() {
 void Gameplay::calculateRoundScores()
 {
     std::vector<Player*> players = GameCore::mPlayerPool->getScoreOrderedPlayers();
-    for(unsigned int i=(players.size()-1);i>=(players.size()-NUM_TOP_PLAYERS-1);i--)
+    for(int i=(int)(players.size()-1);i>=(int)(players.size()-NUM_TOP_PLAYERS-1);i--)
 	{
         //If there are not at NUM_TOP_PLAYERS this will save it from breaking
         if(i<0)

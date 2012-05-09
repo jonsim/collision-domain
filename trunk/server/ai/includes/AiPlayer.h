@@ -40,7 +40,7 @@ public:
 	Vector3 getWallHitPosition(void)const{return mWallHitPosition;}
     Vector3 getWallNormal(void)const{return mWallNormal;}
     std::vector<Vector3> getFeelersPosition(void)const{ return mFeelers;}
-
+    SteeringBehaviour* getSteeringBehaviour(){return mSteeringBehaviour;}
 
 private:
 	string mName;

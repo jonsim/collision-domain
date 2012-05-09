@@ -40,7 +40,7 @@ public:
     void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);
 	float getCameraYaw (void);
     Car* getCar (void);
-    void delCar() { if( mCar ) { delete mCar; mCar = NULL; } }
+    void delCar() { if( mCar ) { mCar->mBodyNode->detachAllObjects(); delete mCar; mCar = NULL; } }
     void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
     void applyHealthBonus (void);
     
@@ -51,7 +51,7 @@ public:
     void setPlayerState( PLAYER_STATE s ) { mPlayerState = s; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
-    void setNickname (char *szNick) { mNickname = strdup( szNick ); }
+    void setNickname (char *szNick);
     void setHP (int newHP) { hp = newHP; }
 	int	 getHP (void);
     void setVIP(bool newState) { mIsVIP = newState; }
@@ -112,6 +112,11 @@ private:
 	Ogre::SceneNode*						   camNode;
 	Ogre::SceneNode*						   camArmNode;
     CarType									   mCarType;
+    Ogre::BillboardSet*                        mBoards;
+    Ogre::BillboardSet*                        mBacks;
+    Ogre::Billboard*                           mHealthbar;
+    Ogre::Billboard*                           mHealthBg;
+    Ogre::MovableText*                         mNametag;
 
 	int                                        numCameraViews;
 	int										   cameraView;
@@ -140,8 +145,6 @@ private:
 	float backLeftDamageShare;  
 	float frontLeftDamageShare;
 	float frontRightDamageShare;
-
-
 
 	int roundScore;
 	int gameScore;

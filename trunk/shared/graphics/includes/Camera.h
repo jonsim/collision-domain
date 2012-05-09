@@ -37,7 +37,7 @@ public:
     void            setCollidable( bool canCollide )                { mCollidable = canCollide; }
 
     SceneNode&      getTarget()                                     { return *mTarget; }
-    void            setTarget( SceneNode *node )                    { if( node ) mTarget = node; }
+    void            setTarget( SceneNode *node )                    { mTarget = node; }
     void            removeTarget()                                  { mTarget = NULL; }
 
     btVector3&      getTransform()                                  { return mWorldPos; }

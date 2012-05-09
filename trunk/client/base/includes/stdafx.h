@@ -30,6 +30,7 @@
 #include "OgreCompositorInstance.h"
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
+#include "MovableText.h"
 
 // CEGUI includes
 #include <CEGUI.h>

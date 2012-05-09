@@ -607,6 +607,9 @@
     <ClInclude Include="..\..\client\base\includes\stdafx.h">
       <Filter>client\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\shared\graphics\includes\MovableText.h">
+      <Filter>client\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\client\base\Player.cpp">
@@ -992,6 +995,9 @@
     </ClCompile>
     <ClCompile Include="..\..\client\base\stdafx.cpp">
       <Filter>client\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\shared\graphics\MovableText.cpp">
+      <Filter>client\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

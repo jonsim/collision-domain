@@ -40,6 +40,8 @@ bool PlayerPool::delPlayer( RakNet::RakNetGUID playerid )
 	Player *pPlayer = getPlayer( playerid );
 	if( pPlayer )
 	{
+        GameCore::mGameplay->playerQuit( pPlayer );
+        GameCore::mAiCore->playerQuit( pPlayer );
         std::vector<Player*>::iterator it = find( mPlayers.begin(), mPlayers.end(), pPlayer );
         if( it != mPlayers.end() )
         {

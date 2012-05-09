@@ -64,19 +64,21 @@ Vector3 SteeringBehaviour::CalculatePrioritized(void)
 
 	  if(On(flee))
 	  {
-		  if(GetFleeTarget()->isReady())
-			force = Flee(GetFleeTarget()->getCar()->GetPos());
+          if(GetFleeTarget())
+		    if(GetFleeTarget()->isReady())
+			    force = Flee(GetFleeTarget()->getCar()->GetPos());
 	  }
 	  
 	  if(On(seek))
 	  {
-		  if(GetSeekTarget()->isReady())
-			force = Seek(GetSeekTarget()->getCar()->GetPos());
+          if(GetSeekTarget())
+		    if(GetSeekTarget()->isReady())
+			    force = Seek(GetSeekTarget()->getCar()->GetPos());
 	  }
 	  
 	  if(On(powerup))
 	  {
-		  force = Seek(GetPowerup());
+		    force = Seek(GetPowerup());
 	  }
 
 	  /*
