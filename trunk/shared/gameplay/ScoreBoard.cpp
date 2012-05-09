@@ -38,7 +38,17 @@ void ScoreBoard::show()
 	this->update();
 
 	sbOverlay->show();
-    textScoreOverlay->show();
+    if(GameCore::mGameplay->getGameMode() == FFA_MODE)
+    {
+        textScoreOverlayFFA->show();
+        sbContainerFFA->show();
+    }
+    else
+    {
+        textScoreOverlay->show();
+        sbContainer->show();
+    }
+    
 
 	this->isShown = true;
 }
@@ -52,7 +62,17 @@ void ScoreBoard::showForce()
 	this->update();
 
 	sbOverlay->show();
-    textScoreOverlay->show();
+    if(GameCore::mGameplay->getGameMode() == FFA_MODE)
+    {
+        textScoreOverlayFFA->show();
+        sbContainerFFA->show();
+    }
+    else
+    {
+        textScoreOverlay->show();
+        sbContainer->show();
+    }
+    
 
 	this->isShown = true;
 	this->isForced = true;
@@ -68,6 +88,10 @@ void ScoreBoard::hideForce()
 	if(isShown) {
 		this->sbOverlay->hide();
         textScoreOverlay->hide();
+        textScoreOverlayFFA->hide();
+        sbContainerFFA->hide();
+        sbContainer->hide();
+
 		this->isShown = false;
 		this->isForced = false;
 	}
@@ -82,6 +106,7 @@ void ScoreBoard::hide()
 	if(isShown && !isForced) {
 		this->sbOverlay->hide();
         textScoreOverlay->hide();
+        textScoreOverlayFFA->hide();
 		this->isShown = false;
 	}
 }
@@ -100,13 +125,24 @@ void ScoreBoard::initialize()
 	sbOverlay = 
 		Ogre::OverlayManager::getSingleton().create( "SCOREBOARD_OVERLAY" );
 	sbOverlay->setZOrder(601);
+
 	sbContainer = static_cast<Ogre::OverlayContainer*> ( 
 		Ogre::OverlayManager::getSingleton().
 			createOverlayElement( "Panel", "SCOREBOARD_CONTAINER" ) );
 	sbOverlay->add2D(sbContainer);
 	sbContainer->setPosition(0.0f,0.0f);
 	sbContainer->setMaterialName("ConstructionScreen");
-		
+	sbContainer->hide();
+
+    sbContainerFFA = static_cast<Ogre::OverlayContainer*> ( 
+		Ogre::OverlayManager::getSingleton().
+			createOverlayElement( "Panel", "SCOREBOARD_CONTAINER_FFA" ) );
+	sbOverlay->add2D(sbContainerFFA);
+	sbContainerFFA->setPosition(0.0f,0.0f);
+	sbContainerFFA->setMaterialName("ConstructionScreen");
+	sbContainerFFA->hide();
+
+
     textScoreOverlay =
         Ogre::OverlayManager::getSingleton().create( "SCOREBOARD_TEXT_OVERLAY" );
 	textScoreOverlay->setZOrder(602);
@@ -115,6 +151,18 @@ void ScoreBoard::initialize()
 			createOverlayElement( "Panel", "SCOREBOARD_TEXT_CONTAINER" ) );
 	textScoreOverlay->add2D(textScoreContainer);
 	textScoreContainer->setPosition(0.0f,0.0f);
+
+    textScoreOverlayFFA =
+        Ogre::OverlayManager::getSingleton().create( "SCOREBOARD_TEXT_OVERLAY_FFA" );
+	textScoreOverlayFFA->setZOrder(602);
+    Ogre::OverlayContainer *textScoreContainerFFA = static_cast<Ogre::OverlayContainer*> ( 
+		Ogre::OverlayManager::getSingleton().
+			createOverlayElement( "Panel", "SCOREBOARD_TEXT_CONTAINER_FFA" ) );
+	textScoreOverlayFFA->add2D(textScoreContainerFFA);
+	textScoreContainerFFA->setPosition(0.0f,0.0f);
+
+    textScoreOverlay->hide();
+    textScoreOverlayFFA->hide();
 
 	//Create a textarea
 	Ogre::OverlayElement *textAreaHeader = 
@@ -173,10 +221,10 @@ void ScoreBoard::initialize()
 	this->textAreaT3->setColour(Ogre::ColourValue::White);
 
     this->textAreaT3->setCaption(this->buildScoreText(NO_TEAM));
-	textScoreContainer->addChild(this->textAreaT3);	
+	textScoreContainerFFA->addChild(this->textAreaT3);	
 
 	sbOverlay->hide();
-	
+
 	isShown = false;
 	isInitialized = true;
 #endif
@@ -271,7 +319,7 @@ void ScoreBoard::manageStrips()
                 tmp->setMaterialName("GreyStripDark");
             else
                 tmp->setMaterialName("GreyStripLight");
-	        sbContainer->addChild(tmp);
+	        sbContainerFFA->addChild(tmp);
             greyTeamStrips.push_back(tmp);
         }
     }
