@@ -186,11 +186,11 @@ void ScoreBoard::manageStrips()
     }
 
 
-
+    /*
     StringStream tmpSS2;
     tmpSS2 << "Blue: "<<numBluePlayers<< " Red: " <<numRedPlayers<<"\n";
     OutputDebugString(tmpSS2.str().c_str());
-
+    */
     //Make sure we've got the correct number of strip overlays
     if(blueTeamStrips.size() != numBluePlayers)
     {

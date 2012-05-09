@@ -497,7 +497,9 @@ void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
             tmpPlayer->setRoundScore(pRoundScore);
             tmpPlayer->setGameScore(pRoundScore);
         } else {
-            OutputDebugString("Attempted to update score for non existent player\n");
+            StringStream tmpSS;
+            tmpSS << "Attempted to update score for " << pGUID.ToString() << " non existent player\n";
+            OutputDebugString(tmpSS.str().c_str());
         }
     }
     
