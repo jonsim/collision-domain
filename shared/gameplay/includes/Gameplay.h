@@ -119,6 +119,8 @@ private:
     Ogre::Overlay               *wtOverlay;
     Ogre::OverlayContainer      *wtContainer;
     Ogre::OverlayElement        *textAreaT1;
+
+    Ogre::OverlayElement        *oleGameMode;
 };
 
 
