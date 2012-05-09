@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "Powerup.h"
 #include "GameCore.h"
+#include "TruckCar.h"
 
 Powerup::Powerup(Ogre::Vector3 spawnAt, int poolIndex)
 {
@@ -112,15 +113,33 @@ void Powerup::playerCollision(Player* player)
             switch (mPowerupType)
             {
             case POWERUP_HEALTH:
-                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 2.0f);
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 2.5f);
                 break;
+
             case POWERUP_MASS:
-                // POWERUP_BOARD_HEAVY, POWERUP_BOARD_LIGHT,
-                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 10.0f);
+                // trucks have a 75% chance of getting a light negative powerup instead of heavy!
+                if (player->getCar()
+                    && dynamic_cast<TruckCar*>( player->getCar() )
+                    && rand() % 100 < 75)
+                {
+                    player->pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 15.0f);
+                }
+                else if (rand() % 9 == 0)
+                {
+                    // 11% chance of getting the light negative powerup
+                    player->pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 10.0f);
+                }
+                else
+                {
+                    // normal heavy powerup
+                    player->pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 12.0f);
+                }
                 break;
+
             case POWERUP_SPEED:
-                player->pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 10.0f);
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 9.0f);
                 break;
+
             default:
                 break;
             }
@@ -143,6 +162,7 @@ void Powerup::playerCollision(Player* player)
         case POWERUP_HEALTH:
             break;
         case POWERUP_MASS:
+            // oh shit something has to change here
             break;
         case POWERUP_SPEED:
             break;
