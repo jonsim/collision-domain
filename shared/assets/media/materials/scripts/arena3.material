@@ -1,0 +1,31 @@
+import cd/Base from "cdBaseMaterials.material"
+
+material arena3_walls_uv : cd/Base
+{
+    set $diffuse_map arena3_walls.jpg
+}
+
+material arena3_floor_uv : cd/Base
+{
+    set $diffuse_map arena3_floor.jpg
+}
+
+material arena3_steps_uv : cd/Base
+{
+    set $diffuse_map arena3_stairs.jpg
+}
+
+material arena3_pipe1_uv : cd/Base
+{
+    set $diffuse_map arena3_pipe1.jpg
+}
+
+material arena3_pipe2_uv : cd/Base
+{
+    set $diffuse_map arena3_pipe2.jpg
+}
+
+material arena3_pipe3_uv : cd/Base
+{
+    set $diffuse_map arena3_pipe3.jpg
+}

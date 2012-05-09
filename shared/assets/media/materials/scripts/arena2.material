@@ -1,0 +1,11 @@
+import cd/Base from "cdBaseMaterials.material"
+
+material arena2_ground_uv : cd/Base
+{
+    set $diffuse_map arena2_uv.jpg
+}
+
+material arena2_krail_uv : cd/Base
+{
+    set $diffuse_map krail_uv.jpg
+}
