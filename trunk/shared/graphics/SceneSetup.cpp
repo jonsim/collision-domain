@@ -11,7 +11,7 @@
 // The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
 #define SHADOW_METHOD 2
 // The arena to use (1 = colosseum, 2 = forest, 3 = quarry, 4 = carpark).
-#define ARENA 3
+#define ARENA 2
 
 
 SceneSetup::SceneSetup (void) : mWindow(0),

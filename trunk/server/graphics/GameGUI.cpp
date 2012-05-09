@@ -38,7 +38,6 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
 	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
 	CEGUI::Editbox*       inputText     = static_cast<CEGUI::Editbox*>(winMgr.getWindow("/Server/input"));
     CEGUI::DefaultWindow* consoleBuffer = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Server/buffer"));
-    CEGUI::Scrollbar*     cbScroll      = static_cast<CEGUI::Scrollbar*>(winMgr.getWindow("/Server/buffer__auto_vscrollbar__"));
 
     // Get the input text, echo it back to the console (unless its blank, in which case return, or a chat message in which case it doesn't
     // make sense to have the message printed twice so don't echo) and clear the input box.
@@ -141,8 +140,7 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     consoleHistoryLocation = 0xFF;
 
     // Scroll to the bottom of the pane.
-    if (cbScroll != NULL)
-        cbScroll->setScrollPosition(cbScroll->getDocumentSize());
+    scrollConsoleToBottom();
 
 	return true;
 }
@@ -150,7 +148,7 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
 void GameGUI::outputToConsole (const char* str, ...)
 {
     // Provide printf like functionality. I do not know if this is cross platform or not (I suspect it might
-    // be compiler specific, in which case I assume it doesn't compile a gcc version will need to be sourced).
+    // be compiler specific, in which case I assume it doesn't compileL a gcc version will need to be sourced).
     char buffer[256];
     va_list ap;
 
@@ -163,9 +161,13 @@ void GameGUI::outputToConsole (const char* str, ...)
         va_end(ap);
     }
 
+    // Output to the console window
 	CEGUI::WindowManager& winMgr        = CEGUI::WindowManager::getSingleton();
 	CEGUI::DefaultWindow* consoleBuffer = static_cast<CEGUI::DefaultWindow*>(winMgr.getWindow("/Server/buffer"));
 	consoleBuffer->appendText(CEGUI::String(buffer));
+
+    // Scroll to the bottom of the pane.
+    scrollConsoleToBottom();
 }
 
 void GameGUI::loadConsoleHistory (bool reverseLoading)
@@ -221,6 +223,16 @@ void GameGUI::giveConsoleFocus (void)
     // Give the input box focus.
 	CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
 	winMgr.getWindow("/Server/input")->activate();
+}
+
+void GameGUI::scrollConsoleToBottom (void)
+{
+	CEGUI::WindowManager& winMgr      = CEGUI::WindowManager::getSingleton();
+    CEGUI::Scrollbar* cbScroll = static_cast<CEGUI::Scrollbar*>(winMgr.getWindow("/Server/buffer__auto_vscrollbar__"));
+
+    // Scroll to the bottom of the pane.
+    if (cbScroll != NULL)
+        cbScroll->setScrollPosition(cbScroll->getDocumentSize());
 }
 
 

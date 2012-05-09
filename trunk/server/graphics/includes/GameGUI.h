@@ -59,6 +59,7 @@ public:
     void outputToConsole (const char* str, ...);
     void loadConsoleHistory (bool reverseLoading);
     void giveConsoleFocus (void);
+    void scrollConsoleToBottom (void);
 	void openAdminWindow (void);
 	bool closeAdminWindow (const CEGUI::EventArgs &args);
 	void updatePlayerComboBox (void);
