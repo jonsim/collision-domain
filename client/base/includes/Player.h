@@ -36,7 +36,9 @@ struct PLAYER_DAMAGE_LOC
     float damageTR;
     float damageBR;
     float damageMR;
-};enum PowerupBoardType : int
+};
+
+enum PowerupBoardType : int
 {
     POWERUP_BOARD_HEAVY,
     POWERUP_BOARD_LIGHT,
@@ -122,6 +124,7 @@ private:
     float remaining;
     PowerupBoardType type;
 };
+
 
 
 class Player
