@@ -356,6 +356,11 @@ void SimpleCoupeCar::initGraphics(TeamID tid)
 
 void SimpleCoupeCar::updateTeam (TeamID tid)
 {
+    //Give each player no team if the game is FreeForAll
+    if(GameCore::mGameplay->getGameMode() == FFA_MODE)
+    {
+        tid = NO_TEAM;
+    }
     // Load the team coloured items
     switch (tid)
     {

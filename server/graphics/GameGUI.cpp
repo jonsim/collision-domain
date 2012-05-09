@@ -70,6 +70,7 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
         outputToConsole("spawn hard [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10']    Spawns [font='DejaVuMonoItalic-10']X[font='DejaVuMono-10'] AI players with the flee hard difficulty.\n");
         outputToConsole("get server fps  Returns the server's average fps.\n");
         outputToConsole("get gfx fps     Returns the server's graphics fps.\n");
+        outputToConsole("newround        Forces the next round to start.\n");
     }
 	else if( !strcasecmp( inputChars,  "prep" ) )
     {
@@ -125,6 +126,10 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     else if( !strcasecmp(inputChars, "powerups"))
     {
         GameCore::mPowerupPool->replaceCurrentPowerups();
+    }
+    else if( !strcasecmp(inputChars, "newround"))
+    {
+        GameCore::mGameplay->forceRoundEnd();
     }
     else
     {
