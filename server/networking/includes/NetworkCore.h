@@ -53,6 +53,12 @@ enum
     ID_SPAWN_WAIT_NEXT_GAME,
 };
 
+struct SERVER_INFO_DATA
+{
+    unsigned int publicSeed;
+    int curMap;
+};
+
 struct PLAYER_INPUT_DATA
 {
 	bool frwdPressed;
@@ -81,6 +87,8 @@ private:
 	static RakNet::RakPeerInterface *m_pRak;
 	static RakNet::RPC4 *m_RPC;
 	static RakNet::TimeMS timeLastUpdate;
+
+    static SERVER_INFO_DATA serverInfo;
 
 public:
     NetworkCore();

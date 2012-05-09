@@ -86,7 +86,11 @@ void Lobby::close (void)
 bool Lobby::connectPressed (const CEGUI::EventArgs &args)
 {
     //OutputDebugString("boobs\n");
+
+    // Broadcast for online LAN servers
+    GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
     GameCore::mClientGraphics->loadGame();
+
     return true;
 }
 

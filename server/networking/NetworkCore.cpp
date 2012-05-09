@@ -22,7 +22,7 @@ RakNet::RakPeerInterface* NetworkCore::m_pRak;
 RakNet::RPC4* NetworkCore::m_RPC;
 bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
-
+SERVER_INFO_DATA NetworkCore::serverInfo;
 
 /// @brief  Constructor, initialising all resources.
 NetworkCore::NetworkCore()
@@ -39,6 +39,11 @@ NetworkCore::NetworkCore()
 	}
 
 	RegisterRPCSlots();
+
+    log( "Server seed sent: %u", GameCore::uPublicSeed );
+    serverInfo.publicSeed = GameCore::uPublicSeed;
+    serverInfo.curMap = 0;
+    m_pRak->SetOfflinePingResponse( (char*)&serverInfo, sizeof( SERVER_INFO_DATA ) );
 }
 
 /// @brief Initialize the local player and set connected state
@@ -377,7 +382,6 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	// Send them a GameJoin RPC so they can get set up
 	// This is where any game specific initialization can go
-    bsSend.Write( GameCore::rseed );
 	RakNet::StringCompressor().EncodeString( szNickname, 128, &bsSend );
 	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 

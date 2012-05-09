@@ -15,9 +15,8 @@ RakNet::RPC4* NetworkCore::m_RPC;
 bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
-
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore () : mPlayerName("boobs")
+NetworkCore::NetworkCore () : m_szHost( NULL ), mPlayerName("boobs")
 {
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
@@ -31,17 +30,21 @@ NetworkCore::NetworkCore () : mPlayerName("boobs")
 bool NetworkCore::Connect( const char *szHost, int iPort, char *szPass )
 {
 	// Connect to the specified server
-	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szHost, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
+    char *szCon = (szHost == NULL) ? m_szHost : (char*)szHost;
+    if( szCon == NULL )
+        return false;
+
+	RakNet::ConnectionAttemptResult bCon = m_pRak->Connect( szCon, iPort, szPass, szPass == NULL ? 0 : strlen(szPass) );
 	m_pRak->SetOccasionalPing( true );
 
 	//if( bCon == RakNet::ConnectionAttemptResult::CONNECTION_ATTEMPT_STARTED ) // C4482
 	if( bCon == RakNet::CONNECTION_ATTEMPT_STARTED )
 	{
-		log( "Connecting to %s : %i", szHost, iPort );
+		log( "Connecting to %s : %i", szCon, iPort );
 		return true;
 	}
 
-	log( "Failed to connect to %s : %i", szHost, iPort );
+	log( "Failed to connect to %s : %i", szCon, iPort );
 	return false;
 }
 
@@ -117,8 +120,20 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 		switch( packetid )
 		{
             case ID_UNCONNECTED_PONG:
-                Connect( pkt->systemAddress.ToString(), SERVER_PORT, NULL );
+            {
+                char szSeed[32];
+                m_szHost = strdup( pkt->systemAddress.ToString() );
+                SERVER_INFO_DATA serverInfo;
+                RakNet::TimeMS time;
+				RakNet::BitStream bsIn( pkt->data, pkt->length, false );
+				bsIn.IgnoreBytes( 1 );
+				bsIn.Read( time );
+                bsIn.Read( (char*)&serverInfo, sizeof( SERVER_INFO_DATA ) );
+                GameCore::uPublicSeed = serverInfo.publicSeed;
+                log( "Client seed received: %u", GameCore::uPublicSeed );
+                srand( GameCore::uPublicSeed );
                 break;
+            }
 			case ID_CONNECTION_REQUEST_ACCEPTED:
 			{
 				log( "Connection to server accepted" );

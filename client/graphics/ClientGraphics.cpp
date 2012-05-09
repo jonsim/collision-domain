@@ -46,8 +46,7 @@ ClientGraphics::~ClientGraphics (void)
 /// @brief  Starts the graphics.
 void ClientGraphics::go (void)
 {
-    GameCore::rseed = time(NULL);
-    srand(GameCore::rseed);
+    srand(time(NULL));
 
     if (!initApplication())
         return;
@@ -216,6 +215,9 @@ void ClientGraphics::unloadLobby (void)
 
 void ClientGraphics::loadGame (void)
 {
+    if( GameCore::mNetworkCore->m_szHost == NULL )
+        return;
+
     // Set the graphics state (unloading the lobby set it as undefined).
     if (mGraphicsState == IN_LOBBY)
         unloadLobby();
@@ -240,10 +242,9 @@ void ClientGraphics::loadGame (void)
     // Clear the splash screen.
     splashScreen.clear();
 
-    // Auto connect to the first server you can find.
-    GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
+    // Connect to the received broadcast address
+    GameCore::mNetworkCore->Connect();
 
-    
     mGraphicsState = IN_GAME;
 }
 
@@ -348,6 +349,8 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
         // Update GUI
         CEGUI::System::getSingleton().injectTimePulse(evt.timeSinceLastFrame);
+
+        GameCore::mNetworkCore->frameEvent(NULL);
     }
     else if (mGraphicsState == IN_GAME || mGraphicsState == PROJECTOR)
     {
