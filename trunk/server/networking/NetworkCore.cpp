@@ -638,14 +638,15 @@ void NetworkCore::sendSyncScores()
 {
     //OutputDebugString("Sending sync of scores\n");
     RakNet::BitStream bs;
-    std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
-    bs.Write(players.size()); //Send the size
-    for(unsigned int i=0;i<players.size();i++)
+    //std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
+    int playerPoolSize = GameCore::mPlayerPool->getNumberOfPlayers();
+    bs.Write(playerPoolSize); //Send the size
+    for(int i=0;i<playerPoolSize;i++)
     {
         //Write player GUID then round score and then score
-        bs.Write(players[i]->getGUID());
-        bs.Write(players[i]->getRoundScore());
-        bs.Write(players[i]->getGameScore());
+        bs.Write(GameCore::mPlayerPool->getPlayer(i)->getGUID());
+        bs.Write(GameCore::mPlayerPool->getPlayer(i)->getRoundScore());
+        bs.Write(GameCore::mPlayerPool->getPlayer(i)->getGameScore());
     }
     m_RPC->Signal( "SyncScores", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
