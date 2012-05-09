@@ -325,7 +325,7 @@ void Player::processControlsFrameEvent(
 /// @brief  Updates the camera's rotation based on the values given.
 /// @param  XRotation   The amount to rotate the camera by in the X direction (relative to its current rotation).
 /// @param  YRotation   The amount to rotate the camera by in the Y direction (relative to its current rotation).
-void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time)
+void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time, GameCamera *gameCamera)
 {
     //Ogre::SceneNode *camNode = mCar->attachCamNode();
     //Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
