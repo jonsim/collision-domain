@@ -60,6 +60,8 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     mHealthbar = NULL;
     mHealthBg = NULL;
     mNametag = NULL;
+
+    camShakeFrames = 0;
     //OutputDebugString(ss.str().c_str());
 
 	//averageCollisionPoint.setZero();
@@ -243,6 +245,7 @@ void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *cau
 	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
 		//OutputDebugString("Bang\n");
 		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.1, isFront);
+        //camShakeFrames = 50;
 	}
 }
 
@@ -338,7 +341,29 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
 	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
 		camNode->translate(0, 0, ZDepth * 0.02f);
 
-
+    if( camShakeFrames > 0 )
+    {
+        camShakeFrames --;
+        if( camShakeFrames > 0 )
+        {
+            btVector3 camPos = gameCamera->getOffset();
+            float curX = camPos.x();
+            curX -= 5;
+            curX += rand() % 10;
+            camPos.setX( curX );
+            float curY = camPos.y();
+            curY -= 5;
+            curY += rand() % 10;
+            camPos.setY( curY );
+            float curZ = camPos.z();
+            curZ -= 5;
+            curZ += rand() % 10;
+            camPos.setZ( curZ );
+            gameCamera->setTempOffset( camPos );
+        }
+        else
+            gameCamera->resetTempOffset();
+    }
    
 	//Update the camera
 	//
