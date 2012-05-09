@@ -71,6 +71,7 @@ public:
 
 	static MeshDeformer meshDeformer;
 
+    static unsigned int rseed;
 private:
     
 };
