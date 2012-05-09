@@ -90,6 +90,7 @@ void ScoreBoard::update()
 {
 	this->textAreaT1->setCaption(this->buildScoreText(BLUE_TEAM));
     this->textAreaT2->setCaption(this->buildScoreText(RED_TEAM));
+    this->textAreaT3->setCaption(this->buildScoreText(NO_TEAM));
 }
 
 void ScoreBoard::initialize()
@@ -131,6 +132,7 @@ void ScoreBoard::initialize()
 
     int t1X = (50.0/800.0)*(float)screenWidth;
     int t2X = (460.0/800.0)*(float)screenWidth;
+    int t3X = (266.0/800.0)*(float)screenWidth;
 
     int tY = (95.0/600.0)*(float)screenHeight;
 
@@ -158,6 +160,20 @@ void ScoreBoard::initialize()
 
 	this->textAreaT2->setCaption(this->buildScoreText(RED_TEAM));
 	textScoreContainer->addChild(this->textAreaT2);	
+
+    //TEXTAREA T3
+    this->textAreaT3 = Ogre::OverlayManager::getSingleton().
+		createOverlayElement("TextArea","ZSCOREBOARD_ELEMENT3");
+    this->textAreaT3->setDimensions(0.9f, 0.6f);
+	this->textAreaT3->setMetricsMode(Ogre::GMM_PIXELS);
+	this->textAreaT3->setPosition(t3X,tY);
+	
+	this->textAreaT3->setParameter("font_name","DejaVuSans");
+	this->textAreaT3->setParameter("char_height", "30");
+	this->textAreaT3->setColour(Ogre::ColourValue::White);
+
+    this->textAreaT3->setCaption(this->buildScoreText(NO_TEAM));
+	textScoreContainer->addChild(this->textAreaT3);	
 
 	sbOverlay->hide();
 	
@@ -238,9 +254,9 @@ void ScoreBoard::manageStrips()
         }
     }
 
-    if(redTeamStrips.size() != numRedPlayers)
+    if(greyTeamStrips.size() != numGreyPlayers)
     {
-        for(int i=redTeamStrips.size()-1;i<numRedPlayers-1;i++) {
+        for(int i=greyTeamStrips.size()-1;i<numGreyPlayers-1;i++) {
             StringStream tmpSS;
             tmpSS << "OLE_GREYSTRIP__"<<i;
 
@@ -250,13 +266,13 @@ void ScoreBoard::manageStrips()
 	        tmp->setMetricsMode(Ogre::GMM_RELATIVE);
             tmp->setDimensions(0.4f, STRIP_HEIGHT);
             float yOffeset = STRIP_HEIGHT*i+0.2;
-            tmp->setPosition(0.55f,yOffeset);
+            tmp->setPosition(0.3f,yOffeset);
             if((i%2) == 0) 
                 tmp->setMaterialName("GreyStripDark");
             else
                 tmp->setMaterialName("GreyStripLight");
 	        sbContainer->addChild(tmp);
-            redTeamStrips.push_back(tmp);
+            greyTeamStrips.push_back(tmp);
         }
     }
 }
@@ -278,7 +294,7 @@ std::string ScoreBoard::buildScoreText(TeamID teamID)
 	{
 		//Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
 		Player* tmpPlayer = sortedPlayers[i];
-        if(GameCore::mGameplay->getGameMode() == FFA_MODE)
+        if(teamID == NO_TEAM)
         {
             buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
         }
