@@ -206,7 +206,7 @@ void PlayerPool::roundEnd()
         //mPlayers[i]->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 	}
     GameCore::mClientGraphics->mGameCam->setTarget( NULL );
-    GameCore::mGui->showSpawnScreenPage2();
+    GameCore::mGui->showSpawnScreenPage2(GameCore::mPlayerPool->getLocalPlayer()->getTeam());
 }
 
 void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )

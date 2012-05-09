@@ -19,8 +19,8 @@ public:
     ~GameGUI (void) {}
 
     void setupSpawnScreen (CEGUI::Window* guiWindow);
-    void showSpawnScreenPage2 (void);
     void showSpawnScreenPage1 (void);
+    void showSpawnScreenPage2 (TeamID teamDisplay);
     void closeSpawnScreen (void);
     void showSpawnScreenErrorText (const char* errorText);
     void hideSpawnScreenErrorText (void);
@@ -89,14 +89,12 @@ private:
 	Ogre::OverlayElement   *damageHUD_ML;
 	Ogre::OverlayElement   *damageHUD_MR;
 
-    TeamID playerTeam;
-
     CarType playerCarType; //
 
     //Ogre::OverlayElement   *oleDamageEngine, *oleDamageFL, *oleDamageFR, *oleDamageRL, *oleDamageRR;
     CEGUI::Window*   spawnScreenImage;
     CEGUI::Imageset* spawnScreenImageSet;
-    int              spawnScreenTeamSelection;
+    TeamID           spawnScreenTeamSelection;
     CarType          spawnScreenCarSelection;
 };
 
