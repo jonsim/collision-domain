@@ -237,8 +237,11 @@ void NetworkCore::sendChatMessage( const char *szMessage )
 
 void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
+    unsigned int seed;
 	char szNickname[128];
 
+    bitStream->Read( seed );
+    srand( seed );
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 
 	// Add ourselves to the player pool

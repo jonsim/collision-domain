@@ -377,6 +377,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	// Send them a GameJoin RPC so they can get set up
 	// This is where any game specific initialization can go
+    bsSend.Write( GameCore::rseed );
 	RakNet::StringCompressor().EncodeString( szNickname, 128, &bsSend );
 	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 

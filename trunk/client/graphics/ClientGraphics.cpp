@@ -46,7 +46,8 @@ ClientGraphics::~ClientGraphics (void)
 /// @brief  Starts the graphics.
 void ClientGraphics::go (void)
 {
-    srand(time(NULL));
+    GameCore::rseed = time(NULL);
+    srand(GameCore::rseed);
 
     if (!initApplication())
         return;

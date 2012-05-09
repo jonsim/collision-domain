@@ -57,7 +57,8 @@ ServerGraphics::~ServerGraphics (void)
 /// @brief  Entry point for the application
 void ServerGraphics::go (void)
 {
-    srand(time(NULL));
+    GameCore::rseed = time(NULL);
+    srand(GameCore::rseed);
 
     // Initialise the application.
     if (!initApplication())

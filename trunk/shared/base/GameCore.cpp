@@ -23,6 +23,7 @@ PhysicsCore*			GameCore::mPhysicsCore			= NULL;
 GameGUI*				GameCore::mGui					= NULL;
 PowerupPool*			GameCore::mPowerupPool			= NULL;
 Gameplay*				GameCore::mGameplay				= NULL;
+unsigned int            GameCore::rseed                 = 0   ;
 
 #ifdef COLLISION_DOMAIN_CLIENT
 void GameCore::initialise (ClientGraphics* clientGraphics)
