@@ -30,3 +30,13 @@ material BlueStripLight: cd/GUIComponent
 {
 	set $texture BlueStripLight.png
 }
+
+material GreyStripLight: cd/GUIComponent
+{
+	set $texture GreyStripLight.png
+}
+
+material GreyStripDark: cd/GUIComponent
+{
+	set $texture GreyStripDark.png
+}

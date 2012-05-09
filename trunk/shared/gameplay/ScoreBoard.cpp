@@ -170,6 +170,7 @@ void ScoreBoard::manageStrips()
 {
     int numRedPlayers = 0;
     int numBluePlayers = 0;
+    int numGreyPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
 
     std::vector<Player*> players = GameCore::mPlayerPool->getPlayers();
     for(unsigned int i=0;i<players.size();i++)
@@ -236,42 +237,54 @@ void ScoreBoard::manageStrips()
             redTeamStrips.push_back(tmp);
         }
     }
+
+    if(redTeamStrips.size() != numRedPlayers)
+    {
+        for(int i=redTeamStrips.size()-1;i<numRedPlayers-1;i++) {
+            StringStream tmpSS;
+            tmpSS << "OLE_GREYSTRIP__"<<i;
+
+	        Ogre::OverlayElement *tmp = 
+			        Ogre::OverlayManager::getSingleton().
+                        createOverlayElement("Panel",tmpSS.str());
+	        tmp->setMetricsMode(Ogre::GMM_RELATIVE);
+            tmp->setDimensions(0.4f, STRIP_HEIGHT);
+            float yOffeset = STRIP_HEIGHT*i+0.2;
+            tmp->setPosition(0.55f,yOffeset);
+            if((i%2) == 0) 
+                tmp->setMaterialName("GreyStripDark");
+            else
+                tmp->setMaterialName("GreyStripLight");
+	        sbContainer->addChild(tmp);
+            redTeamStrips.push_back(tmp);
+        }
+    }
 }
 
 std::string ScoreBoard::buildScoreText(TeamID teamID)
 {
 	std::stringstream buildingStream;
 
-	//Can only do the scoreboard like this
-	/*
-	if(GameCore::mGameplay->numberOfTeams == 2)
-	{
-		Team* team0 = GameCore::mGameplay->getTeam(0);
-		Team* team1 = GameCore::mGameplay->getTeam(1);
-
-		buildingStream << "TN: " << GameCore::mGameplay->numberOfTeams << "\n";
-		buildingStream << "T0: " << team0->getTeamSize() << "\n";
-		buildingStream << "T1: " << team1->getTeamSize() << "\n";
-	}
-	*/
 	int numberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
 	//We only want the best so drop the rest
 	if(numberOfPlayers > 10)
 		numberOfPlayers = 10;
 
-	//#ifdef COLLISION_DOMAIN_SERVER
-		//Get the sorted list
-		std::vector<Player*> sortedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();
-		//Print out all the players names
-		//for(int i=0;i<numberOfPlayers;i++)
-		for(int i=(sortedPlayers.size()-1);i>=0;i--)
-		{
-			//Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-			Player* tmpPlayer = sortedPlayers[i];
-            if(tmpPlayer->getTeam() == teamID)
-    			buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
-		}
-	//#endif
+	//Get the sorted list
+	std::vector<Player*> sortedPlayers = GameCore::mPlayerPool->getScoreOrderedPlayers();
+	//Print out all the players names
+	//for(int i=0;i<numberOfPlayers;i++)
+	for(int i=(sortedPlayers.size()-1);i>=0;i--)
+	{
+		//Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
+		Player* tmpPlayer = sortedPlayers[i];
+        if(GameCore::mGameplay->getGameMode() == FFA_MODE)
+        {
+            buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
+        }
+        else if(tmpPlayer->getTeam() == teamID)
+    		buildingStream << tmpPlayer->getNickname() << " - " << tmpPlayer->getRoundScore() << "\n";
+	}
 
 	return buildingStream.str();
 }
