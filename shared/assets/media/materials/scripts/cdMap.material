@@ -30,3 +30,13 @@ material map_top_1 : cd/GUIComponent
 {
 	set $texture map_top_1.png
 }
+
+material map_top_2 : cd/GUIComponent
+{
+	set $texture map_top_2.png
+}
+
+material map_top_3 : cd/GUIComponent
+{
+	set $texture map_top_3.png
+}
