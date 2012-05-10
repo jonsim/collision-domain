@@ -11,14 +11,15 @@
 // The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
 #define SHADOW_METHOD 2
 // The arena to use (1 = colosseum, 2 = forest, 3 = quarry, 4 = carpark).
-#define ARENA 2
+//#define ARENA 2
 
 
-SceneSetup::SceneSetup (void) : mWindow(0),
+SceneSetup::SceneSetup (int arenaChoice) : mWindow(0),
                                 mGfxSettingHDR(1.0f),
                                 mGfxSettingBloom(1.0f),
                                 mGfxSettingRadialBlur(1.0f),
-                                mGfxSettingMotionBlur(1.0f)
+                                mGfxSettingMotionBlur(1.0f),
+                                mArenaChoice(arenaChoice)
 {
 }
 
@@ -325,12 +326,15 @@ void SceneSetup::setupArenaNodes (void)
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode");
     
     // Scale the node
-#if ARENA == 1 || ARENA == 2 || ARENA == 3
-    GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
-#elif ARENA == 4
-    float cpScale = 0.25f;
-    arenaNode->scale(cpScale, cpScale, cpScale);
-#endif
+    if(mArenaChoice == 1 || mArenaChoice == 2 || mArenaChoice == 3)
+    {
+        GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+    }
+    else if( mArenaChoice == 4 )
+    {
+        float cpScale = 0.25f;
+        arenaNode->scale(cpScale, cpScale, cpScale);
+    }
 }
 
 void SceneSetup::setupArenaGraphics (void)
@@ -340,15 +344,15 @@ void SceneSetup::setupArenaGraphics (void)
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getSceneNode("ArenaNode");
 
     // Load the arena mesh.
-#if ARENA == 1
-    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena1.mesh");
-#elif ARENA == 2
-    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena2.mesh");
-#elif ARENA == 3
-    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena3.mesh");
-#elif ARENA == 4
-    Ogre::Entity* arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "carpark.mesh");
-#endif
+    Ogre::Entity* arenaEntity;
+    if ( mArenaChoice == 1 )
+        arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena1.mesh");
+    else if( mArenaChoice == 2 )
+        arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena2.mesh");
+    else if ( mArenaChoice == 3 )
+        arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "arena3.mesh");
+    else if( mArenaChoice == 4 )
+        arenaEntity = GameCore::mSceneMgr->createEntity("Arena", "carpark.mesh");
 
 #if SHADOW_METHOD == 2
     arenaEntity->setCastShadows(false);
@@ -359,89 +363,93 @@ void SceneSetup::setupArenaGraphics (void)
     arenaNode->attachObject(arenaEntity);
 
     // Load the graphics only props into the scene.
-#if ARENA == 1
-    // Props
-    Ogre::SceneNode* propsNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PropsNode");
-    GameCore::mPhysicsCore->auto_scale_scenenode(propsNode);
+    if( mArenaChoice == 1)
+    {
+        // Props
+        Ogre::SceneNode* propsNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PropsNode");
+        GameCore::mPhysicsCore->auto_scale_scenenode(propsNode);
 
-    Ogre::Entity* propsEntity = GameCore::mSceneMgr->createEntity("PropsEntity", "arena1_props.mesh");
-    #if SHADOW_METHOD == 1
-        propsEntity->setCastShadows(false);
-    #else
-        propsEntity->setCastShadows(true);
-    #endif
+        Ogre::Entity* propsEntity = GameCore::mSceneMgr->createEntity("PropsEntity", "arena1_props.mesh");
+        #if SHADOW_METHOD == 1
+            propsEntity->setCastShadows(false);
+        #else
+            propsEntity->setCastShadows(true);
+        #endif
     
-    propsNode->attachObject(propsEntity);
-#elif ARENA == 2
-    // highQualTreeCount/lowQualTreeCount - the number of high/low quality trees respectively.
-    // loqQualTreeCutoff - the distance in metres at which low quality trees are used, from the start of the range.
-    const unsigned int highQualTreeCount = 50, lowQualTreeCount = 700, lowQualTreeCutoff = 10;
-    unsigned int i;
-    int treeType;
-    Ogre::Real radius, theta;
-    std::string entityName, nodeName, fileName;
-    Ogre::Vector3 treePosition;
-    Ogre::Vector3 treeScale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
-    Ogre::Entity* lowPolyTrees[5];
-    Ogre::Entity* superLowPolyTrees[5];
-    // Load the trees array with entities.
-    for (i = 1; i <= 5; i++)
-    {
-        entityName = "LPTreeEntity" + boost::lexical_cast<std::string>(i);
-        fileName   = "birch"        + boost::lexical_cast<std::string>(i) + "_lp.mesh";
-        lowPolyTrees[i-1] = GameCore::mSceneMgr->createEntity(entityName, fileName);
-        lowPolyTrees[i-1]->setCastShadows(false);
-    /*#if SHADOW_METHOD == 1
-        lowPolyTrees[i-1]->setCastShadows(false);
-    #else
-        lowPolyTrees[i-1]->setCastShadows(true);
-    #endif*/
+        propsNode->attachObject(propsEntity);
     }
-    for (i = 1; i <= 5; i++)
+    else if ( mArenaChoice == 2)
     {
-        entityName = "SLPTreeEntity" + boost::lexical_cast<std::string>(i);
-        fileName   = "birch"         + boost::lexical_cast<std::string>(i) + "_slp.mesh";
-        superLowPolyTrees[i-1] = GameCore::mSceneMgr->createEntity(entityName, fileName);
-        superLowPolyTrees[i-1]->setCastShadows(false);
-    /*#if SHADOW_METHOD == 1
-        superLowPolyTrees[i-1]->setCastShadows(false);
-    #else
-        superLowPolyTrees[i-1]->setCastShadows(true);
-    #endif*/
-    }
+        // highQualTreeCount/lowQualTreeCount - the number of high/low quality trees respectively.
+        // loqQualTreeCutoff - the distance in metres at which low quality trees are used, from the start of the range.
+        const unsigned int highQualTreeCount = 50, lowQualTreeCount = 700, lowQualTreeCutoff = 10;
+        unsigned int i;
+        int treeType;
+        Ogre::Real radius, theta;
+        std::string entityName, nodeName, fileName;
+        Ogre::Vector3 treePosition;
+        Ogre::Vector3 treeScale(MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT);
+        Ogre::Entity* lowPolyTrees[5];
+        Ogre::Entity* superLowPolyTrees[5];
+        // Load the trees array with entities.
+        for (i = 1; i <= 5; i++)
+        {
+            entityName = "LPTreeEntity" + boost::lexical_cast<std::string>(i);
+            fileName   = "birch"        + boost::lexical_cast<std::string>(i) + "_lp.mesh";
+            lowPolyTrees[i-1] = GameCore::mSceneMgr->createEntity(entityName, fileName);
+            lowPolyTrees[i-1]->setCastShadows(false);
+        /*#if SHADOW_METHOD == 1
+            lowPolyTrees[i-1]->setCastShadows(false);
+        #else
+            lowPolyTrees[i-1]->setCastShadows(true);
+        #endif*/
+        }
+        for (i = 1; i <= 5; i++)
+        {
+            entityName = "SLPTreeEntity" + boost::lexical_cast<std::string>(i);
+            fileName   = "birch"         + boost::lexical_cast<std::string>(i) + "_slp.mesh";
+            superLowPolyTrees[i-1] = GameCore::mSceneMgr->createEntity(entityName, fileName);
+            superLowPolyTrees[i-1]->setCastShadows(false);
+        /*#if SHADOW_METHOD == 1
+            superLowPolyTrees[i-1]->setCastShadows(false);
+        #else
+            superLowPolyTrees[i-1]->setCastShadows(true);
+        #endif*/
+        }
 
-    // Load the static geometry
-    int size = 184.5 * 2;
-    Ogre::StaticGeometry* sg = GameCore::mSceneMgr->createStaticGeometry("trees");
-    sg->setRegionDimensions(Ogre::Vector3(size, 100, size));
-    sg->setOrigin(Ogre::Vector3(-size/2, 0, -size/2));
+        // Load the static geometry
+        int size = 184.5 * 2;
+        Ogre::StaticGeometry* sg = GameCore::mSceneMgr->createStaticGeometry("trees");
+        sg->setRegionDimensions(Ogre::Vector3(size, 100, size));
+        sg->setOrigin(Ogre::Vector3(-size/2, 0, -size/2));
 
-    // Notes: 134.2m < r < 184.2m
-    // rand() returns a value which is at least 32767.
-    // First 15m are good trees, subsequent 35m are crap trees.
+        // Notes: 134.2m < r < 184.2m
+        // rand() returns a value which is at least 32767.
+        // First 15m are good trees, subsequent 35m are crap trees.
 
-    // Place 50 higher detail trees close to the viewer.
-    for (i = 0; i < highQualTreeCount + lowQualTreeCount; i++)
-    {
-        if (i < highQualTreeCount)
-            radius = (1345 + (rand() % (lowQualTreeCutoff * 10))) / 10.0f;
-        else
-            radius = (1345 + (lowQualTreeCutoff * 10) + (rand() % (1845 - 1345 - (lowQualTreeCutoff*10)))) / 10.0f;
-        theta = ((rand() % 32767) / 32767.0f) * 6.28318531f;
-        treeType = rand() % 5;
+        // Place 50 higher detail trees close to the viewer.
+        for (i = 0; i < highQualTreeCount + lowQualTreeCount; i++)
+        {
+            if (i < highQualTreeCount)
+                radius = (1345 + (rand() % (lowQualTreeCutoff * 10))) / 10.0f;
+            else
+                radius = (1345 + (lowQualTreeCutoff * 10) + (rand() % (1845 - 1345 - (lowQualTreeCutoff*10)))) / 10.0f;
+            theta = ((rand() % 32767) / 32767.0f) * 6.28318531f;
+            treeType = rand() % 5;
 
-        treePosition.x = radius * cos(theta);
-        treePosition.z = radius * sin(theta);
-        treePosition.y = 1.6f;
+            treePosition.x = radius * cos(theta);
+            treePosition.z = radius * sin(theta);
+            treePosition.y = 1.6f;
         
-        if (i < highQualTreeCount)
-            sg->addEntity(superLowPolyTrees[treeType], treePosition, Ogre::Quaternion::IDENTITY, treeScale);
-        else
-            sg->addEntity(lowPolyTrees[treeType],      treePosition, Ogre::Quaternion::IDENTITY, treeScale);
+            if (i < highQualTreeCount)
+                sg->addEntity(superLowPolyTrees[treeType], treePosition, Ogre::Quaternion::IDENTITY, treeScale);
+            else
+                sg->addEntity(lowPolyTrees[treeType],      treePosition, Ogre::Quaternion::IDENTITY, treeScale);
+        }
+
+        sg->build();
     }
 
-    sg->build();
-#endif
     /*
     
     // highQualTreeCount/lowQualTreeCount - the number of high/low quality trees respectively.
@@ -504,15 +512,15 @@ void SceneSetup::setupArenaPhysics (void)
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getSceneNode("ArenaNode");
 
     // Construct the collision meshes
-#if ARENA == 1
-    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena1_collision.mesh", MESH_SCALING_CONSTANT);
-#elif ARENA == 2
-    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena2_collision.mesh", MESH_SCALING_CONSTANT);
-#elif ARENA == 3
-    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena3_collision.mesh", MESH_SCALING_CONSTANT);
-#elif ARENA == 4
-    GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "carpark_collision.mesh", cpScale);
-#endif
+    if( mArenaChoice == 1)
+        GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena1_collision.mesh", MESH_SCALING_CONSTANT);
+    else if( mArenaChoice == 2)
+        GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena2_collision.mesh", MESH_SCALING_CONSTANT);
+    else if( mArenaChoice == 3)
+        GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena3_collision.mesh", MESH_SCALING_CONSTANT);
+    //else if( mArenaChoice == 4)
+        //GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "carpark_collision.mesh", cpScale);
+
 }
 
 void SceneSetup::setupMeshDeformer (void)

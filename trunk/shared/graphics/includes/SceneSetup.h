@@ -17,7 +17,7 @@ class MeshDeformer;
 class SceneSetup
 {
 public:
-    SceneSetup (void);
+    SceneSetup (int arenaChoice);
     virtual ~SceneSetup (void);
 
     void loadHDR (Ogre::Viewport* vp, uint8_t mode);
@@ -54,6 +54,11 @@ public:
     MeshDeformer*  mMeshDeformer;
     Ogre::RenderWindow* mWindow;
 	CEGUI::Window* mGUIWindow;
+
+    int getArenaNumber() { return this->mArenaChoice; }
+    void incrementArenaNumber() { this->mArenaChoice++; }
+    //int setArenaNumber(int newChoice) { this->mArenaChoice = newChoice);
+
 
 protected:
     void setupCompositorChain (Ogre::Viewport* vp);
@@ -95,6 +100,9 @@ protected:
     BloomLogic*      mBloomLogic;
     MotionBlurLogic* mMotionBlurLogic;
     RadialBlurLogic* mRadialBlurLogic;
+
+    //Current scene being used
+    int mArenaChoice;
 };
 
 #endif

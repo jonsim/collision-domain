@@ -31,7 +31,7 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor.
-ServerGraphics::ServerGraphics (void) : SceneSetup(),
+ServerGraphics::ServerGraphics (void) : SceneSetup(1),
                                         mRoot(0),
                                         mCamera(0),
                                         mResourcesCfg(Ogre::StringUtil::BLANK),

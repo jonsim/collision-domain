@@ -14,7 +14,7 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, initialising all resources.
-ClientGraphics::ClientGraphics (void) : SceneSetup(),
+ClientGraphics::ClientGraphics (void) : SceneSetup(1),
                                         mRoot(0),
                                         mCamera(0),
                                         mResourcesCfg(Ogre::StringUtil::BLANK),

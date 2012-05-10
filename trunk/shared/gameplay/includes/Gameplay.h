@@ -83,6 +83,8 @@ public:
     Team*						getTeam(TeamID teamID);
     void						handleInfoItem(InfoItem* item, bool show);
     void                        forceRoundEnd();
+    
+    int                         getArenaChoice() { return this->mArenaChoice; }
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -121,6 +123,9 @@ private:
     Ogre::OverlayElement        *textAreaT1;
 
     Ogre::OverlayElement        *oleGameMode;
+
+    //
+    int mArenaChoice;
 };
 
 
