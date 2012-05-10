@@ -274,7 +274,7 @@ void ClientGraphics::createScene (void)
     setupArenaNodes();
 
     // Setup the arena (this needs to be moved)
-    loadArena(COLOSSEUM_ARENA, false);
+    loadArena(FOREST_ARENA);
 
     // Setup the GUI.
     setupGUI();

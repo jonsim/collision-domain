@@ -209,7 +209,7 @@ void SceneSetup::setupArenaNodes (void)
 /// @brief  Loads the given arena.
 /// @param  aid     The ArenaID of the arena to load.
 /// @param  server  Whether it is the server loading the arena (if false the graphics will also be loaded).
-void SceneSetup::loadArena (ArenaID aid, bool server)
+void SceneSetup::loadArena (ArenaID aid)
 {
     // Check we have been legitimately called
     if (arenaNode->numAttachedObjects() != 0)
@@ -219,11 +219,10 @@ void SceneSetup::loadArena (ArenaID aid, bool server)
     }
 
     // Load the appropriate graphics
-    if (!server)
-    {
-        loadArenaGraphics(aid);
-        loadArenaLighting(aid);
-    }
+#ifdef COLLISION_DOMAIN_CLIENT
+    loadArenaGraphics(aid);
+    loadArenaLighting(aid);
+#endif
     loadArenaPhysics(aid);
 }
 
@@ -231,10 +230,11 @@ void SceneSetup::loadArena (ArenaID aid, bool server)
 /// @brief  Unloads the given arena.
 /// @param  aid     The ArenaID of the arena to unload.
 /// @param  server  Whether it is the server unloading the arena (if false the graphics will also be unloaded).
-void SceneSetup::unloadArena (ArenaID aid, bool server)
+void SceneSetup::unloadArena (ArenaID aid)
 {
-    if (!server)
-        unloadArenaGraphics(aid);
+#ifdef COLLISION_DOMAIN_CLIENT
+    unloadArenaGraphics(aid);
+#endif
     unloadArenaPhysics(aid);
 }
 
