@@ -105,7 +105,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                 int crashType;
                 
                 Ogre::Vector3 localOnA = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnA);
-                Ogre::Vector3 localOnB = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnB);
+                Ogre::Vector3 localOnB = p2->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnB);
                 //Ogre::Real angleOnA = p1->getCar()->mBodyNode->getPosition().getRotationTo(localOnA).getYaw().valueDegrees()+180.f;
                 //Ogre::Real angleOnB = p2->getCar()->mBodyNode->getPosition().getRotationTo(localOnB).getYaw().valueDegrees()+180.f;
                 Ogre::Real angleOnA = Ogre::Math::ATan(localOnA.z/localOnA.x).valueDegrees()+180;
