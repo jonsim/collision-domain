@@ -42,6 +42,9 @@ public:
 	Player* getPlayer( const char* nickname);
 	RakNet::RakNetGUID getPlayerGUID( int index );
 
+	//get the enemy vip player
+	Player *getEnemyVip(int team);
+
 	void frameEvent( const float timeSinceLastFrame );
     void roundEnd();
 };

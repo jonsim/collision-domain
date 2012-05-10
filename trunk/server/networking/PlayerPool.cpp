@@ -190,4 +190,14 @@ void PlayerPool::roundEnd()
 	}
 }
 
+Player* PlayerPool::getEnemyVip(int team)
+{
+	//cycle through the players until we get the enemy vip
+	for( int i = 0; i < GameCore::mPlayerPool->getNumberOfPlayers(); i ++ )
+	{
+		if(mPlayers[i]->getTeam() != team && mPlayers[i]->getVIP())
+			return mPlayers[i];
+	}
+}
+
 
