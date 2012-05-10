@@ -134,13 +134,20 @@ unsigned MeshDeformer::time_seed() {
     return seed;
 }
 
-Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end) {
-	Ogre::ManualObject* manual = mSceneMgr->createManualObject("manual" + rand());
+static unsigned int lineCounter = 0;
+Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager *sm, Ogre::SceneNode* parent, Ogre::Vector3 &start, Ogre::Vector3 &end, Ogre::ColourValue &col) {
+    std::stringstream ss;
+    ss << "LINE" << (lineCounter++);
+    Ogre::String n = ss.str().c_str();
+    
+	Ogre::ManualObject* manual = sm->createManualObject(n);
+    
 	manual->begin("BaseWhiteNoLighting", Ogre::RenderOperation::OT_LINE_STRIP);
+    manual->colour(col);
 	manual->position(start);
 	manual->position(end);
 	manual->end();
-	mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(manual);
+	parent->createChildSceneNode("cont"+n)->attachObject(manual);
 	return manual;
 }
 

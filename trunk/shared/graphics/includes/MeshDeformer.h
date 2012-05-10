@@ -25,7 +25,7 @@ public:
 	void collisonDeform(Ogre::SceneNode *vehicle, const Ogre::Vector3 &epicentre, float damage, bool isFront);
 	void traceNodeHierarchy(Ogre::SceneNode *rootnode);
 
-    Ogre::ManualObject* drawLine(Ogre::SceneManager* mSceneMgr, Ogre::Vector3 &start, Ogre::Vector3 &end);
+    Ogre::ManualObject* drawLine(Ogre::SceneManager *sm, Ogre::SceneNode* parent, Ogre::Vector3 &start, Ogre::Vector3 &end, Ogre::ColourValue &col);
 	~MeshDeformer(void);
 
 protected :

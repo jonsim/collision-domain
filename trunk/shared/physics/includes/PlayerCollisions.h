@@ -33,6 +33,7 @@ private:
         Player *p1,
         Player *p2);
     int getNumCollisionGroups();
+    int getSectionOnCar(Ogre::Real angle);
 
 	std::map< Player*, int > collisionDelays;
 	std::map< Player*, int >::iterator collisionDelaysItr;

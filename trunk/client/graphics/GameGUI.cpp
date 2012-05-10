@@ -332,6 +332,8 @@ bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
                 GameCore::mClientGraphics->startBenchmark(0);
             else if (!strcasecmp(szInput, "ass"))
                 GameCore::mClientGraphics->generateShrapnel(Ogre::Vector3(0, -9, 0), BLUE_TEAM);
+            else if (!strcasecmp(szInput, "cock"))
+                GameCore::mClientGraphics->generateSparks(Ogre::Vector3(0, -9, 0), Ogre::Vector3(1,1,1));
             else if (!strncasecmp(szInput, "b1 ", 3))
                 GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
             else if (!strncasecmp(szInput, "b2 ", 3))
@@ -691,6 +693,65 @@ void GameGUI::setupDamageDisplay (CarType carType, TeamID tid)
     updateDamage(carType, 3, 0);
     updateDamage(carType, 5, 0);
     updateDamage(carType, 4, 0);
+
+    // Create overlay for broken glass
+    oleGlass = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GLASS" ) );
+
+    glass1 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass1" );
+    glass2 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass2" );
+    glass3 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass3" );
+
+    glass1->setMetricsMode( Ogre::GMM_PIXELS );
+    glass2->setMetricsMode( Ogre::GMM_PIXELS );
+    glass3->setMetricsMode( Ogre::GMM_PIXELS );
+
+    glass1->setDimensions(1280, 768);
+    glass2->setDimensions(1280, 768);
+    glass3->setDimensions(1280, 768);
+
+    std::stringstream glassMat;
+    glassMat << "bg_s_" << (1+(rand()%5));
+    glass1->setMaterialName(glassMat.str().c_str());
+    glassMat.str("");
+    glassMat << "bg_m_" << (1+(rand()%5));
+    glass2->setMaterialName(glassMat.str().c_str());
+    glassMat.str("");
+    glassMat << "bg_b_" << (1+(rand()%5));
+    glass3->setMaterialName(glassMat.str().c_str());
+
+
+    oleGlass->setMetricsMode( Ogre::GMM_PIXELS );
+
+    // Bottom Right Aligned
+    oleGlass->setHorizontalAlignment( Ogre::GHA_LEFT );
+    oleGlass->setVerticalAlignment( Ogre::GVA_TOP );
+    oleGlass->setDimensions(1280, 768);
+    oleGlass->setPosition(0, 0);
+
+    glassOverlay = Ogre::OverlayManager::getSingleton().create( "OVERLAY_GLASS" );
+    glassOverlay->setZOrder( 100 );
+    glassOverlay->show();
+    glassOverlay->setScale(1.0,1.0);
+    glassOverlay->add2D( oleGlass );
+
+    oleGlass->addChild(glass1);
+    oleGlass->addChild(glass2);
+    oleGlass->addChild(glass3);
+
+    glass1->hide();
+    glass2->hide();
+    glass3->hide();
+
+    //oleGlass->show();
+    //oleGlass->setMaterialName("bg_s_1");
+}
+
+void GameGUI::breakGlass(int level) {
+    switch(level) {
+        case 0: glass1->show(); break;
+        case 1: glass1->hide(); glass2->show(); break;
+        case 2: glass2->hide(); glass3->show(); break;
+    }
 }
 
 //0,1,2,3,4,5 => TL, TR, ML, MR, BL, BR

@@ -59,6 +59,7 @@ public:
 
     void updateCounters (void);
     void setupDamageDisplay(CarType carType, TeamID tid);
+    void GameGUI::breakGlass(int level);
     
 private:
     int currentRankMaterialIndex;
@@ -70,9 +71,16 @@ private:
     //Ogre::OverlayContainer *olPowerupContainer;
     Ogre::Overlay          *olRank;
     Ogre::OverlayContainer *olRankContainer;
-    Ogre::Overlay          *olSpeedo;
+
+    Ogre::Overlay           *olSpeedo;
     Ogre::OverlayContainer *olcSpeedo;
     Ogre::OverlayContainer *oleDamage;
+
+    Ogre::OverlayContainer *oleGlass;
+
+    Ogre::OverlayElement *glass1;
+    Ogre::OverlayElement *glass2;
+    Ogre::OverlayElement *glass3;
 
     Ogre::OverlayElement* oleNeedle;
     Ogre::OverlayElement* oleGear;
@@ -90,6 +98,10 @@ private:
 	Ogre::OverlayElement   *damageHUD_BR;
 	Ogre::OverlayElement   *damageHUD_ML;
 	Ogre::OverlayElement   *damageHUD_MR;
+
+    Ogre::Overlay   *glassOverlay;
+
+    TeamID playerTeam;
 
     CarType playerCarType; //
 

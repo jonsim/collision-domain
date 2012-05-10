@@ -210,6 +210,17 @@ bool Input::keyReleased (const OIS::KeyEvent &evt)
 {
 	CEGUI::System::getSingleton().injectKeyUp(evt.key);
 
+    #ifdef COLLISION_DOMAIN_CLIENT
+
+	if(evt.key == OIS::KC_1 || evt.key == OIS::KC_2 || evt.key == OIS::KC_3) {
+		GameCore::mPlayerPool->getLocalPlayer()->revertCamera();
+	}
+
+    /*if(evt.key == OIS::KC_SEMICOLON) {
+    }*/
+		
+#endif
+
     return true;
 }
 

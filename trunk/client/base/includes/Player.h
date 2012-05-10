@@ -152,7 +152,7 @@ public:
             mCar = NULL;
         }
     }
-    void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
+    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer);
     void applyHealthBonus (void);
     void frameEvent(float time);
     
@@ -263,16 +263,19 @@ private:
 	RakNet::RakNetGUID mPlayerGUID;
 
     float initialHP;
-	float backRightDamageShare;
-	float backLeftDamageShare;  
-	float frontLeftDamageShare;
-	float frontRightDamageShare;
+
+    float            damageShareTL; 
+    float            damageShareBL; 
+    float            damageShareML; 
+    float            damageShareTR; 
+    float            damageShareBR;  
+    float            damageShareMR; 
 
 	int roundScore;
 	int gameScore;
 
     bool mFirstLaunch;
-
+    int crashCount;
     int camShakeFrames;
 };
 
