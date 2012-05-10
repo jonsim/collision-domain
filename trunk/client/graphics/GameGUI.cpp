@@ -326,8 +326,8 @@ bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
         {
             if( strTokens.at(0) == "exit" )
                 mWinMgr.getWindow( "/Console" )->hide();
-            else if (!strncasecmp(szInput, "weather ", 8))
-                GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);
+            /*else if (!strncasecmp(szInput, "weather ", 8))
+                GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);*/
             else if (!strcasecmp(szInput, "benchmark"))
                 GameCore::mClientGraphics->startBenchmark(0);
             else if (!strcasecmp(szInput, "ass"))

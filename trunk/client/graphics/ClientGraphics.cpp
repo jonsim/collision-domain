@@ -14,7 +14,7 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, initialising all resources.
-ClientGraphics::ClientGraphics (void) : SceneSetup(1),
+ClientGraphics::ClientGraphics (void) : SceneSetup(),
                                         mRoot(0),
                                         mCamera(0),
                                         mResourcesCfg(Ogre::StringUtil::BLANK),
@@ -271,11 +271,10 @@ void ClientGraphics::createScene (void)
     setupShadowSystem();
     setupLightSystem();
     setupParticleSystem();
-
-    // Add objects to the scene.
     setupArenaNodes();
-    setupArenaPhysics();
-    setupArenaGraphics();
+
+    // Setup the arena (this needs to be moved)
+    loadArena(COLOSSEUM_ARENA, false);
 
     // Setup the GUI.
     setupGUI();
