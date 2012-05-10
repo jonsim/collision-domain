@@ -6,6 +6,7 @@
 /*-------------------- INCLUDES --------------------*/
 #include "AiPlayer.h"
 #include "GameCore.h"
+#include "Gameplay.h"
 
 //constructor
 AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* sceneManager, int flags, level diff)
@@ -80,9 +81,6 @@ void AiPlayer::Update(double timeSinceLastFrame)
 	//get angle between current heading and desired heading
 	Ogre::Quaternion heading = GetHeading();
 	Ogre::Vector3 pos = GetPos();
-//  UNUSED VARIABLE    double tempDis;
-//  UNUSED VARIABLE    Ogre::Vector3 tempPos;
-//  UNUSED VARIABLE    int aiDirection;
 
 	double distance = pos.distance(targetPos);
 	double theta = heading.getYaw().valueRadians();
@@ -98,7 +96,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 				Player* seekPlayer;
 				do{
 					seekPlayer = GameCore::mPlayerPool->getRandomPlayer();
-				}while(mPlayer->getTeam() == seekPlayer->getTeam());
+				}while(mPlayer->getTeam() == seekPlayer->getTeam() && GameCore::mGameplay->getGameMode() != FFA_MODE);
 
 				mSteeringBehaviour->SetSeekTarget(seekPlayer);
 			}
@@ -127,6 +125,18 @@ void AiPlayer::Update(double timeSinceLastFrame)
 					mSteeringBehaviour->SetPowerupTarget(powerupPos);
 				}
 			}
+			else if(mSteeringBehaviour->On(seek))
+			{
+				//see if were in vip mode
+				if(GameCore::mGameplay->getGameMode() == VIP_MODE)
+				{
+					//see if the enemy vip is near
+					Player* enemyVIP = GameCore::mPlayerPool->getEnemyVip(mPlayer->getTeam());
+
+
+				}
+			}
+
 		}
 
 		if(distance > 10)
