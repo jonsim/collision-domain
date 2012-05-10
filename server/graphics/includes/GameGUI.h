@@ -54,7 +54,7 @@ class GameGUI
 public:
     GameGUI (void) : consoleHistory(16), consoleHistoryLocation(0xFF) {}
     ~GameGUI (void) {}
-        
+    
 	void setupConsole (CEGUI::Window* guiWindow);
     void outputToConsole (const char* str, ...);
     

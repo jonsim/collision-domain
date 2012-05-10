@@ -31,7 +31,7 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor.
-ServerGraphics::ServerGraphics (void) : SceneSetup(1),
+ServerGraphics::ServerGraphics (void) : SceneSetup(),
                                         mRoot(0),
                                         mCamera(0),
                                         mResourcesCfg(Ogre::StringUtil::BLANK),
@@ -276,9 +276,11 @@ void ServerGraphics::loadResources (void)
 
 void ServerGraphics::createScene (void)
 {
-    // Add objects to the scene
+    // Setup the scene environment.
     setupArenaNodes();
-    setupArenaPhysics();
+
+    // Setup the arena (this needs to be moved)
+    loadArena(COLOSSEUM_ARENA, true);
 
     // Setup the GUI
     setupGUI();

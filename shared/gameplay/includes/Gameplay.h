@@ -84,7 +84,6 @@ public:
     void						handleInfoItem(InfoItem* item, bool show);
     void                        forceRoundEnd();
     
-    int                         getArenaChoice() { return this->mArenaChoice; }
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -126,9 +125,6 @@ private:
 
     //Round pick vars
     GameMode                    oldOldRound;
-
-    //
-    int mArenaChoice;
 };
 
 
