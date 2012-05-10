@@ -283,6 +283,51 @@ Ogre::OverlayElement* BigScreen::createPowerupOverlayElement(Ogre::Vector3 power
     return tmpOLE;
 }
 
+//type 0=plain, 1=blue, 2=red, 3=dead
+void BigScreen::changeArrow(int uniqueID, int type)
+{
+    Ogre::MaterialPtr arrowMaterial;
+    std::stringstream newMaterialName;
+    
+    //Load in the correct material
+    switch(type)
+    {
+        case 0:
+            arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DefaultIcon");
+            newMaterialName << "DefaultIcon" << uniqueID;
+            break;
+        case 1:
+            arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("BlueIcon");
+            newMaterialName << "BlueIcon" << uniqueID;
+            break;
+        case 2:
+            arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("RedIcon");
+            newMaterialName << "RedIcon" << uniqueID;
+            break;
+        case 3:
+            arrowMaterial = Ogre::MaterialManager::getSingleton().getByName("DeadIcon");
+            newMaterialName << "DeadIcon" << uniqueID;
+            break;
+    }
+    
+    //Remove the old material
+    std::stringstream overlayNameSS;
+    overlayNameSS << "PlayerOverlay" << uniqueID;  
+    
+    //Get the overlay element
+    Ogre::OverlayElement* tmpOLE = olcMap->getChild(overlayNameSS.str());
+
+    //Get the old materials name
+    String oldMaterialName = tmpOLE->getMaterialName();
+    
+    //Create the new material
+    arrowMaterial->clone(newMaterialName.str());
+    tmpOLE->setMaterialName(newMaterialName.str());
+
+    //Delete the old material
+    MaterialManager::getSingleton().remove(oldMaterialName);
+}
+
 Ogre::OverlayElement* BigScreen::createPlayerOverlayElement(int uniqueID)
 {
         //Timestamp used to fix duplicate named overlays.

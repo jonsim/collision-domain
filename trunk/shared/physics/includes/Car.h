@@ -47,6 +47,8 @@ public:
     Car(int uniqueID);
     virtual ~Car();
 
+    int getUniqueID() { return this->mUniqueID; }
+
     // = 0 methods not implemented by Car yet!
     virtual void playCarHorn() = 0;
     virtual void updateAudioPitchFrameEvent() = 0;
