@@ -372,16 +372,28 @@ void SmallCar::updateTeam (TeamID tid)
         setMaterial("small_car_body_uv",  mChassisNode);
         setMaterial("small_car_door_uv", mLDoorNode);
         setMaterial("small_car_door_uv", mRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),0);
+        #endif
         break;
     case BLUE_TEAM:
         setMaterial("small_car_body_t1",  mChassisNode);
         setMaterial("small_car_door_t1", mLDoorNode);
         setMaterial("small_car_door_t1", mRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),1);
+        #endif
         break;
     case RED_TEAM:
         setMaterial("small_car_body_t2",  mChassisNode);
         setMaterial("small_car_door_t2", mLDoorNode);
         setMaterial("small_car_door_t2", mRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),2);
+        #endif
         break;
     default:
         break;

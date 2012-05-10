@@ -6,6 +6,16 @@ material DefaultIcon : cd/GUIComponent
 	set $texture icon_arrow.png
 }
 
+material RedIcon : cd/GUIComponent
+{
+	set $texture icon_arrow_red.png
+}
+
+material BlueIcon : cd/GUIComponent
+{
+	set $texture icon_arrow_blue.png
+}
+
 material DeadIcon : cd/GUIComponent
 {
     set $texture icon_skull.png

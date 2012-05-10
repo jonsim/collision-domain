@@ -32,6 +32,8 @@ public:
 	Ogre::OverlayElement*       createPowerupOverlayElement(Ogre::Vector3 powerupPosition, int uniqueID);
     Ogre::OverlayElement*       createPlayerOverlayElement(int uniqueID);
 
+    void                        changeArrow(int uniqueID, int type);
+
     void                        removePowerupOverlayFromMap(int uniqueID);
     void                        removeCarOverlayFromMap(int uniqueID);
     

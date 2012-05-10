@@ -370,6 +370,10 @@ void SimpleCoupeCar::updateTeam (TeamID tid)
         setMaterial("banger_fdoor_uv", mFRDoorNode);
         setMaterial("banger_rdoor_uv", mRLDoorNode);
         setMaterial("banger_rdoor_uv", mRRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)    
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),0);
+        #endif
         break;
     case BLUE_TEAM:
         setMaterial("banger_body_t1",  mChassisNode);
@@ -377,6 +381,10 @@ void SimpleCoupeCar::updateTeam (TeamID tid)
         setMaterial("banger_fdoor_t1", mFRDoorNode);
         setMaterial("banger_rdoor_t1", mRLDoorNode);
         setMaterial("banger_rdoor_t1", mRRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)    
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),1);
+        #endif
         break;
     case RED_TEAM:
         setMaterial("banger_body_t2",  mChassisNode);
@@ -384,6 +392,10 @@ void SimpleCoupeCar::updateTeam (TeamID tid)
         setMaterial("banger_fdoor_t2", mFRDoorNode);
         setMaterial("banger_rdoor_t2", mRLDoorNode);
         setMaterial("banger_rdoor_t2", mRRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),2);
+        #endif
         break;
     default:
         break;
