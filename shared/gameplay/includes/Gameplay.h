@@ -12,7 +12,7 @@
 #include "HUD.h"
 #include "Death.h"
 #include "Team.h"
-
+#include "SceneSetup.h"
 
 #include <math.h>
 #include <string>
@@ -79,10 +79,14 @@ public:
     int                         getRoundNumber() { return roundNumber; }
 
     void                        cycleGameMode();
+    void                        cycleArena();
     void                        handleNewRound();
     Team*						getTeam(TeamID teamID);
     void						handleInfoItem(InfoItem* item, bool show);
     void                        forceRoundEnd();
+
+    void                        setArenaID(ArenaID arenaID) { this->mArenaID = arenaID; }
+    ArenaID                     getArenaID() { return this->mArenaID; }
     
 private:
 	//Methods
@@ -125,6 +129,10 @@ private:
 
     //Round pick vars
     GameMode                    oldOldRound;
+
+    //Arena pick var
+    ArenaID                     oldOldArenaID;
+    ArenaID                     mArenaID;
 };
 
 

@@ -19,6 +19,7 @@
 #include "InputState.h"
 #include "Team.h"
 #include "Car.h"
+#include "SceneSetup.h"
 
 // RakNet includes
 #include "BitStream.h"
@@ -124,6 +125,7 @@ public:
 	static void DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void SyncGameMode( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void SyncArenaID( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static bool bConnected;
 
 };

@@ -87,6 +87,43 @@ void Gameplay::cycleGameMode()
     #endif
 }
 
+void Gameplay::cycleArena()
+{
+    ArenaID oldArenaID = this->getArenaID();
+    ArenaID newArenaID;
+
+    do
+    {
+        int randomGameChoice = rand()%3;
+        switch(randomGameChoice)
+        {
+            case 0:
+                newArenaID = COLOSSEUM_ARENA;
+                break;
+            case 1:
+                newArenaID = FOREST_ARENA;
+                break;
+            case 2:
+                newArenaID = QUARRY_ARENA;
+                break;
+        }
+    } while (oldArenaID == newArenaID || this->oldOldArenaID == newArenaID);
+    
+    //Set the new random game mode
+    this->oldOldArenaID = oldArenaID;
+    this->setArenaID(newArenaID);
+    
+    #ifdef COLLISION_DOMAIN_SERVER
+        if(newArenaID == COLOSSEUM_ARENA)    
+            GameCore::mGui->outputToConsole("Map Chosen: Colosseum\n");
+        else if(newArenaID == FOREST_ARENA)    
+            GameCore::mGui->outputToConsole("Map Chosen: Forest\n");
+        else if(newArenaID == QUARRY_ARENA)    
+            GameCore::mGui->outputToConsole("Map Chosen: Quarry\n");
+        GameCore::mNetworkCore->sendArenaID(newArenaID);    
+    #endif
+}
+
 void Gameplay::setGameMode(GameMode gameMode)
 {
 	mGameMode = gameMode;
@@ -397,6 +434,7 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
+    cycleArena();
     cycleGameMode();
     //Spawn the start new round thing
     InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);

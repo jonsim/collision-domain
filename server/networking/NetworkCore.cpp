@@ -665,3 +665,11 @@ void NetworkCore::sendGameMode(GameMode gameMode)
     bs.Write(gameMode); //Send the size
     m_RPC->Signal( "SyncGameMode", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
+
+void NetworkCore::sendArenaID(ArenaID arenaID)
+{
+    RakNet::BitStream bs;
+    bs.Write(arenaID); //Send the size
+    m_RPC->Signal( "SyncArenaID", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
+}
+
