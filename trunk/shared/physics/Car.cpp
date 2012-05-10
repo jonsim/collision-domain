@@ -568,6 +568,11 @@ void WheelFrictionConstraint::getInfo1( btTypedConstraint::btConstraintInfo1* in
     for (int i = 0; i < mVehicle->getNumWheels(); ++i)
     {
         btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
+        //if(!wheel_info)
+        //{
+        //	std::cout << "No wheel info" << std::endl;
+        //	exit(3);
+        //}
         mVehicle->rayCast( wheel_info );
         info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact );
     }
