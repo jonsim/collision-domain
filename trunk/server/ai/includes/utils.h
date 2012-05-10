@@ -32,8 +32,9 @@ const float MinFloat   = (numeric_limits<float>::min)();
 
 const double Pi        = atan(1.0) *4.0;
 const double TwoPi     = Pi * 2;
-const double HalfPi    = Pi/2;
-const double QuarterPi = Pi/4;
+const double HalfPi    = Pi/2.0;
+const double QuarterPi = Pi/4.0;
+const double EighthPi  = Pi/8.0;
 
 /**@brief Truncates a vector to a maximum value */
 inline Vector3 Truncate(Ogre::Vector3 vec, double max)

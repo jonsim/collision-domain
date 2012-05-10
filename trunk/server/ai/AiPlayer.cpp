@@ -87,6 +87,51 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
 	if(mPlayer->getAlive())
 	{
+		//first check if were about to crash into a player on our own team
+		/*if(GameCore::mGameplay->getGameMode() != FFA_MODE)
+		{
+			int numPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
+			Player* tempPlayer;
+			Ogre::Vector3 tempPos;
+			double angleBetween;
+			for(int i = 0;i < numPlayers;i++)
+			{
+				//check if the player is in our way
+				tempPlayer = GameCore::mPlayerPool->getPlayer(i);
+				if(tempPlayer->getTeam() != mPlayer->getTeam())
+				{
+					continue;
+				}
+				else
+				{
+					tempPos = tempPlayer->getCar()->GetPos();
+					angleBetween = pos.angleBetween(tempPos).valueRadians();
+					if(InRange(theta-QuarterPi, theta+QuarterPi, angleBetween))
+					{
+						//if the distance is very close, just break
+						if(pos.distance(tempPos) <= 5.0 && mPlayer->getCar()->getCarMph() > 20.0)
+						{
+							mPlayer->getCar()->accelInputTick(false, false, true, timeSinceLastFrame);
+							return;
+						}
+
+						if(pos.distance(tempPos) <= 15.0)
+						{
+							//steer out of the way (random direction) and slow down
+							mPlayer->getCar()->accelInputTick(true, false, false, timeSinceLastFrame);
+							if(RandBool())
+								mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
+							else
+								mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
+							return;
+						}
+					}
+
+				}
+			}
+		}*/
+
+
 		//check if we need to set a target
 		if(mSteeringBehaviour->On(seek))
 		{	
@@ -138,6 +183,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			}
 
 		}
+
 
 		if(distance > 10)
 			mPlayer->getCar()->accelInputTick(true, false, false, timeSinceLastFrame);
