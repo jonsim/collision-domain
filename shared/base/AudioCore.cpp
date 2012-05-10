@@ -42,6 +42,11 @@ AudioCore::AudioCore()
 
     mInitOK = mSoundManager->init() && OUTPUT_ENABLED;
 
+    std::cout << "numsounds " <<
+    mSoundManager->getNumSounds() << " " <<
+    mSoundManager->getNumSources() << std::endl;
+
+
     // don't bother with some stuff unless we have openal
     if (!mInitOK) return;
     

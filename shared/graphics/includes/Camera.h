@@ -51,10 +51,11 @@ public:
     void            setTempOffset( btVector3& newoffset )           { mLocalOffset = newoffset; }
     void            resetTempOffset()                               { mLocalOffset = mBufferOffset; }
 #else
-    void            setLookOffset( btVector3 &offset )              { mLookOffset = offset; }
 	void            setLookOffset( btVector3 offset )              { mLookOffset = offset; }
 	void            setOffset( btVector3 offset )                  { mLocalOffset = offset; }
 	void            setTransform( btVector3 t )                    { mWorldPos = t; }
+	void            setTempOffset( btVector3& newoffset )           { mLocalOffset = newoffset; }
+	void            resetTempOffset()                               { mLocalOffset = mBufferOffset; }
 #endif
 
     void            lookAtTarget();
