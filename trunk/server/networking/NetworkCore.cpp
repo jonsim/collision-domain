@@ -658,3 +658,10 @@ void NetworkCore::sendSyncScores()
     }
     m_RPC->Signal( "SyncScores", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
+
+void NetworkCore::sendGameMode(GameMode gameMode)
+{
+    RakNet::BitStream bs;
+    bs.Write(gameMode); //Send the size
+    m_RPC->Signal( "SyncGameMode", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
+}

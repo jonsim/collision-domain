@@ -116,6 +116,7 @@ public:
     void sendPowerupCollect( int pwrID, Player *player );
     void sendChatMessage( const char *szMessage );
     void sendSyncScores();
+    void sendGameMode(GameMode gameMode);
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 

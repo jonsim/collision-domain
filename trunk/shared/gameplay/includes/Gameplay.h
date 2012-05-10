@@ -124,6 +124,9 @@ private:
 
     Ogre::OverlayElement        *oleGameMode;
 
+    //Round pick vars
+    GameMode                    oldOldRound;
+
     //
     int mArenaChoice;
 };

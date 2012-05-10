@@ -71,10 +71,21 @@ void Gameplay::cycleGameMode()
                 newGameMode = VIP_MODE;
                 break;
         }
-    } while (oldGameMode == newGameMode);
+    } while (oldGameMode == newGameMode || this->oldOldRound == newGameMode);
     
     //Set the new random game mode
+    this->oldOldRound = oldGameMode;
     this->setGameMode(newGameMode);
+    
+    #ifdef COLLISION_DOMAIN_SERVER
+        if(newGameMode == FFA_MODE)    
+            GameCore::mGui->outputToConsole("Game Mode: Free For All\n");
+        else if(newGameMode == TDM_MODE)    
+            GameCore::mGui->outputToConsole("Game Mode: Team Death Match\n");
+        else if(newGameMode == VIP_MODE)    
+            GameCore::mGui->outputToConsole("Game Mode: VIP Mode\n");
+        GameCore::mNetworkCore->sendGameMode(newGameMode);    
+    #endif
 }
 
 void Gameplay::setGameMode(GameMode gameMode)
@@ -84,7 +95,9 @@ void Gameplay::setGameMode(GameMode gameMode)
 
 void Gameplay::handleNewRound()
 {
-    this->cycleGameMode(); //Move onto the next game type;
+    #ifdef COLLISION_DOMAIN_SERVER
+        //this->cycleGameMode(); //Move onto the next game type;
+    #endif  
     //this->incrementRoundNumber();
 }
 
@@ -385,6 +398,7 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
+    cycleGameMode();
     //Spawn the start new round thing
     InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
 	mInfoItems.push_back(newRoundII);
@@ -527,7 +541,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                 #endif
 				break;
 			case ROUND_OVER_OT:
-                this->cycleGameMode(); //Cycle game mode
+                //this->cycleGameMode(); //Cycle game mode
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->showForce();
 				#endif

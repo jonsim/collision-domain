@@ -524,6 +524,19 @@ void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
     
 }
 
+void NetworkCore::SyncGameMode( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    GameMode newGameMode;
+    bitStream->Read(newGameMode);
+
+    //Set the game to this
+    GameCore::mGameplay->setGameMode(newGameMode);
+
+    StringStream tmpSS;
+    tmpSS << "Server declared game mode: " << newGameMode;
+    OutputDebugString(tmpSS.str().c_str());
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -542,6 +555,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath, 0 );
 	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
     m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
+    m_RPC->RegisterSlot( "SyncGameMode",		SyncGameMode, 0 );
 }
 
 
