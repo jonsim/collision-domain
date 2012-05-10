@@ -380,8 +380,13 @@ void Gameplay::startGame()
 
     this->spawnPlayers();
 	this->positionPlayers();
-	this->setNewVIPs(); //TODO - Change this once we have multiple game modes
-	//this->scheduleCountDown();
+	
+    //Only set a VIP if we're in VIP mode
+    if(this->getGameMode() == VIP_MODE)
+    {
+        this->setNewVIPs();
+    }
+    //this->scheduleCountDown();
 	mGameActive = true;
 
 #ifdef COLLISION_DOMAIN_SERVER
