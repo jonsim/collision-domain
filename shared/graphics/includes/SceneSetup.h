@@ -27,8 +27,8 @@ public:
     void loadMotionBlur (Ogre::Viewport* vp, uint8_t mode, float blur);
     void setRadialBlur (Ogre::Viewport* vp, float blur);
 
-    void loadArena (ArenaID aid, bool server);
-    void unloadArena (ArenaID aid, bool server);
+    void loadArena (ArenaID aid);
+    void unloadArena (ArenaID aid);
 
     // Graphical effect settings. Adjusts the scale of the effect - default is 1.
     float mGfxSettingHDR;         // Strength of the High Dynamic Range lighting.

@@ -198,6 +198,8 @@ Player* PlayerPool::getEnemyVip(int team)
 		if(mPlayers[i]->getTeam() != team && mPlayers[i]->getVIP())
 			return mPlayers[i];
 	}
+    OutputDebugString("Lolz no enemy team could be found, returning a NULL pointer for shiggles - almost certainly gonna crash now.");
+    return NULL;
 }
 
 

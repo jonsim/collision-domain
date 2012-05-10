@@ -280,7 +280,7 @@ void ServerGraphics::createScene (void)
     setupArenaNodes();
 
     // Setup the arena (this needs to be moved)
-    loadArena(COLOSSEUM_ARENA, true);
+    loadArena(FOREST_ARENA);
 
     // Setup the GUI
     setupGUI();
