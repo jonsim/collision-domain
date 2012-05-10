@@ -41,6 +41,9 @@ class Car
 {
 
 public:
+    static std::list<Ogre::Entity*> *mClonedEntities;
+    static std::list<Ogre::ResourceHandle> *mMeshObjects;
+
     Car(int uniqueID);
     virtual ~Car();
 

@@ -205,6 +205,21 @@ void PlayerPool::roundEnd()
         // Just want this for game end
         //mPlayers[i]->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 	}
+
+    while (Car::mClonedEntities->size() > 0)
+    {
+        Entity *e = Car::mClonedEntities->front();
+        Car::mClonedEntities->pop_front();
+        GameCore::mSceneMgr->destroyEntity(e);
+    }
+    
+    while (Car::mMeshObjects->size() > 0)
+    {
+        Ogre::ResourceHandle rh = Car::mMeshObjects->front();
+        Car::mMeshObjects->pop_front();
+        Ogre::MeshManager::getSingletonPtr()->remove(rh);
+    }
+
     GameCore::mClientGraphics->mGameCam->setTarget( NULL );
     GameCore::mGui->showSpawnScreenPage2(GameCore::mPlayerPool->getLocalPlayer()->getTeam());
 }

@@ -11,6 +11,9 @@
 #include "Camera.h"
 #include "Team.h"
 #include "Car.h"
+#include "SimpleCoupeCar.h"
+#include "TruckCar.h"
+#include "SmallCar.h"
 #include "InputState.h"
 
 
@@ -140,7 +143,15 @@ public:
     void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);
 	float getCameraYaw (void);
     Car* getCar (void);
-    void delCar() { if( mCar ) { mCar->mBodyNode->detachAllObjects(); delete mCar; mCar = NULL; } }
+    void delCar()
+    {
+        if( mCar )
+        {
+            mCar->mBodyNode->detachAllObjects();
+            delete mCar;
+            mCar = NULL;
+        }
+    }
     void collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer);
     void applyHealthBonus (void);
     void frameEvent(float time);
