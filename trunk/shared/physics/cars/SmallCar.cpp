@@ -406,6 +406,10 @@ void SmallCar::loadDestroyedModel (void)
     mChassisNode->detachAllObjects();
     createGeometry("CarEntity_Burnt", "small_car_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
+            GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),3);
+    #endif
 }
 
 

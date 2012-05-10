@@ -356,16 +356,28 @@ void TruckCar::updateTeam (TeamID tid)
         setMaterial("truck_body_uv", mChassisNode);
         setMaterial("truck_door_uv", mLDoorNode);
         setMaterial("truck_door_uv", mRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),0);
+        #endif
         break;
     case BLUE_TEAM:
         setMaterial("truck_body_t1", mChassisNode);
         setMaterial("truck_door_t1", mLDoorNode);
         setMaterial("truck_door_t1", mRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),1);
+        #endif
         break;
     case RED_TEAM:
         setMaterial("truck_body_t2", mChassisNode);
         setMaterial("truck_door_t2", mLDoorNode);
         setMaterial("truck_door_t2", mRDoorNode);
+        #ifdef COLLISION_DOMAIN_CLIENT
+            if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+                GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),2);
+        #endif
         break;
     default:
         break;
@@ -378,6 +390,10 @@ void TruckCar::loadDestroyedModel (void)
     mChassisNode->detachAllObjects();
     createGeometry("CarEntity_Burnt", "truck_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
+            GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),3);
+    #endif
 }
 
 
