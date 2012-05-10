@@ -38,9 +38,11 @@ Team* Gameplay::getTeam(TeamID teamID)
 
 bool Gameplay::gameOver()
 {
+    /*
 	if(mGameMode == VIP_MODE) {
 		vipModeGameWon();
 	}
+    */
 	return false;
 }
 
@@ -51,18 +53,28 @@ bool Gameplay::hasWon(TeamID teamID)
 
 void Gameplay::cycleGameMode()
 {
-    switch(mGameMode)
+    GameMode oldGameMode = this->getGameMode();
+    GameMode newGameMode;
+
+    do
     {
-        case FFA_MODE:
-            this->setGameMode(TDM_MODE);
-            break;
-        case TDM_MODE:
-            this->setGameMode(VIP_MODE);
-            break;
-        case VIP_MODE:
-            this->setGameMode(FFA_MODE);
-            break;
-    }
+        int randomGameChoice = rand()%3;
+        switch(randomGameChoice)
+        {
+            case 0:
+                newGameMode = FFA_MODE;
+                break;
+            case 1:
+                newGameMode = TDM_MODE;
+                break;
+            case 2:
+                newGameMode = VIP_MODE;
+                break;
+        }
+    } while (oldGameMode == newGameMode);
+    
+    //Set the new random game mode
+    this->setGameMode(newGameMode);
 }
 
 void Gameplay::setGameMode(GameMode gameMode)
@@ -72,8 +84,8 @@ void Gameplay::setGameMode(GameMode gameMode)
 
 void Gameplay::handleNewRound()
 {
-    //this->cycleGameMode(); //Move onto the next game type;
-    this->incrementRoundNumber();
+    this->cycleGameMode(); //Move onto the next game type;
+    //this->incrementRoundNumber();
 }
 
 bool Gameplay::vipModeGameWon()
