@@ -57,13 +57,17 @@ public:
         
 	void setupConsole (CEGUI::Window* guiWindow);
     void outputToConsole (const char* str, ...);
+    
+    // These two methods are called in ServerGraphics.cpp
+	void updatePlayerComboBox (void);
+    void giveConsoleFocus (void);
+
+    // This is called in Input.cpp
+    void loadConsoleHistory (bool reverseLoading);
 
 private:
     bool receiveFromConsole (const CEGUI::EventArgs &args);
-    void loadConsoleHistory (bool reverseLoading);
-    void giveConsoleFocus (void);
     void scrollConsoleToBottom (void);
-	void updatePlayerComboBox (void);
 	bool healthTextChanged (const CEGUI::EventArgs &args);
 	void openAdminWindow (void);
 	bool closeAdminWindow (const CEGUI::EventArgs &args);

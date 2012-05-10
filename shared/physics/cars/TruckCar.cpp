@@ -154,8 +154,6 @@ TruckCar::TruckCar(int uniqueCarID, TeamID tid)
 /// @brief  Destructor to clean up. Doesn't currently remove the car from the physics world though.
 TruckCar::~TruckCar(void)
 {
-    exit(1);
-
     GameCore::mPhysicsCore->removeBody( mCarChassis );
     GameCore::mPhysicsCore->removeBody( mLDoorBody );
     GameCore::mPhysicsCore->removeBody( mRDoorBody );
