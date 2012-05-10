@@ -559,9 +559,6 @@
     <ClInclude Include="..\..\shared\gameplay\includes\InfoItem.h">
       <Filter>shared\gameplay</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\shared\gameplay\includes\Team.h">
-      <Filter>shared\gameplay</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\shared\physics\includes\BtOgreExtras.h">
       <Filter>shared\physics</Filter>
     </ClInclude>
@@ -609,6 +606,9 @@
     </ClInclude>
     <ClInclude Include="..\..\shared\graphics\includes\MovableText.h">
       <Filter>client\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\shared\gameplay\includes\Team.h">
+      <Filter>shared\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
