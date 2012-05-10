@@ -375,6 +375,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         mVIPIcon[0]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
         mVIPIcon[1]->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(90 * evt.timeSinceLastFrame));
         
+
         // Collect input
             InputState *inputSnapshot = mUserInput.getInputState();
         mUserInput.processInterfaceControls();

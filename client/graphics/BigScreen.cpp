@@ -362,6 +362,8 @@ void BigScreen::updateRoundTimer()
     sprintf(displayText,"%ld:%ld",minutesLeft,secondsLeft);
     if(181-(time(NULL)-startTime) >= 0 && 181-(time(NULL)-startTime) < 180)
         this->oleTimerText->setCaption(displayText);
+    else
+        this->oleTimerText->hide();
 }
 
 
