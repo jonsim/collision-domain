@@ -14,7 +14,7 @@
 #include "SmallCar.h"
 #include "TruckCar.h"
 
-#define INITIAL_HEALTH 350
+#define INITIAL_HEALTH 800
 #define NEWCAM 1
 
 #define MAX_DAMAGE 400
@@ -142,7 +142,7 @@ void Player::createPlayer (CarType carType, TeamID tid)
             mCar->louderLocalSounds();
             GameCore::mGui->setupDamageDisplay(carType, tid);
         }
-        else
+        //else
         {
             // Create the healthbar
             mHealthbar = mBoards->createBillboard( 0, 2, 0, Ogre::ColourValue::Green );
@@ -203,100 +203,119 @@ void Player::createPlayer (CarType carType, TeamID tid)
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;
-	backRightDamageShare  = 0.3f;
-	backLeftDamageShare   = 0.3f;
-	frontLeftDamageShare  = 0.2f;
-	frontRightDamageShare = 0.2f;
+    damageShareTL = 0.05f;
+    damageShareBL = 0.2f;
+    damageShareML = 0.25f;
+    damageShareTR = 0.05f;
+    damageShareBR = 0.25f;
+    damageShareMR = 0.2f;
 
 	roundScore = 0;
     mCar->attachCollisionTickCallback(this);
     
     mCar->moveTo(btVector3(0,0.5,0));
+    crashCount = 0;
+    
+
+    float angles[6] = {30, 90, 150, 210, 270, 330};
+    for(unsigned int i = 0; i<6; i++) {
+        Ogre::Real angle = 0.f;
+        Ogre::Vector3 lineStart = Ogre::Vector3(
+            Ogre::Math::Cos(Ogre::Math::DegreesToRadians(angles[i])) * 4,
+            1, 
+            Ogre::Math::Sin(Ogre::Math::DegreesToRadians(angles[i])) * 4
+        );
+        Ogre::Vector3 lineEnd = Ogre::Vector3(0,1,0);
+        GameCore::mClientGraphics->mMeshDeformer->drawLine(GameCore::mSceneMgr, getCar()->mBodyNode, lineStart, lineEnd, Ogre::ColourValue(1,1,1));
+    }
+    //camShakeCounter = 0;
+
     //GameCore::mGui->updateDamage(0, 2-(rand()%2));
 }
 
 void Player::angleTest(void) {
-    Ogre::Vector3 lineStart = this->getCar()->mBodyNode->convertLocalToWorldPosition(Ogre::Vector3(0, -30, 0));
-    Ogre::Vector3 lineEnd   = this->getCar()->mBodyNode->convertLocalToWorldPosition(
-        Ogre::Vector3(
-            Ogre::Math::Cos(0) * 100,
-            -30,
-            Ogre::Math::Sin(0) * 100
-        )
-    );
-
-    GameCore::mClientGraphics->mMeshDeformer->drawLine(GameCore::mSceneMgr, lineStart, lineEnd);
+    
 }
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 /// @param  hitPoint		Location of the collision point on the collision mesh - in world coordinates
 /// @param  speed			The speed of the impact in the direction of the normal to the collision point
 /// @param  causedByPlayer	Pointer to the other player in the collision.
-void Player::collisionTickCallback(btVector3 &hitPoint, float depth, Player *causedByPlayer) {
-	// convert the hitPoint to an ogre vector in our local space, to pass to deformer
-	Ogre::Vector3 adjust = this->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)hitPoint);
-	// calculate the unsigned yaw rotation to the adjusted hitpoint, gives us a crude but usable mapping for the damage HUD
-	Ogre::Real or1 = this->getCar()->mBodyNode->getPosition().getRotationTo(adjust).getYaw().valueDegrees()+180;
-	
-	if(adjust.x == 0.f && adjust.y == 0.f && adjust.z == 0.f) {
-		//OutputDebugString("ZERO collision Point\n");
-	}
-
-	// combine speeds of both cars, gives approximation of total force in collision
-	float p1Speed = abs(this->getCar()->getCarMph());
-	float p2Speed = abs(causedByPlayer->getCar()->getCarMph());
-	float combinedSpeed = p1Speed + p2Speed;
-
-	// calculate ratio of damage to each player from the combined speed
-	// these will then be multiplied by the totalDamage to get amount of damage to each car
-	float damageShareTo1 = p2Speed / combinedSpeed;
-	float damageShareTo2 = p1Speed / combinedSpeed;
-
-	float totalDamage = abs(depth * 20000);
-	totalDamage = totalDamage > MAX_DAMAGE ? MAX_DAMAGE : totalDamage; 
-	float damageToThis = totalDamage * damageShareTo1;
-
-    bool isFront = false;
-    if((or1 >= 0 && or1 < 60) || (or1 >= 300 && or1 < 360)) {
-		isFront = true;
+void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer) {
+    Ogre::ColourValue cl;
+    if(this == GameCore::mPlayerPool->getLocalPlayer()) {
+       if(angle >= 330 && angle < 30) {
+           GameCore::mGui->chatboxAddMessage("Mid Right", "hit");
+           cl = Ogre::ColourValue(1,1,0);
+	    } else if(angle >= 30 && angle < 90) {
+            GameCore::mGui->chatboxAddMessage("Bot Right", "hit");
+            cl = Ogre::ColourValue(0,1,0);
+	    } else if(angle >= 90 && angle < 150) {
+            GameCore::mGui->chatboxAddMessage("Bot Left", "hit");
+            cl = Ogre::ColourValue(0,1,0);
+        } else if(angle >= 150 && angle < 210) {
+            GameCore::mGui->chatboxAddMessage("Mid Left", "hit");
+            cl = Ogre::ColourValue(1,1,0);
+        } else if(angle >= 210 && angle < 270) {
+            GameCore::mGui->chatboxAddMessage("Front Left", "hit");
+            cl = Ogre::ColourValue(1,0,0);
+        } else if(angle >= 270 && angle < 330) {
+            GameCore::mGui->chatboxAddMessage("Front Right", "hit");
+            cl = Ogre::ColourValue(1,0,0);
+        }
     }
+    bool isFront = ((angle >= 30 && angle < 90) || (angle >= 90 && angle < 150));
 
-	// differentiate between differnt collision types
-	if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed > 40 || p2Speed > 40)) {
-		//OutputDebugString("Gleam\n");
-	} else if(totalDamage < BIG_CRASH_THRESHOLD && (p1Speed < 40 && p2Speed < 40)) {
-		//OutputDebugString("Bump\n");
-	} else if(totalDamage >= BIG_CRASH_THRESHOLD) {
-		//OutputDebugString("Bang\n");
-		GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, (Ogre::Vector3)hitPoint, damageToThis * 0.1, isFront);
-        //camShakeFrames = 50;
-	}
+    GameCore::mClientGraphics->mMeshDeformer->drawLine(GameCore::mSceneMgr, getCar()->mBodyNode, Ogre::Vector3(0,0,0), getCar()->mBodyNode->convertWorldToLocalPosition(hitPoint)*2, cl);
+
+    switch(crashType) {
+        case 1:
+            GameCore::mClientGraphics->generateSparks(hitPoint, Ogre::Vector3(0,1,0));
+            break;
+        case 2:
+            GameCore::mClientGraphics->generateShrapnel(hitPoint, getTeam());
+            break;
+        case 3:
+            GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, hitPoint, damage * 0.1, isFront);
+            GameCore::mClientGraphics->generateShrapnel(hitPoint, getTeam());
+            break;
+        default:
+            // error
+            break;
+    }
 }
 
 
 void Player::cameraLookLeft(void) {
-	//OutputDebugString("look left\n");
+    GameCore::mClientGraphics->mGameCam->setCollidable(false);
+    GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
+	GameCore::mClientGraphics->mGameCam->setOffset( btVector3(5, 0, 0) );
+    GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
 }
 
 void Player::cameraLookRight(void) {
-	//OutputDebugString("look right\n");
+    GameCore::mClientGraphics->mGameCam->setCollidable(false);
+    GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
+	GameCore::mClientGraphics->mGameCam->setOffset( btVector3(-5, 0, 0) );
+    GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
 }
 
 void Player::cameraLookBack(void) {
-
+    GameCore::mClientGraphics->mGameCam->setCollidable(false);
+    GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
+    GameCore::mClientGraphics->mGameCam->setOffset( btVector3(0, 0, 5) );
+    GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
+    
 }
 
 void Player::revertCamera(void) {
-
+    GameCore::mClientGraphics->mGameCam->setOffset( cameraViews[cameraView] );
+    GameCore::mClientGraphics->mGameCam->setLookOffset( cameraLookViews[cameraView] );
+    GameCore::mClientGraphics->mGameCam->setCollidable(true);
+    GameCore::mClientGraphics->mGameCam->setCamType( CAM_CHASE );
 }
 
 void Player::cycleCameraView(void) {
-
 	cameraView = (++cameraView) & numCameraViews;
-
-	GameCore::mClientGraphics->mGameCam->setOffset( cameraViews[cameraView] );
-    GameCore::mClientGraphics->mGameCam->setLookOffset( cameraLookViews[cameraView] );
-
-    
 	switch(cameraView) {
 		case 0 :
 		case 1 :
@@ -306,6 +325,8 @@ void Player::cycleCameraView(void) {
 			GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
 			break;
 	}
+    GameCore::mClientGraphics->mGameCam->setOffset( cameraViews[cameraView] );
+    GameCore::mClientGraphics->mGameCam->setLookOffset( cameraLookViews[cameraView] );
 }
 
 /// @brief  Attaches a camera to the player.
@@ -459,8 +480,15 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
     //Ogre::SceneNode *camNode = mCar->attachCamNode();
     //Ogre::SceneNode *camArmNode = camNode->getParentSceneNode();
     
-    camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-	camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
+    /*if(camShakeCounter > 0) {
+        
+        camArmNode->yaw(Ogre::Degree((-cameraRotationConstant * XRotation)+(rand()/RAND_MAX)*10), Ogre::Node::TS_PARENT);
+	    camArmNode->pitch(Ogre::Degree((cameraRotationConstant * 0.5f * -YRotation)+(rand()/RAND_MAX)*10), Ogre::Node::TS_LOCAL);
+        camShakeCounter--;
+    } else {*/
+        camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
+	    camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
+    //}
 
 	Ogre::Vector3 camPosition = camNode->getPosition();
 	ZDepth = -ZDepth;
@@ -493,11 +521,11 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
    
 	//Update the camera
 	//
-	/*
-	std::stringstream ssTmp;
-	ssTmp << "Position of CamNode: " << camArmNode->getPosition() << "\n";
-	OutputDebugString(ssTmp.str().c_str());
-	*/
+	
+	//std::stringstream ssTmp;
+	//ssTmp << camShakeCounter << "\n";
+	//OutputDebugString(ssTmp.str().c_str());
+	
 }
 
 /// @brief  Updates graphics for the local player (with effects that should only be applied from that, for example
@@ -686,7 +714,44 @@ void Player::serverSaysHealthChangedTo(float newHP)
 /// @brief  This is called when a client receives changes to their own local damage points
 void Player::processDamage( PLAYER_DAMAGE_LOC damageIn )
 {
-    // damageIn.damageBL = piss;
+    float piss = ((damageIn.damageBL * damageShareBL) + 
+           (damageIn.damageBR * damageShareBR) + 
+           (damageIn.damageML * damageShareML) + 
+           (damageIn.damageMR * damageShareMR) + 
+           (damageIn.damageTL * damageShareTL) + 
+           (damageIn.damageTR * damageShareTR));
+
+    std::stringstream ss;
+    ss << piss << "\n";
+    GameCore::mGui->chatboxAddMessage("damage", (char*)ss.str().c_str());
+
+    float damageShares[] = {
+        damageIn.damageTL / ((float)INITIAL_HEALTH * damageShareTL),
+        damageIn.damageTR / ((float)INITIAL_HEALTH * damageShareTR),
+        damageIn.damageML / ((float)INITIAL_HEALTH * damageShareML),
+        damageIn.damageMR / ((float)INITIAL_HEALTH * damageShareMR),
+        damageIn.damageBL / ((float)INITIAL_HEALTH * damageShareBL),
+        damageIn.damageBR / ((float)INITIAL_HEALTH * damageShareBR)
+    }; // keep in order!
+
+    int colour = 0;;
+    for(unsigned int i = 0; i<6; i++) {
+        if(damageShares[i] <= 0.5f) {
+            colour = 0;
+        } else if(damageShares[i] > 0.5f && damageShares[i] <= 0.8f) {
+            colour = 1;
+        } else if(damageShares[i] > 0.8f) {
+            colour = 2;
+        }
+        GameCore::mGui->updateDamage(mCarType, i, colour);
+    }
+
+
+
+
+
+
+    
 }
 
 void Player::lowDamageCallBack(std::string causedBy) {

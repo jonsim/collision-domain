@@ -493,6 +493,7 @@ void Car::createGeometry(const std::string &entityName, const std::string &meshN
 
     entity->setCastShadows(true);
     toAttachTo->attachObject(entity);
+
 }
 
 void Car::setMaterial(const std::string &materialName, Ogre::SceneNode *attachedTo)

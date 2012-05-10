@@ -125,7 +125,8 @@ void SceneSetup::setupParticleSystem (void)
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "200") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",   "35") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_max",   "40") );
-    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",   "0.5") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",   "0.25") );
+    mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.25") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_start", "1.000 1.000 0.847 1.0") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_end",   "0.851 0.737 0.565 1.0") );
 

@@ -177,8 +177,10 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 
             case ID_PLAYER_DAMAGE:
             {
+                unsigned char packetid;
                 PLAYER_DAMAGE_LOC damageIn;
                 RakNet::BitStream bitStream( pkt->data, pkt->length, false );
+                bitStream.Read( packetid );
                 bitStream.Read( (char*)&damageIn, sizeof( PLAYER_DAMAGE_LOC ) );
                 GameCore::mPlayerPool->getLocalPlayer()->processDamage( damageIn );
                 break;

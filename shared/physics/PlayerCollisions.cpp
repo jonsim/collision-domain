@@ -9,6 +9,9 @@
 #include "PlayerCollisions.h"
 #include "boost/lexical_cast.hpp"
 
+#define MAX_DAMAGE 400
+#define BIG_CRASH_THRESHOLD 80
+
 /// @brief  Constructor to create physics stuff
 /// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.
 PlayerCollisions::PlayerCollisions()
@@ -36,7 +39,6 @@ PlayerCollisions::~PlayerCollisions()
 static int numColls = 0;
 
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold) {
-
 	/*
 		    // SET THESE:
 		    btVector3 crashLocation(,,);
@@ -98,66 +100,71 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 			// if either player hasn't collided for more than 15 frames, let them collide again
 			if(collisionDelays[p1] > 90 || collisionDelays[p2] > 90) {
 				// reset frame counter
-                if(p1 == NULL || p2 == NULL)
-                {
-                    return;
-                }
+                if(p1 == NULL || p2 == NULL) return;
 				collisionDelays[p1] = collisionDelays[p2] = 0;
-				p1->collisionTickCallback(averageCollisionPointOnA, averageOverlapDistance, p2);
-				p2->collisionTickCallback(averageCollisionPointOnB, averageOverlapDistance, p1);
+                int crashType;
+                
+                Ogre::Vector3 localOnA = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnA);
+                Ogre::Vector3 localOnB = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnB);
+                //Ogre::Real angleOnA = p1->getCar()->mBodyNode->getPosition().getRotationTo(localOnA).getYaw().valueDegrees()+180.f;
+                //Ogre::Real angleOnB = p2->getCar()->mBodyNode->getPosition().getRotationTo(localOnB).getYaw().valueDegrees()+180.f;
+                Ogre::Real angleOnA = Ogre::Math::ATan(localOnA.z/localOnA.x).valueDegrees()+180;
+                Ogre::Real angleOnB = Ogre::Math::ATan(localOnB.z/localOnB.x).valueDegrees()+180;
+                Ogre::Real combinedSpeed = p1MPH + p2MPH;
+                Ogre::Real damageShareToA = p1MPH / combinedSpeed;
+                Ogre::Real damageShareToB = p2MPH / combinedSpeed;
+
+                Ogre::Real totalDamage = abs(averageOverlapDistance * 20000.f);
+                totalDamage = totalDamage > MAX_DAMAGE ? (float)MAX_DAMAGE : totalDamage;
+
+                Ogre::Real damageToA = totalDamage * damageShareToA;
+                Ogre::Real damageToB = totalDamage * damageShareToB;
+
+                int sectionOnA = getSectionOnCar(angleOnA);
+                int sectionOnB = getSectionOnCar(angleOnB);
+
+                if(sectionOnA > sectionOnB) {
+                    damageToA *= 0.8f;
+                    damageToB *= 1.2f;
+                } else if(sectionOnB > sectionOnA) {
+                    damageToB *= 0.8f;
+                    damageToA *= 1.2f;
+                }
+
+                if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH > 40 || p2MPH > 40)) {
+		            crashType = 1;
+	            } else if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH < 40 && p2MPH < 40)) {
+		            crashType = 2;
+	            } else if(totalDamage >= BIG_CRASH_THRESHOLD) {
+                    crashType = 3;
+	            }
+
+				p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, angleOnA, crashType, p2);
+				p2->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnB, damageToB, angleOnB, crashType, p1);
+
+
 			}
 		}
 
 	} 
+}
 
-    /*
-    // check if player pointer is already somewhere in the lists
-    std::list<Player*>* player1AlreadySeen = NULL;
-    std::list<Player*>* player2AlreadySeen = NULL;
-    std::list<Player*>* emptyList = NULL;
-    hasAlreadyBeenSeenThisFrame(&player1AlreadySeen, &player2AlreadySeen, &emptyList, p1, p2);
-
-    if (player1AlreadySeen && player2AlreadySeen)
-    {
-        // we may have seen these guys in an earlier substep
-
-        if (player1AlreadySeen != player2AlreadySeen)
-        {
-            // this used to be a never happen case ;) but it actually means there were separate groups
-            // of colliding cars and another car has come and bridged these groups to form 1 big collision
-            // merge the offending lists onto 1 node
-
-            // merge player2AlreadySeen into player1AlreadySeen
-            mergeListsIntoFrom(player1AlreadySeen, player2AlreadySeen, p1, p2);
-
-
-            player2AlreadySeen->clear();
-        }
-
+int PlayerCollisions::getSectionOnCar(Ogre::Real angle) {
+    int pos;
+    if(angle >= 330 && angle < 30) {
+        pos = 2;
+	} else if(angle >= 30 && angle < 90) {
+        pos = 1;
+	} else if(angle >= 90 && angle < 150) {
+        pos = 1;
+    } else if(angle >= 150 && angle < 210) {
+        pos = 2;
+    } else if(angle >= 210 && angle < 270) {
+        pos = 3;
+    } else if(angle >= 270 && angle < 330) {
+        pos = 3;
     }
-    else if (player1AlreadySeen || player2AlreadySeen)
-    {
-        Player* playerToAdd = player1AlreadySeen ? p2 : p1;
-        std::list<Player*>* alreadySeen = player1AlreadySeen ? player1AlreadySeen : player2AlreadySeen;
-
-        // append playerToAdd to the cluster of players (which already exists) involved in this specific collision
-        alreadySeen->insert(alreadySeen->end(), playerToAdd);
-
-    }
-    else
-    {
-        // neither player has been seen yet so add them as a new collision group
-        if (!emptyList)
-        {
-            // all lists are in use, so lets make another for this collision group
-            emptyList = new std::list<Player*>;
-            mCollisions->insert(mCollisions->end(), emptyList);
-        }
-
-        emptyList->insert(emptyList->end(), p1);
-        emptyList->insert(emptyList->end(), p2);
-    }
-	*/
+    return pos;
 }
 
 
