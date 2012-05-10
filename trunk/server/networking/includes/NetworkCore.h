@@ -18,7 +18,7 @@
 #include "stdafx.h"
 #include "Powerup.h"
 #include "CarSnapshot.h"
-
+#include "SceneSetup.h"
 
 // RakNet includes
 #include "BitStream.h"
@@ -117,6 +117,7 @@ public:
     void sendChatMessage( const char *szMessage );
     void sendSyncScores();
     void sendGameMode(GameMode gameMode);
+    void sendArenaID(ArenaID arenaID);
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 

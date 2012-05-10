@@ -537,6 +537,19 @@ void NetworkCore::SyncGameMode( RakNet::BitStream *bitStream, RakNet::Packet *pk
     OutputDebugString(tmpSS.str().c_str());
 }
 
+void NetworkCore::SyncArenaID( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    ArenaID newArenaID;
+    bitStream->Read(newArenaID);
+
+    //Set the game to this
+    GameCore::mGameplay->setArenaID(newArenaID);
+
+    StringStream tmpSS;
+    tmpSS << "Server declared arena: " << newArenaID;
+    OutputDebugString(tmpSS.str().c_str());
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -556,6 +569,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
     m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
     m_RPC->RegisterSlot( "SyncGameMode",		SyncGameMode, 0 );
+    m_RPC->RegisterSlot( "SyncArenaID",		    SyncArenaID, 0 );
 }
 
 
