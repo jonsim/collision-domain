@@ -163,6 +163,8 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
 /// @brief  Destructor to clean up. Doesn't currently remove the car from the physics world though.
 SimpleCoupeCar::~SimpleCoupeCar(void)
 {
+    exit(1);
+
     GameCore::mPhysicsCore->removeBody( mCarChassis );
     GameCore::mPhysicsCore->removeBody( mFLDoorBody );
     GameCore::mPhysicsCore->removeBody( mFRDoorBody );

@@ -15,6 +15,9 @@
 
 #define WHEEL_FRICTION_CFM 0.6f
 
+std::list<Ogre::Entity*>* Car::mClonedEntities = new std::list<Ogre::Entity*>;
+std::list<Ogre::ResourceHandle>* Car::mMeshObjects = new std::list<Ogre::ResourceHandle>;
+
 Car::Car (int uniqueID)
   : mGearSound(NULL),
     mBigScreenOverlayElement(NULL),
@@ -477,6 +480,9 @@ void Car::createGeometry(const std::string &entityName, const std::string &meshN
 	} else {
 		disposableMeshPointer = GameCore::mSceneMgr->getEntity(entityName)->getMesh()->clone(nameUnique + "mesh");
 		entity = GameCore::mSceneMgr->createEntity(nameUnique, disposableMeshPointer->getName());
+
+        mClonedEntities->push_back(entity);
+        mMeshObjects->push_back(disposableMeshPointer->getHandle());
 	}
 
     int GEOMETRY_QUERY_MASK = 1<<2;

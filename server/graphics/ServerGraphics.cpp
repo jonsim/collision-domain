@@ -380,7 +380,7 @@ void ServerGraphics::updateState (const float timeSinceLastFrame)
 	// This ensures gameplay events happen
     GameCore::mGameplay->drawInfo();
 
-	GameCore::mGui->updatePlayerComboBox();
+	//GameCore::mGui->updatePlayerComboBox();
     
 }
 
@@ -389,7 +389,7 @@ void ServerGraphics::updateState (const float timeSinceLastFrame)
 /// @param  rw  The window that has been moved.
 void ServerGraphics::windowMoved (Ogre::RenderWindow* rw)
 {
-    GameCore::mGui->giveConsoleFocus();
+    //GameCore::mGui->giveConsoleFocus();
 }
 
 
@@ -397,7 +397,7 @@ void ServerGraphics::windowMoved (Ogre::RenderWindow* rw)
 /// @param  rw  The window that has been moved.
 void ServerGraphics::windowFocusChange (Ogre::RenderWindow* rw)
 {
-    GameCore::mGui->giveConsoleFocus();
+    //GameCore::mGui->giveConsoleFocus();
 }
 
 
@@ -420,7 +420,7 @@ void ServerGraphics::windowResized (Ogre::RenderWindow* rw)
     //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
 
-    GameCore::mGui->giveConsoleFocus();
+    //GameCore::mGui->giveConsoleFocus();
 }
 
 
