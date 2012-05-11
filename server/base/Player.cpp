@@ -105,7 +105,12 @@ void Player::createPlayer (CarType carType, TeamID tid)
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
 ///         In total this will even out to 60 calls per second :-)
 /// @param  damage   0 if no damage was done to this player in the collision, else 1.
-void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer) {
+#if _WIN32
+void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer)
+#else
+void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer)
+#endif
+{
     if(angle >= 330 && angle < 30) {
         damageLoc.damageML += damage;
 	} else if(angle >= 30 && angle < 90) {

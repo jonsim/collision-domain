@@ -242,7 +242,12 @@ void Player::angleTest(void) {
 /// @param  hitPoint		Location of the collision point on the collision mesh - in world coordinates
 /// @param  speed			The speed of the impact in the direction of the normal to the collision point
 /// @param  causedByPlayer	Pointer to the other player in the collision.
-void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer) {
+#if _WIN32
+void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer)
+#else
+void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer)
+#endif
+{
     Ogre::ColourValue cl;
     if(this == GameCore::mPlayerPool->getLocalPlayer()) {
        if(angle >= 330 && angle < 30) {

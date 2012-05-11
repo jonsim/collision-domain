@@ -59,7 +59,7 @@ public:
 
     void updateCounters (void);
     void setupDamageDisplay(CarType carType, TeamID tid);
-    void GameGUI::breakGlass(int level);
+    void breakGlass(int level);
     
 private:
     int currentRankMaterialIndex;
