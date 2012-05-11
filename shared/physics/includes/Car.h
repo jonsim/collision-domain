@@ -60,6 +60,7 @@ public:
     virtual void updateArena (ArenaID aid) = 0;
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
+    virtual void removeCarPart(unsigned int part) = 0;
 
     // Overrideable methods, but you can use the generic Car method with all cars
     virtual Ogre::SceneNode *attachCamNode();

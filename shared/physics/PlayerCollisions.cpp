@@ -94,6 +94,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 			if(collisionDelays[p1] == NULL) {
 				collisionDelays[p1] = 100;
 			}
+            
 			if(collisionDelays[p2] == NULL) {
 				collisionDelays[p2] = 100;
 			}
@@ -106,10 +107,6 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                 
                 Ogre::Vector3 localOnA = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnA);
                 Ogre::Vector3 localOnB = p2->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnB);
-                //Ogre::Real angleOnA = p1->getCar()->mBodyNode->getPosition().getRotationTo(localOnA).getYaw().valueDegrees()+180.f;
-                //Ogre::Real angleOnB = p2->getCar()->mBodyNode->getPosition().getRotationTo(localOnB).getYaw().valueDegrees()+180.f;
-                Ogre::Real angleOnA = Ogre::Math::ATan(localOnA.z/localOnA.x).valueDegrees()+180;
-                Ogre::Real angleOnB = Ogre::Math::ATan(localOnB.z/localOnB.x).valueDegrees()+180;
                 Ogre::Real combinedSpeed = p1MPH + p2MPH;
                 Ogre::Real damageShareToA = p1MPH / combinedSpeed;
                 Ogre::Real damageShareToB = p2MPH / combinedSpeed;
@@ -120,13 +117,16 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                 Ogre::Real damageToA = totalDamage * damageShareToA;
                 Ogre::Real damageToB = totalDamage * damageShareToB;
 
-                int sectionOnA = getSectionOnCar(angleOnA);
-                int sectionOnB = getSectionOnCar(angleOnB);
+                int sectionOnA = getSectionOnCar(p1, localOnA);
+                int sectionOnB = getSectionOnCar(p2, localOnB);
 
-                if(sectionOnA > sectionOnB) {
+                int sectionTestA = sectionOnA < 2 ? 0 : sectionOnA < 4 && sectionOnA >=2 ? 1 : 2; 
+                int sectionTestB = sectionOnB < 2 ? 0 : sectionOnB < 4 && sectionOnB >=2 ? 1 : 2; 
+
+                if(sectionTestA > sectionTestB) {
                     damageToA *= 0.8f;
                     damageToB *= 1.2f;
-                } else if(sectionOnB > sectionOnA) {
+                } else if(sectionTestB > sectionTestA) {
                     damageToB *= 0.8f;
                     damageToA *= 1.2f;
                 }
@@ -139,8 +139,8 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                     crashType = 3;
 	            }
 
-				p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, angleOnA, crashType, p2);
-				p2->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnB, damageToB, angleOnB, crashType, p1);
+				p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, sectionOnA, crashType, p2);
+				p2->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnB, damageToB, sectionOnB, crashType, p1);
 
 
 			}
@@ -149,22 +149,33 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 	} 
 }
 
-int PlayerCollisions::getSectionOnCar(Ogre::Real angle) {
-    int pos;
-    if(angle >= 330 && angle < 30) {
-        pos = 2;
-	} else if(angle >= 30 && angle < 90) {
-        pos = 1;
-	} else if(angle >= 90 && angle < 150) {
-        pos = 1;
-    } else if(angle >= 150 && angle < 210) {
-        pos = 2;
-    } else if(angle >= 210 && angle < 270) {
-        pos = 3;
-    } else if(angle >= 270 && angle < 330) {
-        pos = 3;
+int PlayerCollisions::getSectionOnCar(Player *p, Ogre::Vector3 pos) {
+    // FL,FR,ML,MR,RL,RR = 0,1,2,3,4,5
+    int r;
+    if(pos.x >= 0.f) { // RHS
+        if(pos.z > p->frontDamageBoundary) {
+            // FR
+            r = 1;
+        } else if(pos.z > p->rearDamageBoundary && pos.z <= p->frontDamageBoundary) {
+            // MR
+            r = 2;
+        } else if(pos.z <= p->rearDamageBoundary) {
+            // RR
+            r = 5;
+        }
+    } else {
+        if(pos.z > p->frontDamageBoundary) {
+            // FL
+            r = 0;
+        } else if(pos.z > p->rearDamageBoundary && pos.z <= p->frontDamageBoundary) {
+            // ML
+            r = 2;
+        } else if(pos.z <= p->rearDamageBoundary) {
+            // RL
+            r = 4;
+        }
     }
-    return pos;
+    return r;
 }
 
 

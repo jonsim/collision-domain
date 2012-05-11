@@ -118,20 +118,25 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 
     mCarType = carType;
 
-    switch (carType)
-    {
-    case CAR_BANGER:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
-        break;
-    case CAR_SMALL:
-        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
-        break;
-    case CAR_TRUCK:
-        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
-        break;
-    default:
-        throw Ogre::Exception::ERR_INVALIDPARAMS;
-        break;
+    switch (carType) {
+        case CAR_BANGER:
+            mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
+            rearDamageBoundary = -2.1f;
+            frontDamageBoundary = 1.6f;
+            break;
+        case CAR_SMALL:
+            mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
+            rearDamageBoundary = -1.4f;
+            frontDamageBoundary = 0.8f;
+            break;
+        case CAR_TRUCK:
+            mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
+            rearDamageBoundary = -2.15f;
+            frontDamageBoundary = 1.3f;
+            break;
+        default:
+            throw Ogre::Exception::ERR_INVALIDPARAMS;
+            break;
     }
     
     bool isLocalPlayer = this == GameCore::mPlayerPool->getLocalPlayer();
@@ -221,22 +226,6 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
     
     mCar->moveTo(btVector3(0,0.5,0));
     crashCount = 0;
-    
-
-    float angles[6] = {30, 90, 150, 210, 270, 330};
-    for(unsigned int i = 0; i<6; i++) {
-        Ogre::Real angle = 0.f;
-        Ogre::Vector3 lineStart = Ogre::Vector3(
-            Ogre::Math::Cos(Ogre::Math::DegreesToRadians(angles[i])) * 4,
-            1, 
-            Ogre::Math::Sin(Ogre::Math::DegreesToRadians(angles[i])) * 4
-        );
-        Ogre::Vector3 lineEnd = Ogre::Vector3(0,1,0);
-        GameCore::mClientGraphics->mMeshDeformer->drawLine(GameCore::mSceneMgr, getCar()->mBodyNode, lineStart, lineEnd, Ogre::ColourValue(1,1,1));
-    }
-    //camShakeCounter = 0;
-
-    //GameCore::mGui->updateDamage(0, 2-(rand()%2));
 }
 
 void Player::angleTest(void) {
@@ -247,37 +236,12 @@ void Player::angleTest(void) {
 /// @param  speed			The speed of the impact in the direction of the normal to the collision point
 /// @param  causedByPlayer	Pointer to the other player in the collision.
 #if _WIN32
-void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer)
+    void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer) {
 #else
-void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer)
+	void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real &damage, unsigned int damageSection, int &crashType, Player *&causedByPlayer) {
 #endif
-{
-    Ogre::ColourValue cl;
-    if(this == GameCore::mPlayerPool->getLocalPlayer()) {
-       if(angle >= 330 && angle < 30) {
-           GameCore::mGui->chatboxAddMessage("Mid Right", "hit");
-           cl = Ogre::ColourValue(1,1,0);
-	    } else if(angle >= 30 && angle < 90) {
-            GameCore::mGui->chatboxAddMessage("Bot Right", "hit");
-            cl = Ogre::ColourValue(0,1,0);
-	    } else if(angle >= 90 && angle < 150) {
-            GameCore::mGui->chatboxAddMessage("Bot Left", "hit");
-            cl = Ogre::ColourValue(0,1,0);
-        } else if(angle >= 150 && angle < 210) {
-            GameCore::mGui->chatboxAddMessage("Mid Left", "hit");
-            cl = Ogre::ColourValue(1,1,0);
-        } else if(angle >= 210 && angle < 270) {
-            GameCore::mGui->chatboxAddMessage("Front Left", "hit");
-            cl = Ogre::ColourValue(1,0,0);
-        } else if(angle >= 270 && angle < 330) {
-            GameCore::mGui->chatboxAddMessage("Front Right", "hit");
-            cl = Ogre::ColourValue(1,0,0);
-        }
-    }
-    bool isFront = ((angle >= 30 && angle < 90) || (angle >= 90 && angle < 150));
-
-    GameCore::mClientGraphics->mMeshDeformer->drawLine(GameCore::mSceneMgr, getCar()->mBodyNode, Ogre::Vector3(0,0,0), getCar()->mBodyNode->convertWorldToLocalPosition(hitPoint)*2, cl);
-
+    bool isFront = damageSection == 0 || damageSection == 1;
+    if(damage > 40.f) getCar()->removeCarPart(damageSection);
     switch(crashType) {
         case 1:
             GameCore::mClientGraphics->generateSparks(hitPoint, Ogre::Vector3(0,1,0));
@@ -744,13 +708,13 @@ void Player::processDamage( PLAYER_DAMAGE_LOC damageIn )
     ss << piss << "\n";
     GameCore::mGui->chatboxAddMessage("damage", (char*)ss.str().c_str());
 
-    float damageShares[] = {
-        damageIn.damageTL / ((float)INITIAL_HEALTH * damageShareTL),
-        damageIn.damageTR / ((float)INITIAL_HEALTH * damageShareTR),
-        damageIn.damageML / ((float)INITIAL_HEALTH * damageShareML),
-        damageIn.damageMR / ((float)INITIAL_HEALTH * damageShareMR),
-        damageIn.damageBL / ((float)INITIAL_HEALTH * damageShareBL),
-        damageIn.damageBR / ((float)INITIAL_HEALTH * damageShareBR)
+    float damageShares[6] = {
+        damageIn.damageTL / ((float)INITIAL_HEALTH / 6.f),  // * damageShareTL
+        damageIn.damageTR / ((float)INITIAL_HEALTH / 6.f),  // * damageShareTR
+        damageIn.damageML / ((float)INITIAL_HEALTH / 6.f),  // * damageShareML
+        damageIn.damageMR / ((float)INITIAL_HEALTH / 6.f),  // * damageShareMR
+        damageIn.damageBL / ((float)INITIAL_HEALTH / 6.f),  // * damageShareBL
+        damageIn.damageBR / ((float)INITIAL_HEALTH / 6.f)   // * damageShareBR
     }; // keep in order!
 
     int colour = 0;;

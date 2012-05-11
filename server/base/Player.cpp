@@ -106,23 +106,32 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 ///         In total this will even out to 60 calls per second :-)
 /// @param  damage   0 if no damage was done to this player in the collision, else 1.
 #if _WIN32
-void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer)
+    void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer) {
 #else
-void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer)
+    void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real& damage, unsigned int damageSection, int &crashType, Player *&causedByPlayer) {
 #endif
-{
-    if(angle >= 330 && angle < 30) {
-        damageLoc.damageML += damage;
-	} else if(angle >= 30 && angle < 90) {
-        damageLoc.damageTL += damage;
-	} else if(angle >= 90 && angle < 150) {
-        damageLoc.damageTR += damage;
-    } else if(angle >= 150 && angle < 210) {
-        damageLoc.damageMR += damage;
-    } else if(angle >= 210 && angle < 270) {
-        damageLoc.damageBR += damage;
-    } else if(angle >= 270 && angle < 330) {
-        damageLoc.damageBL += damage;
+    switch(damageSection) {
+        case 0 :
+            damageLoc.damageTL += damage;
+            break;
+        case 1 :
+            damageLoc.damageTR += damage;
+            break;
+        case 2 :
+            damageLoc.damageML += damage;
+            break;
+        case 3 :
+            damageLoc.damageMR += damage;
+            break;
+        case 4 :
+            damageLoc.damageBL += damage;
+            break;
+        case 5 :
+            damageLoc.damageBR += damage;
+            break;
+        default:
+            // dont do that you stupid cunt
+            break;
     }
 
 	if((GameCore::mGameplay->mGameActive && mAlive)) {

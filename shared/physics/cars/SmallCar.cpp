@@ -520,8 +520,41 @@ void SmallCar::initWheels()
 	}
 }
 
-void SmallCar::makeBitsFallOff()
-{
+void SmallCar::removeLDoor() {
+    removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  0.594f, 0.788f, 0.011f ) );
+}
+void SmallCar::removeRDoor() {
+    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  0.594f, 0.788f, 0.011f ) );
+}
+void SmallCar::removeRBumper() {
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_SMALLCAR_RBUMPER, btVector3( 0.0f, 0.410f, -1.880f ) );
+}
+void SmallCar::removeFBumper() {
+    removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_SMALLCAR_FBUMPER, btVector3( 0.0f, 0.392f,  1.352f ) );
+}
+
+void SmallCar::removeCarPart(unsigned int part) {
+    switch(part) {
+        case 0:
+            ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* left headlamp */ 0;
+            break;
+        case 1:
+            ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* right headlamp */ 0;
+            break;
+        case 2:
+            removeLDoor();
+            break;
+        case 3:
+            removeRDoor();
+            break;
+        case 4:
+        case 5:
+            removeRBumper();
+            break;
+    }
+}
+
+void SmallCar::makeBitsFallOff() {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
     removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  0.594f, 0.788f, 0.011f ) );
     removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3( -0.594f, 0.788f, 0.011f ) );

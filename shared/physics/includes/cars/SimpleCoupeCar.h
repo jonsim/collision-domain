@@ -31,6 +31,14 @@ public:
 
     virtual void makeBitsFallOff();
 
+    virtual void SimpleCoupeCar::removeFLDoor();
+    virtual void SimpleCoupeCar::removeFRDoor();
+    virtual void SimpleCoupeCar::removeRLDoor();
+    virtual void SimpleCoupeCar::removeRRDoor();
+    virtual void SimpleCoupeCar::removeRBumper();
+    virtual void SimpleCoupeCar::removeFBumper();
+    virtual void SimpleCoupeCar::removeCarPart(unsigned int part);
+
 private:
     void initTuning();
     void initNodes();

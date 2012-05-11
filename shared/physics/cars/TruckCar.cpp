@@ -569,8 +569,38 @@ void TruckCar::initWheels()
 	}
 }
 
-void TruckCar::makeBitsFallOff()
-{
+void TruckCar::removeLDoor() {
+    removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
+}
+void TruckCar::removeRDoor() {
+    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
+}
+void TruckCar::removeRBumper() {
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_TRUCK_RBUMPER, btVector3( 0.0f, 0.547f, 3.035f ) );
+}
+
+void TruckCar::removeCarPart(unsigned int part) {
+    switch(part) {
+        case 0:
+            // left wing mirror
+            break;
+        case 1:
+            // right wing mirror
+            break;
+        case 2:
+            removeLDoor();
+            break;
+        case 3:
+             removeRDoor();
+            break;
+        case 4:
+        case 5:
+            removeRBumper();
+            break;
+    }
+}
+
+void TruckCar::makeBitsFallOff() {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );
     removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
     removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3( -1.094f, 1.665f, 1.768f ) );
