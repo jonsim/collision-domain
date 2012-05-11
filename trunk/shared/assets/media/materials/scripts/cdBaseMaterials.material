@@ -2,9 +2,11 @@
 abstract material cd/Base : receiver/stencil
 {
 }
+
 abstract material cd/Leaf : leaf_receiver/stencil
 {
 }
+
 abstract material cd/Blank
 {
 	technique
@@ -14,6 +16,7 @@ abstract material cd/Blank
 		}
 	}
 }
+
 abstract material cd/SolidColour
 {
 	technique
@@ -28,6 +31,7 @@ abstract material cd/SolidColour
 		}
 	}
 }
+
 abstract material cd/ReflectiveSolid
 {
 	technique
@@ -47,6 +51,7 @@ abstract material cd/ReflectiveSolid
 		}
 	}
 }
+
 abstract material cd/Reflective
 {
 	technique
@@ -73,6 +78,24 @@ abstract material cd/Reflective
 	}
 }
 
+abstract material cd/Skybox
+{
+	technique
+	{
+		pass decal
+		{
+			lighting off
+			depth_write off
+
+			texture_unit panels
+			{
+				cubic_texture $cube_map separateUV
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
 
 // Base material for stencil shadowing.
 abstract material receiver/stencil
@@ -88,6 +111,7 @@ abstract material receiver/stencil
 		}
 	}
 }
+
 abstract material leaf_receiver/stencil
 {
     transparency_casts_shadows off

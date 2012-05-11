@@ -273,9 +273,6 @@ void ClientGraphics::createScene (void)
     setupParticleSystem();
     setupArenaNodes();
 
-    // Setup the arena (this needs to be moved)
-    //loadArena(FOREST_ARENA);
-
     // Setup the GUI.
     setupGUI();
 

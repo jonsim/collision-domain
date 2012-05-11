@@ -1,0 +1,16 @@
+import cd/Skybox from "cdBaseMaterials.material"
+
+material arena1_skybox : cd/Skybox
+{
+    set $cube_map arena1_skybox.jpg
+}
+
+material arena2_skybox : cd/Skybox
+{
+    set $cube_map arena2_skybox.jpg
+}
+
+material arena3_skybox : cd/Skybox
+{
+    set $cube_map arena3_skybox.jpg
+}

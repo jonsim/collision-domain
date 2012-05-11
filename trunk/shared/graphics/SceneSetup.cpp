@@ -360,7 +360,15 @@ void SceneSetup::loadArenaGraphics (ArenaID aid)
     }
     else
     {
-        // No props for the quarry because it is weak.
+        Ogre::SceneNode* propsNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PropsNode");
+        GameCore::mPhysicsCore->auto_scale_scenenode(propsNode);
+        Ogre::Entity* propsEntity = GameCore::mSceneMgr->createEntity("PropsEntity", "arena3_props.mesh");
+#if SHADOW_METHOD == 1
+        propsEntity->setCastShadows(false);
+#else
+        propsEntity->setCastShadows(true);
+#endif
+        propsNode->attachObject(propsEntity);
     }
 }
 
@@ -385,7 +393,8 @@ void SceneSetup::unloadArenaGraphics (ArenaID aid)
     }
     else
     {
-    // No props for the quarry because it is weak.
+        GameCore::mSceneMgr->destroyEntity("PropsEntity");
+        GameCore::mSceneMgr->destroySceneNode("PropsNode");
     }
 }
 
@@ -423,60 +432,59 @@ void SceneSetup::loadArenaLighting (ArenaID aid)
     float sf; // scaling factor
 
     // Set lighting constants
-    if (aid == COLOSSEUM_ARENA)    // Morning
+    if (aid == COLOSSEUM_ARENA)
     {
         sunRotation = -170;
-        sunPitch = 18;
-        sunBrightness[0] = 251;
-        sunBrightness[1] = 215;
-        sunBrightness[2] = 140;
-        sunBrightness[3] = 800;
-        sunSpecular[0] = 251;
-        sunSpecular[1] = 215;
-        sunSpecular[2] = 140;
+        sunPitch = 60;
+        sunBrightness[0] = 233;
+        sunBrightness[1] = 225;
+        sunBrightness[2] = 201;
+        sunBrightness[3] = 700;
+        sunSpecular[0] = 233;
+        sunSpecular[1] = 225;
+        sunSpecular[2] = 201;
         sunSpecular[3] = 400;
-        sunAmbience[0] = 143;
-        sunAmbience[1] = 176;
-        sunAmbience[2] = 214;
-        sunAmbience[3] = 300;
-        skyBoxMap = "Examples/MorningSkyBox";
+        sunAmbience[0] = 241;
+        sunAmbience[1] = 228;
+        sunAmbience[2] = 190;
+        sunAmbience[3] = 500;
+        skyBoxMap = "arena1_skybox";
     }
-    else if (aid == FOREST_ARENA) // Noon
+    else if (aid == FOREST_ARENA)
     {
         sunRotation = 43;
-        sunPitch = 57;
-        sunBrightness[0] = 242;
-        sunBrightness[1] = 224;
-        sunBrightness[2] = 183;
-        sunBrightness[3] = 1000;
-        sunSpecular[0] = 242;
-        sunSpecular[1] = 224;
-        sunSpecular[2] = 183;
-        sunSpecular[3] = 425;
-        sunAmbience[0] = 105;
-        sunAmbience[1] = 150;
-        sunAmbience[2] = 186;
-        sunAmbience[3] = 800;
-        skyBoxMap = "Examples/CloudyNoonSkyBox";
+        sunPitch = 45;
+        sunBrightness[0] = 255;
+        sunBrightness[1] = 232;
+        sunBrightness[2] = 208;
+        sunBrightness[3] = 650;
+        sunSpecular[0] = 255;
+        sunSpecular[1] = 232;
+        sunSpecular[2] = 208;
+        sunSpecular[3] = 300;
+        sunAmbience[0] = 183;
+        sunAmbience[1] = 201;
+        sunAmbience[2] = 206;
+        sunAmbience[3] = 400;
+        skyBoxMap = "arena2_skybox";
     }
     else // Quarry
     {
-        // Stormy
         sunRotation = -55;
-        sunPitch = 60;
-        sunBrightness[0] = 240;
-        sunBrightness[1] = 252;
-        sunBrightness[2] = 255;
-        sunBrightness[3] = 200;
-        sunSpecular[0] = 240;
-        sunSpecular[1] = 252;
+        sunPitch = 35;
+        sunBrightness[0] = 255;
+        sunBrightness[1] = 255;
+        sunBrightness[2] = 249;
+        sunBrightness[3] = 550;
+        sunSpecular[0] = 255;
+        sunSpecular[1] = 255;
         sunSpecular[2] = 255;
-        sunSpecular[3] = 100;
-        sunAmbience[0] = 146;
-        sunAmbience[1] = 149;
-        sunAmbience[2] = 155;
-        sunAmbience[3] = 300;
-        skyBoxMap = "Examples/StormySkyBox";
+        sunSpecular[3] = 250;
+        sunAmbience[0] = 172;
+        sunAmbience[1] = 196;
+        sunAmbience[2] = 204;
+        sunAmbience[3] = 200;
+        skyBoxMap = "arena3_skybox";
     }
     
     // Setup the lighting colours
