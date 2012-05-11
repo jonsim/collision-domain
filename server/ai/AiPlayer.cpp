@@ -75,7 +75,7 @@ void AiPlayer::isStuck()
         //In here we've decide we're stuck
         StringStream tmpSS;
         tmpSS << mName << " player stuck\n";
-        OutputDebugString(tmpSS.str().c_str());
+        //OutputDebugString(tmpSS.str().c_str());
         //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
         //GameCore::mGui->outputToConsole("Ai Player stuck!\n");
         this->stuckMode = 1;
@@ -96,7 +96,7 @@ void AiPlayer::updateStuckDetection()
     StringStream tmpSS;
     tmpSS << mName << " change: " << change << "\n";
     //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
-    OutputDebugString(tmpSS.str().c_str());
+    //OutputDebugString(tmpSS.str().c_str());
     if( change < NOTABLE_CHANGE_RATIO )
     {
         timeSinceNotableChange++;
@@ -149,9 +149,11 @@ void AiPlayer::Update(double timeSinceLastFrame)
                 timeInStuckMode = 0;
                 mPlayer->getCar()->accelInputTick(true,false,false,timeSinceLastFrame);
                 
+                /*
                 StringStream tmpSS;
                 tmpSS << "Taking " << mName << " out of stuck mode\n";
                 OutputDebugString(tmpSS.str().c_str());
+                */
 
                 stuckMode = 2;
             }
