@@ -17,7 +17,7 @@
 class SmallCar : public Car
 {
 public:
-    SmallCar(int uniqueCarID, TeamID tid);
+    SmallCar(int uniqueCarID, TeamID tid, ArenaID aid);
     virtual ~SmallCar(void);
     static void createCollisionShapes();
 
@@ -25,6 +25,7 @@ public:
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (TeamID tid);
+    virtual void updateArena (ArenaID aid);
     virtual void loadDestroyedModel (void);
 
     virtual void makeBitsFallOff();
@@ -33,7 +34,7 @@ public:
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(TeamID tid);
+    void initGraphics(TeamID tid, ArenaID aid);
     void initBody(Ogre::Vector3 carPosition);
     void initWheels();
     

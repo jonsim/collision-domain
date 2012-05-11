@@ -42,7 +42,7 @@ class Player
 public:
     Player (void);
     ~Player (void);
-    void createPlayer (CarType carType, TeamID tid);
+    void createPlayer (CarType carType, TeamID tid, ArenaID aid);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame, float targetPhysicsFrameRate);
     Car* getCar (void);
     void delCar() { if( mCar ) { delete mCar; mCar = NULL; } }

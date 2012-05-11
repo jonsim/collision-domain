@@ -16,7 +16,7 @@
 class TruckCar : public Car
 {
 public:
-    TruckCar(int uniqueCarID, TeamID tid);
+    TruckCar(int uniqueCarID, TeamID tid, ArenaID aid);
     virtual ~TruckCar(void);
     static void createCollisionShapes();
 
@@ -24,6 +24,7 @@ public:
     void playCarHorn();
     void louderLocalSounds();
     virtual void updateTeam (TeamID tid);
+    virtual void updateArena (ArenaID aid);
     virtual void loadDestroyedModel (void);
     void startEngineSound();
 
@@ -32,7 +33,7 @@ public:
 private:
     void initTuning();
     void initNodes();
-    void initGraphics(TeamID tid);
+    void initGraphics(TeamID tid, ArenaID aid);
     void initBody(Ogre::Vector3 carPosition);
     void initDoors( btTransform& chassisShift );
     void initWheels();

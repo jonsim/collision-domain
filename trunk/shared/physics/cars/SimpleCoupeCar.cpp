@@ -125,8 +125,8 @@ void SimpleCoupeCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
-    : Car(uniqueCarID), mHasLocalSounds(false)
+SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid, ArenaID aid) : Car(uniqueCarID),
+                                                                           mHasLocalSounds(false)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -135,7 +135,7 @@ SimpleCoupeCar::SimpleCoupeCar(int uniqueCarID, TeamID tid)
     initTuning();
     initNodes();
     #ifdef COLLISION_DOMAIN_CLIENT
-        initGraphics(tid);
+        initGraphics(tid, aid);
     #endif
     initBody(carPosition);
     initWheels();
@@ -316,7 +316,7 @@ void SimpleCoupeCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SimpleCoupeCar::initGraphics(TeamID tid)
+void SimpleCoupeCar::initGraphics(TeamID tid, ArenaID aid)
 {
     // Load the meshes.
 	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
@@ -328,13 +328,10 @@ void SimpleCoupeCar::initGraphics(TeamID tid)
     createGeometry("UnIqUe_BangerRRDoor",  "banger_rrdoor.mesh",  mRRDoorNode,  true);
     createGeometry("UnIqUe_BangerFBumper", "banger_fbumper.mesh", mFBumperNode, true);
     createGeometry("UnIqUe_BangerRBumper", "banger_rbumper.mesh", mRBumperNode, true);
-    createGeometry("CarEntity_FLWheel", "banger_lwheel.mesh",     mFLWheelNode, false);
-    createGeometry("CarEntity_FRWheel", "banger_rwheel.mesh",     mFRWheelNode, false);
-    createGeometry("CarEntity_RLWheel", "banger_lwheel.mesh",     mRLWheelNode, false);
-    createGeometry("CarEntity_RRWheel", "banger_rwheel.mesh",     mRRWheelNode, false);
-    
-    // Update the skin based on the team
-    updateTeam(tid);
+    createGeometry("CarEntity_FLWheel",    "banger_lwheel.mesh",  mFLWheelNode, false);
+    createGeometry("CarEntity_FRWheel",    "banger_rwheel.mesh",  mFRWheelNode, false);
+    createGeometry("CarEntity_RLWheel",    "banger_lwheel.mesh",  mRLWheelNode, false);
+    createGeometry("CarEntity_RRWheel",    "banger_rwheel.mesh",  mRRWheelNode, false);
 
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
@@ -347,6 +344,10 @@ void SimpleCoupeCar::initGraphics(TeamID tid)
     mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.8f, 0.2f,  1.6f));  // FR
     mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.8f, 0.2f, -1.6f));  // RL
     mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.8f, 0.2f, -1.6f));  // RR
+    
+    // Update the skin based on the team
+    updateTeam(tid);
+    updateArena(aid);
 
     // The variables which aren't yet to be used <- what the hell are these?
     mCamArmNode  = NULL;
@@ -400,6 +401,25 @@ void SimpleCoupeCar::updateTeam (TeamID tid)
     default:
         break;
     }
+}
+
+
+void SimpleCoupeCar::updateArena (ArenaID aid)
+{
+    Ogre::ColourValue dustColour;
+    unsigned char i;
+
+    // Load data depending on the current arena.
+    if (aid == COLOSSEUM_ARENA)
+        dustColour = Ogre::ColourValue(1.000f, 1.000f, 1.000f, 0.8f);
+    else if (aid == FOREST_ARENA)
+        dustColour = Ogre::ColourValue(0.663f, 0.525f, 0.439f, 1.0f);
+    else // quarry
+        dustColour = Ogre::ColourValue(0.500f, 0.500f, 0.680f, 1.0f);
+
+    // Update the dust emitter.
+    for (i = 0; i < 4; i++)
+        mDustSystem->getEmitter(i)->setColour(dustColour);
 }
 
 

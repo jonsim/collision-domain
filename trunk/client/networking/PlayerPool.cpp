@@ -130,9 +130,12 @@ void PlayerPool::frameEvent( const float timeSinceLastFrame )
         // Since we don't have access to other player's input we won't do this for now.
         //mPlayers[i]->updateGlobalGraphics( mPlayers[i]->newInput, timeSinceLastFrame );
 		// TODO: add timestamps to snapshots
+        
+        mPlayers[i]->updateGlobalGraphics(timeSinceLastFrame);
 	}
 
     //processPlayer( getLocalPlayer() );
+    //getLocalPlayer()->updateGlobalGraphics(timeSinceLastFrame);
 }
 
 void PlayerPool::processPlayer( Player *pPlayer )

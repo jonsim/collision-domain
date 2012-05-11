@@ -438,7 +438,7 @@ void NetworkCore::sendPlayerSpawn( Player *pPlayer )
     unsigned char packetid;
     RakNet::BitStream bsSpawn;
 
-    pPlayer->createPlayer( (CarType) pPlayer->getCarType(), (TeamID) pPlayer->getTeam() );
+    pPlayer->createPlayer( (CarType) pPlayer->getCarType(), (TeamID) pPlayer->getTeam(), (ArenaID) GameCore::mGameplay->getArenaID() );
     GameCore::mGui->outputToConsole( "Player '%s' spawned.\n", pPlayer->getNickname() );
 
 	packetid = ID_SPAWN_SUCCESS;

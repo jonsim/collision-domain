@@ -121,7 +121,7 @@ void NetworkCore::frameEvent(InputState *inputSnapshot)
 		{
             case ID_UNCONNECTED_PONG:
             {
-                char szSeed[32];
+                //char szSeed[32];
                 m_szHost = strdup( pkt->systemAddress.ToString() );
                 SERVER_INFO_DATA serverInfo;
                 RakNet::TimeMS time;
@@ -386,7 +386,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 	    if( playerid == GameCore::mPlayerPool->getLocalPlayerID() )
 	    {
 		    pPlayer = GameCore::mPlayerPool->getLocalPlayer();
-		    pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
+            pPlayer->createPlayer( iCarType, pPlayer->getTeam(), GameCore::mGameplay->getArenaID() );
             pPlayer->attachCamera( GameCore::mClientGraphics->mCamera );
             ClientHooks::localPlayerNowInArena(pPlayer);
 	    }
@@ -395,7 +395,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 		    pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
 		    if( pPlayer != NULL )
 		    {
-			    pPlayer->createPlayer( iCarType, pPlayer->getTeam() );
+                pPlayer->createPlayer( iCarType, pPlayer->getTeam(), GameCore::mGameplay->getArenaID() );
                 ClientHooks::nonLocalPlayerNowInArena(pPlayer);
 		    }
 		    else

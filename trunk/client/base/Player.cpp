@@ -111,7 +111,7 @@ void Player::setNickname (char *szNick)
 /// @param  t   The car model to load as the player object.
 /// @param  s   The texture to apply to the car model.
 /// @param  physicsCore   The class containing the physics world.
-void Player::createPlayer (CarType carType, TeamID tid)
+void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 {
     if( mCar )
         delCar();
@@ -121,13 +121,13 @@ void Player::createPlayer (CarType carType, TeamID tid)
     switch (carType)
     {
     case CAR_BANGER:
-        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid);
+        mCar = (Car*) new SimpleCoupeCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
         break;
     case CAR_SMALL:
-        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid);
+        mCar = (Car*) new SmallCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
         break;
     case CAR_TRUCK:
-        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid);
+        mCar = (Car*) new TruckCar(GameCore::mPhysicsCore->getUniqueEntityID(), tid, aid);
         break;
     default:
         throw Ogre::Exception::ERR_INVALIDPARAMS;
@@ -163,17 +163,21 @@ void Player::createPlayer (CarType carType, TeamID tid)
             mNametag->setCastShadows( false );
 
             // Set nametag colour according to team
+#ifdef TEAM_COLOURED_NAMEPLATES
             switch( mTeam )
             {
-            /*case BLUE_TEAM:
+            case BLUE_TEAM:
                 mNametag->setColor( Ogre::ColourValue::Blue );
                 break;
             case RED_TEAM:
                 mNametag->setColor( Ogre::ColourValue::Red );
-                break;*/
+                break;
             default:
                 mNametag->setColor( Ogre::ColourValue::White );
             }
+#else
+            mNametag->setColor( Ogre::ColourValue::White );
+#endif
         }
 
         mFirstLaunch = false;
@@ -563,9 +567,10 @@ void Player::updateLocalGraphics (void)
 
 /// @brief  Updates graphics for all players (called individually for each player in player pool), contains graphical
 ///         effects all players will have.
-void Player::updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame)
+void Player::updateGlobalGraphics (Ogre::Real secondsSinceLastFrame)
 {
-    mCar->updateParticleSystems(isForward, secondsSinceLastFrame);
+    if (mCar != NULL)
+        mCar->updateParticleSystems(secondsSinceLastFrame);
 }
 
 /// @brief Returns the camera current yawing around the player.

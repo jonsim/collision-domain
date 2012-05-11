@@ -385,18 +385,18 @@ void Car::updateRPM()
 #endif
 }
 
-void Car::updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame)
+void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame)
 {
 	static float oldRPM = 0;
 
 	// Calculate the new exhaust emission rate (from engine RPM).
 	float exhaustRate = 0;
-	if (isForward)
-	{
-		float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
-		if (dRdT > 1300)
-			exhaustRate = (mEngineRPM / mRevLimit) * 1000;
-	}
+	//if (isForward)
+	//{
+	float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
+	if (dRdT > 1300)
+		exhaustRate = (mEngineRPM / mRevLimit) * 250;
+	//}
 	oldRPM = mEngineRPM;
 
     // Calculate the new dust emission rate (from wheel slip/skid).

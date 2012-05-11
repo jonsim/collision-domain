@@ -57,6 +57,7 @@ public:
     void triggerCrashSoundAt(Ogre::Vector3 location, float intensity);
 
     virtual void updateTeam (TeamID tid) = 0;
+    virtual void updateArena (ArenaID aid) = 0;
     virtual void loadDestroyedModel (void) = 0;
     virtual void makeBitsFallOff() = 0;
 
@@ -88,7 +89,7 @@ public:
 #else
 	virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3 offset );
 #endif
-    virtual void updateParticleSystems(bool isForward, Ogre::Real secondsSinceLastFrame);
+    virtual void updateParticleSystems(Ogre::Real secondsSinceLastFrame);
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();

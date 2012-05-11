@@ -132,8 +132,8 @@ void SmallCar::initTuning()
 /// @param  sceneMgr     The Ogre graphics world.
 /// @param  world        The bullet physics world.
 /// @param  uniqueCarID  A unique ID for the car so that generated nodes do not have (forbidden) name collisions.
-SmallCar::SmallCar(int uniqueCarID, TeamID tid)
-    : Car(uniqueCarID), mHasLocalSounds(false)
+SmallCar::SmallCar(int uniqueCarID, TeamID tid, ArenaID aid) : Car(uniqueCarID),
+                                                               mHasLocalSounds(false)
 {
     mUniqueCarID = uniqueCarID;
     
@@ -142,7 +142,7 @@ SmallCar::SmallCar(int uniqueCarID, TeamID tid)
     initTuning();
     initNodes();
 #ifdef COLLISION_DOMAIN_CLIENT
-    initGraphics(tid);
+    initGraphics(tid, aid);
 #endif
     initBody(carPosition);
     initWheels();
@@ -320,7 +320,7 @@ void SmallCar::initNodes()
 
 
 /// @brief  Loads the car parts' meshes and attaches them to the (already initialised) nodes.
-void SmallCar::initGraphics(TeamID tid)
+void SmallCar::initGraphics(TeamID tid, ArenaID aid)
 {
     // Load the small car meshes.
 	// true means it is deformable, therefore the unique entity name (defined in graphics code) needs to
@@ -337,9 +337,6 @@ void SmallCar::initGraphics(TeamID tid)
     createGeometry("CarEntity_RLWheel",      "small_car_lwheel.mesh",     mRLWheelNode,    false);
     createGeometry("CarEntity_RRWheel",      "small_car_rwheel.mesh",     mRRWheelNode,    false);
     
-    // Update the skin based on the team
-    updateTeam(tid);
-    
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
 	mBodyNode->attachObject(mExhaustSystem);
@@ -351,6 +348,10 @@ void SmallCar::initGraphics(TeamID tid)
     mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.6f, 0.2f,  1.1f));  // FR
     mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.6f, 0.2f, -1.1f));  // RL
     mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.6f, 0.2f, -1.1f));  // RR
+    
+    // Update the skin based on the team
+    updateTeam(tid);
+    updateArena(aid);
 
     // The variables which aren't yet to be used <- what the hell are these?
     mCamArmNode  = NULL;
@@ -398,6 +399,25 @@ void SmallCar::updateTeam (TeamID tid)
     default:
         break;
     }
+}
+
+
+void SmallCar::updateArena (ArenaID aid)
+{
+    Ogre::ColourValue dustColour;
+    unsigned char i;
+
+    // Load data depending on the current arena.
+    if (aid == COLOSSEUM_ARENA)
+        dustColour = Ogre::ColourValue(1.000f, 1.000f, 1.000f, 0.8f);
+    else if (aid == FOREST_ARENA)
+        dustColour = Ogre::ColourValue(0.663f, 0.525f, 0.439f, 1.0f);
+    else // quarry
+        dustColour = Ogre::ColourValue(0.500f, 0.500f, 0.680f, 1.0f);
+
+    // Update the dust emitter.
+    for (i = 0; i < 4; i++)
+        mDustSystem->getEmitter(i)->setColour(dustColour);
 }
 
 
