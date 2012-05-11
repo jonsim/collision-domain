@@ -527,12 +527,20 @@ void ClientGraphics::updateParticleSystems (void)
 /// @param  planeOffset The offset in the y axis of the plane for the shrapnel to collide with from the shrapnel's origin provided by 
 ///                     the location parameter. This value should be negative.
 /// @param  planeNormal The normal of the plane with which the shrapnel is to collide.
-void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity, float planeOffset, Ogre::Vector3 planeNormal)
+void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity, float maxShrapnelVelocity, float planeOffset, Ogre::Vector3 planeNormal)
 {
     // First create the particle system
-    Ogre::ParticleSystem* shrapnelSystem = GameCore::mSceneMgr->createParticleSystem(
-                                             "ShrapnelSystem" + boost::lexical_cast<std::string>(GameCore::mPhysicsCore->getUniqueEntityID()),
-                                             "CollisionDomain/Shrapnel");
+    int uid = GameCore::mPhysicsCore->getUniqueEntityID();
+    Ogre::ParticleSystem* shrapnelSystem = GameCore::mSceneMgr->createParticleSystem("ShrapnelSystem" + boost::lexical_cast<std::string>(uid),
+                                                                                     "CollisionDomain/Shrapnel");
+    Ogre::ParticleSystem* debrisSystem   = GameCore::mSceneMgr->createParticleSystem("ShrapnelDebrisSystem" + boost::lexical_cast<std::string>(uid),
+                                                                                     "CollisionDomain/ShrapnelDebris");
+
+    // Configure the debris emitter
+    Ogre::ParticleEmitter* debrisEmitter = debrisSystem->getEmitter(0);
+    debrisEmitter->setPosition(location);
+    debrisEmitter->setEmissionRate(meanShrapnelQuantity * 2);
+    debrisEmitter->setMaxParticleVelocity(maxShrapnelVelocity);
 
     // Configure the shrapnel emitter
     Ogre::ParticleEmitter* shrapnelEmitter = shrapnelSystem->getEmitter(0);
@@ -542,6 +550,7 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     else if (shrapnelTeam == RED_TEAM)
         shrapnelEmitter->setColour(Ogre::ColourValue(0.376f, 0.125f, 0.125f));
     shrapnelEmitter->setEmissionRate(meanShrapnelQuantity * 10);
+    shrapnelEmitter->setMaxParticleVelocity(maxShrapnelVelocity);
 
     // Add the shrapnel plane with which it collides.
     // Calculate the plane's properties and convert them to string representations.
@@ -555,10 +564,15 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     Ogre::ParticleAffector* planeAffector = shrapnelSystem->addAffector("DeflectorPlane");
     planeAffector->setParameter("plane_point",  plane_point);
     planeAffector->setParameter("plane_normal", plane_normal);
-    planeAffector->setParameter("bounce", "0.1");
+    planeAffector->setParameter("bounce", "0.15");
     
+    // Add the systems to the queue (so that they can be removed later).
     mShrapnelSystems.push(shrapnelSystem);
+    mShrapnelSystems.push(debrisSystem);
+
+    // Add the systems to the scene (so that they can be displayed).
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(shrapnelSystem);
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(debrisSystem);
 }
 
 

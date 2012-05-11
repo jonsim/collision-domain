@@ -134,8 +134,6 @@ private:
 #endif
 
     // Current arena
-    GameMode oldOldRound;
-    ArenaID oldOldArenaID;
     ArenaID                     mArenaID;
 };
 
