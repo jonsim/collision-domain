@@ -13,6 +13,10 @@ class SteeringBehaviour;
 class Player;
 enum CarType;
 
+#define NOTABLE_CHANGE_RATIO 10.0f
+#define TIME_BEFORE_STUCK 100
+#define TIME_BEFORE_UNSTUCK 100
+
 enum level
 {
 	easy,
@@ -68,7 +72,14 @@ private:
 	level difficulty;
 
 
-
+    //Stuck detection
+    void isStuck();
+    void updateStuckDetection();
+    Vector3 oldPosition;
+    int timeSinceNotableChange; // This is the number of cycles since a notable change in positino
+    int stuckMode;//0 = No, 1 = Go back, 2= Go Back to normal
+    int timeInStuckMode; 
+    int timeInChangeOver;
 };
 
 #endif

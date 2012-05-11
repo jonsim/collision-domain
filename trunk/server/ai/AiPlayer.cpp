@@ -35,6 +35,11 @@ AiPlayer::AiPlayer(string name, Ogre::Vector3 startPos, Ogre::SceneManager* scen
 	direction = turn = 0;
 	targetDistance = 1000000.0;
 
+    //Used for stuck detection
+    timeSinceNotableChange = 0;
+    oldPosition = Vector3(0.0f);
+    stuckMode = 0;
+    timeInChangeOver = 0;
 }
 
 void AiPlayer::Spawn()
@@ -62,8 +67,45 @@ void AiPlayer::CreateFeelers()
 	mFeelers[2] = pos + range/2.0f * heading.crossProduct(-heading.perpendicular());
 }
 
+void AiPlayer::isStuck()
+{
+    
+    if(timeSinceNotableChange >= TIME_BEFORE_STUCK)
+    {
+        //In here we've decide we're stuck
+        StringStream tmpSS;
+        tmpSS << mName << " player stuck\n";
+        OutputDebugString(tmpSS.str().c_str());
+        //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
+        //GameCore::mGui->outputToConsole("Ai Player stuck!\n");
+        this->stuckMode = 1;
+        this->timeInStuckMode = 0; // Lets get going
+    }
+
+}
+
+void AiPlayer::updateStuckDetection()
+{
+
+    Vector3 curPos = GetPos();
+    curPos.y = 0.0f;
+    oldPosition.y = 0.0f;
+    Ogre::Real change = curPos.distance(oldPosition);
+
+    
+    StringStream tmpSS;
+    tmpSS << mName << " change: " << change << "\n";
+    //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
+    OutputDebugString(tmpSS.str().c_str());
+    if( change < NOTABLE_CHANGE_RATIO )
+    {
+        timeSinceNotableChange++;
+    }
+}
+
 void AiPlayer::Update(double timeSinceLastFrame)
 {
+
     if( mPlayer->getPlayerState() == PLAYER_STATE_TEAM_SEL || mPlayer->getPlayerState() == PLAYER_STATE_SPAWN_SEL )
     {
         Spawn();
@@ -76,6 +118,11 @@ void AiPlayer::Update(double timeSinceLastFrame)
     if( !mPlayer->getCar() )
         return;
 
+
+    //updateStuckDetection(); // Update the stuck detection stuff
+    //isStuck();
+
+
 	//get the steering force
 	Ogre::Vector3 targetPos = mSteeringBehaviour->Calculate();
 	//get angle between current heading and desired heading
@@ -87,6 +134,45 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
 	if(mPlayer->getAlive())
 	{
+        //This is stuck stuff
+        //updateStuckDetection(); // Update the stuck detection stuff
+        //isStuck();
+        
+        if(this->stuckMode == 1)
+        {
+            // Go Backwards
+            mPlayer->getCar()->accelInputTick(false,true,false,timeSinceLastFrame);
+            timeInStuckMode++;
+            if(timeInStuckMode > TIME_BEFORE_UNSTUCK)
+            {
+                this->timeInStuckMode = false;
+                timeInStuckMode = 0;
+                mPlayer->getCar()->accelInputTick(true,false,false,timeSinceLastFrame);
+                
+                StringStream tmpSS;
+                tmpSS << "Taking " << mName << " out of stuck mode\n";
+                OutputDebugString(tmpSS.str().c_str());
+
+                stuckMode = 2;
+            }
+            return;
+        }
+        else if(stuckMode == 2)
+        {
+            timeInChangeOver++;
+            if(timeInChangeOver > 10000)
+            {
+                stuckMode = 0;
+                timeInChangeOver = 0;
+            }
+        }
+        else
+        {
+            //This is stuck stuff
+            updateStuckDetection(); // Update the stuck detection stuff
+            isStuck();
+        }
+        
 		//first check if were about to crash into a player on our own team
 		/*if(GameCore::mGameplay->getGameMode() != FFA_MODE)
 		{
