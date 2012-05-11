@@ -29,10 +29,10 @@ public:
     void startEngineSound();
 
     virtual void makeBitsFallOff();
-    virtual void TruckCar::removeLDoor();
-    virtual void TruckCar::removeRDoor();
-    virtual void TruckCar::removeRBumper();
-    virtual void TruckCar::removeCarPart(unsigned int part);
+    virtual void removeLDoor();
+    virtual void removeRDoor();
+    virtual void removeRBumper();
+    virtual void removeCarPart(unsigned int part);
 
 private:
     void initTuning();

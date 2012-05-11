@@ -9,12 +9,7 @@
  
 #include "Ogre.h"
 #include "OgreFontManager.h"
-
-#if _WIN32
-#include "movableText.h"
-#else
 #include "MovableText.h"
-#endif
  
 using namespace Ogre;
  
