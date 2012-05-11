@@ -19,8 +19,6 @@ Gameplay::Gameplay() : mGameActive(false)
     mSB = new ScoreBoard();
 
     roundNumber = -1;
-    this->setGameMode(SELECTED_GAME); //Set it to the selecte game, change at top of gampleay.h
-    //Set initialised variables
     wtInitalised = false;    
 }
 
@@ -50,77 +48,86 @@ bool Gameplay::hasWon(TeamID teamID)
 	return false;
 }
 
+void Gameplay::generateGameOrder (void)
+{
+#ifdef COLLISION_DOMAIN_SERVER
+    char chosenOrderString[64];
+
+    // Generate games
+    sprintf(chosenOrderString, "Gamemode order: ");
+    for (int i = 0; i < 3; i++)
+    {
+        bool exitCondition = false;
+        int rInt;
+        GameMode rMode;
+
+        while (!exitCondition)
+        {
+            rInt  = rand() % 3;
+            rMode = (rInt == 0) ? FFA_MODE : ((rInt == 1) ? TDM_MODE : VIP_MODE);
+            exitCondition = true;
+            for (int j = 0; j < i; j++)
+                if (mGamemodeOrder[j] == rMode)
+                    exitCondition = false;
+        }
+        mGamemodeOrder[i] = rMode;
+        if (rMode == FFA_MODE)
+            sprintf(chosenOrderString, "%s Free for All,", chosenOrderString);
+        else if (rMode == TDM_MODE)
+            sprintf(chosenOrderString, "%s Team Deathmatch,", chosenOrderString);
+        else
+            sprintf(chosenOrderString, "%s VIP Mode,", chosenOrderString);
+    }
+    chosenOrderString[strlen(chosenOrderString)-1] = '\n';
+    GameCore::mGui->outputToConsole(chosenOrderString);
+
+
+    // Generate arenas
+    sprintf(chosenOrderString, "Arena order: ");
+    for (int i = 0; i < 3; i++)
+    {
+        bool exitCondition = false;
+        int rInt;
+        ArenaID rArena;
+        while (!exitCondition)
+        {
+            rInt  = rand() % 3;
+            rArena = (rInt == 0) ? COLOSSEUM_ARENA : ((rInt == 1) ? FOREST_ARENA : QUARRY_ARENA);
+            exitCondition = true;
+            for (int j = 0; j < i; j++)
+                if (mArenaOrder[j] == rArena)
+                    exitCondition = false;
+        }
+        mArenaOrder[i] = rArena;
+        if (rArena == COLOSSEUM_ARENA)
+            sprintf(chosenOrderString, "%s Colosseum,", chosenOrderString);
+        else if (rArena == FOREST_ARENA)
+            sprintf(chosenOrderString, "%s Forest,", chosenOrderString);
+        else
+            sprintf(chosenOrderString, "%s Quarry,", chosenOrderString);
+    }
+    chosenOrderString[strlen(chosenOrderString)-1] = '\n';
+    GameCore::mGui->outputToConsole(chosenOrderString);
+#endif
+}
+
 void Gameplay::cycleGame( bool unload )
 {
 #ifdef COLLISION_DOMAIN_SERVER
-    GameMode oldGameMode = this->getGameMode();
-    GameMode newGameMode;
+    // Next round plz.
+    roundNumber++;
 
-    do
-    {
-        int randomGameChoice = rand()%3;
-        switch(randomGameChoice)
-        {
-            case 0:
-                newGameMode = FFA_MODE;
-                break;
-            case 1:
-                newGameMode = TDM_MODE;
-                break;
-            case 2:
-                newGameMode = VIP_MODE;
-                break;
-        }
-    } while (oldGameMode == newGameMode || this->oldOldRound == newGameMode);
+    // Get the next gamemode.
+    this->setGameMode(mGamemodeOrder[roundNumber]);
     
-    //Set the new random game mode
-    this->oldOldRound = oldGameMode;
-    this->setGameMode(newGameMode);
-    
-    if(newGameMode == FFA_MODE)    
-        GameCore::mGui->outputToConsole("Game Mode: Free For All\n");
-    else if(newGameMode == TDM_MODE)    
-        GameCore::mGui->outputToConsole("Game Mode: Team Death Match\n");
-    else if(newGameMode == VIP_MODE)    
-        GameCore::mGui->outputToConsole("Game Mode: VIP Mode\n");
+    // Get the next arena.
+    if(unload == true && roundNumber > 0)
+        GameCore::mServerGraphics->unloadArena(mArenaOrder[roundNumber-1]);
+    this->setArenaID(mArenaOrder[roundNumber]);
+    GameCore::mServerGraphics->loadArena(mArenaOrder[roundNumber]);
 
-    if(unload == true)
-        GameCore::mServerGraphics->unloadArena(this->getArenaID());
-
-    ArenaID oldArenaID = this->getArenaID();
-    ArenaID newArenaID;
-
-    do
-    {
-        int randomGameChoice = rand()%3;
-        switch(randomGameChoice)
-        {
-            case 0:
-                newArenaID = COLOSSEUM_ARENA;
-                break;
-            case 1:
-                newArenaID = FOREST_ARENA;
-                break;
-            case 2:
-                newArenaID = QUARRY_ARENA;
-                break;
-        }
-    } while (oldArenaID == newArenaID || this->oldOldArenaID == newArenaID);
-    
-    //Set the new random game mode
-    this->oldOldArenaID = oldArenaID;
-    this->setArenaID(newArenaID);
-    
-    if(newArenaID == COLOSSEUM_ARENA)    
-        GameCore::mGui->outputToConsole("Map Chosen: Colosseum\n");
-    else if(newArenaID == FOREST_ARENA)    
-        GameCore::mGui->outputToConsole("Map Chosen: Forest\n");
-    else if(newArenaID == QUARRY_ARENA)    
-        GameCore::mGui->outputToConsole("Map Chosen: Quarry\n");
-
-    GameCore::mServerGraphics->loadArena(newArenaID);
-
-    GameCore::mNetworkCore->sendGameSync(newGameMode, newArenaID);
+    // Sync those bad boiz up
+    GameCore::mNetworkCore->sendGameSync(mGamemodeOrder[roundNumber], mArenaOrder[roundNumber]);
 #endif
 }
 
