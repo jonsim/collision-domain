@@ -47,10 +47,10 @@ public:
     Car* getCar (void);
     void delCar() { if( mCar ) { delete mCar; mCar = NULL; } }
     //void collisionTickCallback (int damage, Player *causedByPlayer);
-#if _WIN32
-	void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer);
+#if _WIN32    
+    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer);
 #else
-	void collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer);
+    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real &damage, unsigned int damageSection, int& crashType, Player *&causedByPlayer);
 #endif
     void applyHealthBonus (void);
         
@@ -107,6 +107,8 @@ public:
 	void revertCamera(void);
 
     PLAYER_DAMAGE_LOC damageLoc;
+    float            rearDamageBoundary;
+    float            frontDamageBoundary;
 
 private:
     const float      cameraRotationConstant;
@@ -118,7 +120,7 @@ private:
     float            damageShareML; 
     float            damageShareTR; 
     float            damageShareBR;  
-    float            damageShareMR;  
+    float            damageShareMR;
 
     float            recalculateDamage(void);
 

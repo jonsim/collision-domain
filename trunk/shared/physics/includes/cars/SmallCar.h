@@ -29,7 +29,12 @@ public:
     virtual void loadDestroyedModel (void);
 
     virtual void makeBitsFallOff();
-    void startEngineSound();
+    virtual void startEngineSound();
+    virtual void SmallCar::removeLDoor();
+    virtual void SmallCar::removeRDoor();
+    virtual void SmallCar::removeRBumper();
+    virtual void SmallCar::removeFBumper();
+    virtual void SmallCar::removeCarPart(unsigned int part);
 
 private:
     void initTuning();

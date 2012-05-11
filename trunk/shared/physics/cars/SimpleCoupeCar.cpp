@@ -520,6 +520,46 @@ void SimpleCoupeCar::initWheels()
 	}
 }
 
+void SimpleCoupeCar::removeFLDoor() {
+    removePiece( mFLDoorNode, mFLDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+}
+void SimpleCoupeCar::removeFRDoor() {
+    removePiece( mFRDoorNode, mFRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+}
+void SimpleCoupeCar::removeRLDoor() {
+    removePiece( mRLDoorNode, mRLDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+}
+void SimpleCoupeCar::removeRRDoor() {
+    removePiece( mRRDoorNode, mRRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+}
+void SimpleCoupeCar::removeRBumper() {
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_BANGER_RBUMPER, btVector3( 0.0f, 0.518f, -2.424f ) );
+}
+void SimpleCoupeCar::removeFBumper() {
+    removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_BANGER_RBUMPER, btVector3( 0.0f, 0.518f, -2.424f ) );
+}
+
+void SimpleCoupeCar::removeCarPart(unsigned int part) {
+    switch(part) {
+        case 0:
+            removeFBumper();
+            break;
+        case 1:
+            removeFBumper();
+            break;
+        case 2:
+            ((float)rand()/RAND_MAX) > 0.5f ? removeFLDoor() : removeFRDoor();
+            break;
+        case 3:
+             ((float)rand()/RAND_MAX) > 0.5f ? removeRLDoor() : removeRRDoor();
+            break;
+        case 4:
+        case 5:
+            removeRBumper();
+            break;
+    }
+}
+
 void SimpleCoupeCar::makeBitsFallOff()
 {
     //mBodyNode->removeChild( "FLDoorNode"  + boost::lexical_cast<std::string>(mUniqueCarID) );

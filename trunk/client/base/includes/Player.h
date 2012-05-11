@@ -157,9 +157,9 @@ public:
         }
     }
 #if _WIN32
-    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer);
+    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer);
 #else
-    void collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer);
+    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real &damage, unsigned int damageSection, int &crashType, Player *&causedByPlayer);
 #endif
     void applyHealthBonus (void);
     void frameEvent(float time);
@@ -216,6 +216,8 @@ public:
 	void cycleCameraView(void);
 
     void angleTest(void);
+    float            rearDamageBoundary;
+    float            frontDamageBoundary;
 
 
 private:
