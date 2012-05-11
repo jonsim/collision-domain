@@ -242,18 +242,23 @@ void Player::angleTest(void) {
 #else
 	void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real &damage, unsigned int damageSection, int &crashType, Player *&causedByPlayer) {
 #endif
-    bool isFront = damageSection == 0 || damageSection == 1;
+    bool isFront = ((damageSection == 0) || (damageSection == 1));
+    TeamID tid = (GameCore::mGameplay->getGameMode() == FFA_MODE) ? NO_TEAM : getTeam();
+    float shrapnelPlaneOffset = (getCarType() == CAR_SMALL) ? -0.75f : ((getCarType() == CAR_BANGER) ? -0.85f : -1.25f);
+    float shrapnelCount    = damage / 5.0f;
+    float shrapnelMaxSpeed = damage / 8.0f;
+
     if(damage > 40.f) getCar()->removeCarPart(damageSection);
     switch(crashType) {
         case 1:
-            GameCore::mClientGraphics->generateSparks(hitPoint, Ogre::Vector3(0,1,0));
+            GameCore::mClientGraphics->generateSparks(hitPoint, Ogre::Vector3(1, 0.6f, 1));
             break;
         case 2:
-            GameCore::mClientGraphics->generateShrapnel(hitPoint, getTeam());
+            GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
             break;
         case 3:
             GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, hitPoint, damage * 0.1, isFront);
-            GameCore::mClientGraphics->generateShrapnel(hitPoint, getTeam());
+            GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
             break;
         default:
             // error

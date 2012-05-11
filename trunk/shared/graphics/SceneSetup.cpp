@@ -152,7 +152,8 @@ void SceneSetup::setupParticleSystem (void)
     mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "20") );
     mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live_min", "1.0") );
     mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live_max", "1.5") );
-    mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "5.0") );
+    //mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "5.0") );
+    mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.5") );
     mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("colour",         "0.9 0.8 0.8 1") );
 
     

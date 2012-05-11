@@ -169,6 +169,25 @@ material CollisionDomain/Shrapnel
 	}
 }
 
+material CollisionDomain/ShrapnelDebris
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend add
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_shrapneldebris.jpg
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
 material CollisionDomain/Streak
 {
     technique

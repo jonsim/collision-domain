@@ -1,10 +1,10 @@
 particle_system CollisionDomain/Spark
 {
 	material        	CollisionDomain/Spark
-	particle_width  	0.1
-	particle_height 	3.0
+	particle_width  	0.075
+	particle_height 	1.500
 	cull_each       	false
-	quota           	105
+	quota           	500
 	billboard_type  	oriented_self
 	billboard_origin    top_center
     
