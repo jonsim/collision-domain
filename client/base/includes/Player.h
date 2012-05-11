@@ -17,6 +17,10 @@
 #include "InputState.h"
 
 
+// Uncomment this definition to colour people's nameplates based on their team.
+//#define TEAM_COLOURED_NAMEPLATES
+
+
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
  *  @brief 	Contains the Player nodes and the related data.
@@ -135,12 +139,12 @@ class Player
 public:
     Player (void);
     ~Player (void);
-    void createPlayer (CarType carType, TeamID tid);
+    void createPlayer (CarType carType, TeamID tid, ArenaID aid);
     void attachCamera (Ogre::Camera* cam);
     void processControlsFrameEvent (InputState *userInput, Ogre::Real secondsSinceLastFrame);
     void updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, float time, GameCamera *gameCamera);
     void updateLocalGraphics (void);
-    void updateGlobalGraphics (bool isForward, Ogre::Real secondsSinceLastFrame);
+    void updateGlobalGraphics (Ogre::Real secondsSinceLastFrame);
 	float getCameraYaw (void);
     Car* getCar (void);
     void delCar()
