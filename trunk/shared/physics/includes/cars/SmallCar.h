@@ -30,11 +30,11 @@ public:
 
     virtual void makeBitsFallOff();
     virtual void startEngineSound();
-    virtual void SmallCar::removeLDoor();
-    virtual void SmallCar::removeRDoor();
-    virtual void SmallCar::removeRBumper();
-    virtual void SmallCar::removeFBumper();
-    virtual void SmallCar::removeCarPart(unsigned int part);
+    virtual void removeLDoor();
+    virtual void removeRDoor();
+    virtual void removeRBumper();
+    virtual void removeFBumper();
+    virtual void removeCarPart(unsigned int part);
 
 private:
     void initTuning();

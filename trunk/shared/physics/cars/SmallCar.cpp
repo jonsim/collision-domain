@@ -536,10 +536,17 @@ void SmallCar::removeFBumper() {
 void SmallCar::removeCarPart(unsigned int part) {
     switch(part) {
         case 0:
-            ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* left headlamp */ 0;
+#if _WIN32
+        ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* left headlamp */ 0;
             break;
         case 1:
             ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* right headlamp */ 0;
+#else
+       ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* left headlamp */ (void)0;
+       	   break;
+       case 1:
+    	   ((float)rand()/RAND_MAX) > 0.5f ? removeFBumper() : /* right headlamp */ (void)0;
+#endif
             break;
         case 2:
             removeLDoor();

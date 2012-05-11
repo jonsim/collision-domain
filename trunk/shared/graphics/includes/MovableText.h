@@ -9,6 +9,7 @@
  
 #ifndef __include_MovableText_H__
 #define __include_MovableText_H__
+
  
 namespace Ogre {
  
