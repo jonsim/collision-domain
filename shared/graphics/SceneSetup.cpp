@@ -15,7 +15,8 @@ SceneSetup::SceneSetup (void) : mWindow(0),
                                 mGfxSettingHDR(1.0f),
                                 mGfxSettingBloom(1.0f),
                                 mGfxSettingRadialBlur(1.0f),
-                                mGfxSettingMotionBlur(1.0f)
+                                mGfxSettingMotionBlur(1.0f),
+                                mArenaBody(NULL)
 {
 }
 
@@ -199,6 +200,7 @@ void SceneSetup::setupArenaNodes (void)
     arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode");
     GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
     GameCore::mPhysicsCore->createCollisionShapes();
+    log( "done the collision shapes" );
 }
 
 void SceneSetup::createArenaCollisionShapes (void)

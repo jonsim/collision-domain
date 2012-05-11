@@ -337,6 +337,10 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
 void NetworkCore::HandlePlayerQuit( RakNet::RakNetGUID playerid, unsigned char reason )
 {
     // Check the player exists first (don't want to send quit twice)
+    Player *pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
+    if( pPlayer )
+        GameCore::mGui->outputToConsole( "Player '%s' disconnected.\n", pPlayer->getNickname() );
+
     if( GameCore::mPlayerPool->delPlayer( playerid ) == false )
         return;
 

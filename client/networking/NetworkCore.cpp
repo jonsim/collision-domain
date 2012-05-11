@@ -277,9 +277,8 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 
     GameCore::mGameplay->setGameMode( gm );
     GameCore::mGameplay->setArenaID( aid );
-
     GameCore::mClientGraphics->loadArena( aid );
-
+    
 	// Request to spawn straight away for now
 	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
