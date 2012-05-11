@@ -455,7 +455,7 @@ void Gameplay::startGame()
         this->setNewVIPs();
     }
     //this->scheduleCountDown();
-	mGameActive = true;
+	//mGameActive = true;
 
 #ifdef COLLISION_DOMAIN_SERVER
     GameCore::mGui->outputToConsole("Game started.\n");
@@ -582,7 +582,11 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     GameCore::mGui->outputToConsole("Five!\n");
                 #endif
 				break;
+            case GO_OT:
+                mGameActive = true;
+                break;
 			case ROUND_OVER_OT:
+                mGameActive = false;
                 //this->cycleGameMode(); //Cycle game mode
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->showForce();
@@ -788,10 +792,12 @@ void Gameplay::scheduleCountDown()
 		InfoItem* threeII = new InfoItem(THREE_OT, 5000, 900);
 		InfoItem* twoII = new InfoItem(TWO_OT, 6000, 900);
 		InfoItem* oneII = new InfoItem(ONE_OT, 7000, 900);
+        InfoItem* goII = new InfoItem(GO_OT,8000,900);
 
 		mInfoItems.push_back(threeII);
 		mInfoItems.push_back(twoII);
 		mInfoItems.push_back(oneII);
+        mInfoItems.push_back(goII);
 
 		//Countdown Timer
 		InfoItem* fiveEII = new InfoItem(FIVE_OT,184000,900);

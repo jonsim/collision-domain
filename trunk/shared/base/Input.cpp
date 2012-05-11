@@ -65,7 +65,7 @@ void Input::capture ()
 InputState* Input::getInputState()
 {
 #ifdef COLLISION_DOMAIN_CLIENT
-	if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() )
+    if( NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible() && GameCore::mGameplay->mGameActive)
 	{
         return new InputState(mKeyboard->isKeyDown(OIS::KC_UP)    || mKeyboard->isKeyDown(OIS::KC_W),
                               mKeyboard->isKeyDown(OIS::KC_DOWN)  || mKeyboard->isKeyDown(OIS::KC_S),
