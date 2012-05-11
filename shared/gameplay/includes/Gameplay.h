@@ -78,6 +78,7 @@ public:
     void                        incrementRoundNumber() { roundNumber++; }
     int                         getRoundNumber() { return roundNumber; }
 
+    void                        generateGameOrder (void);
     void                        cycleGame( bool unload = true );
     void                        handleNewRound();
     Team*						getTeam(TeamID teamID);
@@ -126,11 +127,15 @@ private:
 
     Ogre::OverlayElement        *oleGameMode;
 
-    //Round pick vars
-    GameMode                    oldOldRound;
+#ifdef COLLISION_DOMAIN_SERVER
+    // Randomised game modes and arenas.
+    GameMode                    mGamemodeOrder[3];
+    ArenaID                     mArenaOrder[3];
+#endif
 
-    //Arena pick var
-    ArenaID                     oldOldArenaID;
+    // Current arena
+    GameMode oldOldRound;
+    ArenaID oldOldArenaID;
     ArenaID                     mArenaID;
 };
 

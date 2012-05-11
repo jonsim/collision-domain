@@ -285,6 +285,7 @@ void ServerGraphics::createScene (void)
     // Setup Input
     setupUserInput();
 
+    GameCore::mGameplay->generateGameOrder();
     GameCore::mGameplay->cycleGame( false );
 }
 
