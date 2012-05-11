@@ -132,7 +132,7 @@ void PlayerPool::frameEvent( const float timeSinceLastFrame )
 		// TODO: add timestamps to snapshots
 	}
 
-    processPlayer( getLocalPlayer() );
+    //processPlayer( getLocalPlayer() );
 }
 
 void PlayerPool::processPlayer( Player *pPlayer )

@@ -279,14 +279,13 @@ void ServerGraphics::createScene (void)
     // Setup the scene environment.
     setupArenaNodes();
 
-    // Setup the arena (this needs to be moved)
-    loadArena(FOREST_ARENA);
-
     // Setup the GUI
     setupGUI();
 
     // Setup Input
     setupUserInput();
+
+    GameCore::mGameplay->cycleGame( false );
 }
 
 /// @brief  Loads and sets up the resources required by CEGUI, creates a blank window layer and

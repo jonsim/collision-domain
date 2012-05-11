@@ -11,8 +11,6 @@
 // The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
 #define SHADOW_METHOD 2
 
-
-
 SceneSetup::SceneSetup (void) : mWindow(0),
                                 mGfxSettingHDR(1.0f),
                                 mGfxSettingBloom(1.0f),
@@ -25,9 +23,6 @@ SceneSetup::SceneSetup (void) : mWindow(0),
 SceneSetup::~SceneSetup (void)
 {
 }
-
-
-
 
 
 /***************************************************************************
@@ -203,8 +198,29 @@ void SceneSetup::setupArenaNodes (void)
     // First create the arena node
     arenaNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("ArenaNode");
     GameCore::mPhysicsCore->auto_scale_scenenode(arenaNode);
+    GameCore::mPhysicsCore->createCollisionShapes();
 }
 
+void SceneSetup::createArenaCollisionShapes (void)
+{
+    for( int i = 0; i < ARENA_COUNT; i ++ )
+    {
+        std::string strMesh;
+        strMesh = "arena" + boost::lexical_cast<std::string>(i + 1) + "_collision.mesh";
+
+        Ogre::Entity* collisionEntity = GameCore::mSceneMgr->createEntity(strMesh, strMesh);
+
+        Ogre::Matrix4 collisionScaling(MESH_SCALING_CONSTANT, 0,                     0,                     0,
+                                       0,                     MESH_SCALING_CONSTANT, 0,                     0,
+                                       0,                     0,                     MESH_SCALING_CONSTANT, 0,
+                                       0,                     0,                     0,                     1);
+    
+        BtOgre::StaticMeshToShapeConverter collisionShapeConverter(collisionEntity, collisionScaling);
+        btCollisionShape *collisionShape = collisionShapeConverter.createTrimesh();
+
+        GameCore::mPhysicsCore->setCollisionShape( (PHYS_SHAPE)((int)PHYS_SHAPE_COLOSSEUM + i), collisionShape );
+    }
+}
 
 /// @brief  Loads the given arena.
 /// @param  aid     The ArenaID of the arena to load.
@@ -381,13 +397,8 @@ void SceneSetup::loadArenaPhysics (ArenaID aid)
     // Load the arena node
     Ogre::SceneNode* arenaNode = GameCore::mSceneMgr->getSceneNode("ArenaNode");
 
-    // Construct the collision meshes
-    if (aid == COLOSSEUM_ARENA)
-        GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena1_collision.mesh", MESH_SCALING_CONSTANT);
-    else if (aid == FOREST_ARENA)
-        GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena2_collision.mesh", MESH_SCALING_CONSTANT);
-    else
-        GameCore::mPhysicsCore->attachCollisionMesh(arenaNode, "arena3_collision.mesh", MESH_SCALING_CONSTANT);
+    // Construct the collision body (mArenaBody is filled with a nice, firm, rigid body)
+    mArenaBody = GameCore::mPhysicsCore->createArenaBody(arenaNode, aid);
 }
 
 
@@ -395,7 +406,7 @@ void SceneSetup::loadArenaPhysics (ArenaID aid)
 /// @param  aid The ArenaID of the arena to unload.
 void SceneSetup::unloadArenaPhysics (ArenaID aid)
 {
-    throw "fuck you jamie you suck implement this you piece of shit.";
+    GameCore::mPhysicsCore->removeBody( mArenaBody );
 }
 
 

@@ -32,7 +32,7 @@ public:
     virtual ~PhysicsCore (void);
 	static void auto_scale_scenenode (Ogre::SceneNode* n);
     int getUniqueEntityID (void);
-    void attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionName, float scaling );
+    btRigidBody* createArenaBody( Ogre::SceneNode *targetNode, ArenaID aid );
 
     void stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps, const Ogre::Real fixedTimestep);
     

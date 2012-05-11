@@ -155,36 +155,30 @@ int PhysicsCore::getUniqueEntityID()
 }
 
 
-void PhysicsCore::attachCollisionMesh( Ogre::SceneNode *targetNode, Ogre::String collisionMeshName, float scaling )
+btRigidBody* PhysicsCore::createArenaBody( Ogre::SceneNode *targetNode, ArenaID aid )
 {
-    createCollisionShapes();
-
-    Ogre::Entity* collisionEntity = GameCore::mSceneMgr->createEntity("CollisionMesh" + getUniqueEntityID(), collisionMeshName);
-
-    Ogre::Matrix4 collisionScaling(scaling, 0,       0,       0,
-                                   0,       scaling, 0,       0,
-                                   0,       0,       scaling, 0,
-                                   0,       0,       0,       1);
-    
-    BtOgre::StaticMeshToShapeConverter collisionShapeConverter(collisionEntity, collisionScaling);
-    btCollisionShape *collisionShape = collisionShapeConverter.createTrimesh();
-    
-    mShapes[PHYS_SHAPE_ARENA] = collisionShape;
-
     short collisionGroup = COL_ARENA;
     short collisionMask  = COL_CAR | COL_POWERUP;
 
+    btRigidBody *collisionBody;
+
     BtOgre::RigidBodyState *collisionBodyState = new BtOgre::RigidBodyState( targetNode );
-    btRigidBody *collisionBody = new btRigidBody( 0.0f, collisionBodyState, collisionShape );
+    collisionBody = new btRigidBody( 0.0f, collisionBodyState, mShapes[PHYS_SHAPE_COLOSSEUM + aid] );
     
     mBulletWorld->addRigidBody( collisionBody, collisionGroup, collisionMask );
 
     // push the created objects to the deques
     mBodies.push_back(collisionBody);
+    return collisionBody;
 }
 
 void PhysicsCore::createCollisionShapes()
 {
+#ifdef COLLISION_DOMAIN_SERVER
+    GameCore::mServerGraphics->createArenaCollisionShapes();
+#else
+    GameCore::mClientGraphics->createArenaCollisionShapes();
+#endif
     SimpleCoupeCar::createCollisionShapes();
     SmallCar::createCollisionShapes();
     TruckCar::createCollisionShapes();
@@ -261,7 +255,7 @@ bool PhysicsCore::singleObjectRaytest(const btVector3& rayFrom, const btVector3&
     int numObjects = 1;
 
     btCollisionShape* shapePtr[1];
-    shapePtr[0] = mShapes[PHYS_SHAPE_ARENA];
+    shapePtr[0] = mShapes[PHYS_SHAPE_COLOSSEUM];
 
 
     btTransform transforms[1];
