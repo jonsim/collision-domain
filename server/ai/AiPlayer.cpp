@@ -147,6 +147,9 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			}
 		}
 
+
+        //REMOVED BY ASH ON 11/05/12, works it seems but not great for gameplay
+        /*
 		//get out health our run away if someone is chasing us
 		if(mPlayer->getHP() < 100 && difficulty >= normal)
 		{
@@ -157,6 +160,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 			mSteeringBehaviour->SeekOff();
 			mSteeringBehaviour->SetFleeTarget(fleePlayer);
 		}
+        */
 
 		if(difficulty == hard)
 		{
