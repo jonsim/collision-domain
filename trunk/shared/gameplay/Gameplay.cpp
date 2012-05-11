@@ -221,6 +221,8 @@ bool Gameplay::addPlayer(RakNet::RakNetGUID playerid, TeamID requestedTeam)
 void Gameplay::playerQuit(Player *player)
 {
     TeamID tid = (TeamID) player->getTeam();
+    if( tid == NO_TEAM )
+        return;
     Team *t = getTeam(tid);
 #ifdef COLLISION_DOMAIN_SERVER
     while( t->getVIP() == player )

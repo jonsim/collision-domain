@@ -74,6 +74,8 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     mHealthBg = NULL;
     mNametag = NULL;
 
+    mLastKiller = NULL;
+
     camShakeFrames = 0;
     //OutputDebugString(ss.str().c_str());
 
@@ -147,7 +149,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
             mCar->louderLocalSounds();
             GameCore::mGui->setupDamageDisplay(carType, tid);
         }
-        //else
+        else
         {
             // Create the healthbar
             mHealthbar = mBoards->createBillboard( 0, 2, 0, Ogre::ColourValue::Green );
@@ -210,7 +212,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mNametag );
     }
     else
-        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 10, 0 ) );
+        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, -100, 0 ) );
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;
