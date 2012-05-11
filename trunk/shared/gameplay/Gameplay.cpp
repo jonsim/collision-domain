@@ -1012,7 +1012,7 @@ void Gameplay::calculateRoundScores()
 void Gameplay::forceRoundEnd()
 {
     //Remove all existing round items
-    this->mInfoItems.empty();
+    this->mInfoItems.clear();
 
     //Spawn new round end
 	this->mInfoItems.push_back(new InfoItem(ROUND_OVER_OT,1000,2900));
