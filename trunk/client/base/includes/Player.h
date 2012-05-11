@@ -152,7 +152,11 @@ public:
             mCar = NULL;
         }
     }
+#if _WIN32
     void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, Ogre::Real angle, int crashType, Player *causedByPlayer);
+#else
+    void collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, Ogre::Real& angle, int& crashType, Player *&causedByPlayer);
+#endif
     void applyHealthBonus (void);
     void frameEvent(float time);
     

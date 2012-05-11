@@ -135,7 +135,13 @@ unsigned MeshDeformer::time_seed() {
 }
 
 static unsigned int lineCounter = 0;
-Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager *sm, Ogre::SceneNode* parent, Ogre::Vector3 &start, Ogre::Vector3 &end, Ogre::ColourValue &col) {
+
+#if _WIN32
+    Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager *sm, Ogre::SceneNode* parent, Ogre::Vector3 &start, Ogre::Vector3 &end, Ogre::ColourValue &col)
+#else
+    Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager* sm, Ogre::SceneNode* parent, Ogre::Vector3 start, Ogre::Vector3 end , Ogre::ColourValue col)
+#endif
+{
     std::stringstream ss;
     ss << "LINE" << (lineCounter++);
     Ogre::String n = ss.str().c_str();
@@ -151,6 +157,3 @@ Ogre::ManualObject* MeshDeformer::drawLine(Ogre::SceneManager *sm, Ogre::SceneNo
 	return manual;
 }
 
-MeshDeformer::~MeshDeformer(void)
-{
-}
