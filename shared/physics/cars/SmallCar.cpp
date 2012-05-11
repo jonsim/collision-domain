@@ -524,7 +524,7 @@ void SmallCar::removeLDoor() {
     removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  0.594f, 0.788f, 0.011f ) );
 }
 void SmallCar::removeRDoor() {
-    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  0.594f, 0.788f, 0.011f ) );
+    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_SMALLCAR_DOOR, btVector3(  -0.594f, 0.788f, 0.011f ) );
 }
 void SmallCar::removeRBumper() {
     removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_SMALLCAR_RBUMPER, btVector3( 0.0f, 0.410f, -1.880f ) );
