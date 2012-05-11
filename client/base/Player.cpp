@@ -200,6 +200,8 @@ void Player::createPlayer (CarType carType, TeamID tid)
         mCar->mBodyNode->attachObject( mBacks );
         mCar->mBodyNode->attachObject( mNametag );
     }
+    else
+        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 10, 0 ) );
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;
@@ -469,6 +471,13 @@ void Player::frameEvent(float time)
     {
         // this method will return quickly if the powerup in question is already disabled
         mPowerupStates[i].timeElapsed(mPowerupBars[i], time);
+    }
+
+    if( this == GameCore::mPlayerPool->getLocalPlayer() && getPlayerState() != PLAYER_STATE_SPECTATE && mLastKiller != NULL && RakNet::GreaterThan( RakNet::GetTimeMS(), mTimeLastKilled+3000 ) )
+    {
+        setPlayerState( PLAYER_STATE_SPECTATE );
+        GameCore::mPlayerPool->setSpectating( mLastKiller->getPlayerGUID() );
+        mLastKiller = NULL;
     }
 }
 
@@ -787,10 +796,11 @@ void Player::killPlayer(Player* causedBy)
 	GameCore::mGameplay->markDeath(this,causedBy);
     GameCore::mGameplay->handleDeath(this,causedBy);
     mLastKiller = causedBy;
+    mTimeLastKilled = RakNet::GetTimeMS();
     if( this == GameCore::mPlayerPool->getLocalPlayer() )
     {
-        InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3000 );
-        GameCore::mGameplay->mInfoItems.push_back( spectate );
+        //InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3000 );
+        //GameCore::mGameplay->mInfoItems.push_back( spectate );
     }
 }
 

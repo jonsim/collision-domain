@@ -386,6 +386,8 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	// Send them a GameJoin RPC so they can get set up
 	// This is where any game specific initialization can go
+    bsSend.Write( GameCore::mGameplay->getGameMode() );
+    bsSend.Write( GameCore::mGameplay->getArenaID() );
 	RakNet::StringCompressor().EncodeString( szNickname, 128, &bsSend );
 	m_RPC->Signal( "GameJoin", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
@@ -659,17 +661,11 @@ void NetworkCore::sendSyncScores()
     m_RPC->Signal( "SyncScores", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 
-void NetworkCore::sendGameMode(GameMode gameMode)
+void NetworkCore::sendGameSync( GameMode gameMode, ArenaID arenaID )
 {
     RakNet::BitStream bs;
-    bs.Write(gameMode); //Send the size
-    m_RPC->Signal( "SyncGameMode", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
-}
-
-void NetworkCore::sendArenaID(ArenaID arenaID)
-{
-    RakNet::BitStream bs;
-    bs.Write(arenaID); //Send the size
-    m_RPC->Signal( "SyncArenaID", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
+    bs.Write(gameMode);
+    bs.Write(arenaID);
+    m_RPC->Signal( "GameSync", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 

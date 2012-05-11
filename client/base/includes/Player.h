@@ -189,7 +189,6 @@ public:
 	void setPlayerGUID(RakNet::RakNetGUID playerGUID);
 
 	CarSnapshot *mSnapshots;
-    Player* mLastKiller;
 
 	void pushBackNewPowerupBoard(PowerupBoardType type, float fadeOutInSeconds);
 	void addToScore(int amount);
@@ -218,6 +217,8 @@ private:
     char*									   mNickname;
     bool									   mIsVIP;
     bool									   mAlive;
+    Player*                                    mLastKiller;
+    RakNet::TimeMS                             mTimeLastKilled;
     PLAYER_STATE                               mPlayerState;
     Car*									   mCar;
     CarSnapshot*							   mCarSnapshot;

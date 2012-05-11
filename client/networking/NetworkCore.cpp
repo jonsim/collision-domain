@@ -263,7 +263,10 @@ void NetworkCore::sendChatMessage( const char *szMessage )
 
 void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
+    GameMode gm; ArenaID aid;
 	char szNickname[128];
+    bitStream->Read( gm );
+    bitStream->Read( aid );
 	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
 
 	// Add ourselves to the player pool
@@ -271,6 +274,11 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	log( "GameJoin : local playerid %s", m_pRak->GetMyGUID().ToString() );
 	bConnected = true;
 	timeLastUpdate = 0;
+
+    GameCore::mGameplay->setGameMode( gm );
+    GameCore::mGameplay->setArenaID( aid );
+
+    GameCore::mClientGraphics->loadArena( aid );
 
 	// Request to spawn straight away for now
 	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
@@ -523,32 +531,25 @@ void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
             OutputDebugString(tmpSS.str().c_str());
         }
     }
-    
+   
 }
 
-void NetworkCore::SyncGameMode( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 {
     GameMode newGameMode;
     bitStream->Read(newGameMode);
 
-    //Set the game to this
-    GameCore::mGameplay->setGameMode(newGameMode);
-
-    StringStream tmpSS;
-    tmpSS << "Server declared game mode: " << newGameMode;
-    OutputDebugString(tmpSS.str().c_str());
-}
-
-void NetworkCore::SyncArenaID( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
-{
     ArenaID newArenaID;
     bitStream->Read(newArenaID);
 
     //Set the game to this
+    GameCore::mGameplay->setGameMode(newGameMode);
+    GameCore::mClientGraphics->unloadArena( GameCore::mGameplay->getArenaID() );
     GameCore::mGameplay->setArenaID(newArenaID);
+    GameCore::mClientGraphics->loadArena( GameCore::mGameplay->getArenaID() );
 
     StringStream tmpSS;
-    tmpSS << "Server declared arena: " << newArenaID;
+    tmpSS << "Server declared game mode: " << newGameMode;
     OutputDebugString(tmpSS.str().c_str());
 }
 
@@ -558,20 +559,19 @@ void NetworkCore::RegisterRPCSlots()
     m_RPC = RakNet::RPC4::GetInstance();
 	m_pRak->AttachPlugin( m_RPC );
 
-	m_RPC->RegisterSlot( "GameJoin",		    GameJoin,       0 );
-	m_RPC->RegisterSlot( "PlayerJoin",		    PlayerJoin,     0 );
-	m_RPC->RegisterSlot( "PlayerQuit",		    PlayerQuit,     0 );
-	m_RPC->RegisterSlot( "PlayerChat",		    PlayerChat,     0 );
-    m_RPC->RegisterSlot( "PlayerTeamSelect",    PlayerTeamSelect, 0 );
-	m_RPC->RegisterSlot( "PlayerSpawn",		    PlayerSpawn,    0 );
-    m_RPC->RegisterSlot( "PowerupCreate",       PowerupCreate,  0 );
-    m_RPC->RegisterSlot( "PowerupCollect",      PowerupCollect, 0 );
-	m_RPC->RegisterSlot( "InfoItemReceive",     InfoItemReceive, 0 );
-	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath, 0 );
-	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP, 0 );
-    m_RPC->RegisterSlot( "SyncScores",		    SyncScores, 0 );
-    m_RPC->RegisterSlot( "SyncGameMode",		SyncGameMode, 0 );
-    m_RPC->RegisterSlot( "SyncArenaID",		    SyncArenaID, 0 );
+	m_RPC->RegisterSlot( "GameJoin",		    GameJoin,           0 );
+	m_RPC->RegisterSlot( "PlayerJoin",		    PlayerJoin,         0 );
+	m_RPC->RegisterSlot( "PlayerQuit",		    PlayerQuit,         0 );
+	m_RPC->RegisterSlot( "PlayerChat",		    PlayerChat,         0 );
+    m_RPC->RegisterSlot( "PlayerTeamSelect",    PlayerTeamSelect,   0 );
+	m_RPC->RegisterSlot( "PlayerSpawn",		    PlayerSpawn,        0 );
+    m_RPC->RegisterSlot( "PowerupCreate",       PowerupCreate,      0 );
+    m_RPC->RegisterSlot( "PowerupCollect",      PowerupCollect,     0 );
+	m_RPC->RegisterSlot( "InfoItemReceive",     InfoItemReceive,    0 );
+	m_RPC->RegisterSlot( "PlayerDeath",		    PlayerDeath,        0 );
+	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP,         0 );
+    m_RPC->RegisterSlot( "SyncScores",		    SyncScores,         0 );
+    m_RPC->RegisterSlot( "GameSync",		    GameSync,           0 );
 }
 
 

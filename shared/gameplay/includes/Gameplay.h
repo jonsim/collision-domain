@@ -78,8 +78,7 @@ public:
     void                        incrementRoundNumber() { roundNumber++; }
     int                         getRoundNumber() { return roundNumber; }
 
-    void                        cycleGameMode();
-    void                        cycleArena();
+    void                        cycleGame( bool unload = true );
     void                        handleNewRound();
     Team*						getTeam(TeamID teamID);
     void						handleInfoItem(InfoItem* item, bool show);

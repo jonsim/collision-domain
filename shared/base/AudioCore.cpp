@@ -266,14 +266,6 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
         if (player && car) car->updateAudioPitchFrameEvent();
     }
     
-    if (localPlayer)
-    {
-        // just do it here for convenience
-        //localPlayer->frameEvent(timeSinceLastFrame);
-        
-    // fire a frameevent for the local player
-        if (localPlayerCar) localPlayerCar->updateAudioPitchFrameEvent();
-    }
 #endif
 }
 

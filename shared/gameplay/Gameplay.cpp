@@ -50,8 +50,9 @@ bool Gameplay::hasWon(TeamID teamID)
 	return false;
 }
 
-void Gameplay::cycleGameMode()
+void Gameplay::cycleGame( bool unload )
 {
+#ifdef COLLISION_DOMAIN_SERVER
     GameMode oldGameMode = this->getGameMode();
     GameMode newGameMode;
 
@@ -76,19 +77,16 @@ void Gameplay::cycleGameMode()
     this->oldOldRound = oldGameMode;
     this->setGameMode(newGameMode);
     
-    #ifdef COLLISION_DOMAIN_SERVER
-        if(newGameMode == FFA_MODE)    
-            GameCore::mGui->outputToConsole("Game Mode: Free For All\n");
-        else if(newGameMode == TDM_MODE)    
-            GameCore::mGui->outputToConsole("Game Mode: Team Death Match\n");
-        else if(newGameMode == VIP_MODE)    
-            GameCore::mGui->outputToConsole("Game Mode: VIP Mode\n");
-        GameCore::mNetworkCore->sendGameMode(newGameMode);    
-    #endif
-}
+    if(newGameMode == FFA_MODE)    
+        GameCore::mGui->outputToConsole("Game Mode: Free For All\n");
+    else if(newGameMode == TDM_MODE)    
+        GameCore::mGui->outputToConsole("Game Mode: Team Death Match\n");
+    else if(newGameMode == VIP_MODE)    
+        GameCore::mGui->outputToConsole("Game Mode: VIP Mode\n");
 
-void Gameplay::cycleArena()
-{
+    if(unload == true)
+        GameCore::mServerGraphics->unloadArena(this->getArenaID());
+
     ArenaID oldArenaID = this->getArenaID();
     ArenaID newArenaID;
 
@@ -113,15 +111,17 @@ void Gameplay::cycleArena()
     this->oldOldArenaID = oldArenaID;
     this->setArenaID(newArenaID);
     
-    #ifdef COLLISION_DOMAIN_SERVER
-        if(newArenaID == COLOSSEUM_ARENA)    
-            GameCore::mGui->outputToConsole("Map Chosen: Colosseum\n");
-        else if(newArenaID == FOREST_ARENA)    
-            GameCore::mGui->outputToConsole("Map Chosen: Forest\n");
-        else if(newArenaID == QUARRY_ARENA)    
-            GameCore::mGui->outputToConsole("Map Chosen: Quarry\n");
-        GameCore::mNetworkCore->sendArenaID(newArenaID);    
-    #endif
+    if(newArenaID == COLOSSEUM_ARENA)    
+        GameCore::mGui->outputToConsole("Map Chosen: Colosseum\n");
+    else if(newArenaID == FOREST_ARENA)    
+        GameCore::mGui->outputToConsole("Map Chosen: Forest\n");
+    else if(newArenaID == QUARRY_ARENA)    
+        GameCore::mGui->outputToConsole("Map Chosen: Quarry\n");
+
+    GameCore::mServerGraphics->loadArena(newArenaID);
+
+    GameCore::mNetworkCore->sendGameSync(newGameMode, newArenaID);
+#endif
 }
 
 void Gameplay::setGameMode(GameMode gameMode)
@@ -434,8 +434,6 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
-    cycleArena();
-    cycleGameMode();
     //Spawn the start new round thing
     InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
 	mInfoItems.push_back(newRoundII);
@@ -609,6 +607,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 			case SCOREBOARD_TO_WINNER_OT:
                 this->mGameActive = false;
                 this->restartGame();
+                cycleGame();
                 GameCore::mPlayerPool->roundEnd();
 				#ifdef COLLISION_DOMAIN_CLIENT
 					mSB->hideForce();
@@ -647,21 +646,6 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					this->scheduleCountDown();
 				#endif
 				break;
-
-            case PLAYER_KILLED_OT:
-                #ifdef COLLISION_DOMAIN_CLIENT
-                    if( GameCore::mPlayerPool->getLocalPlayer()->mLastKiller != NULL )
-                    {
-                        GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPECTATE );
-                        GameCore::mPlayerPool->setSpectating( GameCore::mPlayerPool->getLocalPlayer()->mLastKiller->getPlayerGUID() );
-                        GameCore::mPlayerPool->getLocalPlayer()->mLastKiller = NULL;
-                    }
-                    else
-                    {
-                        GameCore::mPlayerPool->spectateNext();
-                    }
-                #endif
-                break;
 		}
 	}
 	else
