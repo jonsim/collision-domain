@@ -573,7 +573,7 @@ void TruckCar::removeLDoor() {
     removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
 }
 void TruckCar::removeRDoor() {
-    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
+    removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  -1.094f, 1.665f, 1.768f ) );
 }
 void TruckCar::removeRBumper() {
     removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_TRUCK_RBUMPER, btVector3( 0.0f, 0.547f, 3.035f ) );

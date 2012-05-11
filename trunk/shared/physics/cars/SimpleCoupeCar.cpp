@@ -524,19 +524,19 @@ void SimpleCoupeCar::removeFLDoor() {
     removePiece( mFLDoorNode, mFLDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
 }
 void SimpleCoupeCar::removeFRDoor() {
-    removePiece( mFRDoorNode, mFRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+    removePiece( mFRDoorNode, mFRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  -0.773f, 0.895f, 0.315f ) );
 }
 void SimpleCoupeCar::removeRLDoor() {
     removePiece( mRLDoorNode, mRLDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
 }
 void SimpleCoupeCar::removeRRDoor() {
-    removePiece( mRRDoorNode, mRRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  0.773f, 0.895f, 0.315f ) );
+    removePiece( mRRDoorNode, mRRDoorBody, PHYS_SHAPE_BANGER_DOOR, btVector3(  -0.773f, 0.895f, 0.315f ) );
 }
 void SimpleCoupeCar::removeRBumper() {
     removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_BANGER_RBUMPER, btVector3( 0.0f, 0.518f, -2.424f ) );
 }
 void SimpleCoupeCar::removeFBumper() {
-    removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_BANGER_RBUMPER, btVector3( 0.0f, 0.518f, -2.424f ) );
+    removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_BANGER_RBUMPER, btVector3( 0.0f, 0.518f, 2.424f ) );
 }
 
 void SimpleCoupeCar::removeCarPart(unsigned int part) {

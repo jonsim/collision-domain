@@ -158,7 +158,7 @@ int PlayerCollisions::getSectionOnCar(Player *p, Ogre::Vector3 pos) {
             r = 1;
         } else if(pos.z > p->rearDamageBoundary && pos.z <= p->frontDamageBoundary) {
             // MR
-            r = 2;
+            r = 3;
         } else if(pos.z <= p->rearDamageBoundary) {
             // RR
             r = 5;
