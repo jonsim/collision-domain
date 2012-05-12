@@ -195,11 +195,6 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mPowerupBoards[i] );
     }
 
-    pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 20);
-    pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 20);
-    pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 20);
-    pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 20);
-
     if( !isLocalPlayer )
     {
         //if( mBoards->isAttached() )
@@ -362,86 +357,81 @@ void Player::pushBackNewPowerupBoard(PowerupBoardType type, float fadeOutInSecon
 
     if (matchedIndex < 0 && finishedIndex < 0)
     {
+        OutputDebugString("Never happen case in Player::pushBackNewPowerupBoard\n");
+        return;
+    }
+    else if (matchedIndex >= NUM_POWERUP_BOARDS || finishedIndex >= NUM_POWERUP_BOARDS)
+    {
+        OutputDebugString("Invalid index in Player::pushBackNewPowerupBoard\n");
         return;
     }
 
     switch (type)
     {
         case POWERUP_BOARD_HEAVY:
-            // find if a heavy powerup or light powerup is already active, and "refresh" it with full time
-            if (matchedIndex >= 0)
-            {
-                // finish the powerup if its not already finished
-                
-                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-                finishedIndex = matchedIndex;
-            }
-            else
-            {
-                // this is now a slot containing an inactive powerup
-                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-            }
-            
-            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_good_heavy" );
+            mPowerupBoards[ matchedIndex >= 0 ? matchedIndex : finishedIndex ]->setMaterialName( "board_powerup_good_heavy" );
             break;
-
         case POWERUP_BOARD_LIGHT:
-            // find if a heavy powerup or light powerup is already active, and "refresh" it with full time
-            if (matchedIndex >= 0)
-            {
-                // finish the powerup if its not already finished
-                
-                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-                finishedIndex = matchedIndex;
-            }
-            else
-            {
-                // this is now a slot containing an inactive powerup
-                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-            }
-            
-            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_bad_light" );
+            mPowerupBoards[ matchedIndex >= 0 ? matchedIndex : finishedIndex ]->setMaterialName( "board_powerup_bad_light" );
             break;
-
         case POWERUP_BOARD_HEALTH:
-            // find if a health powerup is already active, and "refresh" it with full time
-            if (matchedIndex >= 0)
-            {
-                // finish the powerup if its not already finished
-                
-                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-                finishedIndex = matchedIndex;
-            }
-            else
-            {
-                // this is now a slot containing an inactive powerup
-                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-            }
-            
-            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_good_health" );
+            mPowerupBoards[ matchedIndex >= 0 ? matchedIndex : finishedIndex ]->setMaterialName( "board_powerup_good_health" );
             break;
-
         case POWERUP_BOARD_SPEED:
-            // find if a speed powerup is already active, and "refresh" it with full time
-            if (matchedIndex >= 0)
-            {
-                // finish the powerup if its not already finished
-                
-                mPowerupStates[matchedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-                finishedIndex = matchedIndex;
-            }
-            else
-            {
-                // this is now a slot containing an inactive powerup
-                mPowerupStates[finishedIndex] = PowerupBoardState(type, fadeOutInSeconds);
-            }
-            
-            mPowerupBoards[finishedIndex]->setMaterialName( "board_powerup_good_speed" );
+            mPowerupBoards[ matchedIndex >= 0 ? matchedIndex : finishedIndex ]->setMaterialName( "board_powerup_good_speed" );
             break;
-
         default:
             // make it so we can never push back a powerup with invalid type
-            break;
+            return;
+    }
+    
+    mPowerupStates[ matchedIndex >= 0 ? matchedIndex : finishedIndex ] = PowerupBoardState(type, fadeOutInSeconds);
+    
+    reLayoutPowerupBoards();
+}
+
+void Player::reLayoutPowerupBoards()
+{
+    // Shuffle the powerups around if they have finished
+    float remaining0 = mPowerupStates[0].getRemainingTime();
+    float remaining1 = mPowerupStates[1].getRemainingTime();
+    float remaining2 = mPowerupStates[2].getRemainingTime();
+
+    int orderedIndicesLongtoShort[3];
+
+    if (remaining0 >= remaining1 && remaining0 >= remaining2)
+    {
+        bool is1bigger = remaining1 > remaining2;
+        orderedIndicesLongtoShort[0] = 0;
+        orderedIndicesLongtoShort[1] = is1bigger ? 1 : 2;
+        orderedIndicesLongtoShort[2] = is1bigger ? 2 : 1;
+    }
+    else if (remaining1 >= remaining0 && remaining1 >= remaining2)
+    {
+        bool is0bigger = remaining0 > remaining2;
+        orderedIndicesLongtoShort[0] = 1;
+        orderedIndicesLongtoShort[1] = is0bigger ? 0 : 2;
+        orderedIndicesLongtoShort[2] = is0bigger ? 2 : 0;
+    }
+    else
+    {
+        bool is0bigger = remaining0 > remaining1;
+        orderedIndicesLongtoShort[0] = 2;
+        orderedIndicesLongtoShort[1] = is0bigger ? 0 : 1;
+        orderedIndicesLongtoShort[2] = is0bigger ? 1 : 0;
+    }
+
+    // 'shuffle down' the layout as powerup icons finish their time
+    if ( mPowerupStates[ orderedIndicesLongtoShort[1] ].isFinished() )
+    {
+        // there is only 1 powerup icon active, center it
+        mPowerupBars[ orderedIndicesLongtoShort[0] ]->setPosition( 0, 3.3f, 0 );
+    }
+    else
+    {
+        mPowerupBars[ orderedIndicesLongtoShort[0] ]->setPosition(   0.66f, 3.3f, 0 );
+        mPowerupBars[ orderedIndicesLongtoShort[1] ]->setPosition( - 0.65f, 3.3f, 0 );
+        mPowerupBars[ orderedIndicesLongtoShort[2] ]->setPosition(       0, 4.5f, 0 );
     }
 }
 
@@ -450,7 +440,10 @@ void Player::frameEvent(float time)
     for (int i = 0; i < NUM_POWERUP_BOARDS; i++)
     {
         // this method will return quickly if the powerup in question is already disabled
-        mPowerupStates[i].timeElapsed(mPowerupBars[i], time);
+        if ( mPowerupStates[i].timeElapsed(mPowerupBars[i], time) )
+        {
+            reLayoutPowerupBoards();
+        }
     }
 
     if( this == GameCore::mPlayerPool->getLocalPlayer() && getPlayerState() != PLAYER_STATE_SPECTATE && mLastKiller != NULL && RakNet::GreaterThan( RakNet::GetTimeMS(), mTimeLastKilled+3000 ) )

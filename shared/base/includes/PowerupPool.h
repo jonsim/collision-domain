@@ -9,7 +9,7 @@
 
 #include "Powerup.h"
 
-#define MAX_POWERUPS 3
+#define MAX_POWERUPS 4
 
 class PowerupPool
 {
