@@ -108,7 +108,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 #if _WIN32
     void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer) {
 #else
-    void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real& damage, unsigned int damageSection, int &crashType, Player *&causedByPlayer) {
+    void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real& damage, int& damageSection, int &crashType, Player *&causedByPlayer) {
 #endif
     switch(damageSection) {
         case 0 :
