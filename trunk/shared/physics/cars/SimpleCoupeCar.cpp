@@ -420,6 +420,23 @@ void SimpleCoupeCar::updateArena (ArenaID aid)
     // Update the dust emitter.
     for (i = 0; i < 4; i++)
         mDustSystem->getEmitter(i)->setColour(dustColour);
+
+    // Update the environment map.
+    std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");
+    std::string materialList[10] = {"banger_body_uv", "banger_fdoor_uv", "banger_rdoor_uv",
+                                    "banger_body_t1", "banger_fdoor_t1", "banger_rdoor_t1",
+                                    "banger_body_t2", "banger_fdoor_t2", "banger_rdoor_t2",
+                                    "banger_bumper"};
+    for (unsigned char i = 0; i < 10; i++)
+    {
+        Ogre::MaterialPtr mp = Ogre::MaterialManager::getSingleton().getByName(materialList[i]);
+        if (mp.isNull())
+            OutputDebugString("problems ahead\n");
+        Ogre::TextureUnitState* tus = mp->getTechnique(0)->getPass(0)->getTextureUnitState("env_map");
+        if (tus == NULL)
+            OutputDebugString("uh oh\n");
+        tus->setTextureName(newSphereMap);
+    }
 }
 
 
