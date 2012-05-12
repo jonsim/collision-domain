@@ -20,7 +20,9 @@ void PowerupPool::spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int inde
 
     if (mPowerups[index] != NULL)
     {
-        OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup");
+        delete mPowerups[index];
+        mPowerups[index] = NULL;
+        OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup\n");
     }
 
     mPowerups[index] = new Powerup(type, spawnAt, index);
@@ -45,7 +47,7 @@ void PowerupPool::deletePowerup( int index )
     Powerup* p = mPowerups[index];
     mPowerups[index] = NULL;
 
-    // You have to cast to the superclass to make cpp call that destructor!
+    // You have to cast to the superclass to make cpp call that destructor, or make it virtual in base class!
     delete p;
 }
 

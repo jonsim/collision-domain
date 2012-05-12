@@ -46,7 +46,6 @@ AudioCore::AudioCore()
     mSoundManager->getNumSounds() << " " <<
     mSoundManager->getNumSources() << std::endl;
 
-
     // don't bother with some stuff unless we have openal
     if (!mInitOK) return;
     
@@ -74,7 +73,7 @@ AudioCore::AudioCore()
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_SPEED,  false, false, true, GameCore::mSceneMgr));
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_HEAVY,  false, false, true, GameCore::mSceneMgr));
 
-    mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr);
+    mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr, true);
     mBackingTrack->setMaxVolume(0.85f);
 
     // doppler effect is good now at the default 1.0
@@ -174,7 +173,11 @@ OgreOggISound* AudioCore::getSoundInstance(PowerupType p, int uniqueID, Ogre::Sc
     }
     std::string name = file + boost::lexical_cast<std::string>(uniqueID);
 
-    return getNamedSoundInstance(name, file, attachTo);
+    OgreOggISound *sound = getNamedSoundInstance(name, file, attachTo);
+    sound->setRelativeToListener(true); // always on top of the listener
+    sound->setMaxVolume(1.0f);
+    
+    return sound;
 }
 
 OgreOggISound* AudioCore::getNamedSoundInstance(std::string name, std::string file, Ogre::SceneNode *attachTo, bool loop)

@@ -128,7 +128,6 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
             if (powerup && player)
             {
                 powerup->playerCollision(player);
-                GameCore::mNetworkCore->sendPowerupCollect( powerup->getIndex(), player );
             }
         }
 #endif
