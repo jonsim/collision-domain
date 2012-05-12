@@ -40,7 +40,7 @@ abstract material cd/ReflectiveSolid
 		{
 			texture_unit env_map
 			{
-				texture sphere_map_morning.jpg
+				texture arena1_spheremap.jpg
                 env_map spherical
 			}
 			texture_unit reflection_map
@@ -60,7 +60,7 @@ abstract material cd/Reflective
 		{
 			texture_unit env_map
 			{
-				texture sphere_map_morning.jpg
+				texture arena1_spheremap.jpg
                 env_map spherical
 			}
 			texture_unit reflection_map

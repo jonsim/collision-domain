@@ -418,6 +418,23 @@ void SmallCar::updateArena (ArenaID aid)
     // Update the dust emitter.
     for (i = 0; i < 4; i++)
         mDustSystem->getEmitter(i)->setColour(dustColour);
+
+    // Update the environment map.
+    std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");
+    std::string materialList[7] = {"small_car_body_uv", "small_car_door_uv",
+                                   "small_car_body_t1", "small_car_door_t1",
+                                   "small_car_body_t2", "small_car_door_t2",
+                                   "small_car_bumper"};
+    for (unsigned char i = 0; i < 7; i++)
+    {
+        Ogre::MaterialPtr mp = Ogre::MaterialManager::getSingleton().getByName(materialList[i]);
+        if (mp.isNull())
+            OutputDebugString("problems ahead\n");
+        Ogre::TextureUnitState* tus = mp->getTechnique(0)->getPass(0)->getTextureUnitState("env_map");
+        if (tus == NULL)
+            OutputDebugString("uh oh\n");
+        tus->setTextureName(newSphereMap);
+    }
 }
 
 
