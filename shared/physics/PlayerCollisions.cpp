@@ -152,7 +152,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 int PlayerCollisions::getSectionOnCar(Player *p, Ogre::Vector3 pos) {
     // FL,FR,ML,MR,RL,RR = 0,1,2,3,4,5
     int r;
-    if(pos.x >= 0.f) { // RHS
+    if(pos.x <= 0.f) { // RHS
         if(pos.z > p->frontDamageBoundary) {
             // FR
             r = 1;

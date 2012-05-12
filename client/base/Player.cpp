@@ -246,7 +246,7 @@ void Player::angleTest(void) {
     TeamID tid = (GameCore::mGameplay->getGameMode() == FFA_MODE) ? NO_TEAM : getTeam();
     float shrapnelPlaneOffset = (getCarType() == CAR_SMALL) ? -0.75f : ((getCarType() == CAR_BANGER) ? -0.85f : -1.25f);
     float shrapnelCount    = damage / 5.0f;
-    float shrapnelMaxSpeed = damage / 8.0f;
+    float shrapnelMaxSpeed = damage / 10.0f;
 
     if(damage > 40.f) getCar()->removeCarPart(damageSection);
     switch(crashType) {
