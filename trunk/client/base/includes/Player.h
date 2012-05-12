@@ -67,11 +67,12 @@ public:
         type            (type)
     {}
     
-    void timeElapsed(Ogre::Billboard *modify, float elapsedSeconds)
+    // performs the time elapsed and returns true if the powerup has finished on this specific call
+    bool timeElapsed(Ogre::Billboard *modify, float elapsedSeconds)
     {
         if (remaining < -0.001)
         {
-            return;
+            return false;
         }
 
         remaining -= elapsedSeconds;
@@ -88,10 +89,12 @@ public:
             }
 
             modify->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, alpha));
+            return false;
         }
         else
         {
             finishNow(modify);
+            return true;
         }
     }
 
@@ -99,8 +102,6 @@ public:
     {
         remaining = -1;
         modify->setColour(Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f));
-        
-        // fire Powerup finished event
     }
 
     bool isFinished()
@@ -124,6 +125,11 @@ public:
         {
             return isType == type;
         }
+    }
+
+    float getRemainingTime()
+    {
+        return remaining;
     }
 
 private:
@@ -221,6 +227,8 @@ public:
 
 
 private:
+    void reLayoutPowerupBoards();
+
     const float								   cameraRotationConstant;
 	int										   hp;
     TeamID									   mTeam;
