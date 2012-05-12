@@ -8,6 +8,10 @@
 #include "ClientGraphics.h"
 #include "GameCore.h"
 
+#if linux
+#include <sys/resource.h>
+#endif
+
 #define PHYSICS_FPS 60
 
 
@@ -888,6 +892,31 @@ extern "C" {
     int main (int argc, char *argv[])
 #endif
     {
+
+//linux default stack size is smaller the visual studio c++
+#ifdef linux
+    	//set stack size to 32 mb
+    	const rlim_t stackSize = 32 * 1024 *1024;
+    	struct rlimit rl;
+    	int result = getrlimit(RLIMIT_STACK, &rl);
+
+    	if(!result)
+    	{
+    		if(rl.rlim_cur < stackSize)
+    		{
+    			//set the new stacksize
+    			rl.rlim_cur = stackSize;
+    			result = setrlimit(RLIMIT_STACK, &rl);
+    			if(result != 0)
+    			{
+    				fprintf(stderr, "Setting the stack size return with error code %d\n", result);
+    			}
+    		}
+    	}
+
+#endif
+
+
         // Create application object
         ClientGraphics application;
 

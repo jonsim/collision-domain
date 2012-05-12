@@ -50,7 +50,7 @@ public:
 #if _WIN32    
     void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer);
 #else
-    void collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real &damage, unsigned int damageSection, int& crashType, Player *&causedByPlayer);
+    void collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real &damage, int& damageSection, int& crashType, Player *&causedByPlayer);
 #endif
     void applyHealthBonus (void);
         

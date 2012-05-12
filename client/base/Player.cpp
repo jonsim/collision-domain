@@ -235,7 +235,7 @@ void Player::angleTest(void) {
 #if _WIN32
     void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer) {
 #else
-	void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real &damage, unsigned int damageSection, int &crashType, Player *&causedByPlayer) {
+	void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real &damage, int& damageSection, int &crashType, Player *&causedByPlayer) {
 #endif
     bool isFront = ((damageSection == 0) || (damageSection == 1));
     TeamID tid = (GameCore::mGameplay->getGameMode() == FFA_MODE) ? NO_TEAM : getTeam();
