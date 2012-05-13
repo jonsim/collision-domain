@@ -56,9 +56,10 @@ void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
     CEGUI::MouseCursor::getSingleton().show();
 
     spawnScreenCarSelection = CAR_BANGER;
+    currentMode = FFA_MODE;
 }
 
-void GameGUI::showSpawnScreenPage1 (void)
+void GameGUI::showSpawnScreenPage1 (GameMode gameMode)
 {
     CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -67,13 +68,47 @@ void GameGUI::showSpawnScreenPage1 (void)
     CEGUI::Window* page1 = winMgr.getWindow("/SpawnScreen/Team");
     CEGUI::Window* page2 = winMgr.getWindow("/SpawnScreen/Vehicle");
 
+    // Save the game mode.
+    currentMode = gameMode;
+
     // Show the correct pages
     mainWindow->setVisible(true);
     page2->setVisible(false);
     page1->setVisible(true);
+
+    // Update the team display window.
+    CEGUI::Window* btnTeamAuto = winMgr.getWindow("/SpawnScreen/Team/btnAuto");
+    CEGUI::Window* btnTeamBlue = winMgr.getWindow("/SpawnScreen/Team/btnBlue");
+    CEGUI::Window* btnTeamRed  = winMgr.getWindow("/SpawnScreen/Team/btnRed");
+    /*
+    if (gameMode == FFA_MODE)
+    {
+        // Update the window title
+        page1->setProperty("Text", "Free for All: Select a Team");
+
+        // Update the buttons
+        btnTeamAuto->setProperty("Text",     "Enter Game");
+        btnTeamAuto->setProperty("Disabled", "false");
+        btnTeamBlue->setProperty("Disabled", "true");
+        btnTeamRed->setProperty( "Disabled", "true");
+    }
+    else
+    {
+        // Update the window title
+        if (gameMode == TDM_MODE)
+            page1->setProperty("Text", "Team Deathmatch: Select a Team");
+        else
+            page1->setProperty("Text", "VIP Mode: Select a Team");
+
+        // Update the buttons
+        btnTeamAuto->setProperty("Text",     "Auto Assign");
+        btnTeamAuto->setProperty("Disabled", "false");
+        btnTeamBlue->setProperty("Disabled", "false");
+        btnTeamRed->setProperty( "Disabled", "false");
+    }*/
 }
 
-void GameGUI::showSpawnScreenPage2 (TeamID teamDisplay)
+void GameGUI::showSpawnScreenPage2 (GameMode gameMode, TeamID teamDisplay, CarType defaultCar)
 {
     CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
@@ -85,35 +120,42 @@ void GameGUI::showSpawnScreenPage2 (TeamID teamDisplay)
     CEGUI::Window* p2btnHatchback = winMgr.getWindow("/SpawnScreen/Vehicle/btnHatchback");
     CEGUI::Window* p2btnTruck     = winMgr.getWindow("/SpawnScreen/Vehicle/btnTruck");
 
+    // Save the team to display and the current game round.
+    currentMode = gameMode;
+    spawnScreenTeamSelection = (currentMode == FFA_MODE) ? NO_TEAM : teamDisplay;
+
     // Update the page's image
-    spawnScreenTeamSelection = teamDisplay;
-    if (spawnScreenTeamSelection == BLUE_TEAM)
-    {
-        page2->setProperty("Text", "Blue Team: Select a Vehicle");
-        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
-    }
-    else if (spawnScreenTeamSelection == RED_TEAM)
-    {
-        page2->setProperty("Text", "Red Team: Select a Vehicle");
-        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
-    }
+    CEGUI::String imageName, titleName;
+    imageName  = (defaultCar == CAR_BANGER)              ? "Coupe"        : ((defaultCar == CAR_SMALL)               ? "Hatchback"     : "Truck");
+    imageName += (spawnScreenTeamSelection == NO_TEAM)   ? "White"        : ((spawnScreenTeamSelection == BLUE_TEAM) ? "Blue"          : "Red");
+    titleName  = (spawnScreenTeamSelection == NO_TEAM)   ? "Free for All" : ((spawnScreenTeamSelection == BLUE_TEAM) ? "Blue Team"     : "Red Team");
+    titleName += ": Select a Vehicle";
+    page2->setProperty("Text", titleName);
+    spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage(imageName)));
 
     // Update the page's buttons
-    p2btnCoupe->setProperty(    "Disabled", "true");
+    p2btnCoupe->setProperty(    "Disabled", "false");
     p2btnHatchback->setProperty("Disabled", "false");
     p2btnTruck->setProperty(    "Disabled", "false");
+    if (defaultCar == CAR_BANGER)
+        p2btnCoupe->setProperty("Disabled", "true");
+    else if (defaultCar == CAR_SMALL)
+        p2btnHatchback->setProperty("Disabled", "true");
+    else
+        p2btnTruck->setProperty("Disabled", "true");
 
     // Show the correct pages
     mainWindow->setVisible(true);
     page1->setVisible(false);
     page2->setVisible(true);
 
+    // Show the mouse.
     CEGUI::MouseCursor::getSingleton().show();
 }
 
 void GameGUI::showSpawnScreenErrorText (const char* errorText)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
     CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
     txtError->setProperty("Text", errorText);
@@ -122,7 +164,7 @@ void GameGUI::showSpawnScreenErrorText (const char* errorText)
 
 void GameGUI::hideSpawnScreenErrorText (void)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
     CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
     txtError->hide();
@@ -130,7 +172,7 @@ void GameGUI::hideSpawnScreenErrorText (void)
 
 void GameGUI::closeSpawnScreen (void)
 {
-        CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
     CEGUI::Window* mainWindow = winMgr.getWindow("/SpawnScreen");
     mainWindow->hide();
@@ -191,7 +233,9 @@ bool GameGUI::SpawnScreen_p2btnCoupe (const CEGUI::EventArgs& args)
     p2btnHatchback->setProperty("Disabled", "false");
     p2btnTruck->setProperty(    "Disabled", "false");
 
-    if (spawnScreenTeamSelection == BLUE_TEAM)
+    if (spawnScreenTeamSelection == NO_TEAM)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeWhite")));
+    else if (spawnScreenTeamSelection == BLUE_TEAM)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
     else if (spawnScreenTeamSelection == RED_TEAM)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeRed")));
@@ -211,7 +255,9 @@ bool GameGUI::SpawnScreen_p2btnHatchback (const CEGUI::EventArgs& args)
     p2btnHatchback->setProperty("Disabled", "true");
     p2btnTruck->setProperty(    "Disabled", "false");
 
-    if (spawnScreenTeamSelection == BLUE_TEAM)
+    if (spawnScreenTeamSelection == NO_TEAM)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackWhite")));
+    else if (spawnScreenTeamSelection == BLUE_TEAM)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackBlue")));
     else if (spawnScreenTeamSelection == RED_TEAM)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("HatchbackRed")));
@@ -231,7 +277,9 @@ bool GameGUI::SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args)
     p2btnHatchback->setProperty("Disabled", "false");
     p2btnTruck->setProperty(    "Disabled", "true");
 
-    if (spawnScreenTeamSelection == BLUE_TEAM)
+    if (spawnScreenTeamSelection == NO_TEAM)
+        spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckWhite")));
+    else if (spawnScreenTeamSelection == BLUE_TEAM)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckBlue")));
     else if (spawnScreenTeamSelection == RED_TEAM)
         spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("TruckRed")));
@@ -251,7 +299,7 @@ bool GameGUI::SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args)
 
 bool GameGUI::SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args)
 {
-    showSpawnScreenPage1();
+    showSpawnScreenPage1(currentMode);
 
     return true;
 }

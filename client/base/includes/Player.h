@@ -171,7 +171,7 @@ public:
     void frameEvent(float time);
     
     const char *getNickname (void) { return mNickname; }
-    int getCarType (void) { return mCarType; }
+    CarType getCarType (void) { return mCarType; }
 
     PLAYER_STATE getPlayerState() { return mPlayerState; }
     void setPlayerState( PLAYER_STATE s ) { mPlayerState = s; }

@@ -2,8 +2,11 @@
 <Imageset Name="SpawnScreen-Images" Imagefile="SpawnScreen.jpg" NativeHorzRes="3000" NativeVertRes="1400" AutoScaled="true">
 	<Image Name="CoupeBlue" XPos="0" YPos="0" Width="1000" Height="700" />
 	<Image Name="CoupeRed" XPos="0" YPos="700" Width="1000" Height="700" />
+	<Image Name="CoupeWhite" XPos="0" YPos="1400" Width="1000" Height="700" />
 	<Image Name="HatchbackBlue" XPos="1000" YPos="0" Width="1000" Height="700" />
 	<Image Name="HatchbackRed" XPos="1000" YPos="700" Width="1000" Height="700" />
+	<Image Name="HatchbackWhite" XPos="1000" YPos="1400" Width="1000" Height="700" />
 	<Image Name="TruckBlue" XPos="2000" YPos="0" Width="1000" Height="700" />
 	<Image Name="TruckRed" XPos="2000" YPos="700" Width="1000" Height="700" />
+	<Image Name="TruckWhite" XPos="2000" YPos="1400" Width="1000" Height="700" />
 </Imageset>

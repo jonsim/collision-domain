@@ -292,7 +292,6 @@ void ClientGraphics::setupGUI (void)
 
     // Attach the GUI components
     GameCore::mGui->setupSpawnScreen(mGUIWindow);
-    GameCore::mGui->showSpawnScreenPage1();
 
     GameCore::mGui->setupFPSCounter(mGUIWindow);
     GameCore::mGui->setupConsole(mGUIWindow);
