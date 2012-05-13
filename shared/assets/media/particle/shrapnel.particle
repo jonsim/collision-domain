@@ -1,8 +1,8 @@
 particle_system CollisionDomain/Shrapnel
 {
 	material        	CollisionDomain/Shrapnel
-	particle_width  	0.25
-	particle_height 	0.25
+	particle_width  	0.15
+	particle_height 	0.15
 	cull_each       	false
 	quota           	300
 	billboard_type  	oriented_self
@@ -18,7 +18,7 @@ particle_system CollisionDomain/Shrapnel
         duration 0.1
 		velocity_min 0.0
 		velocity_max 15.0
-		time_to_live 4.0
+		time_to_live 2.5
     }
 
 	affector LinearForce
@@ -44,8 +44,8 @@ particle_system CollisionDomain/Shrapnel
         red2 0
         grenn2 0
         blue2 0
-		alpha2 -1
-        state_change 1
+		alpha2 -2
+        state_change 0.5
 	}
     
     // DeflectorPlane Affector set up on creation in code.
@@ -75,8 +75,8 @@ particle_system CollisionDomain/ShrapnelDebris
 		velocity_min 2.0
 		velocity_max 15.0
 		time_to_live 1.0
-        colour_range_start 1.0 0.7 0.4
-        colour_range_end   1.0 1.0 0.4
+        colour_range_start 1.0 0.8 0.0
+        colour_range_end   1.0 1.0 0.0
     }
 
 	affector LinearForce
