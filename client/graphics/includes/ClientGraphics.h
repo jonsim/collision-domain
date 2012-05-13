@@ -40,10 +40,16 @@ public:
     virtual ~ClientGraphics (void);
     virtual void go (void);
     void shutdown() { mShutDown = true; }
+
+    // Particle effect handlers.
     void generateExplosion (Ogre::Vector3 location);
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
     void generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity=20, float maxShrapnelVelocity=10, float planeOffset=-0.8f, Ogre::Vector3 planeNormal=Ogre::Vector3::UNIT_Y);
     void updateVIPLocation (TeamID teamID, Ogre::Vector3 location);
+    
+    void addPodium (Ogre::Vector3 position);
+    void addToPodium (Player* pPlayer, unsigned int scorePosition);
+    void removePodium (void);
 
 	//Setup the projector and set the correct game mode		
 	void setupProjector();

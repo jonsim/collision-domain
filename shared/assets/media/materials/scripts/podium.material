@@ -1,0 +1,6 @@
+import cd/Base from "cdBaseMaterials.material"
+
+material podium_uv : cd/Base
+{
+    set $diffuse_map podium_uv.jpg
+}
