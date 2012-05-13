@@ -551,6 +551,9 @@ void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     GameCore::mGameplay->setArenaID(newArenaID);
     GameCore::mClientGraphics->loadArena( GameCore::mGameplay->getArenaID() );
 
+    // Update the client's car selection screen jobby.
+    GameCore::mGui->showSpawnScreenPage2(newGameMode, GameCore::mPlayerPool->getLocalPlayer()->getTeam(), GameCore::mPlayerPool->getLocalPlayer()->getCarType());
+
     StringStream tmpSS;
     tmpSS << "Server declared game mode: " << newGameMode;
     OutputDebugString(tmpSS.str().c_str());

@@ -224,7 +224,6 @@ void PlayerPool::roundEnd()
     }
 
     GameCore::mClientGraphics->mGameCam->setTarget( NULL );
-    GameCore::mGui->showSpawnScreenPage2(GameCore::mGameplay->getGameMode(), GameCore::mPlayerPool->getLocalPlayer()->getTeam(), GameCore::mPlayerPool->getLocalPlayer()->getCarType());
 }
 
 void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )

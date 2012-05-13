@@ -536,14 +536,14 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     int uid = GameCore::mPhysicsCore->getUniqueEntityID();
     Ogre::ParticleSystem* shrapnelSystem = GameCore::mSceneMgr->createParticleSystem("ShrapnelSystem" + boost::lexical_cast<std::string>(uid),
                                                                                      "CollisionDomain/Shrapnel");
-    Ogre::ParticleSystem* debrisSystem   = GameCore::mSceneMgr->createParticleSystem("ShrapnelDebrisSystem" + boost::lexical_cast<std::string>(uid),
-                                                                                     "CollisionDomain/ShrapnelDebris");
+    //Ogre::ParticleSystem* debrisSystem   = GameCore::mSceneMgr->createParticleSystem("ShrapnelDebrisSystem" + boost::lexical_cast<std::string>(uid),
+    //                                                                                 "CollisionDomain/ShrapnelDebris");
 
-    // Configure the debris emitter
+    /*// Configure the debris emitter
     Ogre::ParticleEmitter* debrisEmitter = debrisSystem->getEmitter(0);
     debrisEmitter->setPosition(location);
     debrisEmitter->setEmissionRate(meanShrapnelQuantity * 2);
-    debrisEmitter->setMaxParticleVelocity(maxShrapnelVelocity);
+    debrisEmitter->setMaxParticleVelocity(maxShrapnelVelocity);*/
 
     // Configure the shrapnel emitter
     Ogre::ParticleEmitter* shrapnelEmitter = shrapnelSystem->getEmitter(0);
@@ -571,11 +571,11 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     
     // Add the systems to the queue (so that they can be removed later).
     mShrapnelSystems.push(shrapnelSystem);
-    mShrapnelSystems.push(debrisSystem);
+    //mShrapnelSystems.push(debrisSystem);
 
     // Add the systems to the scene (so that they can be displayed).
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(shrapnelSystem);
-    GameCore::mSceneMgr->getRootSceneNode()->attachObject(debrisSystem);
+    //GameCore::mSceneMgr->getRootSceneNode()->attachObject(debrisSystem);
 }
 
 
