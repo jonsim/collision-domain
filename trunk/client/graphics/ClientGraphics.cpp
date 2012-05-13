@@ -628,9 +628,72 @@ void ClientGraphics::generateSparks (Ogre::Vector3 location, Ogre::Vector3 direc
 }
 
 
+/// @brief  Adds the finishing podium to the game world. Not exactly the best way to do this but nevermind.
+/// @param  position    The position, in world co-ordinates, to add the podium at.
+void ClientGraphics::addPodium (Ogre::Vector3 position)
+{
+    Ogre::SceneNode* podiumNode = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("PodiumNode");
+    podiumNode->setPosition(position);
+    GameCore::mPhysicsCore->auto_scale_scenenode(podiumNode);
+    Ogre::Entity*  podiumEntity = GameCore::mSceneMgr->createEntity("PodiumEntity", "podium.mesh");
+}
+
+
+/// @brief  Adds a player to the podium.
+/// @param  pPlayer A pointer to the player to add to the podium.
+/// @param  scoreRank   The position of the player to be added to the podium. scoreRank=1 will put them on the first place, 
+///                     2 on the second place, 3 on third and all others will be ignored.
+void ClientGraphics::addToPodium (Player* pPlayer, unsigned int scoreRank)
+{
+    // Get references to this shizz.
+    Ogre::SceneNode* podiumNode;
+    try
+    {
+        podiumNode = GameCore::mSceneMgr->getSceneNode("PodiumNode");
+    }
+    catch (Exception e)
+    {
+        OutputDebugString("Exception caught:\n");
+        OutputDebugString(e.getFullDescription().c_str());
+        OutputDebugString("addToPodium likely called when a podium did not exist. Someone's gonna get a slap. Initiating crash\n");
+        throw Ogre::Exception::ERR_DUPLICATE_ITEM;
+    }
+
+    // Offset this junk with the shizz.
+    Ogre::Vector3 localPodiumPosition;
+    if      (scoreRank == 1)
+        localPodiumPosition = Ogre::Vector3(0, 0, 0);
+    else if (scoreRank == 2)
+        localPodiumPosition = Ogre::Vector3(-5.325f, -1.32f, 0);
+    else if (scoreRank == 3)
+        localPodiumPosition = Ogre::Vector3( 5.325f, -2.64f, 0);
+    else
+        return;
+    Ogre::Vector3 worldPodiumPosition = podiumNode->convertLocalToWorldPosition(localPodiumPosition);
+
+    // Convert the shizz to bullet jazz.
+    btVector3    bulletPos(worldPodiumPosition.x, worldPodiumPosition.y, worldPodiumPosition.z);
+    //Ogre::Quaternion podiumRot = podiumNode->getOrientation();
+    //btQuaternion bulletRot(podiumRot.x, podiumRot.y, podiumRot.z, podiumRot.w);
+
+    // Apply some jazz.
+    pPlayer->getCar()->moveTo(bulletPos);
+}
+
+
+/// @param  Removes and destroys the finishing podium from the game world.
+void ClientGraphics::removePodium (void)
+{
+    // Destroy shit
+    GameCore::mSceneMgr->destroyEntity("PodiumNode");
+    GameCore::mSceneMgr->destroySceneNode("PodiumEntity");
+}
+
+
 /// @brief  Removes everything from the scene.
 void ClientGraphics::destroyScene (void)
 {
+    // or not, lol.
 }
 
 
