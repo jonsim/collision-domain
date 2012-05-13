@@ -35,20 +35,20 @@
             <Property Name="TitlebarEnabled" Value="True" />
             <Property Name="UnifiedAreaRect" Value="{{0.32,0},{0.170277,0},{0.68,0},{0.473632,0}}" />
             <Window Type="GWEN/Combobox" Name="/Server/admin/cmbPlayers" >
-                <Property Name="Font" Value="DejaVuSans-12" />
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Players" />
                 <Property Name="ReadOnly" Value="True" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.044129,0},{0.98,0},{0.943135,0}}" />
                 <Property Name="MaxEditTextLength" Value="1073741823" />
             </Window>
             <Window Type="GWEN/Editbox" Name="/Server/admin/edtHealth" >
-                <Property Name="Font" Value="DejaVuSans-12" />
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="MaxTextLength" Value="1073741823" />
                 <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.632743,0},{0.98,0},{0.870775,0}}" />
                 <Property Name="TextParsingEnabled" Value="False" />
             </Window>
             <Window Type="GWEN/StaticText" Name="/Server/admin/lblInfo" >
-                <Property Name="Font" Value="DejaVuSans-12" />
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" >Player:
 
  
@@ -60,7 +60,7 @@ Health:</Property>
                 <Property Name="BackgroundEnabled" Value="False" />
             </Window>
             <Window Type="GWEN/Editbox" Name="/Server/admin/edtPlayer" >
-                <Property Name="Font" Value="DejaVuSans-12" />
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="ReadOnly" Value="True" />
                 <Property Name="MaxTextLength" Value="1073741823" />
                 <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.358408,0},{0.98,0},{0.608585,0}}" />
