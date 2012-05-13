@@ -275,8 +275,12 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 	bConnected = true;
 	timeLastUpdate = 0;
 
+    // Set the gameplay parameters.
     GameCore::mGameplay->setGameMode( gm );
     GameCore::mGameplay->setArenaID( aid );
+
+    // Configure the game for the player.
+    GameCore::mGui->showSpawnScreenPage1( gm );
     GameCore::mClientGraphics->loadArena( aid );
     
 	// Request to spawn straight away for now
@@ -351,7 +355,7 @@ void NetworkCore::PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet
         pPlayer = GameCore::mPlayerPool->getLocalPlayer();
         pPlayer->setTeam( teamID );
 
-        GameCore::mGui->showSpawnScreenPage2(teamID);
+        GameCore::mGui->showSpawnScreenPage2(GameCore::mGameplay->getGameMode(), teamID);
     }
     else
     {

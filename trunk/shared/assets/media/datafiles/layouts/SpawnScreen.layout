@@ -21,6 +21,7 @@
             <Property Name="TitlebarEnabled" Value="True" />
             <Property Name="UnifiedAreaRect" Value="{{0.35,0},{0.32,0},{0.65,0},{0.68,0}}" />
             <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="Visible" Value="False" />
             <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
             <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
             <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
@@ -57,6 +58,7 @@
             <Property Name="TitlebarEnabled" Value="True" />
             <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.29,0},{0.8,0},{0.71,0}}" />
             <Property Name="CloseButtonEnabled" Value="False" />
+            <Property Name="Visible" Value="False" />
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCoupe" >
                 <Property Name="Text" Value="Coupe" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.38,0},{0.15,0}}" />

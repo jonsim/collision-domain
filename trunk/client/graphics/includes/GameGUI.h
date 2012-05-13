@@ -19,8 +19,8 @@ public:
     ~GameGUI (void) {}
 
     void setupSpawnScreen (CEGUI::Window* guiWindow);
-    void showSpawnScreenPage1 (void);
-    void showSpawnScreenPage2 (TeamID teamDisplay);
+    void showSpawnScreenPage1 (GameMode gameMode);
+    void showSpawnScreenPage2 (GameMode gameMode, TeamID teamDisplay, CarType defaultCar = CAR_BANGER);
     void closeSpawnScreen (void);
     void showSpawnScreenErrorText (const char* errorText);
     void hideSpawnScreenErrorText (void);
@@ -101,7 +101,8 @@ private:
 
     Ogre::Overlay   *glassOverlay;
 
-    TeamID playerTeam;
+    GameMode currentMode;
+    TeamID   playerTeam;
 
     CarType playerCarType; //
 
