@@ -50,8 +50,8 @@ AudioCore::AudioCore()
     if (!mInitOK) return;
     
     mMenuTrack    = mSoundManager->createSound("menutrack",    FILE_MENU_TRACK,     false, true, true, GameCore::mSceneMgr, true);
-    mMenuTrack->setMaxVolume(0.5);
-    mMenuTrack->startFade(true, 0.5);
+    mMenuTrack->setMaxVolume(0.65f);
+    mMenuTrack->startFade(true, 0.5f);
 
     // force the soundManager to buffer immediate sounds
     std::string tempName = "hello";
@@ -74,7 +74,7 @@ AudioCore::AudioCore()
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_HEAVY,  false, false, true, GameCore::mSceneMgr));
 
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr, true);
-    mBackingTrack->setMaxVolume(0.85f);
+    mBackingTrack->setMaxVolume(0.9f);
 
     // doppler effect is good now at the default 1.0
     //mSoundManager->setSpeedOfSound();
@@ -205,11 +205,25 @@ void AudioCore::deleteSoundInstance(OgreOggISound* sound)
     mSoundDeletesPending->insert(mSoundDeletesPending->end(), sound);
 }
 
-void AudioCore::localPlayerNowInArenaTrigger()
+void AudioCore::menuToRockTrack(bool reverse)
 {
-    mMenuTrack->startFade(false, 2.0);
-    
-    mBackingTrack->startFade(true, 2.0);
+    if (!reverse)
+    {
+        // menu music is currently playing, play the rock track instead
+        mBackingTrack->setPlayPosition(0);
+        
+        mMenuTrack->startFade(false, 2.0f); // fade out
+        mBackingTrack->startFade(true, 0.5f); // fade in
+    }
+
+    if (reverse)
+    {
+        // rock track is currently playing, play the menu music instead
+        mMenuTrack->setPlayPosition(0);
+        
+        mBackingTrack->startFade(false, 2.0f); // fade out
+        mMenuTrack->startFade(true, 0.5f); // fade in
+    }
 }
 
 void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
