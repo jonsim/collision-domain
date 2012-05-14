@@ -810,6 +810,12 @@ void Player::setTeam(TeamID newTeam)
     //GameCore::mGameplay->getTeam(newTeam)->addPlayer(this);
 }
 
+// used to place human players more importantly above AI players on the final scoreboards and rank.
+bool Player::isAI()
+{
+    return false;
+}
+
 void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime )
 {
     powerupTimers[type] = endtime;
