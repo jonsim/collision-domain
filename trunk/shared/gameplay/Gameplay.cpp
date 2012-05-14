@@ -468,7 +468,6 @@ void Gameplay::startGame()
 #ifdef COLLISION_DOMAIN_SERVER
     GameCore::mGui->outputToConsole("Game started.\n");
 #endif
-
 }
 
 void Gameplay::drawInfo()
@@ -590,11 +589,23 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     GameCore::mGui->outputToConsole("Five!\n");
                 #endif
 				break;
+
             case GO_OT:
+                // put the rock music back
+                #ifdef COLLISION_DOMAIN_CLIENT
+                    GameCore::mAudioCore->menuToRockTrack(false);
+                #endif
+
                 mGameActive = true;
                 mCountDownActive = false;
                 break;
+
 			case ROUND_OVER_OT:
+                // put the menu music back
+                #ifdef COLLISION_DOMAIN_CLIENT
+                    GameCore::mAudioCore->menuToRockTrack(true);
+                #endif
+
                 mGameActive = false;
                 //this->cycleGameMode(); //Cycle game mode
 				#ifdef COLLISION_DOMAIN_CLIENT

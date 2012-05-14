@@ -40,7 +40,7 @@ public:
     OgreOggISound*  getSoundInstance(PowerupType p, int uniqueID, Ogre::SceneNode *attachTo);
     void            deleteSoundInstance(OgreOggISound* sound);
     void            frameEvent(Ogre::Real timeSinceLastFrame);
-    void            localPlayerNowInArenaTrigger();
+    void            menuToRockTrack(bool reverse);
     
 private:
     void processSoundDeletesPending();
