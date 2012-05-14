@@ -117,6 +117,7 @@ void SceneSetup::setupParticleSystem (void)
     // place their own emitters rather than having a fixed number of emitters 'hardcoded' in the
     // script.
     // Spark parameters
+#ifdef PARTICLE_EFFECT_SPARKS
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "5") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "200") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",   "35") );
@@ -125,7 +126,9 @@ void SceneSetup::setupParticleSystem (void)
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.25") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_start", "1.000 1.000 0.847 1.0") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_end",   "0.851 0.737 0.565 1.0") );
+#endif
 
+#ifdef PARTICLE_EFFECT_EXPLOSION
     // Explosion nucleus parameters
     mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "0.0 0.0 0.0") );
     mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "0") );
@@ -155,6 +158,7 @@ void SceneSetup::setupParticleSystem (void)
     //mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "5.0") );
     mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.5") );
     mExplosionDebrisParams.insert( std::pair<Ogre::String, Ogre::String>("colour",         "0.9 0.8 0.8 1") );
+#endif
 
     
     // Setup the particle systems.
@@ -162,24 +166,30 @@ void SceneSetup::setupParticleSystem (void)
     Ogre::ParticleSystem::setDefaultNonVisibleUpdateTimeout(5);
     
     // Create systems.
+#ifdef PARTICLE_EFFECT_SPARKS
     mSparkSystem            = GameCore::mSceneMgr->createParticleSystem("SparkSystem",            "CollisionDomain/Spark");
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(mSparkSystem);
+#endif
+#ifdef PARTICLE_EFFECT_EXPLOSION
     mExplosionNucleusSystem = GameCore::mSceneMgr->createParticleSystem("ExplosionNucleusSystem", "CollisionDomain/Explosion/Nucleus");
     mExplosionSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("ExplosionSmokeSystem",   "CollisionDomain/Explosion/Smoke");
     mExplosionDebrisSystem  = GameCore::mSceneMgr->createParticleSystem("ExplosionDebrisSystem",  "CollisionDomain/Explosion/Debris");
-    GameCore::mSceneMgr->getRootSceneNode()->attachObject(mSparkSystem);
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionNucleusSystem);
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionSmokeSystem);
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionDebrisSystem);
+#endif
     
     // Add the VIP Nodes and systems
     // This is a completely inappropriate place to do this and I would normally freak out if I saw this, but I'm waiting for a better 
     // place (in the team class for example) to be made available.
     mVIPIcon[0]  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("VIPNode1");
     mVIPIcon[1]  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("VIPNode2");
+#ifdef PARTICLE_EFFECT_VIPSTREAK
     Ogre::ParticleSystem* crownEffect1 = GameCore::mSceneMgr->createParticleSystem("crownSystem1", "CollisionDomain/Streak");
     Ogre::ParticleSystem* crownEffect2 = GameCore::mSceneMgr->createParticleSystem("crownSystem2", "CollisionDomain/Streak");
     mVIPIcon[0]->attachObject(crownEffect1);
     mVIPIcon[1]->attachObject(crownEffect2);
+#endif
     Ogre::SceneNode* VIPMesh1 = mVIPIcon[0]->createChildSceneNode("VIPMeshNode1");
     Ogre::SceneNode* VIPMesh2 = mVIPIcon[1]->createChildSceneNode("VIPMeshNode2");
     Ogre::Entity* crownEntity1  = GameCore::mSceneMgr->createEntity("CrownEntity1",  "crown.mesh");

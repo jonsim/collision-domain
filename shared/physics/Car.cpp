@@ -388,38 +388,35 @@ void Car::updateRPM()
 #endif
 }
 
-void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame)
+void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
 {
-	//static float oldRPM = 0;
-    static float oldMPH = 0;
-    //static float oldForce = 0;
+#ifdef PARTICLE_EFFECT_EXHAUST
+    // Emission rate variables.
+    static float oldMPH = 0;        // Static variable to keep previous frame information to calculate the differential.
+    float exhaustRate = 0;
 
-	// Calculate the new exhaust emission rate (from engine RPM).
+	// Calculate the new exhaust emission rate (from engine speed fluctuation rate).
     float currentMPH = getCarMph();
     float dSdT = (currentMPH - oldMPH) / (secondsSinceLastFrame);   // differential d(speed) / d(time)
-    //float dFdT = (mEngineForce - oldForce) / (secondsSinceLastFrame);
-	//float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
-    //float exhaustRate = (dRdT > 1300) ? ((mEngineRPM / mRevLimit) * 250) : 0;
 
-    //char bob[64];
-    //sprintf(bob, "dFdT = %.2f\n", dFdT);
-    //OutputDebugString(bob);
-
-    float exhaustRate = 0;
     // Modulate the speed differential against the engine rpm such that a max of 150 comes from the differential and a max of 100 from the rpm.
     //if (dSdT < 1500 && currentMPH > 0)
         //exhaustRate = ((1500 - dSdT) / 10.0f) + ((mEngineRPM / mRevLimit) * 100);
     if (dSdT < 1800)
         exhaustRate = (1800 - dSdT) / 12.0f;
-    //if (dFdT > 1000)
-        //exhaustRate = dFdT / 20;
-
-	//oldRPM = mEngineRPM;
+    // Save the old info.
     oldMPH = currentMPH;
-    //oldForce = mEngineForce;
+    
+    // Set the new particle emission rates.
+	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
+		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
+#endif
+
+#ifdef PARTICLE_EFFECT_DUST
+    // Emission rate variables.
+    float dustRate[4] = {0, 0, 0, 0};
 
     // Calculate the new dust emission rate (from wheel slip/skid).
-    float dustRate[4] = {0, 0, 0, 0};
     fricConst->calcWheelSkid();
     if (fricConst->getWheelSkid() < 0.1f)
     {
@@ -441,11 +438,30 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame)
     }
 
     // Set the new particle emission rates.
-	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
-		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
 	for (int i = 0; i < 4; i++)
 		mDustSystem->getEmitter(i)->setEmissionRate(dustRate[i]);
-    
+#endif
+
+#ifdef PARTICLE_EFFECT_SMOKE
+    static float oldHealthPercentage = 100;
+    float smokeRate = 0;
+
+    // Calculate the new smoke emission rate (from the damage model)
+    float healthPercentage = (health / (float) INITIAL_HEALTH);
+    if (healthPercentage < oldHealthPercentage)
+    {
+        if (oldHealthPercentage > 0.7f && healthPercentage < 0.7f)
+        {
+            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f, 0.5f));
+            mSmokeSystem->getEmitter(0)->setEmissionRate(10);
+        }
+        else if (oldHealthPercentage > 0.4f && healthPercentage < 0.4f)
+        {
+            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f, 0.8f));
+            mSmokeSystem->getEmitter(0)->setEmissionRate(20);
+        }
+    }
+#endif
 }
 
 

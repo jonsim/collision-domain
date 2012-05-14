@@ -194,6 +194,20 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     GameCore::mPhysicsCore->removeBody( mRBumperBody );
 
     GameCore::mPhysicsCore->getWorld()->removeAction( mVehicle );
+    
+    // Destroy particle systems.
+#ifdef PARTICLE_EFFECT_EXHAUST
+    GameCore::mSceneMgr->destroyParticleSystem(mExhaustSystem);
+#endif
+#ifdef PARTICLE_EFFECT_DUST
+    GameCore::mSceneMgr->destroyParticleSystem(mDustSystem);
+#endif
+#ifdef PARTICLE_EFFECT_SMOKE
+    GameCore::mSceneMgr->destroyParticleSystem(mSmokeSystem);
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
+    GameCore::mSceneMgr->destroyParticleSystem(mFireSystem);
+#endif
 
     mBodyNode->removeAndDestroyAllChildren();
     GameCore::mSceneMgr->destroySceneNode( mBodyNode );
@@ -378,29 +392,37 @@ void SimpleCoupeCar::initGraphics(TeamID tid, ArenaID aid)
     createGeometry("CarEntity_RRWheel",    "banger_rwheel.mesh",  mRRWheelNode, false);
 
 	// Setup particles.
+#ifdef PARTICLE_EFFECT_EXHAUST
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Banger/Exhaust");
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-    mSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("Smoke"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
-    mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
 	mBodyNode->attachObject(mExhaustSystem);
+#endif
+#ifdef PARTICLE_EFFECT_DUST
+	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
 	mBodyNode->attachObject(mDustSystem);
-	mBodyNode->attachObject(mSmokeSystem);
-	mBodyNode->attachObject(mFireSystem);
 
-    // Place the exhasut emitter.
-    //mExhaustSystem->getEmitter(0)->setPosition(Ogre::Vector3(-0.35f, 0.25f, -2.0f));
     // Place the dust emitters. These should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
     mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.8f, 0.2f,  1.6f));  // FL
     mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.8f, 0.2f,  1.6f));  // FR
     mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.8f, 0.2f, -1.6f));  // RL
     mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.8f, 0.2f, -1.6f));  // RR
+#endif
+#ifdef PARTICLE_EFFECT_SMOKE
+    mSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("Smoke"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
+	mBodyNode->attachObject(mSmokeSystem);
+
     // The smoke emitter should be placed over the engine.
     mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0, 0, 0));
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
+    mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
+	mBodyNode->attachObject(mFireSystem);
+
     // As should the fire emitter (which is, slightly more complex as it is a box).
     mFireSystem->getEmitter(0)->setParameter("width",  "2");
     mFireSystem->getEmitter(0)->setParameter("height", "2");    // height and depth are effectively switched
     mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
+#endif
     
     // Update the skin based on the team
     updateTeam(tid);
@@ -463,6 +485,7 @@ void SimpleCoupeCar::updateTeam (TeamID tid)
 
 void SimpleCoupeCar::updateArena (ArenaID aid)
 {
+#ifdef PARTICLE_EFFECT_DUST
     Ogre::ColourValue dustColour;
     unsigned char i;
 
@@ -477,6 +500,7 @@ void SimpleCoupeCar::updateArena (ArenaID aid)
     // Update the dust emitter.
     for (i = 0; i < 4; i++)
         mDustSystem->getEmitter(i)->setColour(dustColour);
+#endif
 
     // Update the environment map.
     /*std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");

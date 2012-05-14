@@ -95,7 +95,7 @@ public:
 #else
 	virtual void removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shape, btVector3 offset );
 #endif
-    virtual void updateParticleSystems(Ogre::Real secondsSinceLastFrame);
+    virtual void updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health);
 
 	Ogre::Vector3 GetPos();
 	Ogre::Quaternion GetHeading();
@@ -125,10 +125,18 @@ protected:
     Ogre::SceneNode *mWheelsNode;
 
 	// Particle systems
+#ifdef PARTICLE_EFFECT_EXHAUST
 	Ogre::ParticleSystem* mExhaustSystem;
+#endif
+#ifdef PARTICLE_EFFECT_DUST
 	Ogre::ParticleSystem* mDustSystem;
+#endif
+#ifdef PARTICLE_EFFECT_SMOKE
     Ogre::ParticleSystem* mSmokeSystem;
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
     Ogre::ParticleSystem* mFireSystem;
+#endif
 
     // Friction constraint
     WheelFrictionConstraint *fricConst;

@@ -251,14 +251,20 @@ void Player::angleTest(void) {
     if(damage > 40.f) getCar()->removeCarPart(damageSection);
     switch(crashType) {
         case 1:
+#ifdef PARTICLE_EFFECT_SPARKS
             GameCore::mClientGraphics->generateSparks(hitPoint, Ogre::Vector3(1, 0.6f, 1));
+#endif
             break;
         case 2:
+#ifdef PARTICLE_EFFECT_SHRAPNEL
             GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
+#endif
             break;
         case 3:
             GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, hitPoint, damage * 0.04, isFront);
+#ifdef PARTICLE_EFFECT_SHRAPNEL
             GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
+#endif
             break;
         default:
             // error
@@ -559,7 +565,7 @@ void Player::updateLocalGraphics (void)
 void Player::updateGlobalGraphics (Ogre::Real secondsSinceLastFrame)
 {
     if (mCar != NULL)
-        mCar->updateParticleSystems(secondsSinceLastFrame);
+        mCar->updateParticleSystems(secondsSinceLastFrame, hp);
 }
 
 /// @brief Returns the camera current yawing around the player.
@@ -585,7 +591,9 @@ void Player::killPlayer()
 
 	this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
+#ifdef PARTICLE_EFFECT_EXPLOSION
     GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());
+#endif
     mCar->loadDestroyedModel();
 
     // Blast the stuff out of the car (renders it completely undriveable but since this

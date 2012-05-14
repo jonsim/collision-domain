@@ -113,7 +113,7 @@ int PlayerPool::getPlayerRankIndex(Player *p)
 
     int index = -1;
 
-    for (int i = 0; i < ordered.size(); i++)
+    for (unsigned int i = 0; i < ordered.size(); i++)
     {
         if (ordered[i] == p)
         {

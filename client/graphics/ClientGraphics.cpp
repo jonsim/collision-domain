@@ -494,9 +494,12 @@ void ClientGraphics::updateParticleSystems (void)
 {
     unsigned short i;
     // Check for stale emitters in the systems and cleanup
+#ifdef PARTICLE_EFFECT_SPARKS
     for (i = 0; i < mSparkSystem->getNumEmitters(); i++)
         if (!mSparkSystem->getEmitter(i)->getEnabled())
             mSparkSystem->removeEmitter(i--);
+#endif
+#ifdef PARTICLE_EFFECT_EXPLOSION
     for (i = 0; i < mExplosionNucleusSystem->getNumEmitters(); i++)
         if (!mExplosionNucleusSystem->getEmitter(i)->getEnabled())
             mExplosionNucleusSystem->removeEmitter(i--);
@@ -506,7 +509,9 @@ void ClientGraphics::updateParticleSystems (void)
     for (i = 0; i < mExplosionDebrisSystem->getNumEmitters(); i++)
         if (!mExplosionDebrisSystem->getEmitter(i)->getEnabled())
             mExplosionDebrisSystem->removeEmitter(i--);
+#endif
 
+#ifdef PARTICLE_EFFECT_SHRAPNEL
     // Check for stale shrapnel systems
     Ogre::ParticleSystem* currentSystem;
     while (!mShrapnelSystems.empty())
@@ -517,9 +522,11 @@ void ClientGraphics::updateParticleSystems (void)
             mShrapnelSystems.pop();
             GameCore::mSceneMgr->destroyParticleSystem(currentSystem);
         }
-        else
-            break;
+        // NOTE TO SELF: THIS THE FOLLOWING COMMENTED OUT LINES ARE AN OPTIMISATION, BUT ARE DISABLED FOR DEBUGGING
+        //else
+            //break;
     }
+#endif
 }
 
 
@@ -530,6 +537,7 @@ void ClientGraphics::updateParticleSystems (void)
 /// @param  planeOffset The offset in the y axis of the plane for the shrapnel to collide with from the shrapnel's origin provided by 
 ///                     the location parameter. This value should be negative.
 /// @param  planeNormal The normal of the plane with which the shrapnel is to collide.
+#ifdef PARTICLE_EFFECT_SHRAPNEL
 void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity, float maxShrapnelVelocity, float planeOffset, Ogre::Vector3 planeNormal)
 {
     // First create the particle system
@@ -577,6 +585,7 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(shrapnelSystem);
     //GameCore::mSceneMgr->getRootSceneNode()->attachObject(debrisSystem);
 }
+#endif
 
 
 void ClientGraphics::updateVIPLocation (TeamID teamID, Ogre::Vector3 location)
@@ -587,10 +596,11 @@ void ClientGraphics::updateVIPLocation (TeamID teamID, Ogre::Vector3 location)
     else if (teamID == RED_TEAM)
         mVIPIcon[1]->setPosition(location);
     else
-        throw Ogre::Exception::ERR_INVALIDPARAMS;
+        OutputDebugString("WARNING: updateVIPLocation called with NO_TEAM. Continuing anyway...\n");
 }
 
 
+#ifdef PARTICLE_EFFECT_EXPLOSION
 /// @brief  Generates an explosion.
 void ClientGraphics::generateExplosion (Ogre::Vector3 location)
 {
@@ -615,8 +625,10 @@ void ClientGraphics::generateExplosion (Ogre::Vector3 location)
     explosionSound->setPosition(location);
     GameCore::mAudioCore->playSoundOrRestart(explosionSound);
 }
+#endif
 
 
+#ifdef PARTICLE_EFFECT_SPARKS
 void ClientGraphics::generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction)
 {
     unsigned short sparkIndex = mSparkSystem->getNumEmitters();
@@ -626,6 +638,7 @@ void ClientGraphics::generateSparks (Ogre::Vector3 location, Ogre::Vector3 direc
     mSparkSystem->getEmitter(sparkIndex)->setPosition(location);
     mSparkSystem->getEmitter(sparkIndex)->setDirection(direction);
 }
+#endif
 
 
 /// @brief  Adds the finishing podium to the game world. Not exactly the best way to do this but nevermind.
@@ -771,6 +784,7 @@ void ClientGraphics::startBenchmark (uint8_t stage)
         mGraphicsState = BENCHMARKING;
 }
 
+
 void ClientGraphics::setupProjector()		
 {		
 	mGraphicsState = PROJECTOR;		
@@ -794,11 +808,13 @@ void ClientGraphics::setupProjector()
         powerups[i]->reinitBigScreenOverlayElementIfNull();
     }
 }		
+
 			
 GraphicsState ClientGraphics::getGraphicsState()		
 {		
 	return this->mGraphicsState;		
 }
+
 
 void ClientGraphics::finishBenchmark (uint8_t stage, float averageTriangles)
 {

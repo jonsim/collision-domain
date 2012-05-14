@@ -15,6 +15,7 @@
 
 //#define COLLISION_DOMAIN_CLIENT
 
+
 /*-------------------- CLASS DEFINITIONS --------------------*/
 /**
  * @brief     Builds the window and provides the necessary low level functions.
@@ -42,9 +43,15 @@ public:
     void shutdown() { mShutDown = true; }
 
     // Particle effect handlers.
+#ifdef PARTICLE_EFFECT_EXPLOSION
     void generateExplosion (Ogre::Vector3 location);
+#endif
+#ifdef PARTICLE_EFFECT_SPARKS
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
+#endif
+#ifdef PARTICLE_EFFECT_SHRAPNEL
     void generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity=20, float maxShrapnelVelocity=10, float planeOffset=-0.8f, Ogre::Vector3 planeNormal=Ogre::Vector3::UNIT_Y);
+#endif
     void updateVIPLocation (TeamID teamID, Ogre::Vector3 location);
     
     void addPodium (Ogre::Vector3 position);
