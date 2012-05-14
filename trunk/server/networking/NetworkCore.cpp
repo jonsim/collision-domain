@@ -550,13 +550,13 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
         pPlayer->setCarType( iCarType );
         pPlayer->setPlayerState( PLAYER_STATE_WAIT_SPAWN );
 
-        // Check how many players we now have waiting to spawn
+        // Check how many players we now have spawned
         int size = GameCore::mPlayerPool->getNumberOfPlayers();
         int c = 0;
 	    for(int i=0;i<size;i++)
 	    {
 		    Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
-            if( tmpPlayer->getPlayerState() == PLAYER_STATE_WAIT_SPAWN )
+            if( tmpPlayer->getPlayerState() == PLAYER_STATE_INGAME )
                 c ++;
         }
 
@@ -564,7 +564,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
         if( GameCore::mGameplay->mGameActive == false && c >= NUM_PLAYERS_TO_START )
             GameCore::mGameplay->startGame();
 
-        return;
+       // return;
     }
 
     pPlayer->setCarType( iCarType );
@@ -613,14 +613,6 @@ void log( char *data, ... )
 	
 	return;
 }
-
-// This links the big screen view into the networkcore so we can push updates
-/* 
-void NetworkCore::linkBigScreen(BigScreen* bigScreen_P)
-{
-	bigScreen = bigScreen_P;
-}
-*/
 
 void NetworkCore::sendInfoItem(InfoItem* ii, bool show)
 {
