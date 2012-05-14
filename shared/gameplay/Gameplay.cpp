@@ -514,6 +514,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 	#endif
 	#ifdef COLLISION_DOMAIN_SERVER
 		InfoItem* transitionII;
+        StringStream tmpSS;
     #endif
 
 	if(show)
@@ -637,29 +638,58 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
+           		#ifdef COLLISION_DOMAIN_SERVER
+                    tmpSS << "Round " << roundNumber << " ended";
+                    GameCore::mGui->outputToConsole(tmpSS.str().c_str());
+				#endif
+                //Hide the scoreboard
+                #ifdef COLLISION_DOMAIN_CLIENT
+					mSB->hideForce();
+					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)						
+						GameCore::mClientGraphics->mBigScreen->hideScreen();         
+                    this->showWinnerText(this->getRoundWinner(),true);
+				#endif
+
+                //If we're at the end of the rounds
+                if(this->roundNumber == 0 && 1 == 2)
+                {
+                    #ifdef COLLISION_DOMAIN_CLIENT
+                        GameCore::mClientGraphics->addPodium(Ogre::Vector3(0,10,0));
+                    #else
+                        InfoItem* clearPodiumII = new InfoItem(CLEAR_PODIUM_OT,5000,900);
+                        mInfoItems.push_back(clearPodiumII);
+                    #endif
+                }
+                else
+                {
+
+
+                    this->mGameActive = false;
+                    this->restartGame();
+                    cycleGame();
+                    GameCore::mPlayerPool->roundEnd();
+                }
+
+
+
+
+				
+				break;
+
+            case CLEAR_PODIUM_OT:
+                #ifdef COLLISION_DOMAIN_CLIENT
+                    GameCore::mClientGraphics->removePodium();
+                #else
+
+                #endif
+
+                //Reset the gmae
                 this->mGameActive = false;
                 this->restartGame();
                 cycleGame();
                 GameCore::mPlayerPool->roundEnd();
-				#ifdef COLLISION_DOMAIN_CLIENT
-					mSB->hideForce();
-					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
-						
-						GameCore::mClientGraphics->mBigScreen->hideScreen();
-						//Move the camera
-						//GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,0,80));
-						//GameCore::mClientGraphics->mCamera->setNearClipDistance(5);
-						//GameCore::mClientGraphics->mCamera->lookAt(Ogre::Vector3(0,0,-300));
-					}
-                    
 
-                    this->showWinnerText(this->getRoundWinner(),true);
-				#endif
-				#ifdef COLLISION_DOMAIN_SERVER
-
-				#endif
-				
-				break;
+                break;
 			case NEW_ROUND_OT:
                 this->handleNewRound();
 				#ifdef COLLISION_DOMAIN_CLIENT
