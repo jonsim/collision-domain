@@ -307,6 +307,8 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	GameCore::mPlayerPool->addPlayer( playerid, szNickname );
     GameCore::mPlayerPool->getPlayer( playerid )->setTeam( team );
+    
+    GameCore::mGui->updateLocalPlayerRank();
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -317,6 +319,8 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
     bitStream->Read( reason );
 
 	GameCore::mPlayerPool->delPlayer( playerid );
+    
+    GameCore::mGui->updateLocalPlayerRank();
 }
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

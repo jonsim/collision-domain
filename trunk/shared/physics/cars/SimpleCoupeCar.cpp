@@ -226,6 +226,8 @@ SimpleCoupeCar::~SimpleCoupeCar(void)
     mVehicleRayCaster = NULL;
 
 #ifdef COLLISION_DOMAIN_CLIENT
+    mEngineSound->stop();
+
     GameCore::mAudioCore->deleteSoundInstance(mHornSound);
     GameCore::mAudioCore->deleteSoundInstance(mEngineSound);
 #endif

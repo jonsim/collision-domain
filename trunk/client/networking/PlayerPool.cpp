@@ -13,8 +13,11 @@ PlayerPool::PlayerPool() : mLocalPlayer(0)
 
 int PlayerPool::addPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
+    int compare = strncmp ( szNickname, "AiPlayer", 8 );
+    bool isAI = compare == 0 ? true : false;
+
 	int iNew = mPlayers.size();
-	mPlayers.push_back(new Player());
+	mPlayers.push_back(new Player(isAI));
 	mPlayers[iNew]->setPlayerGUID(playerid);
 	mPlayers[iNew]->setGUID(playerid);
 	//mGUID.push_back(playerid);
@@ -30,7 +33,7 @@ int PlayerPool::getNumberOfPlayers()
 
 void PlayerPool::addLocalPlayer( RakNet::RakNetGUID playerid, char *szNickname )
 {
-	mLocalPlayer = new Player();
+	mLocalPlayer = new Player(false);
 	mLocalPlayer->setPlayerGUID(playerid);
 	mLocalPlayer->setNickname(szNickname);
 	mLocalGUID = playerid;
@@ -107,32 +110,57 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 	return tmp;
 }
 
-int PlayerPool::getPlayerRankIndex(Player *p)
+int PlayerPool::getPlayerRankIndex(Player *p, bool *sharedRank)
 {
     std::vector<Player*> ordered = this->getScoreOrderedPlayers();
 
-    int index = -1;
+    *sharedRank = false;
 
-    for (unsigned int i = 0; i < ordered.size(); i++)
+    if (ordered.size() == 0) return 0;
+
+    // deal with the last (most points) player outside of the for loop
+    if ( ordered[ ordered.size() - 1 ] == p )
     {
-        if (ordered[i] == p)
+        if ( ordered.size() > 1
+                && !ordered[ ordered.size() - 2 ]->isAI()
+                && p->getRoundScore() == ordered[ ordered.size() - 2 ]->getRoundScore() )
         {
-            index = i;
+            *sharedRank = true;
+        }
+
+        return 0;
+    }
+    
+    int rankIndex = 0;
+
+    // deal with the rest of the players
+    for ( int i = ordered.size() - 2; i >= 0; i-- )
+    {
+        if ( ordered[ i + 1 ]->getRoundScore() != ordered[ i ]->getRoundScore() )
+        {
+            rankIndex++;
+            *sharedRank = false;
+        }
+        else
+        {
+            *sharedRank = true;
+        }
+
+        if ( ordered[ i ] == p )
+        {
+            if (!sharedRank
+                    && i >= 1
+                    && !ordered[ i - 1 ]->isAI()
+                    && p->getRoundScore() == ordered[ i - 1 ]->getRoundScore() )
+            {
+                *sharedRank = true;
+            }
+
             break;
         }
     }
 
-    // this player is not in the top 3
-    if (index < 0) return 99;
-
-    if ( index == ordered.size() - 1 )
-        return 0;
-    else if ( index == ordered.size() - 2 )
-        return 1;
-    else if ( index == ordered.size() - 3 )
-        return 2;
-    else
-        return 3;
+    return rankIndex;
 }
 
 //This returns all the players in the pool in sorted game score order.

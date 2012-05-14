@@ -15,6 +15,8 @@ void ClientHooks::localPlayerNowInArena(Player *localPlayer)
 {
     GameCore::mAudioCore->menuToRockTrack(false);
     localPlayer->getCar()->startEngineSound();
+    
+    GameCore::mGui->updateLocalPlayerRank();
 }
 
 void ClientHooks::nonLocalPlayerNowInArena(Player *player)

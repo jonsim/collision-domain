@@ -875,33 +875,75 @@ void GameGUI::setupRank()
     olRankContainer->setHorizontalAlignment( Ogre::GHA_LEFT );
     olRankContainer->setVerticalAlignment( Ogre::GVA_BOTTOM );
     olRankContainer->setDimensions( 250, 250 );
-    currentRankMaterialIndex = 2;
-    olRankContainer->setMaterialName( "rank_3rd" );
+    currentRankMaterialIndex = 10;
+    olRankContainer->setMaterialName( "rank_1st_eql" );
     olRankContainer->setPosition( 269, -202 ); // 270 gives a weird vertical glitch 
 
     olRank->add2D( olRankContainer );
 }
 
+void GameGUI::updateLocalPlayerRank()
+{
+    Player *localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    if ( localPlayer )
+    {
+        // Update the local player rank display
+        bool sharedRank;
+        int rankIndex = GameCore::mPlayerPool->getPlayerRankIndex(localPlayer, &sharedRank);
+        updateRank(rankIndex, sharedRank);
+    }
+}
+
 // 0 = 1st, 1 = 2nd, 2 = 3rd, anything else = >3rd
-void GameGUI::updateRank(int rankIndex)
+void GameGUI::updateRank(int rankIndex, bool isShared)
 {
     switch (rankIndex)
     {
         case 0:
-            if (currentRankMaterialIndex == 0) break;
-            currentRankMaterialIndex = 0;
-            olRankContainer->setMaterialName( "rank_1st" );
+            if (isShared)
+            {
+                if (currentRankMaterialIndex == 10) break;
+                currentRankMaterialIndex = 10;
+                olRankContainer->setMaterialName( "rank_1st_eql" );
+            }
+            else
+            {
+                if (currentRankMaterialIndex == 0) break;
+                currentRankMaterialIndex = 0;
+                olRankContainer->setMaterialName( "rank_1st" );
+            }
             break;
+
         case 1:
-            if (currentRankMaterialIndex == 1) break;
-            currentRankMaterialIndex = 1;
-            olRankContainer->setMaterialName( "rank_2nd" );
+            if (isShared)
+            {
+                if (currentRankMaterialIndex == 11) break;
+                currentRankMaterialIndex = 11;
+                olRankContainer->setMaterialName( "rank_2nd_eql" );
+            }
+            else
+            {
+                if (currentRankMaterialIndex == 1) break;
+                currentRankMaterialIndex = 1;
+                olRankContainer->setMaterialName( "rank_2nd" );
+            }
             break;
+
         case 2:
-            if (currentRankMaterialIndex == 2) break;
-            currentRankMaterialIndex = 2;
-            olRankContainer->setMaterialName( "rank_3rd" );
+            if (isShared)
+            {
+                if (currentRankMaterialIndex == 12) break;
+                currentRankMaterialIndex = 12;
+                olRankContainer->setMaterialName( "rank_3rd_eql" );
+            }
+            else
+            {
+                if (currentRankMaterialIndex == 2) break;
+                currentRankMaterialIndex = 2;
+                olRankContainer->setMaterialName( "rank_3rd" );
+            }
             break;
+
         default:
             if (currentRankMaterialIndex == 3) break;
             currentRankMaterialIndex = 3;

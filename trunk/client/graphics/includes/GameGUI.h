@@ -52,7 +52,7 @@ public:
     void setupOverlays (CEGUI::Window* guiWindow);
     void setupFPSCounter (CEGUI::Window* guiWindow);
 
-    void updateRank (int rankIndex);
+    void updateLocalPlayerRank();
     void updateSpeedo (void);
     void updateSpeedo (float fSpeed, int iGear);
     void updateDamage (CarType ct, int part, int colour);
@@ -66,9 +66,8 @@ private:
     void setupRank(void);
     void setupSpeedo (void);
     void setupGearDisplay (void);
+    void updateRank (int rankIndex, bool isShared);
     
-    //Ogre::Overlay          *olPowerup;
-    //Ogre::OverlayContainer *olPowerupContainer;
     Ogre::Overlay          *olRank;
     Ogre::OverlayContainer *olRankContainer;
 

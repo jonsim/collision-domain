@@ -143,7 +143,7 @@ private:
 class Player
 {
 public:
-    Player (void);
+    Player (bool isAI);
     ~Player (void);
     void createPlayer (CarType carType, TeamID tid, ArenaID aid);
     void attachCamera (Ogre::Camera* cam);
@@ -236,6 +236,7 @@ private:
 	int										   hp;
     TeamID									   mTeam;
     char*									   mNickname;
+    bool                                       mIsAI;
     bool									   mIsVIP;
     bool									   mAlive;
     Player*                                    mLastKiller;
