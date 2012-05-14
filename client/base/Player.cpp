@@ -27,7 +27,9 @@ Player::Player (void) : cameraRotationConstant(0.08f),
                         mTeam(NO_TEAM),
                         mCarSnapshot(NULL),
                         mSnapshots(NULL),
-                        mCar(NULL)
+                        mCar(NULL),
+                        roundScore(0),
+                        gameScore(0)
 {
     // PlayerState state configures constants and zeros values upon creation.
 	//processingCollision = false;
