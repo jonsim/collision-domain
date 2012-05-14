@@ -424,7 +424,8 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame)
         for (int i = 0; i < 4; i++)
         {
             // If we're flying we probably don't want dust.
-            //const btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
+            //btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
+            //mVehicle->rayCast( wheel_info );
             //if (!wheel_info.m_raycastInfo.m_isInContact)
                 //continue;
 
