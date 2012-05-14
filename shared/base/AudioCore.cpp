@@ -50,7 +50,7 @@ AudioCore::AudioCore()
     if (!mInitOK) return;
     
     mMenuTrack    = mSoundManager->createSound("menutrack",    FILE_MENU_TRACK,     false, true, true, GameCore::mSceneMgr, true);
-    mMenuTrack->setMaxVolume(0.65f);
+    mMenuTrack->setMaxVolume(0.75f);
     mMenuTrack->startFade(true, 0.5f);
 
     // force the soundManager to buffer immediate sounds
@@ -74,7 +74,7 @@ AudioCore::AudioCore()
     mSoundManager->destroySound(mSoundManager->createSound(tempName, FILE_POWERUP_HEAVY,  false, false, true, GameCore::mSceneMgr));
 
     mBackingTrack = mSoundManager->createSound("backingtrack", FILE_BACKING_TRACK,  false, true, true, GameCore::mSceneMgr, true);
-    mBackingTrack->setMaxVolume(0.9f);
+    mBackingTrack->setMaxVolume(1.0f);
 
     // doppler effect is good now at the default 1.0
     //mSoundManager->setSpeedOfSound();
@@ -270,6 +270,12 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
     mSoundManager->getListener()->setOrientation(earsOrientation);
 
     mSoundManager->getListener()->setVelocity(linearVelocity);
+
+    if (localPlayer)
+    {
+        GameCore::mGui->updateRank(
+            GameCore::mPlayerPool->getPlayerRankIndex(localPlayer));
+    }
 
     // fire a frameevent for each car
     int numPlayers = GameCore::mPlayerPool->getNumberOfPlayers();

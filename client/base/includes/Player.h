@@ -184,6 +184,7 @@ public:
     bool getVIP(void) { return mIsVIP; }
     void setTeam(TeamID newTeam);
     TeamID getTeam(void) { return mTeam; }
+    bool isAI();
 
 	void setGUID(RakNet::RakNetGUID playerGUID);
 	std::string getGUID(void);

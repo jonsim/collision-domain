@@ -68,11 +68,27 @@ int PlayerPool::getPlayerIndex( RakNet::RakNetGUID playerid )
 
 bool PlayerPool::cmpRound(Player* a, Player* b)
 {
+    if ( a->isAI() && !b->isAI() )
+        // if player a is AI, output a higher score for b
+        return true;
+
+    if ( b->isAI() && !a->isAI() )
+        // if player b is AI, output a higher score for a
+        return false;
+
 	return a->getRoundScore() < b->getRoundScore();
 }
 
 bool PlayerPool::cmpGame(Player* a, Player* b)
 {
+    if ( a->isAI() && !b->isAI() )
+        // if player a is AI, output a score that is less than b
+        return true;
+
+    if ( b->isAI() && !a->isAI() )
+        // if player b is AI, output a higher score for player a
+        return false;
+
     return a->getGameScore() < b->getGameScore();
 }
 
@@ -91,6 +107,33 @@ std::vector<Player*> PlayerPool::getScoreOrderedPlayers()
 	return tmp;
 }
 
+int PlayerPool::getPlayerRankIndex(Player *p)
+{
+    std::vector<Player*> ordered = this->getScoreOrderedPlayers();
+
+    int index = -1;
+
+    for (int i = 0; i < ordered.size(); i++)
+    {
+        if (ordered[i] == p)
+        {
+            index = i;
+            break;
+        }
+    }
+
+    // this player is not in the top 3
+    if (index < 0) return 99;
+
+    if ( index == ordered.size() - 1 )
+        return 0;
+    else if ( index == ordered.size() - 2 )
+        return 1;
+    else if ( index == ordered.size() - 3 )
+        return 2;
+    else
+        return 3;
+}
 
 //This returns all the players in the pool in sorted game score order.
 std::vector<Player*> PlayerPool::getGameScoreOrderedPlayers()

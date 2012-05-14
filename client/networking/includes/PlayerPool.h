@@ -32,6 +32,7 @@ public:
 	std::vector<Player*> getScoreOrderedPlayers();
     std::vector<Player*> getGameScoreOrderedPlayers();
 	std::vector<Player*> getPlayers();
+    int                  getPlayerRankIndex(Player *p);
 
 	Player*             getPlayer( int index );
 	Player*             getPlayer( RakNet::RakNetGUID playerid );
