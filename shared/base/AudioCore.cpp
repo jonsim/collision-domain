@@ -271,12 +271,6 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
 
     mSoundManager->getListener()->setVelocity(linearVelocity);
 
-    if (localPlayer)
-    {
-        GameCore::mGui->updateRank(
-            GameCore::mPlayerPool->getPlayerRankIndex(localPlayer));
-    }
-
     // fire a frameevent for each car
     int numPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
     for (int i = 0; i < numPlayers; i++)
@@ -289,7 +283,6 @@ void AudioCore::frameEvent(Ogre::Real timeSinceLastFrame)
 
         if (player && car) car->updateAudioPitchFrameEvent();
     }
-    
 #endif
 }
 

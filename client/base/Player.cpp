@@ -21,15 +21,15 @@
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
 /// @brief  Constructor, setting the player constants and zeroing the PlayerState.
-Player::Player (void) : cameraRotationConstant(0.08f),
-                        mAlive(true),
-                        mIsVIP(false), 
-                        mTeam(NO_TEAM),
-                        mCarSnapshot(NULL),
-                        mSnapshots(NULL),
-                        mCar(NULL),
-                        roundScore(0),
-                        gameScore(0)
+Player::Player (bool isAI) 
+  : cameraRotationConstant(0.08f),
+    mAlive(true),
+    mIsVIP(false), 
+    mTeam(NO_TEAM),
+    mCarSnapshot(NULL),
+    mSnapshots(NULL),
+    mCar(NULL),
+    mIsAI(isAI)
 {
     // PlayerState state configures constants and zeros values upon creation.
 	//processingCollision = false;
@@ -804,11 +804,14 @@ void Player::killPlayer(Player* causedBy)
     GameCore::mGameplay->handleDeath(this,causedBy);
     mLastKiller = causedBy;
     mTimeLastKilled = RakNet::GetTimeMS();
+
     if( this == GameCore::mPlayerPool->getLocalPlayer() )
     {
         //InfoItem *spectate = new InfoItem( PLAYER_KILLED_OT, 0, 3000 );
         //GameCore::mGameplay->mInfoItems.push_back( spectate );
     }
+
+    GameCore::mGui->updateLocalPlayerRank();
 }
 
 void Player::setTeam(TeamID newTeam) 
@@ -823,7 +826,7 @@ void Player::setTeam(TeamID newTeam)
 // used to place human players more importantly above AI players on the final scoreboards and rank.
 bool Player::isAI()
 {
-    return false;
+    return mIsAI;
 }
 
 void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime )

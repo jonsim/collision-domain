@@ -651,7 +651,7 @@ void NetworkCore::sendSyncScores()
     bs.Write(playerPoolSize); //Send the size
     for(int i=0;i<playerPoolSize;i++)
     {
-        //Write player GUID then round score and then score
+        //Write player GUID then round score and then score, then if the player is AI
         bs.Write(GameCore::mPlayerPool->getPlayer(i)->getPlayerGUID());
         bs.Write(GameCore::mPlayerPool->getPlayer(i)->getRoundScore());
         bs.Write(GameCore::mPlayerPool->getPlayer(i)->getGameScore());
