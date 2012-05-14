@@ -339,16 +339,29 @@ void SmallCar::initGraphics(TeamID tid, ArenaID aid)
     
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/SmallCar/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
 	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+    mSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("Smoke"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
+    mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
+	mBodyNode->attachObject(mExhaustSystem);
 	mBodyNode->attachObject(mDustSystem);
-    // The dust emitters should be placed in the location of the wheel nodes but since
+	mBodyNode->attachObject(mSmokeSystem);
+	mBodyNode->attachObject(mFireSystem);
+
+    // Place the exhasut emitter.
+    //mExhaustSystem->getEmitter(0)->setPosition(Ogre::Vector3(-0.25f, 0.25f, -1.5f));
+    // Place the dust emitters. These should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
     mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 0.6f, 0.2f,  1.1f));  // FL
     mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-0.6f, 0.2f,  1.1f));  // FR
     mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 0.6f, 0.2f, -1.1f));  // RL
     mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-0.6f, 0.2f, -1.1f));  // RR
-    
+    // The smoke emitter should be placed over the engine.
+    mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0, 0, 0));
+    // As should the fire emitter (which is, slightly more complex as it is a box).
+    mFireSystem->getEmitter(0)->setParameter("width",  "2");
+    mFireSystem->getEmitter(0)->setParameter("height", "2");    // height and depth are effectively switched
+    mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
+
     // Update the skin based on the team
     updateTeam(tid);
     updateArena(aid);

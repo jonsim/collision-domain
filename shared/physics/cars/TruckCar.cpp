@@ -321,15 +321,48 @@ void TruckCar::initGraphics(TeamID tid, ArenaID aid)
 	
 	// Setup particles.
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Truck/Exhaust");
-	mBodyNode->attachObject(mExhaustSystem);
 	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
+    mSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("Smoke"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
+    mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
+	mBodyNode->attachObject(mExhaustSystem);
 	mBodyNode->attachObject(mDustSystem);
-    // The dust emitters should be placed in the location of the wheel nodes but since
+	mBodyNode->attachObject(mSmokeSystem);
+	mBodyNode->attachObject(mFireSystem);
+
+    /*// Place the exhasut emitter.
+    // We want to add a second exhaust emitter. To do that we need to get the parameters of the first exhaust emitter.
+    // This is somewhat ugly because, for some unknown reason, the getParameters function returns a Vector but the 
+    // setParameters function takes a map. Ho hum.
+    Ogre::ParameterList paramList = mExhaustSystem->getEmitter(0)->getParameters();
+    Ogre::NameValuePairList nvpList;
+    for (unsigned int i = 0; i < paramList.size(); i++)
+        nvpList[paramList[i].name] = paramList[i].description;
+    char bob[256];
+    sprintf(bob, "paramList.size = %d, nvpList.size = %d\n", paramList.size(), nvpList.size());
+    OutputDebugString(bob);
+    // Add our new emitter (index 1).
+    mExhaustSystem->addEmitter("Point");
+    mExhaustSystem->getEmitter(1)->setParameterList(nvpList);
+    // Finally actually place the emitters.
+    mExhaustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 1.0f, 2.75f, 0.65f));
+    mExhaustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-1.0f, 2.75f, 0.65f));
+    mExhaustSystem->getEmitter(0)->setDirection(Ogre::Vector3(0.0f, 1.0f, -0.25f));
+    mExhaustSystem->getEmitter(1)->setDirection(Ogre::Vector3(0.0f, 1.0f, -0.25f));*/
+
+    // Place the dust emitters. These should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
     mDustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 1.2f, 0.2f,  1.7f));  // FL
     mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-1.2f, 0.2f,  1.7f));  // FR
     mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 1.2f, 0.2f, -1.7f));  // RL
     mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-1.2f, 0.2f, -1.7f));  // RR
+
+    // The smoke emitter should be placed over the engine.
+    mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0, 0, 0));
+
+    // As should the fire emitter (which is, slightly more complex as it is a box).
+    mFireSystem->getEmitter(0)->setParameter("width",  "2");
+    mFireSystem->getEmitter(0)->setParameter("height", "2");    // height and depth are effectively switched
+    mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
     
     // Update the skin based on the team
     updateTeam(tid);

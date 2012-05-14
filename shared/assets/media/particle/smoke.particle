@@ -21,7 +21,8 @@ particle_system CollisionDomain/Smoke
 		position 0.0 0.0 0.0
 		direction 0.0 1.0 0.0
 		angle 5
-		emission_rate 10
+		//emission_rate 10
+        emission_rate 0
 		velocity_min 2
 		velocity_max 4
 		time_to_live 4
