@@ -46,6 +46,8 @@ protected :
 	
 
 	virtual unsigned time_seed();
+
+    virtual double uniform_deviate ( int seed );
 };
 
 #endif

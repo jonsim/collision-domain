@@ -450,6 +450,7 @@ void TruckCar::updateArena (ArenaID aid)
         mDustSystem->getEmitter(i)->setColour(dustColour);
     
     // Update the environment map.
+    /*
     std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");
     std::string materialList[6] = {"truck_body_uv", "truck_door_uv",
                                    "truck_body_t1", "truck_door_t1",
@@ -464,6 +465,7 @@ void TruckCar::updateArena (ArenaID aid)
             OutputDebugString("uh oh\n");
         tus->setTextureName(newSphereMap);
     }
+    */
 }
 
 

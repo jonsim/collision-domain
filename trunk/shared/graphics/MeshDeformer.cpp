@@ -24,7 +24,7 @@ void MeshDeformer::deformMesh(
     size_t index_offset = 0;
 
 	float dentSize = damage / 600;
-    if(isFront) dentSize *= 0.4f;
+    if(isFront) dentSize *= 0.2f;
 	float distanceCheck = 55 + (15 * dentSize);
  
     // Run through the submeshes again, adding the data into the arrays
@@ -69,10 +69,11 @@ void MeshDeformer::deformMesh(
 					diff = origin - pt;
 					diff.normalise();
 					diff *= 10.f+(dentSize*10.f);
+                    
 
-					pReal[0] += (diff.x);
-					pReal[1] += (diff.y);
-					pReal[2] += (diff.z);
+					pReal[0] += (diff.x);//*(-(diff.length()*0.5f) + uniform_deviate(rand())*(diff.length()*0.5f));
+					pReal[1] += (diff.y);//*(-(diff.length()*0.5f) + uniform_deviate(rand())*(diff.length()*0.5f));
+					pReal[2] += (diff.z);//*(-(diff.length()*0.5f) + uniform_deviate(rand())*(diff.length()*0.5f));
 				}
             }
             
@@ -132,6 +133,10 @@ unsigned MeshDeformer::time_seed() {
         seed = seed * (UCHAR_MAX + 2U) + n[z];
     }
     return seed;
+}
+
+double MeshDeformer::uniform_deviate ( int seed ) {
+    return seed * ( 1.0 / ( RAND_MAX + 1.0 ) );
 }
 
 static unsigned int lineCounter = 0;

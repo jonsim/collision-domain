@@ -38,6 +38,12 @@ PlayerCollisions::~PlayerCollisions()
 
 static int numColls = 0;
 
+static float massPairs[3][3] = {
+        { 1.0f, 0.8f, 1.2f },
+        { 1.2f, 1.0f, 1.4f },
+        { 1.0f, 0.8f, 1.0f }
+    };
+
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold) {
 	/*
 		    // SET THESE:
@@ -114,8 +120,8 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                 Ogre::Real totalDamage = abs(averageOverlapDistance * 20000.f);
                 totalDamage = totalDamage > MAX_DAMAGE ? (float)MAX_DAMAGE : totalDamage;
 
-                Ogre::Real damageToA = totalDamage * damageShareToA;
-                Ogre::Real damageToB = totalDamage * damageShareToB;
+                Ogre::Real damageToA = totalDamage * damageShareToB;
+                Ogre::Real damageToB = totalDamage * damageShareToA;
 
                 int sectionOnA = getSectionOnCar(p1, localOnA);
                 int sectionOnB = getSectionOnCar(p2, localOnB);
@@ -123,10 +129,13 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                 int sectionTestA = sectionOnA < 2 ? 0 : sectionOnA < 4 && sectionOnA >=2 ? 1 : 2; 
                 int sectionTestB = sectionOnB < 2 ? 0 : sectionOnB < 4 && sectionOnB >=2 ? 1 : 2; 
 
-                if(sectionTestA > sectionTestB) {
+                damageToA *= massPairs[p1->getCarType()][p2->getCarType()];
+                damageToB *= massPairs[p2->getCarType()][p1->getCarType()];
+
+                if(sectionTestA < sectionTestB) {
                     damageToA *= 0.8f;
                     damageToB *= 1.2f;
-                } else if(sectionTestB > sectionTestA) {
+                } else if(sectionTestB < sectionTestA) {
                     damageToB *= 0.8f;
                     damageToA *= 1.2f;
                 }

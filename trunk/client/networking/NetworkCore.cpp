@@ -558,6 +558,7 @@ void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 
     // Update the client's car selection screen jobby.
+    GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPAWN_SEL );
     GameCore::mGui->showSpawnScreenPage2(newGameMode, GameCore::mPlayerPool->getLocalPlayer()->getTeam(), GameCore::mPlayerPool->getLocalPlayer()->getCarType());
 
     StringStream tmpSS;
