@@ -378,6 +378,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     bitStream->Read( packetid );
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
+    bitStream->Read( GameCore::mGameplay->mGameActive ); // Recieve the game active state
 
     //OutputDebugString("ClientSpawn\n");
 	log( "PlayerSpawn : playerid %s", playerid.ToString() );

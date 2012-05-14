@@ -449,6 +449,7 @@ void NetworkCore::sendPlayerSpawn( Player *pPlayer )
     bsSpawn.Write( packetid );
 	bsSpawn.Write( pPlayer->getPlayerGUID() );
     bsSpawn.Write( pPlayer->getCarType() );
+    bsSpawn.Write( GameCore::mGameplay->mGameActive ); // Send the game active state
 
 	m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );   
     pPlayer->setPlayerState( PLAYER_STATE_INGAME );
