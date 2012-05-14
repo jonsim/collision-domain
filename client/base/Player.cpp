@@ -14,7 +14,6 @@
 #include "SmallCar.h"
 #include "TruckCar.h"
 
-#define INITIAL_HEALTH 800
 #define NEWCAM 1
 
 #define MAX_DAMAGE 400
@@ -77,6 +76,10 @@ Player::Player (void) : cameraRotationConstant(0.08f),
     mLastKiller = NULL;
 
     camShakeFrames = 0;
+
+    for( int i = 0; i < POWERUP_COUNT; i ++ )
+        powerupTimers[i] = 0;
+
     //OutputDebugString(ss.str().c_str());
 
 	//averageCollisionPoint.setZero();
@@ -149,7 +152,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
             mCar->louderLocalSounds();
             GameCore::mGui->setupDamageDisplay(carType, tid);
         }
-        else
+        //else
         {
             // Create the healthbar
             mHealthbar = mBoards->createBillboard( 0, 2, 0, Ogre::ColourValue::Green );
@@ -195,7 +198,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mPowerupBoards[i] );
     }
 
-    if( !isLocalPlayer )
+    //if( !isLocalPlayer )
     {
         //if( mBoards->isAttached() )
         //    mBoards->detachFromParent();
@@ -206,7 +209,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mBacks );
         mCar->mBodyNode->attachObject( mNametag );
     }
-    else
+    if( isLocalPlayer )
         GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, -100, 0 ) );
 
     hp                    = INITIAL_HEALTH;
@@ -443,6 +446,26 @@ void Player::frameEvent(float time)
         if ( mPowerupStates[i].timeElapsed(mPowerupBars[i], time) )
         {
             reLayoutPowerupBoards();
+        }
+    }
+
+    // Remove any powerups that have expired
+    for( int i = 0; i < POWERUP_COUNT; i ++ )
+    {
+        if( powerupTimers[i] != 0 && RakNet::GreaterThan( RakNet::GetTimeMS(), powerupTimers[i] ) )
+        {
+            switch( i )
+            {
+            case POWERUP_MASS:
+                getCar()->resetMass();
+                getCar()->resetEngineForce();
+                break;
+            case POWERUP_SPEED:
+                getCar()->resetEngineForce();
+                break;
+            }
+
+            powerupTimers[i] = 0;
         }
     }
 
@@ -785,4 +808,9 @@ void Player::setTeam(TeamID newTeam)
     
     //Add it to the gameplay teams
     //GameCore::mGameplay->getTeam(newTeam)->addPlayer(this);
+}
+
+void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime )
+{
+    powerupTimers[type] = endtime;
 }

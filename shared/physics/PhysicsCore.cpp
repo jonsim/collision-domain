@@ -126,9 +126,7 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
             Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
             Powerup* powerup = static_cast<Powerup*>((groupA & COL_POWERUP ? obA : obB)->getUserPointer());
             if (powerup && player)
-            {
                 powerup->playerCollision(player);
-            }
         }
 #endif
         // Car to Arena collision

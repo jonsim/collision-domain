@@ -443,6 +443,8 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
     bool hasPlayer;
     bitStream->Read( hasPlayer );
 
+     float extraData = 0;
+
     Player *pPlayer = NULL;
 
     if(hasPlayer)
@@ -450,11 +452,12 @@ void NetworkCore::PowerupCollect( RakNet::BitStream *bitStream, RakNet::Packet *
     	RakNet::RakNetGUID playerid;
     	bitStream->Read( playerid );
 
+        bitStream->Read( extraData );
     	pPlayer = GameCore::mPlayerPool->getPlayer( playerid );
     }
 
     // if pPlayer is null playerCollision will remove the player
-    pwrObject->playerCollision( pPlayer );
+    pwrObject->playerCollision( pPlayer, extraData );
 }
 
 void NetworkCore::InfoItemReceive( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -551,6 +554,8 @@ void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     GameCore::mClientGraphics->unloadArena( GameCore::mGameplay->getArenaID() );
     GameCore::mGameplay->setArenaID(newArenaID);
     GameCore::mClientGraphics->loadArena( GameCore::mGameplay->getArenaID() );
+
+    GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 
     // Update the client's car selection screen jobby.
     GameCore::mGui->showSpawnScreenPage2(newGameMode, GameCore::mPlayerPool->getLocalPlayer()->getTeam(), GameCore::mPlayerPool->getLocalPlayer()->getCarType());

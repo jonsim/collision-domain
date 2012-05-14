@@ -8,7 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 
 // Things just defined here, need to change later
-#define SERVER_PORT 55010
+#define SERVER_PORT 55011
 #define SERVER_PASS 0
 #define ENCRYPT_DATA 0
 #define UPDATE_INTERVAL 20
@@ -113,7 +113,7 @@ public:
 
     void sendPlayerSpawn( Player *pPlayer );
     void sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vector3 pwrLoc );
-    void sendPowerupCollect( int pwrID, Player *player );
+    void sendPowerupCollect( int pwrID, Player *player, float extraData );
     void sendChatMessage( const char *szMessage );
     void sendSyncScores();
     void sendGameSync(GameMode gameMode, ArenaID arenaID);

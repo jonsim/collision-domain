@@ -11,14 +11,6 @@
 
 using namespace OgreOggSound;
 
-enum PowerupType
-{
-	POWERUP_HEALTH,
-	POWERUP_MASS,
-	POWERUP_SPEED,
-	POWERUP_COUNT
-};
-
 /**
  *  @brief 	Headers for powerup
  */
@@ -29,7 +21,11 @@ public:
     Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex);
     ~Powerup();
 
+#ifdef COLLISION_DOMAIN_SERVER
     void playerCollision(Player* player);
+#else
+    void Powerup::playerCollision(Player* player, float extraData);
+#endif
     void frameEvent(const float timeSinceLastFrame);
     bool isPendingDelete();
 

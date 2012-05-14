@@ -83,6 +83,7 @@ void TruckCar::initTuning()
 
     mMaxAccelForce = 15000.0f;
     mMaxBrakeForce = 300.0f;
+    mMaxAccelForceBuf = mMaxAccelForce;
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = true;

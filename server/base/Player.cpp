@@ -13,7 +13,6 @@
 
 
 
-#define INITIAL_HEALTH 800
 #define MAX_DAMAGE 400 // used cap damage for individual crashes so that deformations are more managable
 #define BIG_CRASH_THRESHOLD 80
 /*-------------------- METHOD DEFINITIONS --------------------*/
@@ -30,6 +29,8 @@ Player::Player (void)
     mCar(NULL)
 {
     // PlayerState state configures constants and zeros values upon creation.
+    for( int i = 0; i < POWERUP_COUNT; i ++ )
+        powerupTimers[i] = 0;
 }
 
 
@@ -187,6 +188,27 @@ void Player::processControlsFrameEvent(
     if( !this->getCar() )
         return;
 
+    // Remove any powerups that have expired
+    for( int i = 0; i < POWERUP_COUNT; i ++ )
+    {
+        if( powerupTimers[i] != 0 && RakNet::GreaterThan( RakNet::GetTimeMS(), powerupTimers[i] ) )
+        {
+            switch( i )
+            {
+            case POWERUP_MASS:
+                getCar()->resetMass();
+                getCar()->resetEngineForce();
+                GameCore::mGui->outputToConsole( "Player '%s' mass effect ended.\n", getNickname() );
+                break;
+            case POWERUP_SPEED:
+                getCar()->resetEngineForce();
+                break;
+            }
+
+            powerupTimers[i] = 0;
+        }
+    }
+
 	if(this->getAlive())
 	{
 		// process steering
@@ -219,11 +241,6 @@ void Player::resetHP()
 {
 	this->hp = INITIAL_HEALTH;
 	this->mAlive = true;
-}
-
-void Player::applyHealthBonus()
-{
-
 }
 
 void Player::setSpawned()
@@ -296,4 +313,9 @@ int Player::getRoundScore()
 void Player::addToGameScore(int amount)
 {
 	this->gameScore += amount;
+}
+
+void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime )
+{
+    powerupTimers[type] = endtime;
 }

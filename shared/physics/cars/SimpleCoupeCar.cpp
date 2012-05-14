@@ -58,6 +58,27 @@ static btScalar BangerVtx[] = {
     -94.6668f, 33.2239f, -305.617f,
 };
 
+#define BANGER_SPHERE_COUNT 17
+static btScalar BangerSphere[] = {
+    0,		0.682f,	2.216f,	0.4614f,
+    0.632f,	0.682f,	2.175f,	0.4614f,
+    -0.632f,0.682f,	2.175f,	0.4614f,
+    0.594f,	0.654f,	1.488f,	0.5075f,
+    0,		0.654f,	1.488f,	0.5075f,
+    -0.594f,0.654f,	1.488f,	0.5075f,
+    0.53f,	0.662f,	0.736f,	0.5611f,
+    -0.53f,	0.662f,	0.736f,	0.5611f,
+    0.285f,	0.901f,	0.089f,	0.7798f,
+    -0.285f,0.901f,	0.089f,	0.7798f,
+    0.286f,	0.919f,	-0.86f,	0.7798f,
+    -0.286f,0.919f,	0.86f,	0.7798f,	
+    0.536f,	0.686f,	-1.647f,0.5572f,
+    -0.536f,0.686f,	-1.647f,0.5572f,	
+    0.623f,	0.707f,	-2.23f,	0.4805f,
+    0,		0.707f,	-2.37f,	0.4805f,
+    -0.623f,0.707f,	-2.23f,	0.4805f,
+};
+
 /// @brief  Tuning values to create a car which handles well and matches the "type" of car we're trying to create.
 void SimpleCoupeCar::initTuning()
 {
@@ -92,6 +113,7 @@ void SimpleCoupeCar::initTuning()
 
     mMaxAccelForce = 8000.0f;
     mMaxBrakeForce = 100.0f;
+    mMaxAccelForceBuf = mMaxAccelForce;
 	
 	mFrontWheelDrive = false;
 	mRearWheelDrive  = true;
@@ -199,14 +221,21 @@ void SimpleCoupeCar::createCollisionShapes()
 {
     btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.5f, 0.5f) );
     btCompoundShape *compoundChassisShape = new btCompoundShape();
-    btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
-    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
-    compoundChassisShape->addChildShape( chassisShift, convexHull );
+    //btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
+    //convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    //compoundChassisShape->addChildShape( chassisShift, convexHull );
 
+    for( int i = 0; i < BANGER_SPHERE_COUNT; i ++ )
+    {
+        btSphereShape *sphere = new btSphereShape( BangerSphere[i * 4 + 3] );
+        btTransform sphereShift( btQuaternion::getIdentity(), btVector3( BangerSphere[i * 4], BangerSphere[i * 4 + 1], BangerSphere[i * 4 + 2] ) );
+        compoundChassisShape->addChildShape( sphereShift, sphere );
+    }
+
+    //compoundChassisShape->addChildShape( btTransform( btQuaternion::getIdentity(), btVector3( 0, 0.6, 0 ) ), new btBoxShape( btVector3( 0.800, 0.25, 2.400 ) ) );
     btBoxShape *doorShape = new btBoxShape( btVector3( 0.25f, 0.58f, 0.55f ) );
     btBoxShape *fBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
     btBoxShape *rBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
-
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER, compoundChassisShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER_DOOR, doorShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_BANGER_FBUMPER, fBumperShape );
@@ -248,6 +277,7 @@ void SimpleCoupeCar::startEngineSound() {
         Car::mGearSound->setVolume(0);
         Car::mGearSound->startFade(true, 2.5f);
     }
+    
 }
 
 

@@ -101,6 +101,7 @@ void SmallCar::initTuning()
 
     mMaxAccelForce = 4000.0f;
     mMaxBrakeForce = 300.0f;
+    mMaxAccelForceBuf = mMaxAccelForce;
 
 	mFrontWheelDrive = true;
 	mRearWheelDrive  = false;

@@ -17,7 +17,7 @@ private:
 public:
 
     Vehicle( const btVehicleTuning& tuning,btRigidBody* chassis,	btVehicleRaycaster* raycaster )
-        : btRaycastVehicle( tuning, chassis, raycaster )
+        : btRaycastVehicle( tuning, chassis, raycaster ), mHandbrake( false )
     {
     }
 
@@ -29,6 +29,7 @@ public:
 		return m_currentVehicleSpeedKmHour;
 	}
 	
+    bool mHandbrake;
 };
 
 #endif // #ifndef __Vehicle_h_

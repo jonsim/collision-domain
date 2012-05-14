@@ -113,7 +113,11 @@ void Vehicle::updateVehicle( btScalar step )
 		}
 		
 		wheel.m_deltaRotation *= btScalar(0.99);//damping of rotation when not in contact
-
+        if( mHandbrake )
+        {
+            if( i > 1 )
+                wheel.m_deltaRotation = 0;
+        }
 	}
 }
 

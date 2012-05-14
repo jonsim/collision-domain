@@ -9,6 +9,7 @@
 #include "stdafx.h"
 #include "Car.h"
 #include "InputState.h"
+#include "Powerup.h"
 #include "RakNetTypes.h"
 
 
@@ -52,7 +53,6 @@ public:
 #else
     void collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real &damage, int& damageSection, int& crashType, Player *&causedByPlayer);
 #endif
-    void applyHealthBonus (void);
         
     const char *getNickname (void) { return mNickname; }
     int getCarType (void) { return mCarType; }
@@ -106,6 +106,8 @@ public:
 	void cameraLookBack(void);
 	void revertCamera(void);
 
+    void addPowerup( PowerupType type, RakNet::TimeMS endtime );
+
     PLAYER_DAMAGE_LOC damageLoc;
     float            rearDamageBoundary;
     float            frontDamageBoundary;
@@ -144,6 +146,9 @@ private:
 	btVector3					      averageCollisionPoint;
 								      
 	std::string					      stringGUID;
+
+    //std::map<PowerupType, RakNet::TimeMS> powerupTimers;
+    RakNet::TimeMS powerupTimers[POWERUP_COUNT];
 
 	int roundScore;
 	int gameScore;
