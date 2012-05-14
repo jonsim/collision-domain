@@ -10,8 +10,6 @@
 #include <sstream>
 #include <math.h>
 
-
-
 Gameplay::Gameplay() : mGameActive(false), mCountDownActive(false)
 {
     mTeams[0] = new Team(BLUE_TEAM);
@@ -21,6 +19,7 @@ Gameplay::Gameplay() : mGameActive(false), mCountDownActive(false)
     roundNumber = -1;
     wtInitalised = false;    
 }
+
 
 Team* Gameplay::getTeam(TeamID teamID)
 {
@@ -395,7 +394,7 @@ void Gameplay::spawnPlayers()
 void Gameplay::positionPlayers()
 {
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
-	int hypo = 25; //The hypotonuse. Increase to spread out
+	int hypo = 40; //The hypotonuse. Increase to spread out
 	//Calculate segment angle
 	Ogre::Real segSize = (2*Ogre::Math::PI)/totalNumberOfPlayers;
 	int size = GameCore::mPlayerPool->getNumberOfPlayers();
@@ -448,11 +447,17 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
-    mCountDownActive = true; //Not strictly true but should fix things
-    //Spawn the start new round thing
-    InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
-	mInfoItems.push_back(newRoundII);
-	this->calculateRoundScores();
+    if(!mCountDownActive)
+    {
+        mCountDownActive = true; //Not strictly true but should fix things
+        //Spawn the start new round thing
+        InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
+	    mInfoItems.push_back(newRoundII);
+	    this->calculateRoundScores();
+        #ifdef COLLISION_DOMAIN_SERVER
+            GameCore::mGui->outputToConsole("Game started.\n");
+        #endif
+    }
 
     this->spawnPlayers();
 	this->positionPlayers();
@@ -464,10 +469,6 @@ void Gameplay::startGame()
     }
     //this->scheduleCountDown();
 	//mGameActive = true;
-
-#ifdef COLLISION_DOMAIN_SERVER
-    GameCore::mGui->outputToConsole("Game started.\n");
-#endif
 }
 
 void Gameplay::drawInfo()
