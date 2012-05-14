@@ -67,6 +67,7 @@ public:
     virtual void steerInputTick(bool isLeft,    bool isRight,             Ogre::Real secondsSinceLastFrame);
     virtual void accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real secondsSinceLastFrame);
     virtual void moveTo(const btVector3 &position);
+    virtual void moveTo(const btVector3 &position, const btQuaternion &rotation);
     virtual void restoreSnapshot(CarSnapshot *carSnapshot);
     virtual CarSnapshot *getCarSnapshot();
 	float getCarMph();
@@ -122,6 +123,8 @@ protected:
 	// Particle systems
 	Ogre::ParticleSystem* mExhaustSystem;
 	Ogre::ParticleSystem* mDustSystem;
+    Ogre::ParticleSystem* mSmokeSystem;
+    Ogre::ParticleSystem* mFireSystem;
 
     // Friction constraint
     WheelFrictionConstraint *fricConst;
@@ -197,7 +200,6 @@ private:
     int mUniqueID;
 
     void applySteeringValue();
-    void moveTo(const btVector3 &position, const btQuaternion &rotation);
     void reset( btRigidBody *body, btTransform &trans, bool dotrans = true );
 
     inline float rpm2rads(float f){ return f * 0.1047197f; }

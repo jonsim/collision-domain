@@ -387,21 +387,36 @@ void Car::updateRPM()
 
 void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame)
 {
-	static float oldRPM = 0;
+	//static float oldRPM = 0;
+    static float oldMPH = 0;
+    //static float oldForce = 0;
 
 	// Calculate the new exhaust emission rate (from engine RPM).
-	float exhaustRate = 0;
-	//if (isForward)
-	//{
-	float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
-	if (dRdT > 1300)
-		exhaustRate = (mEngineRPM / mRevLimit) * 250;
-	//}
-	oldRPM = mEngineRPM;
+    float currentMPH = getCarMph();
+    float dSdT = (currentMPH - oldMPH) / (secondsSinceLastFrame);   // differential d(speed) / d(time)
+    //float dFdT = (mEngineForce - oldForce) / (secondsSinceLastFrame);
+	//float dRdT = (mEngineRPM - oldRPM) / (secondsSinceLastFrame);  // differential  d(RPM) / d(T)
+    //float exhaustRate = (dRdT > 1300) ? ((mEngineRPM / mRevLimit) * 250) : 0;
+
+    //char bob[64];
+    //sprintf(bob, "dFdT = %.2f\n", dFdT);
+    //OutputDebugString(bob);
+
+    float exhaustRate = 0;
+    // Modulate the speed differential against the engine rpm such that a max of 150 comes from the differential and a max of 100 from the rpm.
+    //if (dSdT < 1500 && currentMPH > 0)
+        //exhaustRate = ((1500 - dSdT) / 10.0f) + ((mEngineRPM / mRevLimit) * 100);
+    if (dSdT < 1800)
+        exhaustRate = (1800 - dSdT) / 12.0f;
+    //if (dFdT > 1000)
+        //exhaustRate = dFdT / 20;
+
+	//oldRPM = mEngineRPM;
+    oldMPH = currentMPH;
+    //oldForce = mEngineForce;
 
     // Calculate the new dust emission rate (from wheel slip/skid).
     float dustRate[4] = {0, 0, 0, 0};
-
     fricConst->calcWheelSkid();
     if (fricConst->getWheelSkid() < 0.1f)
     {
@@ -409,11 +424,18 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame)
 
         for (int i = 0; i < 4; i++)
         {
-            btScalar slipAngle = fricConst->getSlipAngle(i);
+            // If we're flying we probably don't want dust.
+            //const btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
+            //if (!wheel_info.m_raycastInfo.m_isInContact)
+                //continue;
+
+            // Do some maths with some juicy magic numbers.
+            const btScalar slipAngle = fricConst->getSlipAngle(i);
             if (slipAngle > 1.2f)
                 dustRate[i] = slipAngle * 13;
         }
     }
+
     // Set the new particle emission rates.
 	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
 		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
