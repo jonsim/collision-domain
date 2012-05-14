@@ -68,6 +68,7 @@ public:
 	std::vector<InfoItem*>		mInfoItems;
 	int							numberOfTeams;
 	bool						mGameActive; //True = Game underway, False = Game not yet started
+    bool                        mCountDownActive;
 	void						markDeath(Player* deadPlayer, Player* causedBy);
     void                        handleDeath(Player* deadPlayer, Player* causedBy);
 	std::vector<DEATH*>			getDeathList();

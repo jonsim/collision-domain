@@ -560,7 +560,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
         }
 
         // Start the game (will cause all waiting players to spawn)
-        if( GameCore::mGameplay->mGameActive == false && c >= NUM_PLAYERS_TO_START )
+        if( GameCore::mGameplay->mCountDownActive == false && GameCore::mGameplay->mGameActive == false && c >= NUM_PLAYERS_TO_START )
             GameCore::mGameplay->startGame();
 
         return;

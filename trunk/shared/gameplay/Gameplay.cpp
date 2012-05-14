@@ -12,7 +12,7 @@
 
 
 
-Gameplay::Gameplay() : mGameActive(false)
+Gameplay::Gameplay() : mGameActive(false), mCountDownActive(false)
 {
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
@@ -448,6 +448,7 @@ void Gameplay::positionPlayers()
 
 void Gameplay::startGame()
 {
+    mCountDownActive = true; //Not strictly true but should fix things
     //Spawn the start new round thing
     InfoItem* newRoundII = new InfoItem(NEW_ROUND_OT, 1000, 3000);
 	mInfoItems.push_back(newRoundII);
@@ -591,6 +592,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				break;
             case GO_OT:
                 mGameActive = true;
+                mCountDownActive = false;
                 break;
 			case ROUND_OVER_OT:
                 mGameActive = false;
@@ -795,6 +797,7 @@ void Gameplay::createWinnerTextOverlay()
 void Gameplay::scheduleCountDown()
 {
 	#ifdef COLLISION_DOMAIN_SERVER
+        mCountDownActive = true;
 		GameCore::mGui->outputToConsole("Scheduling countdown.\n");
 		InfoItem* threeII = new InfoItem(THREE_OT, 5000, 900);
 		InfoItem* twoII = new InfoItem(TWO_OT, 6000, 900);
