@@ -26,11 +26,11 @@ public:
     std::vector<Powerup *> getPowerups();
     
 private:
-
     void deletePowerup( int index );
-    Ogre::Vector3 randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge);
+    Ogre::Vector3 randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge, float y);
 
     Powerup *mPowerups[MAX_POWERUPS];
+    float secondsTilNextSpawn;
 };
 
 #endif // #ifndef POWERUPPOOL_H

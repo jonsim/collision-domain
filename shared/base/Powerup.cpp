@@ -108,12 +108,13 @@ void Powerup::playerCollision(Player* player)
     #ifdef COLLISION_DOMAIN_CLIENT
         if (player != NULL)
         {
-            GameCore::mAudioCore->playSoundOrRestart(mSound);
+            if ( GameCore::mPlayerPool->getLocalPlayer() == player )
+                GameCore::mAudioCore->playSoundOrRestart(mSound);
            
             switch (mPowerupType)
             {
             case POWERUP_HEALTH:
-                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 2.5f);
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_HEALTH, 25.0f);
                 break;
 
             case POWERUP_MASS:
@@ -122,22 +123,22 @@ void Powerup::playerCollision(Player* player)
                     && dynamic_cast<TruckCar*>( player->getCar() )
                     && rand() % 100 < 75)
                 {
-                    player->pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 15.0f);
+                    player->pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 150.0f);
                 }
                 else if (rand() % 9 == 0)
                 {
                     // 11% chance of getting the light negative powerup
-                    player->pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 10.0f);
+                    player->pushBackNewPowerupBoard(POWERUP_BOARD_LIGHT, 100.0f);
                 }
                 else
                 {
                     // normal heavy powerup
-                    player->pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 12.0f);
+                    player->pushBackNewPowerupBoard(POWERUP_BOARD_HEAVY, 120.0f);
                 }
                 break;
 
             case POWERUP_SPEED:
-                player->pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 9.0f);
+                player->pushBackNewPowerupBoard(POWERUP_BOARD_SPEED, 90.0f);
                 break;
 
             default:

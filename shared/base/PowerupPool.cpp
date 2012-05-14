@@ -4,6 +4,7 @@
 #include "PowerupPool.h"
 
 PowerupPool::PowerupPool()
+    : secondsTilNextSpawn(0)
 {
     for (int i = 0; i < MAX_POWERUPS; i++) mPowerups[i] = NULL;
 }
@@ -79,16 +80,29 @@ void PowerupPool::frameEvent( const float timeSinceLastFrame )
         {
             // this will fill this null index with a powerup.
             #ifdef COLLISION_DOMAIN_SERVER
-                spawnPowerup( (PowerupType) ( rand() % POWERUP_COUNT ), randomPointInArena(110, 73, 2), i );
+                if (secondsTilNextSpawn < 0)
+                {
+                    secondsTilNextSpawn = rand() % 4;
+
+                    bool isQuarry = GameCore::mGameplay->getArenaID() == QUARRY_ARENA;
+
+                    int xRad = isQuarry ? 60 : 110;
+                    int yRad = isQuarry ? 60 : 73;
+
+                    spawnPowerup( (PowerupType) ( rand() % POWERUP_COUNT ), randomPointInArena(110, 73, 2, (isQuarry ? 35.0f : 10.0f ) ), i );
+                }
+                else
+                {
+                    secondsTilNextSpawn -= timeSinceLastFrame;
+                }
             #endif
         }
     }
 }
 
-Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge)
+Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge, float y)
 {
     float x;
-    float y = -10.0;
     float z;
 
     arenaZRadius -= safeZoneFromEdge;
@@ -123,7 +137,7 @@ Ogre::Vector3 PowerupPool::randomPointInArena(int arenaXRadius, int arenaZRadius
         OutputDebugString("Powerup floor finder ray missed\n");
     }*/
 
-    return Ogre::Vector3(x, 10.0f/*worldHitPoint.y() + 0.5*/, z);
+    return Ogre::Vector3(x, y, z);
 }
 
 // THIS WILL RETURN 0,0,0 IF THERE ARE NO POWERUPS

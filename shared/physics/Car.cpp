@@ -24,7 +24,6 @@ Car::Car (int uniqueID)
     mUniqueID(uniqueID)
 {
     #ifdef COLLISION_DOMAIN_CLIENT
-        mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, uniqueID, NULL);
         mCrashSound = GameCore::mAudioCore->getSoundInstance(CAR_CRASH, uniqueID, NULL);
     
         if ( GameCore::mClientGraphics->mBigScreen != NULL )
@@ -37,7 +36,7 @@ Car::Car (int uniqueID)
 Car::~Car()
 {
 #ifdef COLLISION_DOMAIN_CLIENT
-    GameCore::mAudioCore->deleteSoundInstance(mGearSound);
+    if (mGearSound) GameCore::mAudioCore->deleteSoundInstance(mGearSound);
     GameCore::mAudioCore->deleteSoundInstance(mCrashSound);
     
     if ( GameCore::mClientGraphics->mBigScreen != NULL )

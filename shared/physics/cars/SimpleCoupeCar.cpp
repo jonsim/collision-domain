@@ -214,26 +214,40 @@ void SimpleCoupeCar::createCollisionShapes()
 }
 
 void SimpleCoupeCar::louderLocalSounds() {
-    mHasLocalSounds = true;
+    #ifdef COLLISION_DOMAIN_CLIENT
+        if (mHasLocalSounds) return;
 
-    float increaseTo = mEngineSound->getVolume() + 0.21;
-    if (increaseTo < 1) {
-        //mEngineSound->setMinVolume(increaseTo);
-        mEngineSound->setVolume(increaseTo);
-    }
+        mGearSound = GameCore::mAudioCore->getSoundInstance(GEAR_CHANGE, mUniqueCarID, NULL);
+
+        mHasLocalSounds = true;
+
+        float increaseTo = ENGINE_MAX_VOLUME + 0.25f;
+        if (increaseTo >= 1)
+            increaseTo = 1.0f;
+
+        mEngineSound->setMaxVolume(increaseTo);
     
-    mEngineSound->setRelativeToListener(true);
-    mEngineSound->setPosition(0,0,0);
-    mEngineSound->setVelocity(0,0,0);
+        mEngineSound->setRelativeToListener(true);
+        mEngineSound->setPosition(0,0,0);
+        mEngineSound->setVelocity(0,0,0);
     
-    Car::mGearSound->setRelativeToListener(true);
-    Car::mGearSound->setPosition(0,0,0);
-    Car::mGearSound->setVelocity(0,0,0);
+        //Car::mGearSound->setRelativeToListener(true);
+        Car::mGearSound->setPosition(0,0,0);
+        Car::mGearSound->setVelocity(0,0,0);
+    #endif
 }
 
 
 void SimpleCoupeCar::startEngineSound() {
-    mEngineSound->play();
+    mEngineSound->setVolume(0);
+    mEngineSound->startFade(true, 2.5f);
+    
+    // but fading it in will ensure that if it tries to play at some point in the first 2.5s, the vol will be low
+    if (Car::mGearSound)
+    {
+        Car::mGearSound->setVolume(0);
+        Car::mGearSound->startFade(true, 2.5f);
+    }
 }
 
 
@@ -260,8 +274,8 @@ void SimpleCoupeCar::updateAudioPitchFrameEvent()
         mEngineSound->setPosition(mBodyNode->getPosition());
         mEngineSound->setVelocity(Car::getLinearVelocity());
 
-        Car::mGearSound->setPosition(mBodyNode->getPosition());
-        Car::mGearSound->setVelocity(Car::getLinearVelocity());
+        //Car::mGearSound->setPosition(mBodyNode->getPosition());
+        //Car::mGearSound->setVelocity(Car::getLinearVelocity());
     }
 #endif
 }

@@ -25,6 +25,8 @@ enum SoundType
     EXPLOSION
 };
 
+#define ENGINE_MAX_VOLUME 0.55f
+
 /**
  *  @brief 	An uneditable snapshot of the player's input state
  */
