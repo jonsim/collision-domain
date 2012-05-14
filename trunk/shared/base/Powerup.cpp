@@ -200,7 +200,8 @@ void Powerup::playerCollision(Player* player, float extraData)
 
     if (player != NULL)
     {
-        GameCore::mAudioCore->playSoundOrRestart(mSound);
+        if ( GameCore::mPlayerPool->getLocalPlayer() == player )
+            GameCore::mAudioCore->playSoundOrRestart(mSound);
            
         switch (mPowerupType)
         {
