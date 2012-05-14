@@ -161,6 +161,20 @@ TruckCar::~TruckCar(void)
     GameCore::mPhysicsCore->removeBody( mRBumperBody );
     
     GameCore::mPhysicsCore->getWorld()->removeAction( mVehicle );
+    
+    // Destroy particle systems.
+#ifdef PARTICLE_EFFECT_EXHAUST
+    GameCore::mSceneMgr->destroyParticleSystem(mExhaustSystem);
+#endif
+#ifdef PARTICLE_EFFECT_DUST
+    GameCore::mSceneMgr->destroyParticleSystem(mDustSystem);
+#endif
+#ifdef PARTICLE_EFFECT_SMOKE
+    GameCore::mSceneMgr->destroyParticleSystem(mSmokeSystem);
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
+    GameCore::mSceneMgr->destroyParticleSystem(mFireSystem);
+#endif
 
     mBodyNode->removeAndDestroyAllChildren();
     GameCore::mSceneMgr->destroySceneNode( mBodyNode );
@@ -335,34 +349,13 @@ void TruckCar::initGraphics(TeamID tid, ArenaID aid)
     createGeometry("CarEntity_RRWheel",     "truck_rwheel.mesh",      mRRWheelNode,     false);
 	
 	// Setup particles.
+#ifdef PARTICLE_EFFECT_EXHAUST
     mExhaustSystem = GameCore::mSceneMgr->createParticleSystem("Exhaust" + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Truck/Exhaust");
-	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
-    mSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("Smoke"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
-    mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
 	mBodyNode->attachObject(mExhaustSystem);
+#endif
+#ifdef PARTICLE_EFFECT_DUST
+	mDustSystem    = GameCore::mSceneMgr->createParticleSystem("Dust"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Dust");
 	mBodyNode->attachObject(mDustSystem);
-	mBodyNode->attachObject(mSmokeSystem);
-	mBodyNode->attachObject(mFireSystem);
-
-    /*// Place the exhasut emitter.
-    // We want to add a second exhaust emitter. To do that we need to get the parameters of the first exhaust emitter.
-    // This is somewhat ugly because, for some unknown reason, the getParameters function returns a Vector but the 
-    // setParameters function takes a map. Ho hum.
-    Ogre::ParameterList paramList = mExhaustSystem->getEmitter(0)->getParameters();
-    Ogre::NameValuePairList nvpList;
-    for (unsigned int i = 0; i < paramList.size(); i++)
-        nvpList[paramList[i].name] = paramList[i].description;
-    char bob[256];
-    sprintf(bob, "paramList.size = %d, nvpList.size = %d\n", paramList.size(), nvpList.size());
-    OutputDebugString(bob);
-    // Add our new emitter (index 1).
-    mExhaustSystem->addEmitter("Point");
-    mExhaustSystem->getEmitter(1)->setParameterList(nvpList);
-    // Finally actually place the emitters.
-    mExhaustSystem->getEmitter(0)->setPosition(Ogre::Vector3( 1.0f, 2.75f, 0.65f));
-    mExhaustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-1.0f, 2.75f, 0.65f));
-    mExhaustSystem->getEmitter(0)->setDirection(Ogre::Vector3(0.0f, 1.0f, -0.25f));
-    mExhaustSystem->getEmitter(1)->setDirection(Ogre::Vector3(0.0f, 1.0f, -0.25f));*/
 
     // Place the dust emitters. These should be placed in the location of the wheel nodes but since
     // the wheels nodes are not currently positioned correctly these are hard coded numbers.
@@ -370,14 +363,23 @@ void TruckCar::initGraphics(TeamID tid, ArenaID aid)
     mDustSystem->getEmitter(1)->setPosition(Ogre::Vector3(-1.2f, 0.2f,  1.7f));  // FR
     mDustSystem->getEmitter(2)->setPosition(Ogre::Vector3( 1.2f, 0.2f, -1.7f));  // RL
     mDustSystem->getEmitter(3)->setPosition(Ogre::Vector3(-1.2f, 0.2f, -1.7f));  // RR
+#endif
+#ifdef PARTICLE_EFFECT_SMOKE
+    mSmokeSystem   = GameCore::mSceneMgr->createParticleSystem("Smoke"   + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Smoke");
+	mBodyNode->attachObject(mSmokeSystem);
 
     // The smoke emitter should be placed over the engine.
     mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0, 0, 0));
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
+    mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
+	mBodyNode->attachObject(mFireSystem);
 
     // As should the fire emitter (which is, slightly more complex as it is a box).
     mFireSystem->getEmitter(0)->setParameter("width",  "2");
     mFireSystem->getEmitter(0)->setParameter("height", "2");    // height and depth are effectively switched
     mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
+#endif
     
     // Update the skin based on the team
     updateTeam(tid);
@@ -434,6 +436,7 @@ void TruckCar::updateTeam (TeamID tid)
 
 void TruckCar::updateArena (ArenaID aid)
 {
+#ifdef PARTICLE_EFFECT_DUST
     Ogre::ColourValue dustColour;
     unsigned char i;
 
@@ -448,6 +451,7 @@ void TruckCar::updateArena (ArenaID aid)
     // Update the dust emitter.
     for (i = 0; i < 4; i++)
         mDustSystem->getEmitter(i)->setColour(dustColour);
+#endif
     
     // Update the environment map.
     /*

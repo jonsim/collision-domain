@@ -5,10 +5,33 @@
 #ifndef SCENESETUP_H
 #define SCENESETUP_H
 
+// Includes
 #include "stdafx.h"
 #include "PostFilterLogic.h"
 #include <stdint.h>
 
+
+
+// Definitions
+// Particle effect definitions.
+// global
+//#define PARTICLE_EFFECT_VIPSTREAK   // From VIP crowns.
+//#define PARTICLE_EFFECT_EXPLOSION   // On death.
+//#define PARTICLE_EFFECT_SHRAPNEL    // From crunching collisions.
+//#define PARTICLE_EFFECT_SPARKS      // From scraping collisions.
+// local
+//#define PARTICLE_EFFECT_DUST        // From skidding etc.
+//#define PARTICLE_EFFECT_EXHAUST     // From cars bums.
+//#define PARTICLE_EFFECT_SMOKE       // From damaged cars.
+//#define PARTICLE_EFFECT_FIRE        // From dead cars.
+
+// Enabled high quality (colliding) shrapnel effect. PARTICLE_EFFECT_SHRAPNEL must be defined for this to have any effect.
+// A low quality, non-colliding version is used if this is not defined but shrapnel is enabled.
+#define PARTICLE_EFFECT_SHRAPNEL_HIQUAL // < Currently doesnt work.
+
+
+
+// Classes
 class MeshDeformer;
 /**
  *  @brief     Will contain PlayerPool, PhysicsCore, AudioCore etc.
@@ -97,17 +120,22 @@ protected:
     Ogre::SceneNode* mVIPIcon[2]; ///< This is completely not the place for this but I'm waiting
                                   //   for a better place (in the team class for example) to be 
                                   //   made available.
-    // Particle Systems
+    // Particle Systems and their configuration parameters
+#ifdef PARTICLE_EFFECT_SPARKS
     Ogre::ParticleSystem* mSparkSystem;
+    Ogre::NameValuePairList mSparkParams;
+#endif
+#ifdef PARTICLE_EFFECT_EXPLOSION
     Ogre::ParticleSystem* mExplosionNucleusSystem;
     Ogre::ParticleSystem* mExplosionSmokeSystem;
     Ogre::ParticleSystem* mExplosionDebrisSystem;
-    std::queue<Ogre::ParticleSystem*> mShrapnelSystems;
-    // Particle System configurations
-    Ogre::NameValuePairList mSparkParams;
     Ogre::NameValuePairList mExplosionNucleusParams;
     Ogre::NameValuePairList mExplosionSmokeParams;
     Ogre::NameValuePairList mExplosionDebrisParams;
+#endif
+#ifdef PARTICLE_EFFECT_SHRAPNEL
+    std::queue<Ogre::ParticleSystem*> mShrapnelSystems;
+#endif
     
     // Compositor logic modules
     HDRLogic*        mHDRLogic;

@@ -378,10 +378,6 @@ bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
                 GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);*/
             else if (!strcasecmp(szInput, "benchmark"))
                 GameCore::mClientGraphics->startBenchmark(0);
-            else if (!strcasecmp(szInput, "ass"))
-                GameCore::mClientGraphics->generateShrapnel(Ogre::Vector3(0, -9, 0), BLUE_TEAM);
-            else if (!strcasecmp(szInput, "cock"))
-                GameCore::mClientGraphics->generateSparks(Ogre::Vector3(0, -9, 0), Ogre::Vector3(1,1,1));
             else if (!strncasecmp(szInput, "b1 ", 3))
                 GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
             else if (!strncasecmp(szInput, "b2 ", 3))
