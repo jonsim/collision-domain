@@ -75,6 +75,10 @@ public:
     btRaycastVehicle *getVehicle() { return mVehicle; }
     void attachCollisionTickCallback(Player* player);
     void applyForce(Ogre::SceneNode* node, Ogre::Vector3 force);
+    void resetMass();
+    void setMass( float newmass );
+    void resetEngineForce() { mMaxAccelForce = mMaxAccelForceBuf; }
+    void setEngineForce( float newforce ) { mMaxAccelForce *= newforce; }
     
     void readTuning( char *szFile );
     float getRPM() { return mEngineRPM; }
@@ -161,6 +165,7 @@ protected:
     float mSteerToZeroIncrement;
     float mSteerClamp;
 
+    float mMaxAccelForceBuf;
     float mMaxAccelForce;
     float mMaxBrakeForce;
 
@@ -209,7 +214,7 @@ private:
 class WheelFrictionConstraint : public btTypedConstraint
 {
 public:
-    WheelFrictionConstraint( btRaycastVehicle *v, btRigidBody *r );
+    WheelFrictionConstraint( Vehicle *v, btRigidBody *r );
     virtual void getInfo1( btTypedConstraint::btConstraintInfo1* info );
     virtual void getInfo2( btTypedConstraint::btConstraintInfo2* info );
 
@@ -219,7 +224,7 @@ public:
 	///return the local value of parameter
     virtual	btScalar getParam(int num, int axis = -1) const;
 
-    btRaycastVehicle    *mVehicle;
+    Vehicle    *mVehicle;
     btRigidBody         *mbtRigidBody;
     
     // Note to Jamie: I made the two calc functions public to implement my stuff, do whatever you like with them this is your domain.

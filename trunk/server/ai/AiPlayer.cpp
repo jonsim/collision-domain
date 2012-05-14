@@ -50,7 +50,7 @@ void AiPlayer::Spawn()
         bsAiTeam.Write( NO_TEAM );
         GameCore::mNetworkCore->PlayerTeamSelect(&bsAiTeam, mPacket);
     }
-	mCarType = CAR_SMALL;
+	mCarType = CAR_BANGER;
 	RakNet::BitStream bsCarType;
 	bsCarType.Write(mCarType);
 	GameCore::mNetworkCore->PlayerSpawn(&bsCarType, mPacket);

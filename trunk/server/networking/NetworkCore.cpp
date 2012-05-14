@@ -465,7 +465,7 @@ void NetworkCore::sendPowerupCreate( int pwrID, PowerupType pwrType, Ogre::Vecto
     m_RPC->Signal( "PowerupCreate", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false );
 }
 
-void NetworkCore::sendPowerupCollect( int pwrID, Player *player )
+void NetworkCore::sendPowerupCollect( int pwrID, Player *player, float extraData )
 {
     RakNet::BitStream bsSend;
     bsSend.Write( pwrID );
@@ -474,6 +474,7 @@ void NetworkCore::sendPowerupCollect( int pwrID, Player *player )
     {
         bsSend.Write( true );
         bsSend.Write( player->getPlayerGUID() );
+        bsSend.Write( extraData );
     }
     else
     {

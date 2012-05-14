@@ -5,6 +5,8 @@
 #ifndef SHAREDINCLUDES_H
 #define SHAREDINCLUDES_H
 
+#define INITIAL_HEALTH 800
+
 enum PHYS_SHAPE : int
 {
     PHYS_SHAPE_COLOSSEUM,
@@ -25,6 +27,14 @@ enum PHYS_SHAPE : int
     PHYS_SHAPE_POWERUP,
 
     PHYS_SHAPE_COUNT,
+};
+
+enum PowerupType
+{
+	POWERUP_HEALTH,
+	POWERUP_MASS,
+	POWERUP_SPEED,
+	POWERUP_COUNT
 };
 
 #endif // #ifndef SHAREDINCLUDES_H

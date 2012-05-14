@@ -225,6 +225,8 @@ public:
     float            rearDamageBoundary;
     float            frontDamageBoundary;
 
+    void addPowerup( PowerupType type, RakNet::TimeMS endtime );
+
 
 private:
     void reLayoutPowerupBoards();
@@ -289,6 +291,9 @@ private:
     float            damageShareTR; 
     float            damageShareBR;  
     float            damageShareMR; 
+
+    //std::map<PowerupType, RakNet::TimeMS> powerupTimers;
+    RakNet::TimeMS powerupTimers[POWERUP_COUNT];
 
 	int roundScore;
 	int gameScore;

@@ -13,7 +13,7 @@
 #include "Gameplay.h"
 #include "boost/algorithm/string.hpp"
 
-#define WHEEL_FRICTION_CFM 0.6f
+#define WHEEL_FRICTION_CFM 0.1f
 
 std::list<Ogre::Entity*>* Car::mClonedEntities = new std::list<Ogre::Entity*>;
 std::list<Ogre::ResourceHandle>* Car::mMeshObjects = new std::list<Ogre::ResourceHandle>;
@@ -218,8 +218,10 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         mVehicle->applyEngineForce( 0, 2 );
         mVehicle->applyEngineForce( 0, 3 );
 
-        mVehicle->setBrake( 2* mMaxAccelForce, 2 );
-        mVehicle->setBrake( 2* mMaxAccelForce, 3 );
+        //mVehicle->setBrake( /*2 **/ mMaxAccelForce, 2 );
+        //mVehicle->setBrake( /*2 **/ mMaxAccelForce, 3 );
+
+        mVehicle->mHandbrake = true;
 
     }
     else
@@ -227,6 +229,8 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         // Reset brakes to 0
         for( int i = 0; i < 4; i ++ )
             mVehicle->setBrake( 0 , i );
+
+         mVehicle->mHandbrake = true;
     }
 
     // Loop through each wheel
@@ -477,6 +481,18 @@ void Car::applyForce(Ogre::SceneNode* node, Ogre::Vector3 force)
     mCarChassis->applyImpulse(btForce, btPos);
 }
 
+void Car::resetMass()
+{
+    setMass( mChassisMass );
+}
+
+void Car::setMass( float newmass )
+{
+    btVector3 inertia;
+    mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
+    mVehicle->getRigidBody()->setMassProps( newmass, inertia );
+    mVehicle->getRigidBody()->updateInertiaTensor();
+}
 
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended
 ///         with this car's unique ID so that (forbidden) name collisions don't occur.
@@ -577,7 +593,7 @@ void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shap
  *  - deals with individual friction levels per wheel
  ********************************************************/
 
-WheelFrictionConstraint::WheelFrictionConstraint( btRaycastVehicle *v, btRigidBody *r )
+WheelFrictionConstraint::WheelFrictionConstraint( Vehicle *v, btRigidBody *r )
     : btTypedConstraint( CONTACT_CONSTRAINT_TYPE, *v->getRigidBody() )
 {
     mVehicle = v; mbtRigidBody = r;
@@ -642,6 +658,9 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         // Set friction limits.
         info->m_lowerLimit[row_index] = -max_friction;
         info->m_upperLimit[row_index] = max_friction;
+
+        if( mVehicle->mHandbrake && i > 1 )
+            info->m_upperLimit[row_index] = 0;
 
     }
 
@@ -789,7 +808,7 @@ void Car::readTuning( char *szFile )
         std::vector<std::string> tokens;
         boost::split( tokens, vecLines.at(i), boost::is_any_of( "\t " ) );
 
-        log( "line is %s and numtok is %i", vecLines.at(i).c_str(), tokens.size() );
+        //log( "line is %s and numtok is %i", vecLines.at(i).c_str(), tokens.size() );
 
         if( tokens.size() < 2 )
             continue;
