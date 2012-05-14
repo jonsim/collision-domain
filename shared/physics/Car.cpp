@@ -488,10 +488,10 @@ void Car::resetMass()
 
 void Car::setMass( float newmass )
 {
-    btVector3 inertia;
-    mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
-    mVehicle->getRigidBody()->setMassProps( newmass, inertia );
-    mVehicle->getRigidBody()->updateInertiaTensor();
+    //btVector3 inertia;
+    //mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
+    //mVehicle->getRigidBody()->setMassProps( newmass, inertia );
+    //mVehicle->getRigidBody()->updateInertiaTensor();
 }
 
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended

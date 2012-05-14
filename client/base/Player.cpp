@@ -255,7 +255,7 @@ void Player::angleTest(void) {
             GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
             break;
         case 3:
-            GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, hitPoint, damage * 0.1, isFront);
+            GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, hitPoint, damage * 0.04, isFront);
             GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
             break;
         default:
@@ -732,12 +732,12 @@ void Player::processDamage( PLAYER_DAMAGE_LOC damageIn )
     GameCore::mGui->chatboxAddMessage("damage", (char*)ss.str().c_str());
 
     float damageShares[6] = {
-        damageIn.damageTL / ((float)INITIAL_HEALTH / 6.f),  // * damageShareTL
-        damageIn.damageTR / ((float)INITIAL_HEALTH / 6.f),  // * damageShareTR
-        damageIn.damageML / ((float)INITIAL_HEALTH / 6.f),  // * damageShareML
-        damageIn.damageMR / ((float)INITIAL_HEALTH / 6.f),  // * damageShareMR
-        damageIn.damageBL / ((float)INITIAL_HEALTH / 6.f),  // * damageShareBL
-        damageIn.damageBR / ((float)INITIAL_HEALTH / 6.f)   // * damageShareBR
+        damageIn.damageTL / ((float)INITIAL_HEALTH * (1-damageShareTL)),  // 
+        damageIn.damageTR / ((float)INITIAL_HEALTH * (1-damageShareTR)),  // 
+        damageIn.damageML / ((float)INITIAL_HEALTH * (1-damageShareML)),  // 
+        damageIn.damageMR / ((float)INITIAL_HEALTH * (1-damageShareMR)),  // 
+        damageIn.damageBL / ((float)INITIAL_HEALTH * (1-damageShareBL)),  // 
+        damageIn.damageBR / ((float)INITIAL_HEALTH * (1-damageShareBR))   // 
     }; // keep in order!
 
     int colour = 0;;
