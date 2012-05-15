@@ -106,7 +106,8 @@ public:
 	void cameraLookBack(void);
 	void revertCamera(void);
 
-    void addPowerup( PowerupType type, RakNet::TimeMS endtime );
+    void addPowerup( PowerupType type, RakNet::TimeMS endtime, bool heavy = false );
+    int getHeavyState() { if( powerupTimers[POWERUP_MASS] > 0 ) if( isHeavy ) return 1; else return -1; else return 0; }
 
     void reduceDamage(float byAmount);
 
@@ -151,6 +152,7 @@ private:
 
     //std::map<PowerupType, RakNet::TimeMS> powerupTimers;
     RakNet::TimeMS powerupTimers[POWERUP_COUNT];
+    bool isHeavy;
 
 	int roundScore;
 	int gameScore;

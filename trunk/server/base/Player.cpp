@@ -327,9 +327,11 @@ void Player::addToGameScore(int amount)
 	this->gameScore += amount;
 }
 
-void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime )
+void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime, bool heavy )
 {
     powerupTimers[type] = endtime;
+    if( type == POWERUP_MASS )
+        isHeavy = heavy;
 }
 
 void Player::reduceDamage(float byAmount)
