@@ -50,7 +50,7 @@ AudioCore::AudioCore()
     if (!mInitOK) return;
     
     mMenuTrack    = mSoundManager->createSound("menutrack",    FILE_MENU_TRACK,     false, true, true, GameCore::mSceneMgr, true);
-    mMenuTrack->setMaxVolume(0.75f);
+    mMenuTrack->setMaxVolume(1.0f);
     mMenuTrack->startFade(true, 0.5f);
 
     // force the soundManager to buffer immediate sounds
@@ -133,7 +133,7 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
         case ENGINE_SMALL: case ENGINE_COUPE: case ENGINE_TRUCK:
         	sound->setMaxVolume(ENGINE_MAX_VOLUME);
             sound->setRolloffFactor(1.5f);
-            sound->setReferenceDistance(14.f);
+            sound->setReferenceDistance(12.f);
             break;
         case GEAR_CHANGE:
         	sound->setMaxVolume(0.7f);

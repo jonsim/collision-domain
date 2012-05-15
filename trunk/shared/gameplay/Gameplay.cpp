@@ -508,7 +508,7 @@ void Gameplay::drawInfo()
 void Gameplay::handleInfoItem(InfoItem* item, bool show)
 {
     item->sendPacket(show); //Send the packet, will only happen on the server
-
+    
 	#ifdef COLLISION_DOMAIN_CLIENT
 		Ogre::OverlayElement* tmpOLE = Ogre::OverlayManager::getSingleton().getOverlayElement("ONE_OT",false);
 	#endif
@@ -525,7 +525,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_CLIENT
                     tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f, 0.1f);
-					tmpOLE->setMaterialName( "gear1" );
+					tmpOLE->setMaterialName( "countdown_1" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("ONE!\n");
@@ -545,7 +545,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_CLIENT
                     tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f,0.1f);
-					tmpOLE->setMaterialName( "gear2" );
+					tmpOLE->setMaterialName( "countdown_2" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("Two!\n");
@@ -559,7 +559,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     tmpOLE->hide();
                     this->hideGameTypeText();
 					tmpOLE->setDimensions(0.1f, 0.1f);
-					tmpOLE->setMaterialName( "gear3" );
+					tmpOLE->setMaterialName( "countdown_3" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("Three!\n");
@@ -596,8 +596,13 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				break;
 
             case GO_OT:
-                // put the rock music back
                 #ifdef COLLISION_DOMAIN_CLIENT
+                    tmpOLE->hide();
+					tmpOLE->setDimensions(0.1f,0.1f);
+					tmpOLE->setMaterialName( "countdown_go" );
+					tmpOLE->setPosition(0.45f, 0.1f);
+					tmpOLE->show();
+                    // put the rock music back
                     GameCore::mAudioCore->menuToRockTrack(false);
                 #endif
 

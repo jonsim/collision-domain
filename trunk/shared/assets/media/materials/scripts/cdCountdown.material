@@ -1,0 +1,21 @@
+import cd/GUIComponent from "cdBaseMaterials.material"
+
+material countdown_1 : cd/GUIComponent
+{
+    set $texture countdown-1.png
+}
+
+material countdown_2 : cd/GUIComponent
+{
+	set $texture countdown-2.png
+}
+
+material countdown_3 : cd/GUIComponent
+{
+	set $texture countdown-3.png
+}
+
+material countdown_go : cd/GUIComponent
+{
+	set $texture countdown-go.png
+}
