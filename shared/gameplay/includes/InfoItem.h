@@ -28,8 +28,7 @@ enum OverlayType
 	SCOREBOARD_TO_WINNER_OT,
     PLAYER_KILLED_OT,
     GO_OT,
-    CLEAR_PODIUM_OT,
-    SHOW_PODIUM_OT,
+    CLEAR_PODIUM_OT
 };
 
 class InfoItem
