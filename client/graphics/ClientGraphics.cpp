@@ -775,6 +775,7 @@ void ClientGraphics::windowClosed (Ogre::RenderWindow* rw)
 
 void ClientGraphics::startBenchmark (uint8_t stage)
 {
+#if defined(COMPOSITOR_HDR) && defined(COMPOSITOR_BLOOM) && defined(COMPOSITOR_RADIAL_BLUR) && defined(COMPOSITOR_MOTION_BLUR)
         Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
         Ogre::Viewport* vp = mCamera->getViewport();
         switch (stage)
@@ -818,6 +819,9 @@ void ClientGraphics::startBenchmark (uint8_t stage)
         mWindow->resetStatistics();
         mBenchmarkStage = stage;
         mGraphicsState = BENCHMARKING;
+#else
+    OutputDebugString("WARNING! You may not call benchmark without all compositors loaded.\n");
+#endif
 }
 
 

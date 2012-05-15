@@ -8,14 +8,19 @@
 #include "GameCore.h"
 #include "MeshDeformer.h"
 
-// The shadowing method to use (1 = Stencils, 2 = Texturing, 3 = DSM, 4 = PSSM).
-#define SHADOW_METHOD 2
-
 SceneSetup::SceneSetup (void) : mWindow(0),
-                                mGfxSettingHDR(1.0f),
-                                mGfxSettingBloom(1.0f),
-                                mGfxSettingRadialBlur(1.0f),
-                                mGfxSettingMotionBlur(1.0f),
+                                #ifdef COMPOSITOR_HDR
+                                    mGfxSettingHDR(1.0f),
+                                #endif
+                                #ifdef COMPOSITOR_BLOOM
+                                    mGfxSettingBloom(1.0f),
+                                #endif
+                                #ifdef COMPOSITOR_RADIAL_BLUR
+                                    mGfxSettingRadialBlur(1.0f),
+                                #endif
+                                #ifdef COMPOSITOR_MOTION_BLUR
+                                    mGfxSettingMotionBlur(1.0f),
+                                #endif
                                 mArenaBody(NULL)
 {
 }
@@ -42,12 +47,12 @@ void SceneSetup::setupShadowSystem (void)
 #elif SHADOW_METHOD == 2
     /**** Texture shadowmapping. Uses LiSPSM projection to enhance quality. ****/
     GameCore::mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
-    GameCore::mSceneMgr->setShadowFarDistance(150);
+    GameCore::mSceneMgr->setShadowFarDistance(SHADOW_FAR_DISTANCE);
     GameCore::mSceneMgr->setShadowDirectionalLightExtrusionDistance(1000);
 
     GameCore::mSceneMgr->setShadowDirLightTextureOffset(0.9f);
     GameCore::mSceneMgr->setShadowTextureCount(1);
-    GameCore::mSceneMgr->setShadowTextureSize(2048);
+    GameCore::mSceneMgr->setShadowTextureSize(SHADOW_TEXTURE_SIZE);
 
     Ogre::LiSPSMShadowCameraSetup* shadowSetup = new Ogre::LiSPSMShadowCameraSetup();
     shadowSetup->setOptimalAdjustFactor(1);
@@ -660,36 +665,47 @@ void SceneSetup::setupCompositorChain (Ogre::Viewport* vp)
     
     // Create compositors. Where possible these are coded in the Examples.compositor script, but some need
     // access to certain features not available when this script is compiled.
+#ifdef COMPOSITOR_MOTION_BLUR
     createMotionBlurCompositor();
+#endif
 
     // Register the compositors.
     // This is done by first setting up the logic module for them and adding this as a listener so it
     // fires every time the compositor completes a pass allowing injection of values into the GPU
     // shaders which render the materials each pass, thus altering the behaviour of the compositor.
     // Finally add the compositors to the compositor chain and configure, then enable them.
+#ifdef COMPOSITOR_HDR
     mHDRLogic = new HDRLogic;
     cm.registerCompositorLogic("HDR", mHDRLogic);
     //cm.addCompositor(vp, "HDR", 0);        // HDR must be at the front of the chain.
     //hdrLoader(vp, 0);
+#endif
 
+#ifdef COMPOSITOR_BLOOM
     mBloomLogic = new BloomLogic;
     cm.registerCompositorLogic("Bloom", mBloomLogic);
     cm.addCompositor(vp, "Bloom");
     loadBloom(vp, 0, 0.15f, 1.0f);
+#endif
 
+#ifdef COMPOSITOR_MOTION_BLUR
     mMotionBlurLogic = new MotionBlurLogic;
     cm.registerCompositorLogic("MotionBlur", mMotionBlurLogic);
     cm.addCompositor(vp, "MotionBlur");
     loadMotionBlur(vp, 0, 0.10f);
+#endif
 
+#ifdef COMPOSITOR_RADIAL_BLUR
     mRadialBlurLogic = new RadialBlurLogic;
     cm.registerCompositorLogic("RadialBlur", mRadialBlurLogic);
     cm.addCompositor(vp, "RadialBlur");
     // radial blur has no loader as it is controlled by the players speed (Car.cpp).
+#endif
 }
 
 
 /// @param mode     The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+#ifdef COMPOSITOR_HDR
 void SceneSetup::loadHDR (Ogre::Viewport* vp, uint8_t mode)
 {
     Ogre::CompositorManager& cm = Ogre::CompositorManager::getSingleton();
@@ -699,8 +715,11 @@ void SceneSetup::loadHDR (Ogre::Viewport* vp, uint8_t mode)
     if (mode < 2)
         cm.setCompositorEnabled(vp, "HDR", true);
 }
+#endif
+
 
 /// @param mode     The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+#ifdef COMPOSITOR_BLOOM
 void SceneSetup::loadBloom (Ogre::Viewport* vp, uint8_t mode, float blurWeight, float originalWeight)
 {
     // reload bloom
@@ -719,8 +738,11 @@ void SceneSetup::loadBloom (Ogre::Viewport* vp, uint8_t mode, float blurWeight, 
     if (mode < 2)
         cm.setCompositorEnabled(vp, "Bloom", true);
 }
+#endif
+
 
 /// @param mode     The mode of operation for the function. 0 to load s the compositor, 1 to reload, 2 to unload.
+#ifdef COMPOSITOR_MOTION_BLUR
 void SceneSetup::loadMotionBlur (Ogre::Viewport* vp, uint8_t mode, float blur)
 {
     // reload bloom
@@ -736,7 +758,10 @@ void SceneSetup::loadMotionBlur (Ogre::Viewport* vp, uint8_t mode, float blur)
     if (mode < 2)
         cm.setCompositorEnabled(vp, "MotionBlur", true);
 }
+#endif
 
+
+#ifdef COMPOSITOR_RADIAL_BLUR
 void SceneSetup::setRadialBlur (Ogre::Viewport* vp, float blur)
 {
     static bool enabled = false;
@@ -766,8 +791,10 @@ void SceneSetup::setRadialBlur (Ogre::Viewport* vp, float blur)
         }
     }
 }
+#endif
 
 
+#ifdef COMPOSITOR_MOTION_BLUR
 void SceneSetup::createMotionBlurCompositor (void)
 {
     // Motion blur effect
@@ -844,3 +871,4 @@ void SceneSetup::createMotionBlurCompositor (void)
         }
     }
 }
+#endif

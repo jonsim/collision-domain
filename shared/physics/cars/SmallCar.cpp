@@ -474,7 +474,7 @@ void SmallCar::updateArena (ArenaID aid)
 #endif
 
     // Update the environment map.
-    /*
+#ifdef TEXTURE_ENV_SWAPPING
     std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");
     std::string materialList[7] = {"small_car_body_uv", "small_car_door_uv",
                                    "small_car_body_t1", "small_car_door_t1",
@@ -489,7 +489,8 @@ void SmallCar::updateArena (ArenaID aid)
         if (tus == NULL)
             OutputDebugString("uh oh\n");
         tus->setTextureName(newSphereMap);
-    }*/
+    }
+#endif
 }
 
 

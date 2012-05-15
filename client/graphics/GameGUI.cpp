@@ -378,12 +378,16 @@ bool GameGUI::Console_Send (const CEGUI::EventArgs &args)
                 GameCore::mClientGraphics->setWeather(atoi(&szInput[8]) - 1);*/
             else if (!strcasecmp(szInput, "benchmark"))
                 GameCore::mClientGraphics->startBenchmark(0);
+#ifdef COMPOSITOR_BLOOM
             else if (!strncasecmp(szInput, "b1 ", 3))
                 GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]), -1.0f);
             else if (!strncasecmp(szInput, "b2 ", 3))
                 GameCore::mClientGraphics->loadBloom(GameCore::mClientGraphics->mCamera->getViewport(), 1, -1.0f, atof(&szInput[3]));
+#endif
+#ifdef COMPOSITOR_MOTION_BLUR
             else if (!strncasecmp(szInput, "mb ", 3))
                 GameCore::mClientGraphics->loadMotionBlur(GameCore::mClientGraphics->mCamera->getViewport(), 1, atof(&szInput[3]));
+#endif
             else if (!strcasecmp(szInput, "wireframe on"))
                 GameCore::mClientGraphics->mCamera->setPolygonMode(Ogre::PM_WIREFRAME);
             else if (!strcasecmp(szInput, "wireframe off"))
