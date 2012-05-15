@@ -68,7 +68,8 @@ public:
 private:
     bool receiveFromConsole (const CEGUI::EventArgs &args);
     void scrollConsoleToBottom (void);
-	bool healthTextChanged (const CEGUI::EventArgs &args);
+	bool adminWindow_edtHealth (const CEGUI::EventArgs &args);
+    bool adminWindow_btnNudge (const CEGUI::EventArgs &args);
 	void openAdminWindow (void);
 	bool closeAdminWindow (const CEGUI::EventArgs &args);
 

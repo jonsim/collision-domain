@@ -14,14 +14,14 @@
         <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Team" >
             <Property Name="Font" Value="DejaVuSans-10" />
             <Property Name="Text" Value="Select a Team" />
+            <Property Name="Visible" Value="False" />
             <Property Name="CaptionFont" Value="DejaVuSans-10" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="RollUpEnabled" Value="False" />
             <Property Name="SizingEnabled" Value="False" />
             <Property Name="TitlebarEnabled" Value="True" />
-            <Property Name="UnifiedAreaRect" Value="{{0.35,0},{0.32,0},{0.65,0},{0.68,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.35,0},{0.28,0},{0.65,0},{0.753333,0}}" />
             <Property Name="CloseButtonEnabled" Value="False" />
-            <Property Name="Visible" Value="False" />
             <Property Name="EWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
             <Property Name="NSSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
             <Property Name="NESWSizingCursorImage" Value="set:Vanilla-Images image:MouseArrow" />
@@ -29,36 +29,49 @@
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnAuto" >
                 <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Auto Assign" />
-                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.39,0},{0.9,0},{0.54,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.5,0},{0.98,0},{0.62,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnBlue" >
                 <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Blue" />
-                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.21,0},{0.9,0},{0.36,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.36,0},{0.98,0},{0.48,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnRed" >
                 <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Red" />
-                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.03,0},{0.9,0},{0.18,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.22,0},{0.98,0},{0.34,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnSpectate" >
                 <Property Name="Text" Value="Spectate" />
-                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.65,0},{0.9,0},{0.8,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.72,0},{0.98,0},{0.84,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnProjector" >
                 <Property Name="Text" Value="Projector" />
-                <Property Name="UnifiedAreaRect" Value="{{0.1,0},{0.83,0},{0.9,0},{0.98,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.86,0},{0.98,0},{0.98,0}}" />
+            </Window>
+            <Window Type="GWEN/Editbox" Name="/SpawnScreen/Team/edtName" >
+                <Property Name="MaxTextLength" Value="1073741823" />
+                <Property Name="UnifiedAreaRect" Value="{{0.26,0},{0.02,0},{0.98,0},{0.13,0}}" />
+                <Property Name="TextParsingEnabled" Value="False" />
+            </Window>
+            <Window Type="GWEN/StaticText" Name="/SpawnScreen/Team/" >
+                <Property Name="Text" Value="Name:" />
+                <Property Name="HorzExtent" Value="45" />
+                <Property Name="VertExtent" Value="15.5148" />
+                <Property Name="FrameEnabled" Value="False" />
+                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.26,0},{0.14,0}}" />
+                <Property Name="BackgroundEnabled" Value="False" />
             </Window>
         </Window>
         <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Vehicle" >
             <Property Name="Text" Value="Select a Vehicle" />
+            <Property Name="Visible" Value="False" />
             <Property Name="CaptionFont" Value="DejaVuSans-10" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="SizingEnabled" Value="False" />
             <Property Name="TitlebarEnabled" Value="True" />
             <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.29,0},{0.8,0},{0.71,0}}" />
             <Property Name="CloseButtonEnabled" Value="False" />
-            <Property Name="Visible" Value="False" />
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCoupe" >
                 <Property Name="Text" Value="Coupe" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.38,0},{0.15,0}}" />
@@ -87,8 +100,8 @@
             <Property Name="Font" Value="DejaVuSansBold-10" />
             <Property Name="Text" Value="Team full, please use Auto Assign." />
             <Property Name="Visible" Value="False" />
-            <Property Name="HorzExtent" Value="336" />
-            <Property Name="VertExtent" Value="20.3165" />
+            <Property Name="HorzExtent" Value="270" />
+            <Property Name="VertExtent" Value="15.5148" />
             <Property Name="TextColours" Value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
             <Property Name="FrameEnabled" Value="False" />
             <Property Name="InheritsAlpha" Value="False" />
