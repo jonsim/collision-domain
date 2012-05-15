@@ -24,7 +24,7 @@ public:
 #ifdef COLLISION_DOMAIN_SERVER
     void playerCollision(Player* player);
 #else
-    void Powerup::playerCollision(Player* player, float extraData);
+    void playerCollision(Player* player, float extraData);
 #endif
     void frameEvent(const float timeSinceLastFrame);
     bool isPendingDelete();

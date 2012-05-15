@@ -1,6 +1,6 @@
 /**
- * @file	Player.cpp
- * @brief 	Contains the player car and the related data specific to each player.
+ * @file        Player.cpp
+ * @brief       Contains the player car and the related data specific to each player.
  */
 
 /*-------------------- INCLUDES --------------------*/
@@ -32,19 +32,19 @@ Player::Player (bool isAI)
     mIsAI(isAI)
 {
     // PlayerState state configures constants and zeros values upon creation.
-	//processingCollision = false;
-	numCollisionDataPoints = 0;
+        //processingCollision = false;
+        numCollisionDataPoints = 0;
 
-	numCameraViews = 3;
-	cameraView = 0;
+        numCameraViews = 3;
+        cameraView = 0;
 
-	cameraViews[0]     = btVector3( 0.f, 5.f,  -10.f ); //default
-	cameraViews[1]     = btVector3( 0.f, 3.8f, -9.f ); //lower+closer
-	cameraViews[2]     = btVector3( 0.f, 2.8f, 0.f ); //windshield
+        cameraViews[0]     = btVector3( 0.f, 5.f,  -10.f ); //default
+        cameraViews[1]     = btVector3( 0.f, 3.8f, -9.f ); //lower+closer
+        cameraViews[2]     = btVector3( 0.f, 2.8f, 0.f ); //windshield
 
-	cameraLookViews[0] = btVector3( 0.f, 0.f, 3.0f );
-	cameraLookViews[1] = btVector3( 0.f, 3.8f, 3.0f );
-	cameraLookViews[2] = btVector3( 0.f, 2.8f, 8.f );
+        cameraLookViews[0] = btVector3( 0.f, 0.f, 3.0f );
+        cameraLookViews[1] = btVector3( 0.f, 3.8f, 3.0f );
+        cameraLookViews[2] = btVector3( 0.f, 2.8f, 8.f );
 
     std::stringstream ss;
     ss << "car type: " << mCarType << "\n";
@@ -84,13 +84,13 @@ Player::Player (bool isAI)
 
     //OutputDebugString(ss.str().c_str());
 
-	//averageCollisionPoint.setZero();
+        //averageCollisionPoint.setZero();
 
-	// Damage Level Thresholds: how many calls to collisionTickCallback have been seen
-	//lowDamageThreshold = 25;
-	//mediumDamageThreshold = 55;
-	//highDamageThreshold = 80;
-	//btVector3::setZero(averageCollisionPoint);
+        // Damage Level Thresholds: how many calls to collisionTickCallback have been seen
+        //lowDamageThreshold = 25;
+        //mediumDamageThreshold = 55;
+        //highDamageThreshold = 80;
+        //btVector3::setZero(averageCollisionPoint);
 }
 
 
@@ -223,7 +223,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
     damageShareBR = 0.25f;
     damageShareMR = 0.2f;
 
-	roundScore = 0;
+        roundScore = 0;
     mCar->attachCollisionTickCallback(this);
     
     mCar->moveTo(btVector3(0,0.5,0));
@@ -234,13 +234,13 @@ void Player::angleTest(void) {
     
 }
 /// @brief  Called back every substep of physics stepSim (so potentially multiple times a frame)
-/// @param  hitPoint		Location of the collision point on the collision mesh - in world coordinates
-/// @param  speed			The speed of the impact in the direction of the normal to the collision point
-/// @param  causedByPlayer	Pointer to the other player in the collision.
+/// @param  hitPoint            Location of the collision point on the collision mesh - in world coordinates
+/// @param  speed                       The speed of the impact in the direction of the normal to the collision point
+/// @param  causedByPlayer      Pointer to the other player in the collision.
 #if _WIN32
     void Player::collisionTickCallback(Ogre::Vector3 &hitPoint, Ogre::Real damage, unsigned int damageSection, int crashType, Player *causedByPlayer) {
 #else
-	void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real &damage, int& damageSection, int &crashType, Player *&causedByPlayer) {
+        void Player::collisionTickCallback(Ogre::Vector3 hitPoint, Ogre::Real &damage, int& damageSection, int &crashType, Player *&causedByPlayer) {
 #endif
     bool isFront = ((damageSection == 0) || (damageSection == 1));
     TeamID tid = (GameCore::mGameplay->getGameMode() == FFA_MODE) ? NO_TEAM : getTeam();
@@ -276,14 +276,14 @@ void Player::angleTest(void) {
 void Player::cameraLookLeft(void) {
     GameCore::mClientGraphics->mGameCam->setCollidable(false);
     GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
-	GameCore::mClientGraphics->mGameCam->setOffset( btVector3(5, 0, 0) );
+        GameCore::mClientGraphics->mGameCam->setOffset( btVector3(5, 0, 0) );
     GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
 }
 
 void Player::cameraLookRight(void) {
     GameCore::mClientGraphics->mGameCam->setCollidable(false);
     GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
-	GameCore::mClientGraphics->mGameCam->setOffset( btVector3(-5, 0, 0) );
+        GameCore::mClientGraphics->mGameCam->setOffset( btVector3(-5, 0, 0) );
     GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
 }
 
@@ -303,16 +303,16 @@ void Player::revertCamera(void) {
 }
 
 void Player::cycleCameraView(void) {
-	cameraView = (++cameraView) & numCameraViews;
-	switch(cameraView) {
-		case 0 :
-		case 1 :
-			GameCore::mClientGraphics->mGameCam->setCamType( CAM_CHASE );
-			break;
-		case 2 :
-			GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
-			break;
-	}
+        cameraView = (++cameraView) & numCameraViews;
+        switch(cameraView) {
+                case 0 :
+                case 1 :
+                        GameCore::mClientGraphics->mGameCam->setCamType( CAM_CHASE );
+                        break;
+                case 2 :
+                        GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
+                        break;
+        }
     GameCore::mClientGraphics->mGameCam->setOffset( cameraViews[cameraView] );
     GameCore::mClientGraphics->mGameCam->setLookOffset( cameraLookViews[cameraView] );
 }
@@ -342,13 +342,13 @@ void Player::processControlsFrameEvent(
         InputState *userInput,
         Ogre::Real secondsSinceLastFrame)
 {
-	//Only take input if the player is alive
-	if(this->mAlive && this->getCar())
-	{
-		// process steering and apply acceleration
-		mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);
-		mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
-	}
+        //Only take input if the player is alive
+        if(this->mAlive && this->getCar())
+        {
+                // process steering and apply acceleration
+                mCar->steerInputTick(userInput->isLeft(), userInput->isRight(), secondsSinceLastFrame);
+                mCar->accelInputTick(userInput->isForward(), userInput->isBack(), userInput->isHandbrake(), secondsSinceLastFrame);
+        }
     else
     {
         mCar->steerInputTick(false, false, secondsSinceLastFrame);
@@ -496,17 +496,17 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
     /*if(camShakeCounter > 0) {
         
         camArmNode->yaw(Ogre::Degree((-cameraRotationConstant * XRotation)+(rand()/RAND_MAX)*10), Ogre::Node::TS_PARENT);
-	    camArmNode->pitch(Ogre::Degree((cameraRotationConstant * 0.5f * -YRotation)+(rand()/RAND_MAX)*10), Ogre::Node::TS_LOCAL);
+            camArmNode->pitch(Ogre::Degree((cameraRotationConstant * 0.5f * -YRotation)+(rand()/RAND_MAX)*10), Ogre::Node::TS_LOCAL);
         camShakeCounter--;
     } else {*/
         camArmNode->yaw(Ogre::Degree(-cameraRotationConstant * XRotation), Ogre::Node::TS_PARENT);
-	    camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
+            camArmNode->pitch(Ogre::Degree(cameraRotationConstant * 0.5f * -YRotation), Ogre::Node::TS_LOCAL);
     //}
 
-	Ogre::Vector3 camPosition = camNode->getPosition();
-	ZDepth = -ZDepth;
-	if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
-		camNode->translate(0, 0, ZDepth * 0.02f);
+        Ogre::Vector3 camPosition = camNode->getPosition();
+        ZDepth = -ZDepth;
+        if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
+                camNode->translate(0, 0, ZDepth * 0.02f);
 
     if( camShakeFrames > 0 )
     {
@@ -532,32 +532,32 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
             gameCamera->resetTempOffset();
     }
    
-	//Update the camera
-	//
-	
-	//std::stringstream ssTmp;
-	//ssTmp << camShakeCounter << "\n";
-	//OutputDebugString(ssTmp.str().c_str());
-	
+        //Update the camera
+        //
+
+        //std::stringstream ssTmp;
+        //ssTmp << camShakeCounter << "\n";
+        //OutputDebugString(ssTmp.str().c_str());
+
 }
 
 /// @brief  Updates graphics for the local player (with effects that should only be applied from that, for example
 ///         radial blur, screen cracks etc.
 void Player::updateLocalGraphics (void)
 {
-	// Update radial blur (from vehicle speed).
+        // Update radial blur (from vehicle speed).
 #ifdef COMPOSITOR_RADIAL_BLUR
-	float speedmph = mCar->getCarMph();
-	float blurAmount = 0;
+        float speedmph = mCar->getCarMph();
+        float blurAmount = 0;
 
-	if (speedmph > 40.0f)
-	{
-		// calculate blurring as a function of speed, then scale it back depending on where you
-		// are looking at the car from (effect strongest from behind and infront (3 maxima at 
-		// +/-180 and 0, hence the double abs() reduction)).
-		blurAmount = (speedmph - 40) / 28;
-		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
-	}
+        if (speedmph > 40.0f)
+        {
+                // calculate blurring as a function of speed, then scale it back depending on where you
+                // are looking at the car from (effect strongest from behind and infront (3 maxima at
+                // +/-180 and 0, hence the double abs() reduction)).
+                blurAmount = (speedmph - 40) / 28;
+                blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
+        }
     GameCore::mClientGraphics->setRadialBlur(GameCore::mClientGraphics->mCamera->getViewport(), blurAmount);
 #endif
 }
@@ -574,7 +574,7 @@ void Player::updateGlobalGraphics (Ogre::Real secondsSinceLastFrame)
 /// @return The yawing, in degrees, around the player. 0 is directly in front of the player, +/-180 is behind.
 float Player::getCameraYaw ()
 {
-	return camArmNode->getOrientation().getYaw().valueDegrees();
+        return camArmNode->getOrientation().getYaw().valueDegrees();
 }
 
 
@@ -588,10 +588,10 @@ Car* Player::getCar()
 
 void Player::killPlayer()
 {
-	if(!mCar)
-		return;
+        if(!mCar)
+                return;
 
-	this->mAlive = false;
+        this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
 #ifdef PARTICLE_EFFECT_EXPLOSION
     GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());
@@ -606,44 +606,44 @@ void Player::killPlayer()
 
 void Player::setAlive(bool pAlive)
 {
-	mAlive = pAlive;
+        mAlive = pAlive;
 }
 
 bool Player::getAlive()
 {
-	return mAlive;
+        return mAlive;
 }
 
 void Player::setGUID(RakNet::RakNetGUID playerGUID) {
-	stringGUID = playerGUID.ToString();
+        stringGUID = playerGUID.ToString();
 }
 
 std::string Player::getGUID(void) {
-	return stringGUID;
+        return stringGUID;
 }
 
 RakNet::RakNetGUID Player::getPlayerGUID()
 {
-	return mPlayerGUID;
+        return mPlayerGUID;
 }
 
 void Player::setPlayerGUID(RakNet::RakNetGUID playerGUID)
 {
-	mPlayerGUID = playerGUID;
+        mPlayerGUID = playerGUID;
 }
 
 void Player::addToScore(int amount)
 {
-	roundScore += amount;
+        roundScore += amount;
 }
 
 int Player::getRoundScore()
 {
-	return this->roundScore;
+        return this->roundScore;
 }
 void Player::addToGameScore(int amount)
 {
-	this->gameScore += amount;
+        this->gameScore += amount;
 }
 
 // HEALTH RELATED FUNCTIONS
@@ -790,19 +790,19 @@ void Player::applyHealthBonus()
 
 int Player::getHP()
 {
-	return hp;
+        return hp;
 }
 
 void Player::resetHP()
 {
-	//this->hp = INITIAL_HEALTH;
+        //this->hp = INITIAL_HEALTH;
     serverSaysHealthChangedTo((float) INITIAL_HEALTH);
 }
 
 void Player::killPlayer(Player* causedBy)
 {
-	this->killPlayer();
-	GameCore::mGameplay->markDeath(this,causedBy);
+        this->killPlayer();
+        GameCore::mGameplay->markDeath(this,causedBy);
     GameCore::mGameplay->handleDeath(this,causedBy);
     mLastKiller = causedBy;
     mTimeLastKilled = RakNet::GetTimeMS();

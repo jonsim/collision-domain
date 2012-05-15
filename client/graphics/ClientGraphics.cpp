@@ -607,10 +607,10 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     sprintf(plane_point,  "%.2f %.2f %.2f", planeLocation.x, planeLocation.y, planeLocation.z);
     sprintf(plane_normal, "%.2f %.2f %.2f", planeNormal.x,   planeNormal.y,   planeNormal.z);
     // Create and setup the plane affector
-    Ogre::ParticleAffector* planeAffector = shrapnelSystem->addAffector("DeflectorPlane");
+    /*Ogre::ParticleAffector* planeAffector = shrapnelSystem->addAffector("DeflectorPlane");
     planeAffector->setParameter("plane_point",  plane_point);
     planeAffector->setParameter("plane_normal", plane_normal);
-    planeAffector->setParameter("bounce", "0.15");
+    planeAffector->setParameter("bounce", "0.15");*/
 #endif
     
 

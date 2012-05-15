@@ -9,6 +9,8 @@
 #include "Player.h"
 #include "GameCore.h"
 #include "ClientHooks.h"
+#include <unistd.h>
+#include <sys/param.h>
 
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
 RakNet::RPC4* NetworkCore::m_RPC;
@@ -16,8 +18,16 @@ bool NetworkCore::bConnected = false;
 RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 
 /// @brief  Constructor, initialising all resources.
-NetworkCore::NetworkCore () : mPlayerName("boobs"), m_szHost( NULL )
+NetworkCore::NetworkCore () : m_szHost( NULL )
 {
+	char tempName[MAXHOSTNAMELEN];
+	//set the player name to the computer name
+	if(gethostname(tempName, MAXHOSTNAMELEN) != -1)
+		mPlayerName = std::string(tempName);
+	else
+		mPlayerName = "Human";
+
+
 	// Get our main interface to RakNet
 	m_pRak = RakNet::RakPeerInterface::GetInstance();
 	m_pRak->Startup( 1, &RakNet::SocketDescriptor(), 1 );
