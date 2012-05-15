@@ -17,7 +17,7 @@
 // Global particle effects:
 #define PARTICLE_EFFECT_VIPSTREAK   // Sparkly streaks emitted from VIP crowns.
 #define PARTICLE_EFFECT_EXPLOSION   // Explosion on death.
-#define PARTICLE_EFFECT_SHRAPNEL    // Shrapnel from crunching collisions.
+//#define PARTICLE_EFFECT_SHRAPNEL    // Shrapnel from crunching collisions.
 //#define PARTICLE_EFFECT_SHRAPNEL_SPARKS   // Point-based sparks emitted alongside shrapnel. Does nothing if shrapnel is not defined.
 //#define PARTICLE_EFFECT_SPARKS      // Sparks emitted from scraping collisions.
 // Local particle effects:
@@ -28,7 +28,7 @@
 
 // Enabled high quality (colliding) shrapnel effect. PARTICLE_EFFECT_SHRAPNEL must be defined for this to have any effect.
 // A low quality, non-colliding version is used if this is not defined but shrapnel is enabled.
-#define PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+//#define PARTICLE_EFFECT_SHRAPNEL_HIQUAL
 
 
 // COMPOSITORS ------------------------------------------------------------

@@ -133,12 +133,9 @@ void Gameplay::cycleGame( bool unload )
     if(unload == true && roundNumber > 0)
         GameCore::mServerGraphics->unloadArena(mArenaOrder[roundNumber-1]);
 
-    if(roundNumber > mArenaID)
-    	this->setArenaID(mArenaOrder[roundNumber % ARENA_COUNT]);
-    else
-        this->setArenaID(mArenaOrder[roundNumber]);
+    this->setArenaID(mArenaOrder[roundNumber]);
 
-    GameCore::mServerGraphics->loadArena(mArenaID);
+    GameCore::mServerGraphics->loadArena(mArenaOrder[roundNumber]);
 
     // Sync those bad boiz up
     GameCore::mNetworkCore->sendGameSync(mGamemodeOrder[roundNumber], mArenaOrder[roundNumber]);
