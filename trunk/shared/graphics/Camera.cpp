@@ -42,20 +42,25 @@ void GameCamera::update( btScalar timeStep )
 
     // Following camera, target not set yet
     if( !mTarget )
+    {
+        mCam->setPosition( BtOgre::Convert::toOgre( mWorldPos ) );
         return;
+    }
 
     // Get the position of the object to follow
     Ogre::Vector3 pos   =  mTarget->getPosition();
+    Ogre::Vector3 right =  mTarget->getLocalAxes().GetColumn(0);
     Ogre::Vector3 up    =  mTarget->getLocalAxes().GetColumn(1);
     Ogre::Vector3 fwd   =  mTarget->getLocalAxes().GetColumn(2);
 
+    right.normalise();
     up.normalise();
     fwd.normalise();
 
     // Add on the camera offset to the local axes
-    Ogre::Vector3 desiredPos = pos + up * mLocalOffset.getY() + fwd * mLocalOffset.getZ();
+    Ogre::Vector3 desiredPos = pos + right * mLocalOffset.getX() + up * mLocalOffset.getY() + fwd * mLocalOffset.getZ();
     // Adjust the position to look at on the local axes
-    Ogre::Vector3 lookatPos  = pos + up * mLookOffset.getY()  + fwd * mLookOffset.getZ();
+    Ogre::Vector3 lookatPos  = pos + right * mLookOffset.getX()  + up * mLookOffset.getY()  + fwd * mLookOffset.getZ();
 
     // Set up some transforms in if we need to check for collisions
     btTransform cameraFrom, cameraTo;
