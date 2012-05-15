@@ -505,7 +505,8 @@ void SimpleCoupeCar::updateArena (ArenaID aid)
 #endif
 
     // Update the environment map.
-    /*std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");
+#ifdef TEXTURE_ENV_SWAPPING
+    std::string newSphereMap = (aid == COLOSSEUM_ARENA) ? "arena1_spheremap.jpg" : ((aid == FOREST_ARENA) ? "arena2_spheremap.jpg" : "arena3_spheremap.jpg");
     std::string materialList[10] = {"banger_body_uv", "banger_fdoor_uv", "banger_rdoor_uv",
                                     "banger_body_t1", "banger_fdoor_t1", "banger_rdoor_t1",
                                     "banger_body_t2", "banger_fdoor_t2", "banger_rdoor_t2",
@@ -519,7 +520,8 @@ void SimpleCoupeCar::updateArena (ArenaID aid)
         if (tus == NULL)
             OutputDebugString("uh oh\n");
         tus->setTextureName(newSphereMap);
-    }*/
+    }
+#endif
 }
 
 

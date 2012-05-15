@@ -546,6 +546,7 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
 void Player::updateLocalGraphics (void)
 {
 	// Update radial blur (from vehicle speed).
+#ifdef COMPOSITOR_RADIAL_BLUR
 	float speedmph = mCar->getCarMph();
 	float blurAmount = 0;
 
@@ -558,6 +559,7 @@ void Player::updateLocalGraphics (void)
 		blurAmount *= abs(abs(GameCore::mPlayerPool->getLocalPlayer()->getCameraYaw()) - 90) / 90;
 	}
     GameCore::mClientGraphics->setRadialBlur(GameCore::mClientGraphics->mCamera->getViewport(), blurAmount);
+#endif
 }
 
 /// @brief  Updates graphics for all players (called individually for each player in player pool), contains graphical
