@@ -224,12 +224,16 @@ void PhysicsCore::clearWorld()
 
     mBodies.clear();
 
-    for( int j = 0; j < PHYS_SHAPE_COUNT; j ++ )
+    /*for( int j = 0; j < PHYS_SHAPE_COUNT; j ++ )
     {
         btCollisionShape *shape = mShapes[j];
         if( shape )
             delete shape;
     }
+    */
+#ifdef COLLISION_DOMAIN_CLIENT
+    //GameCore::mSceneMgr->getRootSceneNode()->removeAndDestroyAllChildren();
+#endif
 }
 
 bool PhysicsCore::singleObjectRaytest(const btVector3& rayFrom, const btVector3& rayTo, btVector3& worldNormal, btVector3& worldHitPoint)

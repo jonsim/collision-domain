@@ -122,7 +122,6 @@ void AiPlayer::Update(double timeSinceLastFrame)
     //updateStuckDetection(); // Update the stuck detection stuff
     //isStuck();
 
-
 	//get the steering force
 	Ogre::Vector3 targetPos = mSteeringBehaviour->Calculate();
 	//get angle between current heading and desired heading

@@ -207,6 +207,8 @@ protected:
     btHingeConstraint *leftDoorHinge; 
     btHingeConstraint *rightDoorHinge;
 
+    std::queue<Ogre::SceneNode*>        mRemovedNodes;
+
 
 private:
 	Ogre::OverlayElement *mBigScreenOverlayElement;

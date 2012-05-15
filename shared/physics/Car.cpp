@@ -44,6 +44,12 @@ Car::~Car()
         GameCore::mClientGraphics->mBigScreen->removeCarOverlayFromMap(mUniqueID);
     }
 #endif
+
+    while( mRemovedNodes.empty() == false )
+    {
+        GameCore::mSceneMgr->destroySceneNode( mRemovedNodes.front() );
+        mRemovedNodes.pop();
+    }
 }
 
 // Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
@@ -504,10 +510,12 @@ void Car::resetMass()
 
 void Car::setMass( float newmass )
 {
-    //btVector3 inertia;
-    //mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
-    //mVehicle->getRigidBody()->setMassProps( newmass, inertia );
-    //mVehicle->getRigidBody()->updateInertiaTensor();
+    btVector3 inertia;
+    GameCore::mPhysicsCore->getWorld()->removeRigidBody( mVehicle->getRigidBody() );
+    mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
+    mVehicle->getRigidBody()->setMassProps( newmass, inertia );
+    mVehicle->getRigidBody()->updateInertiaTensor();
+    GameCore::mPhysicsCore->getWorld()->addRigidBody( mVehicle->getRigidBody() );
 }
 
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended
@@ -599,6 +607,7 @@ void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shap
     //body->setDamping( 100.2f, 100.5f );
     body->setActivationState( ISLAND_SLEEPING );
 
+    mRemovedNodes.push( node );
     //body->setWorldTransform( mVehicle->getChassisWorldTransform() );
     //btTransform tr( btQuaternion::getIdentity(), btVector3( 0, 10, 0 ) );
     //body->setWorldTransform( tr );

@@ -265,6 +265,8 @@ void SceneSetup::unloadArena (ArenaID aid)
     unloadArenaGraphics(aid);
 #endif
     unloadArenaPhysics(aid);
+
+    GameCore::mPhysicsCore->clearWorld();
 }
 
 
