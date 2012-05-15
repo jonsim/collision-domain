@@ -111,7 +111,7 @@ void Input::processInterfaceControls()
 {
 #ifdef COLLISION_DOMAIN_CLIENT
     // Check for console and chatbox - NB: they cannot be displayed simultaneously.
-    if (NetworkCore::bConnected && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
+    if (NetworkCore::bConnected && !GameCore::mGui->spawnScreenVisible() && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
     {
 	    if (mKeyboard->isKeyDown(OIS::KC_T))
             GameCore::mGui->toggleChatbox();
