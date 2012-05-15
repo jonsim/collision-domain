@@ -58,10 +58,12 @@ void Car::triggerCrashSoundAt(Ogre::Vector3 location, float intensity)
 #ifdef COLLISION_DOMAIN_CLIENT
         intensity = intensity < 0 ? 0 : intensity;
 
-        // maxVolume is limited in mAudioCore (0.8 currently)
-        mCrashSound->setVolume(intensity);
-        mCrashSound->setPosition(location);
-        GameCore::mAudioCore->playSoundOrRestart(mCrashSound);
+	// maxVolume is limited in mAudioCore (0.8 currently)
+	mCrashSound->setVolume(intensity);
+	mCrashSound->setPosition(location);
+
+    if (mCrashSound->isPlaying()) { mCrashSound->stop(); } mCrashSound->setPlayPosition(0);
+    mCrashSound->play();
 #endif
 }
 

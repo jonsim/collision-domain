@@ -15,7 +15,11 @@
 class GameGUI
 {
 public:
-    GameGUI (void) {}
+    GameGUI (void)
+      : oleDamage(NULL)
+    {
+    }
+
     ~GameGUI (void) {}
 
     void setupSpawnScreen (CEGUI::Window* guiWindow);
@@ -37,7 +41,13 @@ public:
 
     void setupChatbox (CEGUI::Window* guiWindow);
     void toggleChatbox (void);
-    inline bool chatboxVisible (void) { return CEGUI::WindowManager::getSingleton().getWindow("/Chatbox/input")->isVisible(); }
+    inline bool chatboxVisible (void)
+    {
+        CEGUI::Window *window = CEGUI::WindowManager::getSingleton().getWindow("/Chatbox/input");
+        // rare crash fix (I don't know why)
+        if (window == NULL) return false;
+        return window->isVisible();
+    }
     bool Chatbox_Send (const CEGUI::EventArgs& args);
     void chatboxAddMessage (const char *szNickname, char *szMessage);
 
@@ -67,6 +77,7 @@ private:
     void setupSpeedo (void);
     void setupGearDisplay (void);
     void updateRank (int rankIndex, bool isShared);
+    int  getUnstretchedWidth(int outputPxWidth);
     
     Ogre::Overlay          *olRank;
     Ogre::OverlayContainer *olRankContainer;

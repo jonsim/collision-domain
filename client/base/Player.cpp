@@ -148,12 +148,19 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
     }
     
     bool isLocalPlayer = this == GameCore::mPlayerPool->getLocalPlayer();
+    
+    if ( isLocalPlayer )
+    {
+        if (mCar) mCar->louderLocalSounds();
+        GameCore::mGui->setupDamageDisplay(carType, tid);
+    }
+
     if (mFirstLaunch)
     {
         if(isLocalPlayer)
         {
-            mCar->louderLocalSounds();
-            GameCore::mGui->setupDamageDisplay(carType, tid);
+            //mCar->louderLocalSounds();
+            //GameCore::mGui->setupDamageDisplay(carType, tid);
         }
         //else
         {
@@ -271,13 +278,33 @@ void Player::angleTest(void) {
 #ifdef PARTICLE_EFFECT_SHRAPNEL
             GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
 #endif
+            {
+                // 300 is a little louder than 400 :P (not perfect yet as it will need tuning with the final fps)
+                float intensity = damage / 350.f;
+                intensity = intensity < 0 ? 0 : ( intensity > 1 ? 1 : intensity );
+
+                if (causedByPlayer && causedByPlayer->getCar())
+                    causedByPlayer->getCar()->triggerCrashSoundAt(hitPoint, intensity);
+            }
+
             break;
+
         case 3:
             GameCore::mClientGraphics->mMeshDeformer->collisonDeform(this->getCar()->mBodyNode, hitPoint, damage * 0.04, isFront);
 #ifdef PARTICLE_EFFECT_SHRAPNEL
             GameCore::mClientGraphics->generateShrapnel(hitPoint, tid, shrapnelCount, shrapnelMaxSpeed, shrapnelPlaneOffset);
 #endif
+            {
+                // 300 is a little louder than 400 :P (not perfect yet as it will need tuning with the final fps)
+                float intensity = damage / 230.f;
+                intensity = intensity < 0 ? 0 : ( intensity > 1 ? 1 : intensity );
+
+                if (causedByPlayer && causedByPlayer->getCar())
+                    causedByPlayer->getCar()->triggerCrashSoundAt(hitPoint, intensity);
+            }
+
             break;
+
         default:
             // error
             break;
@@ -345,7 +372,6 @@ void Player::attachCamera (Ogre::Camera* cam)
     mCarCam = new CarCam(mCar,cam, camNode, mCar->mBodyNode);
 #endif
 }
-
 
 /// @brief  Applies the player controls to the car so it will move on next stepSimulation.
 /// @param  userInput               The latest user keypresses.
@@ -589,14 +615,12 @@ float Player::getCameraYaw ()
         return camArmNode->getOrientation().getYaw().valueDegrees();
 }
 
-
 /// @brief  Supplies the Car object which contains player position and methods on that. 
 /// @return The Car object which allows forcing a player to a given CarSnapshot or getting a CarSnapshot.
 Car* Player::getCar()
 {
     return mCar;
 }
-
 
 void Player::killPlayer()
 {

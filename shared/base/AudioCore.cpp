@@ -136,7 +136,7 @@ OgreOggISound* AudioCore::getSoundInstance(SoundType h, int uniqueID, Ogre::Scen
             sound->setReferenceDistance(12.f);
             break;
         case GEAR_CHANGE:
-        	sound->setMaxVolume(0.7f);
+        	sound->setMaxVolume(0.77f);
             sound->setRelativeToListener(true);
             //sound->setRolloffFactor(1.5f);
             //sound->setReferenceDistance(14.f);
