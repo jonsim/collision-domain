@@ -616,32 +616,23 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 
 				#ifdef COLLISION_DOMAIN_SERVER
 					GameCore::mGui->outputToConsole("Round Ended.\n");
-                    
-                    //Show the wining player II
-					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
-					mInfoItems.push_back(transitionII);
-                    
-                    /*if(this->getRoundNumber() < NUM_ROUNDS)
+                                   
+                    if(this->getRoundNumber() < (NUM_ROUNDS-1))
                     {
-                        //New Round II
-                        newRoundII = new InfoItem(NEW_ROUND_OT, 10000, 1000);
-					    mInfoItems.push_back(newRoundII);
-					    this->calculateRoundScores();
-                        newRoundII->sendPacket();
+                        //Show the wining player II
+					    transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
+					    mInfoItems.push_back(transitionII);
                     }
                     else
                     {
                         //End of game II
                         GameCore::mGui->outputToConsole("The game has ended [3 Rounds] \n");
-
-                    }*/
+               		    transitionII = new InfoItem(SHOW_PODIUM_OT, 5000, 100);
+					    mInfoItems.push_back(transitionII);
+                    }
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
-           		#ifdef COLLISION_DOMAIN_SERVER
-                    tmpSS << "Round " << roundNumber << " ended";
-                    GameCore::mGui->outputToConsole(tmpSS.str().c_str());
-				#endif
                 //Hide the scoreboard
                 #ifdef COLLISION_DOMAIN_CLIENT
 					mSB->hideForce();
@@ -650,37 +641,23 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     this->showWinnerText(this->getRoundWinner(),true);
 				#endif
 
-                //If we're at the end of the rounds
-                if(this->roundNumber == 0 && 1 == 2)
-                {
-                    #ifdef COLLISION_DOMAIN_CLIENT
-                        GameCore::mClientGraphics->addPodium(Ogre::Vector3(0,10,0));
-                    #else
-                        InfoItem* clearPodiumII = new InfoItem(CLEAR_PODIUM_OT,5000,900);
-                        mInfoItems.push_back(clearPodiumII);
-                    #endif
-                }
-                else
-                {
-
-
-                    this->mGameActive = false;
-                    this->restartGame();
-                    cycleGame();
-                    GameCore::mPlayerPool->roundEnd();
-                }
-
-
-
-
-				
+                this->mGameActive = false;
+                this->restartGame();
+                cycleGame();
+                GameCore::mPlayerPool->roundEnd();
+                			
 				break;
-
+            case SHOW_PODIUM_OT:
+                #ifdef COLLISION_DOMAIN_CLIENT
+                    mSB->hideForce();
+                    GameCore::mClientGraphics->addPodium(Ogre::Vector3(0,1,0));
+                #else
+                    mInfoItems.push_back(new InfoItem(CLEAR_PODIUM_OT,5000,900));
+                #endif
+                break;
             case CLEAR_PODIUM_OT:
                 #ifdef COLLISION_DOMAIN_CLIENT
-                    GameCore::mClientGraphics->removePodium();
-                #else
-
+                    //GameCore::mClientGraphics->removePodium();
                 #endif
 
                 //Reset the gmae
