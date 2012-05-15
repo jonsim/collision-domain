@@ -23,9 +23,11 @@ void GameGUI::setupConsole (CEGUI::Window* guiWindow)
 	CEGUI::Window* inputText   = winMgr.getWindow("/Server/input");
     CEGUI::Window* adminWindow = winMgr.getWindow("/Server/admin");
 	CEGUI::Window* healthText  = winMgr.getWindow("/Server/admin/edtHealth");
-	inputText->subscribeEvent(  CEGUI::Editbox::EventTextAccepted,     CEGUI::Event::Subscriber(&GameGUI::receiveFromConsole, this));
-    adminWindow->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked, CEGUI::Event::Subscriber(&GameGUI::closeAdminWindow,   this));
-	healthText->subscribeEvent( CEGUI::Editbox::EventTextAccepted,     CEGUI::Event::Subscriber(&GameGUI::healthTextChanged,  this));
+	CEGUI::Window* nudgeButton = winMgr.getWindow("/Server/admin/btnNudge");
+	inputText->subscribeEvent(  CEGUI::Editbox::EventTextAccepted,     CEGUI::Event::Subscriber(&GameGUI::receiveFromConsole,    this));
+    adminWindow->subscribeEvent(CEGUI::FrameWindow::EventCloseClicked, CEGUI::Event::Subscriber(&GameGUI::closeAdminWindow,      this));
+	healthText->subscribeEvent( CEGUI::Editbox::EventTextAccepted,     CEGUI::Event::Subscriber(&GameGUI::adminWindow_edtHealth, this));
+	nudgeButton->subscribeEvent(CEGUI::PushButton::EventClicked,       CEGUI::Event::Subscriber(&GameGUI::adminWindow_btnNudge,  this));
 
     
     // Display the mouse, give the input box focus and hide the admin box.
@@ -337,7 +339,7 @@ void GameGUI::updatePlayerComboBox()
 
 }
 
-bool GameGUI::healthTextChanged(const CEGUI::EventArgs &args)
+bool GameGUI::adminWindow_edtHealth(const CEGUI::EventArgs &args)
 {
 	CEGUI::WindowManager& winMgr         = CEGUI::WindowManager::getSingleton();
     CEGUI::Combobox*      playerComboBox = static_cast<CEGUI::Combobox*>(winMgr.getWindow("/Server/admin/cmbPlayers"));
@@ -358,6 +360,31 @@ bool GameGUI::healthTextChanged(const CEGUI::EventArgs &args)
 	int healthInt;
 	std::stringstream(newHealth) >> healthInt;
 	player->setHP(healthInt);
+
+    return true;
+}
+
+bool GameGUI::adminWindow_btnNudge (const CEGUI::EventArgs &args)
+{
+	CEGUI::WindowManager& winMgr         = CEGUI::WindowManager::getSingleton();
+    CEGUI::Combobox*      playerComboBox = static_cast<CEGUI::Combobox*>(winMgr.getWindow("/Server/admin/cmbPlayers"));
+    CEGUI::Editbox*       healthTextBox  = static_cast<CEGUI::Editbox*>( winMgr.getWindow("/Server/admin/edtHealth"));
+    CEGUI::Editbox*       playerTextBox  = static_cast<CEGUI::Editbox*>( winMgr.getWindow("/Server/admin/edtPlayer"));
+    
+	// Get the player (and sanitise input).
+	Player *player = GameCore::mPlayerPool->getPlayer(playerTextBox->getText().c_str());
+    if (player == NULL || player->getCar() == NULL)
+    {
+        OutputDebugString("Could not find that player or a car belonging to it.\n");
+        return true;
+    }
+
+    // Get the player's location.
+    Ogre::Vector3 pos = player->getCar()->GetPos();
+    btVector3  newpos(pos.x, pos.y + 5, pos.z);
+
+    // Move the player.
+    player->getCar()->moveTo(newpos);
 
     return true;
 }

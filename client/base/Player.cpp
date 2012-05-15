@@ -107,7 +107,7 @@ Player::~Player (void)
 
 /// @brief  Set the player's nickname and update their nametag
 /// @param  szNick  String for player nickname
-void Player::setNickname (char *szNick)
+void Player::setNickname (const char *szNick)
 {
     mNickname = strdup( szNick );
     if( mNametag != NULL )

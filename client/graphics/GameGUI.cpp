@@ -17,19 +17,19 @@ void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
 {
     CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
-    // Load the layout file for connect box
+    // Load the layout file for connect box.
     CEGUI::Window *pLayout = winMgr.loadWindowLayout("SpawnScreen.layout");
 
-    // Add to gui overlay window
+    // Add to gui overlay window.
     guiWindow->addChildWindow( pLayout );
 
-    // Setup the image
+    // Setup the image.
     spawnScreenImageSet = &CEGUI::ImagesetManager::getSingleton().create("SpawnScreen.imageset");
     spawnScreenImage = winMgr.getWindow("/SpawnScreen/Vehicle/imgVehicle");
     spawnScreenImage->setProperty("Image", CEGUI::PropertyHelper::imageToString(&spawnScreenImageSet->getImage("CoupeBlue")));
 
-    // Get handles to the buttons
-    // Page 1 buttons
+    // Get handles to the buttons.
+    // Page 1 buttons.
     CEGUI::Window* p1btnBlueTeam   = winMgr.getWindow("/SpawnScreen/Team/btnBlue");
     CEGUI::Window* p1btnRedTeam    = winMgr.getWindow("/SpawnScreen/Team/btnRed");
     CEGUI::Window* p1btnAutoAssign = winMgr.getWindow("/SpawnScreen/Team/btnAuto");
@@ -80,6 +80,10 @@ void GameGUI::showSpawnScreenPage1 (GameMode gameMode)
     CEGUI::Window* btnTeamAuto = winMgr.getWindow("/SpawnScreen/Team/btnAuto");
     CEGUI::Window* btnTeamBlue = winMgr.getWindow("/SpawnScreen/Team/btnBlue");
     CEGUI::Window* btnTeamRed  = winMgr.getWindow("/SpawnScreen/Team/btnRed");
+
+    // Setup the name box.
+    CEGUI::Window* edtName = winMgr.getWindow("/SpawnScreen/Team/edtName");
+    edtName->setProperty("Text", GameCore::mPlayerPool->getLocalPlayer()->getNickname());
     /*
     if (gameMode == FFA_MODE)
     {
@@ -184,7 +188,15 @@ bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
 {
     hideSpawnScreenErrorText();
 
+    // Send the team selection.
     GameCore::mNetworkCore->sendTeamSelect( BLUE_TEAM );
+
+    // Send the nickname selection.
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* edtName       = winMgr.getWindow("/SpawnScreen/Team/edtName");
+    const char* newName = edtName->getText().c_str();
+    GameCore::mPlayerPool->getLocalPlayer()->setNickname(newName); // set it
+    //GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
 
     return true;
 }
@@ -192,8 +204,16 @@ bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
 bool GameGUI::SpawnScreen_p1btnRedTeam (const CEGUI::EventArgs& args)
 {
     hideSpawnScreenErrorText();
-
+    
+    // Send the team selection.
     GameCore::mNetworkCore->sendTeamSelect( RED_TEAM );
+
+    // Send the nickname selection.
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* edtName       = winMgr.getWindow("/SpawnScreen/Team/edtName");
+    const char* newName = edtName->getText().c_str();
+    GameCore::mPlayerPool->getLocalPlayer()->setNickname(newName); // set it
+    //GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
 
     return true;
 }
@@ -202,7 +222,15 @@ bool GameGUI::SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args)
 {
     hideSpawnScreenErrorText();
 
+    // Send the team selection.
     GameCore::mNetworkCore->sendTeamSelect( NO_TEAM );
+
+    // Send the nickname selection.
+    CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* edtName       = winMgr.getWindow("/SpawnScreen/Team/edtName");
+    const char* newName = edtName->getText().c_str();
+    GameCore::mPlayerPool->getLocalPlayer()->setNickname(newName); // set it
+    //GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
 
     return true;
 }

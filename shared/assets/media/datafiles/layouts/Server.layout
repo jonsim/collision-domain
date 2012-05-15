@@ -33,22 +33,22 @@
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="SizingEnabled" Value="False" />
             <Property Name="TitlebarEnabled" Value="True" />
-            <Property Name="UnifiedAreaRect" Value="{{0.32,0},{0.170277,0},{0.68,0},{0.473632,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.32,0},{0.170277,0},{0.68,0},{0.509049,0}}" />
             <Window Type="GWEN/Combobox" Name="/Server/admin/cmbPlayers" >
-                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Font" Value="DejaVuSans-12" />
                 <Property Name="Text" Value="Players" />
                 <Property Name="ReadOnly" Value="True" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.044129,0},{0.98,0},{0.943135,0}}" />
                 <Property Name="MaxEditTextLength" Value="1073741823" />
             </Window>
             <Window Type="GWEN/Editbox" Name="/Server/admin/edtHealth" >
-                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Font" Value="DejaVuSans-12" />
                 <Property Name="MaxTextLength" Value="1073741823" />
-                <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.632743,0},{0.98,0},{0.870775,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.30434,0},{0.501274,0},{0.98,0},{0.682873,0}}" />
                 <Property Name="TextParsingEnabled" Value="False" />
             </Window>
             <Window Type="GWEN/StaticText" Name="/Server/admin/lblInfo" >
-                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Font" Value="DejaVuSans-12" />
                 <Property Name="Text" >Player:
 
  
@@ -56,15 +56,19 @@ Health:</Property>
                 <Property Name="HorzExtent" Value="46" />
                 <Property Name="VertExtent" Value="44.6891" />
                 <Property Name="FrameEnabled" Value="False" />
-                <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.34482,0},{0.3,0},{0.883261,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0417014,0},{0.288232,0},{0.321701,0},{0.665076,0}}" />
                 <Property Name="BackgroundEnabled" Value="False" />
             </Window>
             <Window Type="GWEN/Editbox" Name="/Server/admin/edtPlayer" >
-                <Property Name="Font" Value="DejaVuSans-10" />
+                <Property Name="Font" Value="DejaVuSans-12" />
                 <Property Name="ReadOnly" Value="True" />
                 <Property Name="MaxTextLength" Value="1073741823" />
-                <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.358408,0},{0.98,0},{0.608585,0}}" />
+                <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.277066,0},{0.98,0},{0.470966,0}}" />
                 <Property Name="TextParsingEnabled" Value="False" />
+            </Window>
+            <Window Type="GWEN/Button" Name="/Server/admin/btnNudge" >
+                <Property Name="Text" Value="Nudge upwards 5m" />
+                <Property Name="UnifiedAreaRect" Value="{{0.0354169,0},{0.728623,0},{0.979862,0},{0.941725,0}}" />
             </Window>
         </Window>
     </Window>

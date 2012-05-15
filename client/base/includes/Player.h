@@ -177,7 +177,7 @@ public:
     void setPlayerState( PLAYER_STATE s ) { mPlayerState = s; }
 
     // Probably a better alternative to strdup (could use std::string but I've never been a fan, I like C strings :D )
-    void setNickname (char *szNick);
+    void setNickname (const char *szNick);
     void setHP (int newHP) { hp = newHP; }
 	int	 getHP (void);
     void setVIP(bool newState) { mIsVIP = newState; }
