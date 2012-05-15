@@ -575,6 +575,11 @@ void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
 
     GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 
+    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+    {
+        GameCore::mClientGraphics->mBigScreen->refreshMap();
+    }
+
     // Update the client's car selection screen jobby.
     GameCore::mPlayerPool->getLocalPlayer()->setPlayerState( PLAYER_STATE_SPAWN_SEL );
 
