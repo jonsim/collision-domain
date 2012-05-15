@@ -304,6 +304,12 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     //GameCore::mClientGraphics->mSpawnScreen = new SpawnScreen( GameCore::mClientGraphics->mCamera );
 
 	// If we're allowed to spawn, our spawn method will be called by the server automagically.
+    
+    //Set the projector map
+    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+    {
+        GameCore::mClientGraphics->mBigScreen->refreshMap();
+    }
 }
 
 void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
