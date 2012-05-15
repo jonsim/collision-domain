@@ -27,6 +27,24 @@ void BigScreen::addCamera(Ogre::Camera* cam)
         viewCameraVector.push_back(tmpVC);
 }
 
+void BigScreen::refreshMap()
+{
+    ArenaID currentArena = GameCore::mGameplay->getArenaID();
+
+    switch(currentArena)
+    {
+        case COLOSSEUM_ARENA:
+            olcMap->setMaterialName( "map_top_1" );
+            break;
+        case FOREST_ARENA:
+            olcMap->setMaterialName( "map_top_2" );
+            break;
+        case QUARRY_ARENA:
+            olcMap->setMaterialName( "map_top_3" );
+            break;
+    }
+}
+
 void BigScreen::setupMapView()
 {
         Ogre::Overlay *olMap = 
