@@ -669,12 +669,12 @@ void ClientGraphics::generateExplosion (Ogre::Vector3 location, bool addNucleus)
     unsigned short smokeIndex   = mExplosionSmokeSystem->getNumEmitters();
     unsigned short debrisIndex  = mExplosionDebrisSystem->getNumEmitters();
 
-    //if (addNucleus)
-    //{
+    if (addNucleus)
+    {
         mExplosionNucleusSystem->addEmitter("Point");
         mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
         mExplosionNucleusSystem->getEmitter(nucleusIndex)->setPosition(location);
-    //}
+    }
 
     mExplosionSmokeSystem->addEmitter("Point");
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setParameterList(mExplosionSmokeParams);
