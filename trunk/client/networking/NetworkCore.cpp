@@ -570,6 +570,19 @@ void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     OutputDebugString(tmpSS.str().c_str());
 }
 
+void NetworkCore::TimeSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    time_t timeDelta;
+    bitStream->Read(timeDelta);
+
+    time_t newStartTime = time(NULL) - timeDelta;
+    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
+    {
+        GameCore::mClientGraphics->mBigScreen->setStartTime(newStartTime);
+        OutputDebugString("Recived Time Update");
+    }
+}
+
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
 {
@@ -589,6 +602,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "DeclareVIP",		    DeclareVIP,         0 );
     m_RPC->RegisterSlot( "SyncScores",		    SyncScores,         0 );
     m_RPC->RegisterSlot( "GameSync",		    GameSync,           0 );
+    m_RPC->RegisterSlot( "TimeSync",		    TimeSync,           0 );
 }
 
 

@@ -88,7 +88,7 @@ public:
 
     void                        setArenaID(ArenaID arenaID) { this->mArenaID = arenaID; }
     ArenaID                     getArenaID() { return this->mArenaID; }
-    
+    time_t                      startTime;
 private:
 	//Methods
 	bool						vipModeGameWon();
@@ -136,6 +136,8 @@ private:
 
     // Current arena
     ArenaID                     mArenaID;
+
+    
 };
 
 

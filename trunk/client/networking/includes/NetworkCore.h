@@ -125,6 +125,7 @@ public:
 	static void DeclareVIP( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void TimeSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static bool bConnected;
 
 };
