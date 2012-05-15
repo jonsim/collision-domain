@@ -38,6 +38,7 @@ public:
     bool SpawnScreen_p2btnTruck (const CEGUI::EventArgs& args);
     bool SpawnScreen_p2btnConfirm (const CEGUI::EventArgs& args);
     bool SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args);
+    inline bool spawnScreenVisible (void) { return CEGUI::WindowManager::getSingleton().getWindow("/SpawnScreen/Team")->isVisible() || CEGUI::WindowManager::getSingleton().getWindow("/SpawnScreen/Vehicle")->isVisible(); }
 
     void setupChatbox (CEGUI::Window* guiWindow);
     void toggleChatbox (void);
