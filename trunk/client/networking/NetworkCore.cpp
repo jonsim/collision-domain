@@ -626,6 +626,17 @@ void NetworkCore::TimeSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     }
 }
 
+void NetworkCore::NicknameChange( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    OutputDebugString("Changing players name\n");
+    RakNet::RakNetGUID guid;
+    bitStream->Read(guid); //Read the GUID
+
+    char szNickname[128];
+	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
+    Player* tmpPlayer = GameCore::mPlayerPool->getPlayer( guid);
+    tmpPlayer->setNickname(szNickname);
+}
 
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
@@ -647,6 +658,7 @@ void NetworkCore::RegisterRPCSlots()
     m_RPC->RegisterSlot( "SyncScores",		    SyncScores,         0 );
     m_RPC->RegisterSlot( "GameSync",		    GameSync,           0 );
     m_RPC->RegisterSlot( "TimeSync",		    TimeSync,           0 );
+    m_RPC->RegisterSlot( "NicknameChange",	    NicknameChange,     0 );
 }
 
 

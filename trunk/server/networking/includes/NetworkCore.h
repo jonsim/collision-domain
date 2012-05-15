@@ -118,6 +118,7 @@ public:
     void sendSyncScores();
     void sendGameSync(GameMode gameMode, ArenaID arenaID);
     void sendTimeSinceRoundStart(time_t startTime);
+    void sendNicknameChange( Player *pPlayer);
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 
