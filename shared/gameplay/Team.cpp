@@ -71,6 +71,15 @@ Player* Team::setNewVIP(Player* player)
 	}
 }
 
+void Team::removeVIP()
+{
+    if(vipPlayer != NULL)
+    {
+        vipPlayer->setVIP(false);
+        vipPlayer = NULL;
+    }
+}
+
 Player* Team::getVIP()
 {
 	return vipPlayer;
