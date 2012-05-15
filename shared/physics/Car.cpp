@@ -454,19 +454,20 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
 
     // Calculate the new smoke emission rate (from the damage model)
     float healthPercentage = (health / (float) INITIAL_HEALTH);
-    if (healthPercentage < oldHealthPercentage)
-    {
-        if (oldHealthPercentage > 0.7f && healthPercentage < 0.7f)
+    //if (healthPercentage < oldHealthPercentage)
+    //{
+        //if (oldHealthPercentage > 0.7f && healthPercentage < 0.7f)
+        if (healthPercentage <= 1.0f)
         {
-            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f, 0.5f));
+            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f, 0.4f));
             mSmokeSystem->getEmitter(0)->setEmissionRate(10);
         }
         else if (oldHealthPercentage > 0.4f && healthPercentage < 0.4f)
         {
-            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f, 0.8f));
-            mSmokeSystem->getEmitter(0)->setEmissionRate(20);
+            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f, 0.75f));
+            mSmokeSystem->getEmitter(0)->setEmissionRate(15);
         }
-    }
+    //}
 #endif
 }
 

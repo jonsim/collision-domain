@@ -116,8 +116,8 @@ void SceneSetup::setupParticleSystem (void)
     // Build the emitter definitions. This has to be done for all particle systems which need to
     // place their own emitters rather than having a fixed number of emitters 'hardcoded' in the
     // script.
-    // Spark parameters
 #ifdef PARTICLE_EFFECT_SPARKS
+    // Spark parameters
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "5") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "200") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",   "35") );
@@ -126,6 +126,30 @@ void SceneSetup::setupParticleSystem (void)
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.25") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_start", "1.000 1.000 0.847 1.0") );
     mSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_end",   "0.851 0.737 0.565 1.0") );
+#endif
+    
+#ifdef PARTICLE_EFFECT_SHRAPNEL
+    #ifndef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+        mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "0 1 0") );
+        mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "90") );
+        //mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "200") );
+        mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.1") );
+        mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",   "0.0") );
+        //mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_max",   "15.0") );
+        mShrapnelParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",   "2.5") );
+    #endif
+    
+    #ifdef PARTICLE_EFFECT_SHRAPNEL_SPARKS
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("direction",          "0 1 0") );
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("angle",              "70") );
+        //mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",      "200") );
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("duration",           "0.1") );
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",       "2.0") );
+        //mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_max",       "15.0") );
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",       "1.0") );
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_start", "1.0 0.8 0.0") );
+        mShrapnelSparkParams.insert( std::pair<Ogre::String, Ogre::String>("colour_range_end",   "1.0 1.0 0.0") );
+    #endif
 #endif
 
 #ifdef PARTICLE_EFFECT_EXPLOSION
@@ -177,6 +201,19 @@ void SceneSetup::setupParticleSystem (void)
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionNucleusSystem);
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionSmokeSystem);
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(mExplosionDebrisSystem);
+#endif
+#ifdef PARTICLE_EFFECT_SHRAPNEL
+    #ifndef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+        mShrapnelSystem = GameCore::mSceneMgr->createParticleSystem("ShrapnelSystem", "CollisionDomain/Shrapnel");
+        GameCore::mSceneMgr->getRootSceneNode()->attachObject(mShrapnelSystem);
+        //mShrapnelSystem->removeAllEmitters();
+    #endif
+    
+    #ifdef PARTICLE_EFFECT_SHRAPNEL_SPARKS
+        mShrapnelSparkSystem = GameCore::mSceneMgr->createParticleSystem("ShrapnelSparkSystem", "CollisionDomain/ShrapnelDebris");
+        GameCore::mSceneMgr->getRootSceneNode()->attachObject(mShrapnelSparkSystem);
+        //mShrapnelSparkSystem->removeAllEmitters();
+    #endif
 #endif
     
     // Add the VIP Nodes and systems
