@@ -390,7 +390,7 @@
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(OGRE_HOME)\lib\$(Configuration);$(OGRE_HOME)\boost_1_44\lib;..\..\shared\cegui\lib;..\..\shared\ogreoggsound\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>OgreTerrain_d.lib;OgreMain_d.lib;OIS_d.lib;OgreBulletCollisions_d.lib;OgreBulletDynamics_d.lib;BulletCollision_debug.lib;BulletDynamics_debug.lib;LinearMath_debug.lib;ConvexDecomposition_debug.lib;ws2_32.lib;CEGUIOgreRenderer_d.lib;CEGUIBase_d.lib;CEGUIExpatParser_d.lib;CEGUIFalagardWRBase_d.lib;OgreOggSound_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
