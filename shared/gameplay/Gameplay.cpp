@@ -164,7 +164,14 @@ void Gameplay::setNewVIP(TeamID teamID)
 {
     Team* t = getTeam(teamID);
     t->setNewVIP(t->getRandomPlayer());
-    
+ 
+    #ifdef COLLISION_DOMAIN_SERVER
+        if(teamID == BLUE_TEAM)
+            GameCore::mGui->outputToConsole("Blue Team - VIP = %s .\n",t->getVIP()->getNickname());
+        else
+            GameCore::mGui->outputToConsole("Red Team - VIP = %s .\n",t->getVIP()->getNickname());
+    #endif
+
         /*// Manage and assign VIP Cameras for the server
 #ifdef COLLISION_DOMAIN_SERVER
 	if(team == teams[0])
