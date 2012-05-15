@@ -10,7 +10,7 @@
 #include "SmallCar.h"
 #include "GameCore.h"
 
-//#define DEBUG_FRAMES
+#define DEBUG_FRAMES
 
 /// @brief  Constructor to create physics stuff
 /// @param  sceneMgr  The Ogre SceneManager which nodes can be attached to.

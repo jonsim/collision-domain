@@ -210,12 +210,14 @@ void TruckCar::createCollisionShapes()
     convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
     compoundChassisShape->addChildShape( chassisShift, convexHull );
 
-    btBoxShape *doorShape = new btBoxShape( btVector3( -1.094f, 1.665f, 1.768f ) );
-    btBoxShape *rBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+    btBoxShape *doorShape = new btBoxShape( btVector3( 0.15f, 0.665f, 0.50f ) );
+    btBoxShape *rBumperShape = new btBoxShape( btVector3( 1.073f, 0.25f, 0.25f ) );
+    btBoxShape *wingmirrorShape = new btBoxShape( btVector3( 0.25f, 0.3f, 0.25f ) );
 
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK, compoundChassisShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK_DOOR, doorShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK_RBUMPER, rBumperShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_TRUCK_WINGMIRROR, wingmirrorShape );
 }
 
 void TruckCar::louderLocalSounds() {
@@ -652,6 +654,12 @@ void TruckCar::removeRDoor() {
 void TruckCar::removeRBumper() {
     removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_TRUCK_RBUMPER, btVector3( 0.0f, 0.547f, 3.035f ) );
 }
+void TruckCar::removeLWingmirror() {
+    removePiece( mLWingmirrorNode, mLWingmirrorBody, PHYS_SHAPE_TRUCK_WINGMIRROR, btVector3( 1.098f, 2.265f, 2.f ) );
+}
+void TruckCar::removeRWingmirror() {
+    removePiece( mRWingmirrorNode, mRWingmirrorBody, PHYS_SHAPE_TRUCK_WINGMIRROR, btVector3( -1.098f, 2.265f, 2.f ) );
+}
 
 void TruckCar::removeCarPart(unsigned int part) {
     switch(part) {
@@ -679,5 +687,8 @@ void TruckCar::makeBitsFallOff() {
     removePiece( mLDoorNode, mLDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3(  1.094f, 1.665f, 1.768f ) );
     removePiece( mRDoorNode, mRDoorBody, PHYS_SHAPE_TRUCK_DOOR, btVector3( -1.094f, 1.665f, 1.768f ) );
 
-    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_TRUCK_RBUMPER, btVector3( 0.0f, 0.547f, 3.035f ) );
+    removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_TRUCK_RBUMPER, btVector3( 0.0f, 0.547f, -3.035f ) );
+
+    removePiece( mLWingmirrorNode, mLWingmirrorBody, PHYS_SHAPE_TRUCK_WINGMIRROR, btVector3( 1.098f, 2.265f, 2.f ) );
+    removePiece( mRWingmirrorNode, mRWingmirrorBody, PHYS_SHAPE_TRUCK_WINGMIRROR, btVector3( -1.098f, 2.265f, 2.f ) );
 }

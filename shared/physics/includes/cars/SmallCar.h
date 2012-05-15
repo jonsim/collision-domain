@@ -34,6 +34,8 @@ public:
     virtual void removeRDoor();
     virtual void removeRBumper();
     virtual void removeFBumper();
+    void removeLHeadlight();
+    void removeRHeadlight();
     virtual void removeCarPart(unsigned int part);
 
 private:

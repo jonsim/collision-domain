@@ -230,11 +230,13 @@ void SmallCar::createCollisionShapes()
     btBoxShape *doorShape = new btBoxShape( btVector3( 0.25f, 0.58f, 0.55f ) );
     btBoxShape *fBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
     btBoxShape *rBumperShape = new btBoxShape( btVector3( 0.773f, 0.25f, 0.25f ) );
+    btBoxShape *headlightShape = new btBoxShape( btVector3( 0.2f, 0.2f, 0.15f ) );
 
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR, compoundChassisShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_DOOR, doorShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_FBUMPER, fBumperShape );
     GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_RBUMPER, rBumperShape );
+    GameCore::mPhysicsCore->setCollisionShape( PHYS_SHAPE_SMALLCAR_HEADLIGHT, headlightShape );
 }
 
 void SmallCar::louderLocalSounds() {
@@ -607,7 +609,12 @@ void SmallCar::removeRBumper() {
 void SmallCar::removeFBumper() {
     removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_SMALLCAR_FBUMPER, btVector3( 0.0f, 0.392f,  1.352f ) );
 }
-
+void SmallCar::removeLHeadlight() {
+    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( 0.59f, 0.788, 1.352f ) );
+}
+void SmallCar::removeRHeadlight() {
+    removePiece(  mRHeadlightNode, mRHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( -0.59f, 0.788, 1.352f ) );
+}
 void SmallCar::removeCarPart(unsigned int part) {
     switch(part) {
         case 0:
@@ -643,4 +650,7 @@ void SmallCar::makeBitsFallOff() {
 
     removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_SMALLCAR_FBUMPER, btVector3( 0.0f, 0.392f,  1.352f ) );
     removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_SMALLCAR_RBUMPER, btVector3( 0.0f, 0.410f, -1.880f ) );
+
+    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( 0.59f, 0.788, 1.352f ) );
+    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( -0.59f, 0.788, 1.352f ) );
 }
