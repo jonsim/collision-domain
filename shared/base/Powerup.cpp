@@ -164,7 +164,7 @@ void Powerup::playerCollision(Player* player)
 
                 player->addPowerup( POWERUP_MASS, curTime );
                 player->getCar()->setMass( newmass );
-                player->getCar()->setEngineForce( newmass );
+                //player->getCar()->setEngineForce( newmass );
 
 
                 break;
@@ -282,7 +282,7 @@ void Powerup::playerCollision(Player* player, float extraData)
 
                 player->addPowerup( POWERUP_MASS, curTime );
                 player->getCar()->setMass( newmass );
-                player->getCar()->setEngineForce( newmass );
+                //player->getCar()->setEngineForce( newmass );
                 break;
             }
 
