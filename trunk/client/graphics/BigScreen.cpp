@@ -62,6 +62,7 @@ void BigScreen::setupMapView()
         //Set the map
         olcMap->setDimensions(MAP_WIDTH,MAP_HEIGHT);
         olcMap->setMaterialName( "map_top_1" );
+        this->refreshMap();
         olMap->add2D(olcMap);
 
     //Set the dimensions
