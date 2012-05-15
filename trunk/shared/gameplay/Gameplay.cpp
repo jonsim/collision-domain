@@ -130,7 +130,7 @@ void Gameplay::cycleGame( bool unload )
     this->setGameMode(mGamemodeOrder[roundNumber]);
     
     // Get the next arena.
-    if(unload == true && roundNumber > 0)
+    if(unload == true /*&& roundNumber > 0*/)
         GameCore::mServerGraphics->unloadArena(mArenaOrder[roundNumber-1]);
 
     this->setArenaID(mArenaOrder[roundNumber]);

@@ -108,6 +108,8 @@ public:
 
     void addPowerup( PowerupType type, RakNet::TimeMS endtime );
 
+    void reduceDamage(float byAmount);
+
     PLAYER_DAMAGE_LOC damageLoc;
     float            rearDamageBoundary;
     float            frontDamageBoundary;
