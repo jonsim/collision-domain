@@ -1,6 +1,6 @@
 /**
- * @file	Car.cpp
- * @brief 	Contains the core methods and variables common to all different types of car.
+ * @file        Car.cpp
+ * @brief       Contains the core methods and variables common to all different types of car.
                 Extend or implement this class as required to create a functioning car.
                 This class and its subclasses deal with the physics and the graphics which are
                 car related and expose an interface to do stuff to the cars.
@@ -56,12 +56,12 @@ Car::~Car()
 void Car::triggerCrashSoundAt(Ogre::Vector3 location, float intensity)
 {
 #ifdef COLLISION_DOMAIN_CLIENT
-	intensity = intensity < 0 ? 0 : intensity;
+        intensity = intensity < 0 ? 0 : intensity;
 
-	// maxVolume is limited in mAudioCore (0.8 currently)
-	mCrashSound->setVolume(intensity);
-	mCrashSound->setPosition(location);
-	GameCore::mAudioCore->playSoundOrRestart(mCrashSound);
+        // maxVolume is limited in mAudioCore (0.8 currently)
+        mCrashSound->setVolume(intensity);
+        mCrashSound->setPosition(location);
+        GameCore::mAudioCore->playSoundOrRestart(mCrashSound);
 #endif
 }
 
@@ -97,7 +97,7 @@ CarSnapshot *Car::getCarSnapshot()
 
 float Car::getCarMph()
 {
-	return mVehicle->getCurrentSpeedKmHour() * 0.621371192;
+        return mVehicle->getCurrentSpeedKmHour() * 0.621371192;
 }
 
 
@@ -306,7 +306,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         for( int i = 0; i < 4; i ++ )
             mVehicle->setBrake( 0 , i );
     }
-	
+
     updateRPM();
 }
 
@@ -401,7 +401,7 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
     static float oldMPH = 0;        // Static variable to keep previous frame information to calculate the differential.
     float exhaustRate = 0;
 
-	// Calculate the new exhaust emission rate (from engine speed fluctuation rate).
+        // Calculate the new exhaust emission rate (from engine speed fluctuation rate).
     float currentMPH = getCarMph();
     float dSdT = (currentMPH - oldMPH) / (secondsSinceLastFrame);   // differential d(speed) / d(time)
 
@@ -414,8 +414,8 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
     oldMPH = currentMPH;
     
     // Set the new particle emission rates.
-	for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
-		mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
+        for (int i = 0; i < mExhaustSystem->getNumEmitters(); i++)
+                mExhaustSystem->getEmitter(i)->setEmissionRate(exhaustRate);
 #endif
 
 #ifdef PARTICLE_EFFECT_DUST
@@ -444,8 +444,8 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
     }
 
     // Set the new particle emission rates.
-	for (int i = 0; i < 4; i++)
-		mDustSystem->getEmitter(i)->setEmissionRate(dustRate[i]);
+        for (int i = 0; i < 4; i++)
+                mDustSystem->getEmitter(i)->setEmissionRate(dustRate[i]);
 #endif
 
 #ifdef PARTICLE_EFFECT_SMOKE
@@ -529,24 +529,24 @@ void Car::setMass( float newmass )
 void Car::createGeometry(const std::string &entityName, const std::string &meshName, Ogre::SceneNode *toAttachTo, bool isDeformable)
 {
     Ogre::Entity* entity;
-	Ogre::MeshPtr disposableMeshPointer;
-	std::string nameUnique = entityName + boost::lexical_cast<std::string>(mUniqueCarID);
-	if(!isDeformable) {
-		try
-		{
-			entity = GameCore::mSceneMgr->getEntity(nameUnique);
-		}
-		catch (Ogre::ItemIdentityException)
-		{
-			entity = GameCore::mSceneMgr->createEntity(nameUnique, meshName);
-		}
-	} else {
-		disposableMeshPointer = GameCore::mSceneMgr->getEntity(entityName)->getMesh()->clone(nameUnique + "mesh");
-		entity = GameCore::mSceneMgr->createEntity(nameUnique, disposableMeshPointer->getName());
+        Ogre::MeshPtr disposableMeshPointer;
+        std::string nameUnique = entityName + boost::lexical_cast<std::string>(mUniqueCarID);
+        if(!isDeformable) {
+                try
+                {
+                        entity = GameCore::mSceneMgr->getEntity(nameUnique);
+                }
+                catch (Ogre::ItemIdentityException)
+                {
+                        entity = GameCore::mSceneMgr->createEntity(nameUnique, meshName);
+                }
+        } else {
+                disposableMeshPointer = GameCore::mSceneMgr->getEntity(entityName)->getMesh()->clone(nameUnique + "mesh");
+                entity = GameCore::mSceneMgr->createEntity(nameUnique, disposableMeshPointer->getName());
 
         mClonedEntities->push_back(entity);
         mMeshObjects->push_back(disposableMeshPointer->getHandle());
-	}
+        }
 
     int GEOMETRY_QUERY_MASK = 1<<2;
     entity->setQueryFlags(GEOMETRY_QUERY_MASK); // lets raytracing hit this object (for physics)
@@ -635,8 +635,8 @@ void WheelFrictionConstraint::getInfo1( btTypedConstraint::btConstraintInfo1* in
         btWheelInfo& wheel_info = mVehicle->getWheelInfo(i);
         //if(!wheel_info)
         //{
-        //	std::cout << "No wheel info" << std::endl;
-        //	exit(3);
+        //      std::cout << "No wheel info" << std::endl;
+        //      exit(3);
         //}
         mVehicle->rayCast( wheel_info );
         info->m_numConstraintRows += 2 * ( wheel_info.m_raycastInfo.m_isInContact );
@@ -743,8 +743,8 @@ void WheelFrictionConstraint::getInfo2( btTypedConstraint::btConstraintInfo2* in
         {
             CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
             char szFPS[32];
-	        sprintf(szFPS,   "fr: %.2f", mVehicle->getBulletVehicle()->getWheelInfo(3).m_skidInfo );
-	        fps->setText(szFPS);
+                sprintf(szFPS,   "fr: %.2f", mVehicle->getBulletVehicle()->getWheelInfo(3).m_skidInfo );
+                fps->setText(szFPS);
         }
     }
 #endif
@@ -889,15 +889,15 @@ void Car::readTuning( char *szFile )
 //get the car's current position
 Ogre::Vector3 Car::GetPos()
 {
-	//return mPlayerNode->_getDerivedPosition() + mPlayerNode->_getDerivedOrientation() *
-	//	mPlayerNode->_getDerivedScale() * mBodyNode->_getDerivedPosition();
-	return mBodyNode->getPosition();
+        //return mPlayerNode->_getDerivedPosition() + mPlayerNode->_getDerivedOrientation() *
+        //      mPlayerNode->_getDerivedScale() * mBodyNode->_getDerivedPosition();
+        return mBodyNode->getPosition();
 }
 
 //get the car's current heading
 Ogre::Quaternion Car::GetHeading()
 {
-	return mBodyNode->getOrientation();
+        return mBodyNode->getOrientation();
 }
 
 

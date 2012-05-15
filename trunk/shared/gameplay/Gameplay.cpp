@@ -658,7 +658,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
             case SHOW_PODIUM_OT:
                 #ifdef COLLISION_DOMAIN_CLIENT
                     mSB->hideForce();
-                    GameCore::mClientGraphics->addPodium(Ogre::Vector3(0,1,0));
+                    //GameCore::mClientGraphics->addPodium(Ogre::Vector3(0,1,0));
                 #else
                     mInfoItems.push_back(new InfoItem(CLEAR_PODIUM_OT,5000,900));
                 #endif
