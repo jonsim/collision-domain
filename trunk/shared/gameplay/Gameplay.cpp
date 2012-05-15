@@ -365,7 +365,12 @@ void Gameplay::printTeamStats()
 void Gameplay::preparePlayers()
 {
 	resetAllHP();
-	positionPlayers();
+	positionPlayers(false);
+}
+
+void Gameplay::preparePlayersMidRound()
+{
+	positionPlayers(true);
 }
 
 void Gameplay::resetAllHP()
@@ -398,7 +403,7 @@ void Gameplay::spawnPlayers()
 #endif
 }
 
-void Gameplay::positionPlayers()
+void Gameplay::positionPlayers(bool midRound)
 {
 	int totalNumberOfPlayers = GameCore::mPlayerPool->getNumberOfPlayers();
 	int hypo = 40; //The hypotonuse. Increase to spread out
@@ -411,6 +416,14 @@ void Gameplay::positionPlayers()
 		Player* tmpPlayer = GameCore::mPlayerPool->getPlayer(i);
 		if(tmpPlayer != NULL)
 		{
+			//check if were running a prep command mid round
+			if(midRound)
+			{
+				//don't reposition dead players
+				if(tmpPlayer->getAlive() == false)
+					continue;
+			}
+
 			//Calcualte the correct positions
 			Ogre::Real omega = (Ogre::Real)i*segSize;
 			//Calculate which sector of the circle it's in
@@ -467,7 +480,7 @@ void Gameplay::startGame()
     }
 
     this->spawnPlayers();
-	this->positionPlayers();
+	this->positionPlayers(false);
 	
     //Only set a VIP if we're in VIP mode
     if(this->getGameMode() == VIP_MODE)

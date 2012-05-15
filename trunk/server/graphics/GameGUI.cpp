@@ -74,7 +74,7 @@ bool GameGUI::receiveFromConsole (const CEGUI::EventArgs &args)
     }
 	else if( !strcasecmp( inputChars,  "prep" ) )
     {
-		GameCore::mGameplay->preparePlayers();
+		GameCore::mGameplay->preparePlayersMidRound();
         outputToConsole("Prepared players.\n");
     }
 	else if( !strcasecmp( inputChars,  "start" ) )
