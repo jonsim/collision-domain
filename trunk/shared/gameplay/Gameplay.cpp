@@ -690,6 +690,13 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_CLIENT
                     this->hideWinnerText();
                     this->showGameTypeText();
+
+                    if(GameCore::mGameplay->getGameMode() != VIP_MODE)
+                    {
+                        this->getTeam(BLUE_TEAM)->removeVIP();
+                        this->getTeam(RED_TEAM)->removeVIP();
+                    }
+
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
 						//Move the camera back
 						//GameCore::mClientGraphics->mCamera->setPosition(Ogre::Vector3(0,10,0));

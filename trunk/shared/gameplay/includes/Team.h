@@ -26,6 +26,7 @@ public:
 	Player*					getRandomPlayer();
 	Player*					setNewVIP(Player* player);
 	Player*					getVIP();
+    void                    removeVIP();
 	int						getTeamSize();
 	int						getTotalTeamHP();
 private:
