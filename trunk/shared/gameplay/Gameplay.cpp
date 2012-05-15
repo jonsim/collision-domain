@@ -115,6 +115,10 @@ void Gameplay::cycleGame( bool unload )
 #ifdef COLLISION_DOMAIN_SERVER
     // Next round plz.
     roundNumber++;
+    
+    // Get the next arena.
+    if(unload == true /*&& roundNumber > 0*/)
+        GameCore::mServerGraphics->unloadArena(mArenaOrder[roundNumber-1]);
 
     if(roundNumber > 2)
     {
@@ -128,10 +132,6 @@ void Gameplay::cycleGame( bool unload )
 
     // Get the next gamemode.
     this->setGameMode(mGamemodeOrder[roundNumber]);
-    
-    // Get the next arena.
-    if(unload == true /*&& roundNumber > 0*/)
-        GameCore::mServerGraphics->unloadArena(mArenaOrder[roundNumber-1]);
 
     this->setArenaID(mArenaOrder[roundNumber]);
 
