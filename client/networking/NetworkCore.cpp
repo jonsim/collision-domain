@@ -9,8 +9,12 @@
 #include "Player.h"
 #include "GameCore.h"
 #include "ClientHooks.h"
+#ifndef WIN32
 #include <unistd.h>
 #include <sys/param.h>
+#else
+#define MAXHOSTNAMELEN 128
+#endif
 
 RakNet::RakPeerInterface* NetworkCore::m_pRak;
 RakNet::RPC4* NetworkCore::m_RPC;
