@@ -15,19 +15,20 @@
 // Definitions
 // Particle effect definitions.
 // global
-//#define PARTICLE_EFFECT_VIPSTREAK   // From VIP crowns.
-//#define PARTICLE_EFFECT_EXPLOSION   // On death.
-//#define PARTICLE_EFFECT_SHRAPNEL    // From crunching collisions.
+#define PARTICLE_EFFECT_VIPSTREAK   // From VIP crowns.
+#define PARTICLE_EFFECT_EXPLOSION   // On death.
+#define PARTICLE_EFFECT_SHRAPNEL    // From crunching collisions.
+//#define PARTICLE_EFFECT_SHRAPNEL_SPARKS
 //#define PARTICLE_EFFECT_SPARKS      // From scraping collisions.
 // local
-//#define PARTICLE_EFFECT_DUST        // From skidding etc.
-//#define PARTICLE_EFFECT_EXHAUST     // From cars bums.
-//#define PARTICLE_EFFECT_SMOKE       // From damaged cars.
+#define PARTICLE_EFFECT_DUST        // From skidding etc.
+#define PARTICLE_EFFECT_EXHAUST     // From cars bums.
+#define PARTICLE_EFFECT_SMOKE       // From damaged cars.
 //#define PARTICLE_EFFECT_FIRE        // From dead cars.
 
 // Enabled high quality (colliding) shrapnel effect. PARTICLE_EFFECT_SHRAPNEL must be defined for this to have any effect.
 // A low quality, non-colliding version is used if this is not defined but shrapnel is enabled.
-#define PARTICLE_EFFECT_SHRAPNEL_HIQUAL // < Currently doesnt work.
+//#define PARTICLE_EFFECT_SHRAPNEL_HIQUAL
 
 
 
@@ -134,7 +135,17 @@ protected:
     Ogre::NameValuePairList mExplosionDebrisParams;
 #endif
 #ifdef PARTICLE_EFFECT_SHRAPNEL
-    std::queue<Ogre::ParticleSystem*> mShrapnelSystems;
+    #ifdef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+        std::queue<Ogre::ParticleSystem*> mShrapnelSystems;
+    #else
+        Ogre::ParticleSystem*   mShrapnelSystem;
+        Ogre::NameValuePairList mShrapnelParams;
+    #endif
+
+    #ifdef PARTICLE_EFFECT_SHRAPNEL_SPARKS
+        Ogre::ParticleSystem*   mShrapnelSparkSystem;
+        Ogre::NameValuePairList mShrapnelSparkParams;
+    #endif
 #endif
     
     // Compositor logic modules

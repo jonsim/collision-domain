@@ -513,19 +513,35 @@ void ClientGraphics::updateParticleSystems (void)
 
 #ifdef PARTICLE_EFFECT_SHRAPNEL
     // Check for stale shrapnel systems
-    Ogre::ParticleSystem* currentSystem;
-    while (!mShrapnelSystems.empty())
-    {
-        currentSystem = mShrapnelSystems.front();
-        if (!currentSystem->getEmitting() && currentSystem->getNumParticles() == 0)
+    #ifdef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+        Ogre::ParticleSystem* currentSystem;
+
+        char dstr[256];
+        sprintf(dstr, "ShrapnelSystem queue size = %d\n", mShrapnelSystems.size());
+        //OutputDebugString(dstr);
+
+        while (!mShrapnelSystems.empty())
         {
-            mShrapnelSystems.pop();
-            GameCore::mSceneMgr->destroyParticleSystem(currentSystem);
+            currentSystem = mShrapnelSystems.front();
+            if (currentSystem->getNumParticles() == 0)
+            {
+                mShrapnelSystems.pop();
+                GameCore::mSceneMgr->destroyParticleSystem(currentSystem);
+            }
+            else
+                break;
         }
-        // NOTE TO SELF: THIS THE FOLLOWING COMMENTED OUT LINES ARE AN OPTIMISATION, BUT ARE DISABLED FOR DEBUGGING
-        //else
-            //break;
-    }
+    #else
+        for (i = 0; i < mShrapnelSystem->getNumEmitters(); i++)
+            if (!mShrapnelSystem->getEmitter(i)->getEnabled())
+                mShrapnelSystem->removeEmitter(i--);
+    #endif
+    
+    #ifdef PARTICLE_EFFECT_SHRAPNEL_SPARKS
+        for (i = 0; i < mShrapnelSparkSystem->getNumEmitters(); i++)
+            if (!mShrapnelSparkSystem->getEmitter(i)->getEnabled())
+                mShrapnelSparkSystem->removeEmitter(i--);
+    #endif
 #endif
 }
 
@@ -540,21 +556,38 @@ void ClientGraphics::updateParticleSystems (void)
 #ifdef PARTICLE_EFFECT_SHRAPNEL
 void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity, float maxShrapnelVelocity, float planeOffset, Ogre::Vector3 planeNormal)
 {
-    // First create the particle system
+    // Add shrapnel sparks
+#ifdef PARTICLE_EFFECT_SHRAPNEL_SPARKS
+    // Create the emitter.
+    unsigned short shrapnelSparkIndex = mShrapnelSparkSystem->getNumEmitters();
+    mShrapnelSparkSystem->addEmitter("Point");
+
+    // Configure the emitter.
+    mShrapnelSparkSystem->getEmitter(shrapnelSparkIndex)->setParameterList(mShrapnelSparkParams);
+    mShrapnelSparkSystem->getEmitter(shrapnelSparkIndex)->setPosition(location);
+    mShrapnelSparkSystem->getEmitter(shrapnelSparkIndex)->setEmissionRate(meanShrapnelQuantity * 2);
+    mShrapnelSparkSystem->getEmitter(shrapnelSparkIndex)->setMaxParticleVelocity(maxShrapnelVelocity);
+#endif
+
+
+
+    // Get a reference to the final emitter.
+#ifdef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+    // First create the particle system, if we are running the high quality, plane colliding version, then get the emitter.
     int uid = GameCore::mPhysicsCore->getUniqueEntityID();
-    Ogre::ParticleSystem* shrapnelSystem = GameCore::mSceneMgr->createParticleSystem("ShrapnelSystem" + boost::lexical_cast<std::string>(uid),
-                                                                                     "CollisionDomain/Shrapnel");
-    //Ogre::ParticleSystem* debrisSystem   = GameCore::mSceneMgr->createParticleSystem("ShrapnelDebrisSystem" + boost::lexical_cast<std::string>(uid),
-    //                                                                                 "CollisionDomain/ShrapnelDebris");
-
-    /*// Configure the debris emitter
-    Ogre::ParticleEmitter* debrisEmitter = debrisSystem->getEmitter(0);
-    debrisEmitter->setPosition(location);
-    debrisEmitter->setEmissionRate(meanShrapnelQuantity * 2);
-    debrisEmitter->setMaxParticleVelocity(maxShrapnelVelocity);*/
-
-    // Configure the shrapnel emitter
+    Ogre::ParticleSystem* shrapnelSystem = GameCore::mSceneMgr->createParticleSystem("ShrapnelSystem" + boost::lexical_cast<std::string>(uid), "CollisionDomain/Shrapnel");
     Ogre::ParticleEmitter* shrapnelEmitter = shrapnelSystem->getEmitter(0);
+#else
+    // Create the emitter.
+    unsigned short shrapnelIndex = mShrapnelSystem->getNumEmitters();
+    mShrapnelSystem->addEmitter("Point");
+    Ogre::ParticleEmitter* shrapnelEmitter = mShrapnelSystem->getEmitter(shrapnelIndex);
+    shrapnelEmitter->setParameterList(mShrapnelParams);
+#endif
+
+
+
+    // Configure the emitter.
     shrapnelEmitter->setPosition(location);
     if (shrapnelTeam == BLUE_TEAM)
         shrapnelEmitter->setColour(Ogre::ColourValue(0.125f, 0.235f, 0.380f));
@@ -563,6 +596,8 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     shrapnelEmitter->setEmissionRate(meanShrapnelQuantity * 10);
     shrapnelEmitter->setMaxParticleVelocity(maxShrapnelVelocity);
 
+    // Add the deflector plane to the high quality shrapnel.
+#ifdef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
     // Add the shrapnel plane with which it collides.
     // Calculate the plane's properties and convert them to string representations.
     Ogre::Vector3 planeLocation = location;
@@ -576,14 +611,15 @@ void ClientGraphics::generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTe
     planeAffector->setParameter("plane_point",  plane_point);
     planeAffector->setParameter("plane_normal", plane_normal);
     planeAffector->setParameter("bounce", "0.15");
+#endif
     
-    // Add the systems to the queue (so that they can be removed later).
-    mShrapnelSystems.push(shrapnelSystem);
-    //mShrapnelSystems.push(debrisSystem);
 
-    // Add the systems to the scene (so that they can be displayed).
+
+#ifdef PARTICLE_EFFECT_SHRAPNEL_HIQUAL
+    // Add the systems to the queue (so that they can be removed later), as well as the scene.
+    mShrapnelSystems.push(shrapnelSystem);
     GameCore::mSceneMgr->getRootSceneNode()->attachObject(shrapnelSystem);
-    //GameCore::mSceneMgr->getRootSceneNode()->attachObject(debrisSystem);
+#endif
 }
 #endif
 
