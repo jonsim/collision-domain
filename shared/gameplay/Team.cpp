@@ -16,6 +16,7 @@
 Team::Team(TeamID tid)
 {
 	Team::teamID = tid;
+    vipPlayer = NULL;
 }
 
 void Team::addPlayer(Player *player)
