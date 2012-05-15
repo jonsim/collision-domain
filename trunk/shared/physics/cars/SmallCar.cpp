@@ -79,20 +79,20 @@ void SmallCar::initTuning()
     mSuspensionStiffness    =  80.0f;
     mSuspensionDamping      =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness);
     mSuspensionCompression  =   CRITICAL_DAMPING_COEF * 2 * btSqrt(mSuspensionStiffness) + 0.2;
-    mRollInfluence          =   0.2f;
+    mRollInfluence          =   1.0f;
     mSuspensionRestLength   =   0.2f;
     mMaxSuspensionTravelCm  =   10.0f;
     mMaxSuspensionForce     =   6000.0f;
-    mFrictionSlip           =   4.0f;
+    mFrictionSlip           =   2.0f;
 	mChassisLinearDamping   =   0.2f;
 	mChassisAngularDamping  =   0.2f;
-	mChassisRestitution		=   0.6f;
-	mChassisFriction        =   0.6f;
+	mChassisRestitution		=   0.2f;
+	mChassisFriction        =   0.2f;
 	mChassisMass            = 1000.0f;//585.0f;
 
     mWheelRadius            =  0.2775f; // this is actually diameter!!
     mWheelWidth             =  0.153f;
-    mWheelFriction          =  2.2f;    //1000;//1e30f;
+    mWheelFriction          =  5.0f;    //1000;//1e30f;
     mConnectionHeight       =  0.3f;    // this connection point lies at the very bottom of the suspension travel
     
     mSteerIncrement         =  0.015f;
