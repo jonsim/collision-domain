@@ -316,7 +316,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     // Configure the game for the player.
     GameCore::mGui->showSpawnScreenPage1( gm );
     GameCore::mClientGraphics->loadArena( aid );
-    
+
 	// Request to spawn straight away for now
 	//m_RPC->Signal( "PlayerSpawn", NULL, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
 
@@ -328,6 +328,7 @@ void NetworkCore::GameJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
     //Set the projector map
     if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
     {
+        //OutputDebugString("Changing map title on client join
         GameCore::mClientGraphics->mBigScreen->refreshMap();
     }
 }
