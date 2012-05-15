@@ -132,6 +132,19 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
                         crashType = 3;
 	                }
 
+#ifdef COLLISION_DOMAIN_SERVER
+                    // getHeavyState() : 1 = heavy, 0 = normal, -1 = light
+                    if( p1->getHeavyState() == 1 && p2->getHeavyState() != 1 )
+                        damageToB *= 1.2f;
+                    if( p2->getHeavyState() == 1 && p1->getHeavyState() != 1 )
+                        damageToA *= 1.2f;
+
+                    if( p1->getHeavyState() == -1 && p2->getHeavyState() != -1 )
+                        damageToB *= 0.8f;
+                    if( p2->getHeavyState() == -1 && p1->getHeavyState() != -1 )
+                        damageToA *= 0.8f;
+#endif
+
 				    p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, sectionOnA, crashType, p2);
 				    p2->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnB, damageToB, sectionOnB, crashType, p1);
 
