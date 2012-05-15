@@ -92,8 +92,10 @@ void AiPlayer::updateStuckDetection()
     StringStream tmpSS;
     tmpSS << mName << " " << currentSpeed << "mph\n";
     //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
-    OutputDebugString(tmpSS.str().c_str());
-    if( currentSpeed < 5.0f )
+    //OutputDebugString(tmpSS.str().c_str());
+    unsigned int timeSinceStart = (time(NULL) - GameCore::mGameplay->startTime);
+
+    if( currentSpeed < 3.0f && timeSinceStart > 5)
     {
         timeSinceNotableChange++;
     }
@@ -114,10 +116,6 @@ void AiPlayer::Update(double timeSinceLastFrame)
     if( !mPlayer->getCar() )
         return;
 
-
-    //updateStuckDetection(); // Update the stuck detection stuff
-    //isStuck();
-
 	//get the steering force
 	Ogre::Vector3 targetPos = mSteeringBehaviour->Calculate();
 	//get angle between current heading and desired heading
@@ -129,10 +127,9 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
 	if(mPlayer->getAlive())
 	{
-        //This is stuck stuff
-        //updateStuckDetection(); // Update the stuck detection stuff
-        //isStuck();
-        
+		float currentSpeed = mPlayer->getCar()->getCarMph();
+		unsigned int timeSinceStart = (time(NULL) - GameCore::mGameplay->startTime);
+
         if(this->stuckMode == 1)
         {
             // Go Backwards
@@ -152,6 +149,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
                 stuckMode = 2;
             }
+            stuckMode = 2;
             return;
         }
         else if(stuckMode == 2)
