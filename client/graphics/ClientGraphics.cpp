@@ -188,8 +188,7 @@ void ClientGraphics::createCamera (void)
     // Focus offset - slightly in front of car's local origin
     mGameCam->setLookOffset( btVector3( 0, 0, 3.0f ) );
     // Put the camera up in the air
-    mGameCam->setTransform( btVector3( 0, 20, 0 ) );
-
+    //mGameCam->setTransform( btVector3( 0, 500, 0 ) );
     //mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
 }
 

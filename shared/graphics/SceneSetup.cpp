@@ -424,6 +424,11 @@ void SceneSetup::loadArenaGraphics (ArenaID aid)
 #endif
         propsNode->attachObject(propsEntity);
     }
+
+#ifdef COLLISION_DOMAIN_CLIENT
+    //GameCore::mClientGraphics->mGameCam->setTarget( arenaNode );
+    GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 500, 0 ) );
+#endif
 }
 
 

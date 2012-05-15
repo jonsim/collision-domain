@@ -230,8 +230,8 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mBacks );
         mCar->mBodyNode->attachObject( mNametag );
     }
-    if( isLocalPlayer )
-        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 500, 0 ) );
+    //if( isLocalPlayer )
+    //    GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 500, 0 ) );
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;
@@ -315,21 +315,21 @@ void Player::angleTest(void) {
 void Player::cameraLookLeft(void) {
     GameCore::mClientGraphics->mGameCam->setCollidable(false);
     GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
-        GameCore::mClientGraphics->mGameCam->setOffset( btVector3(5, 0, 0) );
+        GameCore::mClientGraphics->mGameCam->setOffset( btVector3(5, 1.5f, 0) );
     GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
 }
 
 void Player::cameraLookRight(void) {
     GameCore::mClientGraphics->mGameCam->setCollidable(false);
     GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
-        GameCore::mClientGraphics->mGameCam->setOffset( btVector3(-5, 0, 0) );
+        GameCore::mClientGraphics->mGameCam->setOffset( btVector3(-5, 1.5f, 0) );
     GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
 }
 
 void Player::cameraLookBack(void) {
     GameCore::mClientGraphics->mGameCam->setCollidable(false);
     GameCore::mClientGraphics->mGameCam->setCamType( CAM_FIXED );
-    GameCore::mClientGraphics->mGameCam->setOffset( btVector3(0, 0, 5) );
+    GameCore::mClientGraphics->mGameCam->setOffset( btVector3(0, 1.5f, 5) );
     GameCore::mClientGraphics->mGameCam->setLookOffset( btVector3(0,0,0) );
     
 }
@@ -552,7 +552,7 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
         if ((ZDepth < 0 && camPosition.z > -40) || (ZDepth > 0 && camPosition.z < 90))
                 camNode->translate(0, 0, ZDepth * 0.02f);
 
-    if( camShakeFrames > 0 )
+    /*if( camShakeFrames > 0 )
     {
         camShakeFrames --;
         if( camShakeFrames > 0 )
@@ -574,7 +574,7 @@ void Player::updateCameraFrameEvent (int XRotation, int YRotation, int ZDepth, f
         }
         else
             gameCamera->resetTempOffset();
-    }
+    }*/
    
         //Update the camera
         //
