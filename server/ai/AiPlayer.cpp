@@ -67,15 +67,15 @@ void AiPlayer::CreateFeelers()
 	mFeelers[2] = pos + range/2.0f * heading.crossProduct(-heading.perpendicular());
 }
 
-void AiPlayer::isStuck()
+void AiPlayer::isStuck(float timeSinceLastFrame)
 {
     //GameCore::mServerGraphics->mRoot->get
-    if(timeSinceNotableChange >= TIME_BEFORE_STUCK)
+    if(timeSinceNotableChange >= TIME_BEFORE_STUCK/timeSinceLastFrame)
     {
         //In here we've decide we're stuck
         StringStream tmpSS;
         tmpSS << mName << " player stuck\n";
-        //OutputDebugString(tmpSS.str().c_str());
+        OutputDebugString(tmpSS.str().c_str());
         //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
         //GameCore::mGui->outputToConsole("Ai Player stuck!\n");
         this->stuckMode = 1;
@@ -92,8 +92,8 @@ void AiPlayer::updateStuckDetection()
     StringStream tmpSS;
     tmpSS << mName << " " << currentSpeed << "mph\n";
     //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
-    //OutputDebugString(tmpSS.str().c_str());
-    if( currentSpeed < 3.0f )
+    OutputDebugString(tmpSS.str().c_str());
+    if( currentSpeed < 5.0f )
     {
         timeSinceNotableChange++;
     }
@@ -167,7 +167,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
         {
             //This is stuck stuff
             updateStuckDetection(); // Update the stuck detection stuff
-            isStuck();
+            isStuck(timeSinceLastFrame);
         }
         
 		//first check if were about to crash into a player on our own team
