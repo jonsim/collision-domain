@@ -163,6 +163,7 @@ TruckCar::~TruckCar(void)
     GameCore::mPhysicsCore->getWorld()->removeAction( mVehicle );
     
     // Destroy particle systems.
+#ifdef COLLISION_DOMAIN_CLIENT
 #ifdef PARTICLE_EFFECT_EXHAUST
     GameCore::mSceneMgr->destroyParticleSystem(mExhaustSystem);
 #endif
@@ -174,6 +175,7 @@ TruckCar::~TruckCar(void)
 #endif
 #ifdef PARTICLE_EFFECT_FIRE
     GameCore::mSceneMgr->destroyParticleSystem(mFireSystem);
+#endif
 #endif
 
     mBodyNode->removeAndDestroyAllChildren();

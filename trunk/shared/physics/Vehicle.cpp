@@ -230,7 +230,8 @@ void Vehicle::updateFriction( btScalar timeStep )
 
 			m_wheelInfo[i].m_skidInfo= btScalar(1.);
 			
-            btScalar fr = ( mHandbrake && i > 1 ) ? 0.5 : wheelInfo.m_frictionSlip;
+            btScalar fr = ( mHandbrake && i < 1 ) ? 0.5 : wheelInfo.m_frictionSlip;
+            fr = ( mHandbrake && i > 1 ) ? 0.5 : fr;
 			btScalar maximp = wheelInfo.m_wheelsSuspensionForce * timeStep * fr;
 			btScalar maximpSide = maximp;
 
