@@ -129,6 +129,7 @@ public:
 	static void PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
     static void PlayerTeamSelect( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	static void PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
+    static void UpdateNickname( RakNet::BitStream *bitStream, RakNet::Packet *pkt );
 	
 
 	static bool bConnected;

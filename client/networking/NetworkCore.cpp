@@ -251,6 +251,14 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
 
 }
 
+void NetworkCore::setNicknameChange( const char *newNickname )
+{
+    RakNet::BitStream bsSend;
+    RakNet::StringCompressor().EncodeString( newNickname, 128, &bsSend );
+
+    m_RPC->Signal( "UpdateNickname", &bsSend, HIGH_PRIORITY, RELIABLE_ORDERED, 0, serverGUID, false, false );
+}
+
 void NetworkCore::sendTeamSelect( TeamID t )
 {
     RakNet::BitStream bsSend;
@@ -609,6 +617,7 @@ void NetworkCore::TimeSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
         OutputDebugString("Recived Time Update");
     }
 }
+
 
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()

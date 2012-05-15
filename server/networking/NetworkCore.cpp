@@ -574,7 +574,16 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     return;
 }
 
+void NetworkCore::UpdateNickname( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
+{
+    char szNickname[128];
+	RakNet::StringCompressor().DecodeString( szNickname, 128, bitStream );
+	
+    Player* tmpPlayer = GameCore::mPlayerPool->getPlayer( pkt->guid);
+    GameCore::mGui->outputToConsole("%s changed nickname to '%s'.\n",tmpPlayer->getNickname(),szNickname);
 
+    tmpPlayer->setNickname(szNickname);
+}
 
 /// @brief Registers the RPC calls for the client
 void NetworkCore::RegisterRPCSlots()
@@ -587,6 +596,7 @@ void NetworkCore::RegisterRPCSlots()
 	m_RPC->RegisterSlot( "PlayerChat",		    PlayerChat, 0 );
     m_RPC->RegisterSlot( "PlayerTeamSelect",    PlayerTeamSelect, 0 );
 	m_RPC->RegisterSlot( "PlayerSpawn",		    PlayerSpawn, 0 );
+    m_RPC->RegisterSlot( "UpdateNickname",	    UpdateNickname, 0 );
 }
 
 
