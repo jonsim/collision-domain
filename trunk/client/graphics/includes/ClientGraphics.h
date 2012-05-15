@@ -44,7 +44,7 @@ public:
 
     // Particle effect handlers.
 #ifdef PARTICLE_EFFECT_EXPLOSION
-    void generateExplosion (Ogre::Vector3 location);
+    void generateExplosion (Ogre::Vector3 location, bool addNucleus);
 #endif
 #ifdef PARTICLE_EFFECT_SPARKS
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);

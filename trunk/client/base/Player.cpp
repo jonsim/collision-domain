@@ -594,7 +594,7 @@ void Player::killPlayer()
         this->mAlive = false;
     // Place an explosion at the players position and load the burnt model
 #ifdef PARTICLE_EFFECT_EXPLOSION
-    GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition());
+    GameCore::mClientGraphics->generateExplosion(mCar->mBodyNode->getPosition(), true);
 #endif
     mCar->loadDestroyedModel();
 

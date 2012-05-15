@@ -638,24 +638,30 @@ void ClientGraphics::updateVIPLocation (TeamID teamID, Ogre::Vector3 location)
 
 #ifdef PARTICLE_EFFECT_EXPLOSION
 /// @brief  Generates an explosion.
-void ClientGraphics::generateExplosion (Ogre::Vector3 location)
+void ClientGraphics::generateExplosion (Ogre::Vector3 location, bool addNucleus)
 {
     unsigned short nucleusIndex = mExplosionNucleusSystem->getNumEmitters();
     unsigned short smokeIndex   = mExplosionSmokeSystem->getNumEmitters();
     unsigned short debrisIndex  = mExplosionDebrisSystem->getNumEmitters();
 
-    mExplosionNucleusSystem->addEmitter("Point");
-    mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
-    mExplosionNucleusSystem->getEmitter(nucleusIndex)->setPosition(location);
+    if (addNucleus)
+    {
+        mExplosionNucleusSystem->addEmitter("Point");
+        mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
+        mExplosionNucleusSystem->getEmitter(nucleusIndex)->setPosition(location);
+    }
 
     mExplosionSmokeSystem->addEmitter("Point");
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setParameterList(mExplosionSmokeParams);
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setPosition(location);
 
-    mExplosionDebrisSystem->addEmitter("Point");
-    mExplosionDebrisSystem->getEmitter(debrisIndex)->setParameterList(mExplosionDebrisParams);
-    mExplosionDebrisSystem->getEmitter(debrisIndex)->setPosition(location);
-    
+    if (addNucleus)
+    {
+        mExplosionDebrisSystem->addEmitter("Point");
+        mExplosionDebrisSystem->getEmitter(debrisIndex)->setParameterList(mExplosionDebrisParams);
+        mExplosionDebrisSystem->getEmitter(debrisIndex)->setPosition(location);
+    }
+
     // Generate a sound (this isn't a particularly good way of doing it but it will work until a better method is available).
     static OgreOggSound::OgreOggISound* explosionSound = GameCore::mAudioCore->getSoundInstance(EXPLOSION, 0, NULL);
     explosionSound->setPosition(location);

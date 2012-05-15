@@ -532,10 +532,11 @@ void SimpleCoupeCar::loadDestroyedModel (void)
     mChassisNode->detachAllObjects();
     createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
-    #ifdef COLLISION_DOMAIN_CLIENT
-        if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
-            GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),3);
-    #endif
+
+#ifdef COLLISION_DOMAIN_CLIENT
+    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
+        GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(), 3);
+#endif
 }
 
 
