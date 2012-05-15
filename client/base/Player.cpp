@@ -60,6 +60,7 @@ Player::Player (bool isAI)
 
         mPowerupStates[i] = PowerupBoardState(POWERUP_BOARD_HEAVY, -1.0f);
     }
+
     mPowerupBars[0] = mPowerupBoards[0]->createBillboard( -0.65f, 3.3f, 0, Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f) );
     mPowerupBars[1] = mPowerupBoards[1]->createBillboard( 0.66f, 3.3f, 0, Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f) );
     mPowerupBars[2] = mPowerupBoards[2]->createBillboard( 0, 4.5f, 0, Ogre::ColourValue(1.0f, 1.0f, 1.0f, 0.0f) );
@@ -157,12 +158,23 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         //else
         {
             // Create the healthbar
-            mHealthbar = mBoards->createBillboard( 0, 2, 0, Ogre::ColourValue::Green );
+            float boardHeight;
+            switch( carType )
+            {
+            case CAR_BANGER:
+            case CAR_SMALL:
+                boardHeight = 2.f;
+                break;
+            case CAR_TRUCK:
+                boardHeight = 3.f;
+                break;
+            }
+            mHealthbar = mBoards->createBillboard( 0, boardHeight, 0, Ogre::ColourValue::Green );
             mBoards->setCastShadows( false );
             mBoards->setMaterialName( "board_health" );
 
             // Create healthbar border
-            mHealthBg = mBacks->createBillboard( 0, 2, 0, Ogre::ColourValue(0,0,0) );
+            mHealthBg = mBacks->createBillboard( 0, boardHeight, 0, Ogre::ColourValue(0,0,0) );
             mBacks->setCastShadows( false );
             mBacks->setMaterialName( "board_health_bg" );
 
@@ -171,7 +183,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
             txtIdent.append( mPlayerGUID.ToString() );
             mNametag = new MovableText( txtIdent, mNickname, "DejaVuSans", 0.3f );
             mNametag->setTextAlignment( MovableText::H_CENTER, MovableText::V_ABOVE );
-            mNametag->setGlobalTranslation( Ogre::Vector3(0, 1.8f, 0) );
+            mNametag->setGlobalTranslation( Ogre::Vector3(0, boardHeight, 0) );
             mNametag->setCastShadows( false );
 
             // Set nametag colour according to team
