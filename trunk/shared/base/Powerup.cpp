@@ -146,18 +146,19 @@ void Powerup::playerCollision(Player* player)
                 if( makeLight )
                 {
                     newmass = 0.3f;
-                    extraData = 1.f;
+                    extraData = 0.3f;
                     curTime += 15000;
                 }
                 else if (rand() % 9 == 0)
                 {
                     newmass = 0.3f;
-                    extraData = 1.f;
+                    extraData = 0.3f;
                     curTime += 10000;
                 }
                 else
                 {
                     newmass = 2.f;
+                    extraData = 2.f;
                     curTime += 12000;
                 }
 

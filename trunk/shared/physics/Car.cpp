@@ -512,11 +512,19 @@ void Car::resetMass()
 void Car::setMass( float newmass )
 {
     btVector3 inertia;
-    GameCore::mPhysicsCore->getWorld()->removeRigidBody( mVehicle->getRigidBody() );
-    mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
+    //GameCore::mPhysicsCore->getWorld()->removeRigidBody( mVehicle->getRigidBody() );
+    /*mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
     mVehicle->getRigidBody()->setMassProps( newmass, inertia );
-    mVehicle->getRigidBody()->updateInertiaTensor();
-    GameCore::mPhysicsCore->getWorld()->addRigidBody( mVehicle->getRigidBody() );
+    mVehicle->getRigidBody()->updateInertiaTensor();*/
+    float rest;
+    if( newmass > 1 )
+        rest = 1.f;
+    if( newmass == 1 )
+        rest = mChassisRestitution;
+    if( newmass < 1 )
+        rest = 0.f;
+    mVehicle->getRigidBody()->setRestitution( rest );
+    //GameCore::mPhysicsCore->getWorld()->addRigidBody( mVehicle->getRigidBody() );
 }
 
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended
