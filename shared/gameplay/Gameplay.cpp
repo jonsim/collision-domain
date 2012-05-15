@@ -116,6 +116,16 @@ void Gameplay::cycleGame( bool unload )
     // Next round plz.
     roundNumber++;
 
+    if(roundNumber > 2)
+    {
+        roundNumber = 0;
+        this->generateGameOrder();
+    }
+
+    StringStream tmpSS;
+    tmpSS << "Round Number: " << roundNumber << "\n";
+    GameCore::mGui->outputToConsole(tmpSS.str().c_str());
+
     // Get the next gamemode.
     this->setGameMode(mGamemodeOrder[roundNumber]);
     
