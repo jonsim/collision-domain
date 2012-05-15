@@ -624,20 +624,11 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 
 				#ifdef COLLISION_DOMAIN_SERVER
 					GameCore::mGui->outputToConsole("Round Ended.\n");
-                                   
-                    if(this->getRoundNumber() < (NUM_ROUNDS-1))
-                    {
-                        //Show the wining player II
-					    transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
-					    mInfoItems.push_back(transitionII);
-                    }
-                    else
-                    {
-                        //End of game II
-                        GameCore::mGui->outputToConsole("The game has ended [3 Rounds] \n");
-               		    transitionII = new InfoItem(SHOW_PODIUM_OT, 5000, 100);
-					    mInfoItems.push_back(transitionII);
-                    }
+
+                    //Show the wining player II
+					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
+					mInfoItems.push_back(transitionII);
+
 				#endif
 				break;
 			case SCOREBOARD_TO_WINNER_OT:
@@ -647,20 +638,12 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)						
 						GameCore::mClientGraphics->mBigScreen->hideScreen();         
                     this->showWinnerText(this->getRoundWinner(),true);
-				#endif
 
-                this->mGameActive = false;
-                this->restartGame();
-                cycleGame();
-                GameCore::mPlayerPool->roundEnd();
-                			
-				break;
-            case SHOW_PODIUM_OT:
-                #ifdef COLLISION_DOMAIN_CLIENT
-                    mSB->hideForce();
                     //GameCore::mClientGraphics->addPodium(Ogre::Vector3(0,1,0));
                 #else
-                    mInfoItems.push_back(new InfoItem(CLEAR_PODIUM_OT,5000,900));
+                    //Show the wining player II
+					transitionII = new InfoItem(CLEAR_PODIUM_OT, 5000, 100);
+					mInfoItems.push_back(transitionII);
                 #endif
                 break;
             case CLEAR_PODIUM_OT:

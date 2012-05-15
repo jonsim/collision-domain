@@ -69,7 +69,7 @@ void AiPlayer::CreateFeelers()
 
 void AiPlayer::isStuck()
 {
-    
+    //GameCore::mServerGraphics->mRoot->get
     if(timeSinceNotableChange >= TIME_BEFORE_STUCK)
     {
         //In here we've decide we're stuck
@@ -80,24 +80,20 @@ void AiPlayer::isStuck()
         //GameCore::mGui->outputToConsole("Ai Player stuck!\n");
         this->stuckMode = 1;
         this->timeInStuckMode = 0; // Lets get going
+        timeSinceNotableChange = 0;
     }
 
 }
 
 void AiPlayer::updateStuckDetection()
 {
-
-    Vector3 curPos = GetPos();
-    curPos.y = 0.0f;
-    oldPosition.y = 0.0f;
-    Ogre::Real change = curPos.distance(oldPosition);
-
+    float currentSpeed = mPlayer->getCar()->getCarMph();
     
     StringStream tmpSS;
-    tmpSS << mName << " change: " << change << "\n";
+    tmpSS << mName << " " << currentSpeed << "mph\n";
     //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
     //OutputDebugString(tmpSS.str().c_str());
-    if( change < NOTABLE_CHANGE_RATIO )
+    if( currentSpeed < 3.0f )
     {
         timeSinceNotableChange++;
     }
