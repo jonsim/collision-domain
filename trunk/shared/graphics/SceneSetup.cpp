@@ -347,9 +347,6 @@ void SceneSetup::loadArenaGraphics (ArenaID aid)
     }
     else if (aid == FOREST_ARENA)
     {
-        // highQualTreeCount/lowQualTreeCount - the number of high/low quality trees respectively.
-        // lowQualTreeCutoff - the distance in metres at which low quality trees are used, from the start of the range.
-        const unsigned int highQualTreeCount = 50, lowQualTreeCount = 700, lowQualTreeCutoff = 10;
         unsigned int i;
         int treeType;
         Ogre::Real radius, theta;
@@ -384,12 +381,12 @@ void SceneSetup::loadArenaGraphics (ArenaID aid)
         // First 15m are good trees, subsequent 35m are crap trees.
 
         // Place 50 higher detail trees close to the viewer.
-        for (i = 0; i < highQualTreeCount + lowQualTreeCount; i++)
+        for (i = 0; i < FOREST_ARENA_HQ_TREE_COUNT + FOREST_ARENA_LQ_TREE_COUNT; i++)
         {
-            if (i < highQualTreeCount)
-                radius = (1345 + (rand() % (lowQualTreeCutoff * 10))) / 10.0f;
+            if (i < FOREST_ARENA_HQ_TREE_COUNT)
+                radius = (1345 + (rand() % (FOREST_ARENA_LQ_TREE_CUTOFF * 10))) / 10.0f;
             else
-                radius = (1345 + (lowQualTreeCutoff * 10) + (rand() % (1845 - 1345 - (lowQualTreeCutoff*10)))) / 10.0f;
+                radius = (1345 + (FOREST_ARENA_LQ_TREE_CUTOFF * 10) + (rand() % (1845 - 1345 - (FOREST_ARENA_LQ_TREE_CUTOFF*10)))) / 10.0f;
             theta = ((rand() % 32767) / 32767.0f) * 6.28318531f;
             treeType = rand() % 5;
 
@@ -397,7 +394,7 @@ void SceneSetup::loadArenaGraphics (ArenaID aid)
             treePosition.z = radius * sin(theta);
             treePosition.y = 1.6f;
         
-            if (i < highQualTreeCount)
+            if (i < FOREST_ARENA_HQ_TREE_COUNT)
                 sg->addEntity(superLowPolyTrees[treeType], treePosition, Ogre::Quaternion::IDENTITY, treeScale);
             else
                 sg->addEntity(lowPolyTrees[treeType],      treePosition, Ogre::Quaternion::IDENTITY, treeScale);

@@ -44,9 +44,18 @@
 #define SHADOW_FAR_DISTANCE 150     // The maximum distance at which shadows will be visible. Further distances (>= 150 greatly reduce visible cutoff on our arenas), however shorter distances will improve the perceived quality of lower resolution textures.
 
 
+// PROCEDURAL ARENA SYSTEM ------------------------------------------------
+#define FOREST_ARENA_HQ_TREE_COUNT  50  // The number of high quality trees to use (187 triangles ea.) - have a wonky trunk.
+#define FOREST_ARENA_LQ_TREE_COUNT 700  // The number of low  quality trees to use (125 triangles ea.) - have a straight trunk.
+#define FOREST_ARENA_LQ_TREE_CUTOFF 10  // The furthest distance away from the fence that the high quality trees can spawn (in metres).
+
+
 // TEXTURE SYSTEM ---------------------------------------------------------
 #define TEXTURE_ENV_SWAPPING        // Allows the environment maps to be swapped in and out based on arena. Basically a work around for Zlatan, it shouldn't comprise a performance increase...
 
+
+// MENU SYSTEM ------------------------------------------------------------
+//#define MENU_LOBBY                  // Enables the lobby which is shown when first launching the game.
 
 
 
