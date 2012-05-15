@@ -508,25 +508,36 @@ void Car::applyForce(Ogre::SceneNode* node, Ogre::Vector3 force)
 
 void Car::resetMass()
 {
-    setMass( mChassisMass );
+    setMass( 1.f );
 }
 
 void Car::setMass( float newmass )
 {
     btVector3 inertia;
-    //GameCore::mPhysicsCore->getWorld()->removeRigidBody( mVehicle->getRigidBody() );
+    GameCore::mPhysicsCore->getWorld()->removeRigidBody( mVehicle->getRigidBody() );
     /*mVehicle->getRigidBody()->getCollisionShape()->calculateLocalInertia( newmass * mChassisMass, inertia );
     mVehicle->getRigidBody()->setMassProps( newmass, inertia );
     mVehicle->getRigidBody()->updateInertiaTensor();*/
     float rest;
     if( newmass > 1 )
-        rest = 1.f;
+    {
+        rest = 0.0f;
+        mVehicle->getRigidBody()->setFriction( 1000 );
+    }
     if( newmass == 1 )
+    {
         rest = mChassisRestitution;
+        mVehicle->getRigidBody()->setFriction( mChassisFriction );
+    }
     if( newmass < 1 )
-        rest = 0.f;
+    {
+        rest = 1.0f;
+        mVehicle->getRigidBody()->setFriction( 0.1 );
+    }
+
     mVehicle->getRigidBody()->setRestitution( rest );
-    //GameCore::mPhysicsCore->getWorld()->addRigidBody( mVehicle->getRigidBody() );
+    
+    GameCore::mPhysicsCore->getWorld()->addRigidBody( mVehicle->getRigidBody() );
 }
 
 /// @brief  Loads the given car mesh and attaches it to the given node. The given entity name is used, but appended

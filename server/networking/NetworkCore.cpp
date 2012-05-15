@@ -227,7 +227,7 @@ void NetworkCore::BroadcastUpdates()
         {
             bitSend.Write( false );
         }
-
+        bitSend.Write( true );
 		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, m_pRak->GetMyGUID(), true );
 
 		delete( playerSnap );
@@ -274,6 +274,8 @@ void NetworkCore::GamestateUpdatePlayer( RakNet::RakNetGUID playerid )
         bitSend.Write( true );
         bitSend.Write( sendPlayer->getHP() );
         sendPlayer->lastsenthp = sendPlayer->getHP();
+
+        bitSend.Write( sendPlayer->getAlive() );
 
 		m_pRak->Send( &bitSend, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 0, playerid, false );
 

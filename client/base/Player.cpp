@@ -231,7 +231,7 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mNametag );
     }
     if( isLocalPlayer )
-        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, -100, 0 ) );
+        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 100, 0 ) );
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;
