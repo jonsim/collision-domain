@@ -109,6 +109,7 @@ public:
     void sendTeamSelect( TeamID t );
     void sendSpawnRequest( CarType iCarType );
     void sendChatMessage( const char *szMessage );
+    void setNicknameChange( const char *newNickname );
 	//void sendInfoItem(InfoItem* ii);//Needed but won't be used on client
 
     // RPC Calls

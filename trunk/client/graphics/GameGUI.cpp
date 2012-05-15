@@ -196,7 +196,7 @@ bool GameGUI::SpawnScreen_p1btnBlueTeam (const CEGUI::EventArgs& args)
     CEGUI::Window* edtName       = winMgr.getWindow("/SpawnScreen/Team/edtName");
     const char* newName = edtName->getText().c_str();
     GameCore::mPlayerPool->getLocalPlayer()->setNickname(newName); // set it
-    //GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
+    GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
 
     return true;
 }
@@ -213,7 +213,7 @@ bool GameGUI::SpawnScreen_p1btnRedTeam (const CEGUI::EventArgs& args)
     CEGUI::Window* edtName       = winMgr.getWindow("/SpawnScreen/Team/edtName");
     const char* newName = edtName->getText().c_str();
     GameCore::mPlayerPool->getLocalPlayer()->setNickname(newName); // set it
-    //GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
+    GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
 
     return true;
 }
@@ -230,7 +230,7 @@ bool GameGUI::SpawnScreen_p1btnAutoAssign (const CEGUI::EventArgs& args)
     CEGUI::Window* edtName       = winMgr.getWindow("/SpawnScreen/Team/edtName");
     const char* newName = edtName->getText().c_str();
     GameCore::mPlayerPool->getLocalPlayer()->setNickname(newName); // set it
-    //GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
+    GameCore::mNetworkCore->setNicknameChange( newName );          // send it.
 
     return true;
 }
