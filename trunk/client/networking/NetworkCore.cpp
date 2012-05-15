@@ -249,6 +249,14 @@ void NetworkCore::ProcessPlayerState( RakNet::Packet *pkt )
         pUpdate->serverSaysHealthChangedTo( (float) newHP );
     }
 
+    bool isAlive;
+    bitStream.Read( isAlive );
+    if( !isAlive )
+    {
+        if( pUpdate->getCar() )
+            pUpdate->getCar()->loadDestroyedModel();
+    }
+
 }
 
 void NetworkCore::setNicknameChange( const char *newNickname )
