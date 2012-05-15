@@ -470,6 +470,12 @@ void Player::reLayoutPowerupBoards()
         orderedIndicesLongtoShort[2] = is0bigger ? 1 : 0;
     }
 
+    /*bool isTruck = false;
+    if ( mCar != NULL && dynamic_cast<TruckCar*>(mCar) )
+    {
+        isTruck = true;
+    }*/
+
     // 'shuffle down' the layout as powerup icons finish their time
     if ( mPowerupStates[ orderedIndicesLongtoShort[1] ].isFinished() )
     {
