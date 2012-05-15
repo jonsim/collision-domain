@@ -310,7 +310,14 @@ void SmallCar::updateAudioPitchFrameEvent()
 void SmallCar::playCarHorn()
 {
 #ifdef COLLISION_DOMAIN_CLIENT
-    GameCore::mAudioCore->playSoundOrRestart(mHornSound);
+    Player *localPlayer = GameCore::mPlayerPool->getLocalPlayer();
+    if (!localPlayer) return;
+
+    Car *car = localPlayer->getCar();
+    if (car && this == car)
+    {
+        GameCore::mAudioCore->playSoundOrRestart(mHornSound);
+    }
 #endif
 }
 

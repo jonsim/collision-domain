@@ -132,13 +132,34 @@ void BigScreen::updateMapView()
 inline float BigScreen::convertWorldToScreenX(float xPos)
 {
     xPos = xPos/(mapSize.x);
-    // This value lines up perfectly so the point of the arrow hits the wall if going straight on,
-    // and if riding sideways along the wall you are pretty much displayed on top of the boundary
-    xPos *= 0.76f;
+
+    // xPos *= 0.76f;
+    switch(GameCore::mGameplay->getArenaID())
+    {
+        case COLOSSEUM_ARENA:
+            xPos *= 0.870f; // 889 // 880 pretty close // 867
+            break;
+
+        case FOREST_ARENA:
+            xPos *= 0.683f; // 661 // 671 // 681 // 678
+            break;
+
+        case QUARRY_ARENA:
+            xPos *= 0.8815f; // 861 // 871 // 876 // 883
+            break;
+
+        default:
+            break;
+    }
 
     xPos += MAP_WIDTH/2;
     xPos *= MAP_WIDTH;
     xPos -= 0.5 * MARKER_WIDTH;
+
+    if (GameCore::mGameplay->getArenaID() == QUARRY_ARENA)
+    {
+        //xPos += 0.05f;
+    }
 
     return xPos;
 }
@@ -148,11 +169,34 @@ inline float BigScreen::convertWorldToScreenY(float yPos)
     yPos = yPos/(mapSize.z);
     // This value lines up perfectly so the point of the arrow hits the wall if going straight on,
     // and if riding sideways along the wall you are pretty much displayed on top of the boundary
-    yPos *= 0.74f;
+
+    // yPos *= 0.74f;
+    switch(GameCore::mGameplay->getArenaID())
+    {
+        case COLOSSEUM_ARENA:
+            yPos *= 0.7039f; // 699
+            break;
+
+        case FOREST_ARENA:
+            yPos *= 0.574f; // 571
+            break;
+
+        case QUARRY_ARENA:
+            yPos *= 0.753f; // 729 // 755 // 754
+            break;
+
+        default:
+            break;
+    }
 
     yPos += MAP_HEIGHT/2;
     yPos *= MAP_HEIGHT;
     yPos -= 0.5 * MARKER_HEIGHT;
+
+    if (GameCore::mGameplay->getArenaID() == QUARRY_ARENA)
+    {
+        //yPos -= 0.04f;
+    }
 
     return yPos;
 }
