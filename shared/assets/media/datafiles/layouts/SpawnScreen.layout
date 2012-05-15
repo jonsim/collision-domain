@@ -42,19 +42,23 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.22,0},{0.98,0},{0.34,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnSpectate" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Spectate" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.72,0},{0.98,0},{0.84,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Team/btnProjector" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Projector" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.86,0},{0.98,0},{0.98,0}}" />
             </Window>
             <Window Type="GWEN/Editbox" Name="/SpawnScreen/Team/edtName" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="MaxTextLength" Value="1073741823" />
                 <Property Name="UnifiedAreaRect" Value="{{0.26,0},{0.02,0},{0.98,0},{0.13,0}}" />
                 <Property Name="TextParsingEnabled" Value="False" />
             </Window>
             <Window Type="GWEN/StaticText" Name="/SpawnScreen/Team/" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Name:" />
                 <Property Name="HorzExtent" Value="45" />
                 <Property Name="VertExtent" Value="15.5148" />
@@ -64,6 +68,7 @@
             </Window>
         </Window>
         <Window Type="GWEN/FrameWindow" Name="/SpawnScreen/Vehicle" >
+                <Property Name="Font" Value="DejaVuSans-10" />
             <Property Name="Text" Value="Select a Vehicle" />
             <Property Name="Visible" Value="False" />
             <Property Name="CaptionFont" Value="DejaVuSans-10" />
@@ -73,14 +78,17 @@
             <Property Name="UnifiedAreaRect" Value="{{0.2,0},{0.29,0},{0.8,0},{0.71,0}}" />
             <Property Name="CloseButtonEnabled" Value="False" />
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCoupe" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Coupe" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.02,0},{0.38,0},{0.15,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnHatchback" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Hatchback" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.17,0},{0.38,0},{0.3,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnTruck" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Truck" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.32,0},{0.38,0},{0.45,0}}" />
             </Window>
@@ -88,10 +96,12 @@
                 <Property Name="UnifiedAreaRect" Value="{{0.4,0},{0,0},{1,0},{1,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnCancel" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Cancel" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.86,0},{0.38,0},{0.99,0}}" />
             </Window>
             <Window Type="GWEN/Button" Name="/SpawnScreen/Vehicle/btnConfirm" >
+                <Property Name="Font" Value="DejaVuSans-10" />
                 <Property Name="Text" Value="Confirm" />
                 <Property Name="UnifiedAreaRect" Value="{{0.02,0},{0.71,0},{0.38,0},{0.84,0}}" />
             </Window>

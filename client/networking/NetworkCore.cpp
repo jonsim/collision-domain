@@ -24,10 +24,14 @@ RakNet::TimeMS NetworkCore::timeLastUpdate = 0;
 /// @brief  Constructor, initialising all resources.
 NetworkCore::NetworkCore () : m_szHost( NULL )
 {
-	char tempName[MAXHOSTNAMELEN];
+	char hostName[MAXHOSTNAMELEN];
+	char* hostSplit;
 	//set the player name to the computer name
-	if(gethostname(tempName, MAXHOSTNAMELEN) >= 0)
-		mPlayerName = std::string(tempName);
+	if(gethostname(hostName, MAXHOSTNAMELEN) >= 0)
+	{
+		hostSplit = strtok(&(hostName[0]), ".");
+		mPlayerName = hostSplit;
+	}
 	else
 		mPlayerName = "Human";
 

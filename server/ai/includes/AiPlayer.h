@@ -80,6 +80,9 @@ private:
     int stuckMode;//0 = No, 1 = Go back, 2= Go Back to normal
     int timeInStuckMode; 
     int timeInChangeOver;
+
+    bool stuck;
+    float reverseTime;
 };
 
 #endif
