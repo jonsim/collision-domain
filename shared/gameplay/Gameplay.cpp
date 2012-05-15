@@ -646,7 +646,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					GameCore::mGui->outputToConsole("Round Ended.\n");
 
                     //Show the wining player II
-					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 5000, 100);
+					transitionII = new InfoItem(SCOREBOARD_TO_WINNER_OT, 8000, 100);
 					mInfoItems.push_back(transitionII);
 
 				#endif
