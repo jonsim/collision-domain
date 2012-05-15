@@ -26,7 +26,9 @@ class SceneSetup;
 enum GraphicsState
 {
     UNDEFINED,
+#ifdef MENU_LOBBY
     IN_LOBBY,
+#endif
     //SPAWN_SCREEN,
     IN_GAME,
     BENCHMARKING,
@@ -62,20 +64,22 @@ public:
 	void setupProjector();
     
     // Called when the 2D menu system is loaded (and no 3D graphics are required/available).
+#ifdef MENU_LOBBY
     virtual void loadLobby (void);
     virtual void unloadLobby (void);
+#endif
     // Called when the 3D graphics are loaded (and a game has been entered).
     virtual void loadGame (void);
     virtual void unloadGame (void);
 
     // GraphicsApplication stuff
-        void startBenchmark (uint8_t stage);
+    void startBenchmark (uint8_t stage);
 
-    Ogre::Camera*       mCamera;
-    GameCamera *        mGameCam;
+    Ogre::Camera* mCamera;
+    GameCamera*   mGameCam;
     //SpawnScreen*        mSpawnScreen;
 
-	BigScreen*			mBigScreen;
+	BigScreen*    mBigScreen;
 	GraphicsState getGraphicsState();
     
     //Screen Specs

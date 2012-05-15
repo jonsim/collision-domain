@@ -93,14 +93,30 @@ bool ClientGraphics::initApplication (void)
     GameCore::initialise(this);
 
     // Load the lobby
+#ifdef MENU_LOBBY
     loadLobby();
 
     setupUserInput();
 
-    // Load the game
-    //loadGame();
+    createFrameListener();
+#else
+    // First load CEGUI and it's resources by running the generic setup.
+    //SceneSetup::setupGUI();
+
+    setupUserInput();
 
     createFrameListener();
+
+    GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
+
+    while (GameCore::mNetworkCore->m_szHost == NULL)
+    {
+        GameCore::mNetworkCore->frameEvent(NULL);
+        // Just chillin. Gonna lock up here if a server dont exist lol.
+    }
+
+    loadGame();
+#endif
 
     return true;
 }
@@ -191,6 +207,7 @@ void ClientGraphics::createViewports (void)
 }
 
 
+#ifdef MENU_LOBBY
 void ClientGraphics::loadLobby (void)
 {
     // Set the graphics state
@@ -202,12 +219,14 @@ void ClientGraphics::loadLobby (void)
     // Create the lobby and set it right up.
     mLobby = new Lobby(mGUIWindow);
     mLobby->setup(mWindow->getWidth(), mWindow->getHeight());
-    mLobby->addServer("NOOBS4GLORY", "4/5", "GAY MAP", true);
-    mLobby->addServer("Boobs Server", "15/32", "GAY MAP", false);
-    mLobby->addServer("Another Server", "0/32", "NEW MAP", false);
+    mLobby->addServer("Default Server", "4", "Colosseum", true);
+    //mLobby->addServer("Boobs Server", "15/32", "GAY MAP", false);
+    //mLobby->addServer("Another Server", "0/32", "NEW MAP", false);
 }
+#endif
 
 
+#ifdef MENU_LOBBY
 void ClientGraphics::unloadLobby (void)
 {
     // Set the graphics state
@@ -215,16 +234,19 @@ void ClientGraphics::unloadLobby (void)
     mLobby->close();
     delete mLobby;
 }
+#endif
 
 
 void ClientGraphics::loadGame (void)
 {
-    if( GameCore::mNetworkCore->m_szHost == NULL )
+    if (GameCore::mNetworkCore->m_szHost == NULL)
         return;
 
     // Set the graphics state (unloading the lobby set it as undefined).
+#ifdef MENU_LOBBY
     if (mGraphicsState == IN_LOBBY)
         unloadLobby();
+#endif
 
     // Create the splash screen (preloading its required resources in the process)
     SplashScreen splashScreen(mRoot);
@@ -341,6 +363,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
     if (mShutDown)
         return false;
     
+#ifdef MENU_LOBBY
     if (mGraphicsState == IN_LOBBY)
     {
         // Capture input
@@ -351,7 +374,9 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
         GameCore::mNetworkCore->frameEvent(NULL);
     }
-    else if (mGraphicsState == IN_GAME || mGraphicsState == PROJECTOR)
+    else
+#endif
+    if (mGraphicsState == IN_GAME || mGraphicsState == PROJECTOR)
     {
         // Capture input
         mUserInput.capture();

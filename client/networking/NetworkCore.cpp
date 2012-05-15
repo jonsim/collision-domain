@@ -26,7 +26,7 @@ NetworkCore::NetworkCore () : m_szHost( NULL )
 {
 	char tempName[MAXHOSTNAMELEN];
 	//set the player name to the computer name
-	if(gethostname(tempName, MAXHOSTNAMELEN) != -1)
+	if(gethostname(tempName, MAXHOSTNAMELEN) >= 0)
 		mPlayerName = std::string(tempName);
 	else
 		mPlayerName = "Human";

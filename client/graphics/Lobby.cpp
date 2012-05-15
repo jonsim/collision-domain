@@ -46,8 +46,8 @@ void Lobby::setup (const int screenWidth, const int screenHeight)
     // Add the coulmns to the list
     CEGUI::MultiColumnList* mcl = static_cast<CEGUI::MultiColumnList*>(winMgr.getWindow("/Lobby/Servers/List"));
     mcl->addColumn("Server Name", 0, CEGUI::UDim(0.40f, 0));
-    mcl->addColumn("#Players",    1, CEGUI::UDim(0.20f, 0));
-    mcl->addColumn("Map",         2, CEGUI::UDim(0.37f, 0));
+    mcl->addColumn("Players",     1, CEGUI::UDim(0.20f, 0));
+    mcl->addColumn("Arena",       2, CEGUI::UDim(0.37f, 0));
 }
 
 
@@ -85,10 +85,15 @@ void Lobby::close (void)
 
 bool Lobby::connectPressed (const CEGUI::EventArgs &args)
 {
-    //OutputDebugString("boobs\n");
-
     // Broadcast for online LAN servers
     GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
+
+    while (GameCore::mNetworkCore->m_szHost == NULL)
+    {
+        GameCore::mNetworkCore->frameEvent(NULL);
+        // Just chillin. Gonna lock up here if a server dont exist lol.
+    }
+
     GameCore::mClientGraphics->loadGame();
 
     return true;
