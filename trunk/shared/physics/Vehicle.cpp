@@ -181,7 +181,7 @@ void Vehicle::updateFriction( btScalar timeStep )
 				wheelInfo.m_raycastInfo.m_contactPointWS, m_forwardWS[i], 
 				btScalar( roll * wheelInfo.m_wheelsSuspensionForce * timeStep ) );
 				
-			rollingFriction = calcContactFriction( contactPtRoll );
+			rollingFriction = mHandbrake && i > 1 ? 0 : calcContactFriction( contactPtRoll );
 
 			
 			///////////////////////////////////////
@@ -194,7 +194,7 @@ void Vehicle::updateFriction( btScalar timeStep )
 					wheelInfo.m_raycastInfo.m_contactPointWS, m_forwardWS[i], 
 					wheelInfo.m_brake );
 					
-				brakingFriction = calcContactFriction( contactPtBr );
+				brakingFriction = mHandbrake && i > 1 ? 0 : calcContactFriction( contactPtBr );
 			}
 
 			
@@ -230,7 +230,8 @@ void Vehicle::updateFriction( btScalar timeStep )
 
 			m_wheelInfo[i].m_skidInfo= btScalar(1.);
 			
-			btScalar maximp = wheelInfo.m_wheelsSuspensionForce * timeStep * wheelInfo.m_frictionSlip;
+            btScalar fr = ( mHandbrake && i > 1 ) ? 0.5 : wheelInfo.m_frictionSlip;
+			btScalar maximp = wheelInfo.m_wheelsSuspensionForce * timeStep * fr;
 			btScalar maximpSide = maximp;
 
 			btScalar maximpSquared = maximp * maximpSide;

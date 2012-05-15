@@ -8,7 +8,7 @@
 /*-------------------- INCLUDES --------------------*/
 
 // Things just defined here, need to change later
-#define SERVER_PORT 55011
+#define SERVER_PORT 55010
 #define SERVER_PASS 0
 #define ENCRYPT_DATA 0
 #define UPDATE_INTERVAL 20

@@ -224,8 +224,8 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         mVehicle->applyEngineForce( 0, 2 );
         mVehicle->applyEngineForce( 0, 3 );
 
-        //mVehicle->setBrake( /*2 **/ mMaxAccelForce, 2 );
-        //mVehicle->setBrake( /*2 **/ mMaxAccelForce, 3 );
+        //mVehicle->setBrake( mMaxBrakeForce, 0 );
+        //mVehicle->setBrake( mMaxBrakeForce, 1 );
 
         mVehicle->mHandbrake = true;
 
@@ -236,7 +236,7 @@ void Car::accelInputTick(bool isForward, bool isBack, bool isHand, Ogre::Real se
         for( int i = 0; i < 4; i ++ )
             mVehicle->setBrake( 0 , i );
 
-         mVehicle->mHandbrake = true;
+         mVehicle->mHandbrake = false;
     }
 
     // Loop through each wheel
