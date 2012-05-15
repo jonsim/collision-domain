@@ -14,7 +14,7 @@ class Player;
 enum CarType;
 
 #define NOTABLE_CHANGE_RATIO 10.0f
-#define TIME_BEFORE_STUCK 100
+#define TIME_BEFORE_STUCK 10
 #define TIME_BEFORE_UNSTUCK 100
 
 enum level
@@ -73,7 +73,7 @@ private:
 
 
     //Stuck detection
-    void isStuck();
+    void isStuck(float timeSinceLastFrame);
     void updateStuckDetection();
     Vector3 oldPosition;
     int timeSinceNotableChange; // This is the number of cycles since a notable change in positino
