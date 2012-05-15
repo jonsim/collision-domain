@@ -145,7 +145,19 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 		}
 	}
 }
-
+/*
+void Player::reduceDamage(float byAmount) {
+    if(byAmount > 0.0f) {
+        float jamieisgay = byAmount * 0.1667f;
+        damageLoc.damageTL = damageLoc.damageTL > jamieisgay ? damageLoc.damageTL - jamieisgay : 0;
+        damageLoc.damageBL = damageLoc.damageBL > jamieisgay ? damageLoc.damageBL - jamieisgay : 0;
+        damageLoc.damageML = damageLoc.damageML > jamieisgay ? damageLoc.damageML - jamieisgay : 0;
+        damageLoc.damageTR = damageLoc.damageTR > jamieisgay ? damageLoc.damageTR - jamieisgay : 0;
+        damageLoc.damageBR = damageLoc.damageBR > jamieisgay ? damageLoc.damageBR - jamieisgay : 0;
+        damageLoc.damageMR = damageLoc.damageMR > jamieisgay ? damageLoc.damageMR - jamieisgay : 0;
+    }
+}
+*/
 float Player::recalculateDamage(void) {
 	return initialHP - (
 		( damageLoc.damageTL * damageShareTL ) +

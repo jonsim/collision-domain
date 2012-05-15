@@ -132,8 +132,8 @@ void PhysicsCore::postTickCallback(btDynamicsWorld *world, btScalar timeStep) {
         // Car to Arena collision
         else if (groupA & COL_CAR && groupB & COL_ARENA || groupA & COL_ARENA && groupB & COL_CAR)
         {
-            //Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
-            //player->collisionTickCallback(1);
+            Player* player = static_cast<Player*>((groupA & COL_CAR ? obA : obB)->getUserPointer());
+            if(player) GameCore::mPhysicsCore->mPlayerCollisions->addCollision(player, player, contactManifold);
         }
         else
         {

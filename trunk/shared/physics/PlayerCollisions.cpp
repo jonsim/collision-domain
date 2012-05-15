@@ -45,117 +45,163 @@ static float massPairs[3][3] = {
     };
 
 void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold* contactManifold) {
-	/*
-		    // SET THESE:
-		    btVector3 crashLocation(,,);
-		    Car *eitherOfTheTwoCarObjectsItMakesNoDifference = ;
-		    float crashIntensity = 0.8;
-
-		    // Call with the location of the crash and the intensity between 0 and 1, ideally between 0 and 0.8
-		    eitherOfTheTwoCarObjectsItMakesNoDifference->triggerCrashSoundAt(
-		        BtOgre::Convert::toOgre(crashLocation),
-		        crashIntensity);
-	*/
-
-    // **NOTE** WE MUST NOT REMEMBER TO READ THE FOLLOWING COMMENT
-    
-    // NOTE WE MUST NOT REMEMBER THE CONTACT MANIFOLD PAST THIS FUNCTION
-
     if( p1 == NULL || p2 == NULL )
         return;
+    if(p1 != p2) {
+	    // number of contact points usually > 1, so average all of the relevant values
+        btVector3 averageCollisionPointOnA(0, 0, 0);
+	    btVector3 averageCollisionPointOnB(0, 0, 0);
+	    //btVector3 averageNormOnB(0, 0, 0);
 
-	// number of contact points usually > 1, so average all of the relevant values
-    btVector3 averageCollisionPointOnA(0, 0, 0);
-	btVector3 averageCollisionPointOnB(0, 0, 0);
-	//btVector3 averageNormOnB(0, 0, 0);
+	    btScalar averageOverlapDistance = 0.f;
+	    int numContacts = contactManifold->getNumContacts();
 
-	btScalar averageOverlapDistance = 0.f;
-	int numContacts = contactManifold->getNumContacts();
+	    Ogre::Real p1MPH = abs(p1->getCar()->getCarMph());
+        Ogre::Real p2MPH = abs(p2->getCar()->getCarMph());
 
-	Ogre::Real p1MPH = abs(p1->getCar()->getCarMph());
-    Ogre::Real p2MPH = abs(p2->getCar()->getCarMph());
+	    for (int j = 0; j < numContacts; j++) {
+		    btManifoldPoint& pt = contactManifold->getContactPoint(j);
+		    if (pt.getDistance() < 0.f) {
+			    averageCollisionPointOnA += pt.getPositionWorldOnA();
+			    averageCollisionPointOnB += pt.getPositionWorldOnB();
+			    averageOverlapDistance += pt.getDistance()*0.6f;
+			    //averageNormOnB +=  pt.m_normalWorldOnB;
+		    }
+	    }
 
-	for (int j = 0; j < numContacts; j++) {
-		btManifoldPoint& pt = contactManifold->getContactPoint(j);
-		if (pt.getDistance() < 0.f) {
-			averageCollisionPointOnA += pt.getPositionWorldOnA();
-			averageCollisionPointOnB += pt.getPositionWorldOnB();
-			averageOverlapDistance += pt.getDistance();
-			//averageNormOnB +=  pt.m_normalWorldOnB;
-		}
-	}
-
-	// some collisions dont have contact points (dickheads), ignore them
-	if(numContacts > 0) {
-		averageCollisionPointOnA /= numContacts;
-		averageCollisionPointOnB /= numContacts;
-		averageOverlapDistance /= numContacts;
-		// dont want to be thinking about damage if neither car is going morethan 15mph, or if there is no penetration
-		if ((p1MPH > 15 || p2MPH > 15) && averageOverlapDistance < 0) {
-			// there is a collision
-			/* 
-			     collisionDelays, keeps a counter of the number of frames since each player has been in a collision
-				 Cars are added to collisionDelays on first crash
-			*/
-			if(collisionDelays[p1] == NULL) {
-				collisionDelays[p1] = 100;
-			}
+	    // some collisions dont have contact points (dickheads), ignore them
+	    if(numContacts > 0) {
+		    averageCollisionPointOnA /= numContacts;
+		    averageCollisionPointOnB /= numContacts;
+		    averageOverlapDistance /= numContacts;
+		    // dont want to be thinking about damage if neither car is going morethan 15mph, or if there is no penetration
+		    if ((p1MPH > 15 || p2MPH > 15) && averageOverlapDistance < 0) {
+			    // there is a collision
+			    /* 
+			         collisionDelays, keeps a counter of the number of frames since each player has been in a collision
+				     Cars are added to collisionDelays on first crash
+			    */
+			    if(collisionDelays[p1] == NULL) {
+				    collisionDelays[p1] = 100;
+			    }
             
-			if(collisionDelays[p2] == NULL) {
-				collisionDelays[p2] = 100;
-			}
-			// if either player hasn't collided for more than 15 frames, let them collide again
-			if(collisionDelays[p1] > 90 || collisionDelays[p2] > 90) {
-				// reset frame counter
-                if(p1 == NULL || p2 == NULL) return;
-				collisionDelays[p1] = collisionDelays[p2] = 0;
-                int crashType;
+			    if(collisionDelays[p2] == NULL) {
+				    collisionDelays[p2] = 100;
+			    }
+			    // if either player hasn't collided for more than 15 frames, let them collide again
+			    if(collisionDelays[p1] > 90 || collisionDelays[p2] > 90) {
+				    // reset frame counter
+                    if(p1 == NULL || p2 == NULL) return;
+				    collisionDelays[p1] = collisionDelays[p2] = 0;
+                    int crashType;
                 
-                Ogre::Vector3 localOnA = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnA);
-                Ogre::Vector3 localOnB = p2->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnB);
-                Ogre::Real combinedSpeed = p1MPH + p2MPH;
-                Ogre::Real damageShareToA = p1MPH / combinedSpeed;
-                Ogre::Real damageShareToB = p2MPH / combinedSpeed;
+                    Ogre::Vector3 localOnA = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnA);
+                    Ogre::Vector3 localOnB = p2->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnB);
+                    Ogre::Real combinedSpeed = p1MPH + p2MPH;
+                    Ogre::Real damageShareToA = p1MPH / combinedSpeed;
+                    Ogre::Real damageShareToB = p2MPH / combinedSpeed;
 
-                Ogre::Real totalDamage = abs(averageOverlapDistance * 20000.f);
-                totalDamage = totalDamage > MAX_DAMAGE ? (float)MAX_DAMAGE : totalDamage;
+                    Ogre::Real totalDamage = abs(averageOverlapDistance * 20000.f);
+                    totalDamage = totalDamage > MAX_DAMAGE ? (float)MAX_DAMAGE : totalDamage;
 
-                Ogre::Real damageToA = totalDamage * damageShareToB;
-                Ogre::Real damageToB = totalDamage * damageShareToA;
+                    Ogre::Real damageToA = totalDamage * damageShareToB;
+                    Ogre::Real damageToB = totalDamage * damageShareToA;
 
-                int sectionOnA = getSectionOnCar(p1, localOnA);
-                int sectionOnB = getSectionOnCar(p2, localOnB);
+                    int sectionOnA = getSectionOnCar(p1, localOnA);
+                    int sectionOnB = getSectionOnCar(p2, localOnB);
 
-                int sectionTestA = sectionOnA < 2 ? 0 : sectionOnA < 4 && sectionOnA >=2 ? 1 : 2; 
-                int sectionTestB = sectionOnB < 2 ? 0 : sectionOnB < 4 && sectionOnB >=2 ? 1 : 2; 
+                    int sectionTestA = sectionOnA < 2 ? 0 : sectionOnA < 4 && sectionOnA >=2 ? 1 : 2; 
+                    int sectionTestB = sectionOnB < 2 ? 0 : sectionOnB < 4 && sectionOnB >=2 ? 1 : 2; 
 
-                damageToA *= massPairs[p1->getCarType()][p2->getCarType()];
-                damageToB *= massPairs[p2->getCarType()][p1->getCarType()];
+                    damageToA *= massPairs[p1->getCarType()][p2->getCarType()];
+                    damageToB *= massPairs[p2->getCarType()][p1->getCarType()];
 
-                if(sectionTestA < sectionTestB) {
-                    damageToA *= 0.8f;
-                    damageToB *= 1.2f;
-                } else if(sectionTestB < sectionTestA) {
-                    damageToB *= 0.8f;
-                    damageToA *= 1.2f;
-                }
+                    if(sectionTestA < sectionTestB) {
+                        damageToA *= 0.8f;
+                        damageToB *= 1.2f;
+                    } else if(sectionTestB < sectionTestA) {
+                        damageToB *= 0.8f;
+                        damageToA *= 1.2f;
+                    }
 
-                if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH > 40 || p2MPH > 40)) {
-		            crashType = 1;
-	            } else if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH < 40 && p2MPH < 40)) {
-		            crashType = 2;
-	            } else if(totalDamage >= BIG_CRASH_THRESHOLD) {
-                    crashType = 3;
-	            }
+                    if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH > 40 || p2MPH > 40)) {
+		                crashType = 1;
+	                } else if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH < 40 && p2MPH < 40)) {
+		                crashType = 2;
+	                } else if(totalDamage >= BIG_CRASH_THRESHOLD) {
+                        crashType = 3;
+	                }
 
-				p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, sectionOnA, crashType, p2);
-				p2->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnB, damageToB, sectionOnB, crashType, p1);
+				    p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, sectionOnA, crashType, p2);
+				    p2->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnB, damageToB, sectionOnB, crashType, p1);
 
 
-			}
-		}
+			    }
+		    }
 
-	} 
+	    } 
+    } else {
+         // number of contact points usually > 1, so average all of the relevant values
+        btVector3 averageCollisionPointOnA(0, 0, 0);
+	    btVector3 averageCollisionPointOnB(0, 0, 0);
+	    //btVector3 averageNormOnB(0, 0, 0);
+
+	    btScalar averageOverlapDistance = 0.f;
+	    int numContacts = contactManifold->getNumContacts();
+
+	    Ogre::Real p1MPH = abs(p1->getCar()->getCarMph());
+        Ogre::Real p2MPH = abs(p2->getCar()->getCarMph());
+
+	    for (int j = 0; j < numContacts; j++) {
+		    btManifoldPoint& pt = contactManifold->getContactPoint(j);
+		    if (pt.getDistance() < 0.f) {
+			    averageCollisionPointOnA += pt.getPositionWorldOnA();
+			    averageCollisionPointOnB += pt.getPositionWorldOnB();
+			    averageOverlapDistance += pt.getDistance()*0.6f;
+			    //averageNormOnB +=  pt.m_normalWorldOnB;
+		    }
+	    }
+
+	    // some collisions dont have contact points (dickheads), ignore them
+	    if(numContacts > 0) {
+		    averageCollisionPointOnA /= numContacts;
+		    averageCollisionPointOnB /= numContacts;
+		    averageOverlapDistance /= numContacts;
+		    // dont want to be thinking about damage if neither car is going morethan 15mph, or if there is no penetration
+		    if ((p1MPH > 15) && averageOverlapDistance < 0) {
+			    if(collisionDelays[p1] == NULL) {
+				    collisionDelays[p1] = 100;
+			    }
+			    if(collisionDelays[p1] > 90) {
+				    // reset frame counter
+                    if(p1 == NULL || p2 == NULL) return;
+				    collisionDelays[p1] = 0;
+                    int crashType;
+                
+                    Ogre::Vector3 localOnA = p1->getCar()->mBodyNode->convertWorldToLocalPosition((Ogre::Vector3)averageCollisionPointOnA);
+                    if(localOnA.y < 0.3f) return;
+                    Ogre::Real totalDamage = abs(averageOverlapDistance * 20000.f);
+                    totalDamage = totalDamage > MAX_DAMAGE ? (float)MAX_DAMAGE : totalDamage;
+
+                    Ogre::Real damageToA = totalDamage * 0.8f;
+
+                    int sectionOnA = getSectionOnCar(p1, localOnA);
+
+                    int sectionTestA = sectionOnA < 2 ? 0 : sectionOnA < 4 && sectionOnA >=2 ? 1 : 2;
+
+                    if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH > 40 || p2MPH > 40)) {
+		                crashType = 1;
+	                } else if(totalDamage < BIG_CRASH_THRESHOLD && (p1MPH < 40 && p2MPH < 40)) {
+		                crashType = 2;
+	                } else if(totalDamage >= BIG_CRASH_THRESHOLD) {
+                        crashType = 3;
+	                }
+
+				    p1->collisionTickCallback((Ogre::Vector3)averageCollisionPointOnA, damageToA, sectionOnA, crashType, p1);
+			    }
+		    }
+	    } 
+    }
 }
 
 int PlayerCollisions::getSectionOnCar(Player *p, Ogre::Vector3 pos) {
