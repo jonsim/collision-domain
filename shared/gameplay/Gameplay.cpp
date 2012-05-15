@@ -15,7 +15,7 @@ Gameplay::Gameplay() : mGameActive(false), mCountDownActive(false)
     mTeams[0] = new Team(BLUE_TEAM);
     mTeams[1] = new Team(RED_TEAM);
     mSB = new ScoreBoard();
-
+    startTime = time(NULL);
     roundNumber = -1;
     wtInitalised = false;    
 }
@@ -529,6 +529,9 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("ONE!\n");
+                    #ifdef COLLISION_DOMAIN_SERVER
+                        this->startTime = time(NULL);
+                    #endif
                     if( GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)
                         GameCore::mClientGraphics->mBigScreen->resetRoundTimer();
                     if( GameCore::mPlayerPool->getLocalPlayer()->getPlayerState() == PLAYER_STATE_SPECTATE )

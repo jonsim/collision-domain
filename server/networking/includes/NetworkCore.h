@@ -117,6 +117,7 @@ public:
     void sendChatMessage( const char *szMessage );
     void sendSyncScores();
     void sendGameSync(GameMode gameMode, ArenaID arenaID);
+    void sendTimeSinceRoundStart(time_t startTime);
 
     CarSnapshot* getCarSnapshotIfExistsSincePreviousGet(int playerID);
 

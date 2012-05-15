@@ -398,6 +398,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	SetupGameForPlayer( pkt->guid );
 
     GameCore::mNetworkCore->sendSyncScores();
+    GameCore::mNetworkCore->sendTimeSinceRoundStart(GameCore::mGameplay->startTime);
 
 }
 
@@ -667,3 +668,12 @@ void NetworkCore::sendGameSync( GameMode gameMode, ArenaID arenaID )
     m_RPC->Signal( "GameSync", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
 }
 
+void NetworkCore::sendTimeSinceRoundStart(time_t startTime)
+{
+    RakNet::BitStream bs;
+
+    time_t timeOffset = time(NULL) - GameCore::mGameplay->startTime;
+    bs.Write(timeOffset);
+
+    m_RPC->Signal( "TimeSync", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
+}
