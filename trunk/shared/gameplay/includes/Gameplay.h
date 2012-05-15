@@ -22,7 +22,7 @@
 #define NUM_PLAYERS_TO_START 5
 #define NUM_TOP_PLAYERS 5
 #define NUM_TEAMS 2
-#define NUM_ROUNDS 3
+#define NUM_ROUNDS 1
 
 //#define SELECTED_GAME FFA_MODE
 #define SELECTED_GAME FFA_MODE
