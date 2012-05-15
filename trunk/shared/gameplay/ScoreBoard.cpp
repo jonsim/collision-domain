@@ -42,11 +42,23 @@ void ScoreBoard::show()
     {
         textScoreOverlayFFA->show();
         sbContainerFFA->show();
+
+        if(sbContainer->isVisible())
+        {
+            textScoreOverlay->hide();
+            sbContainer->hide();
+        }
     }
     else
     {
         textScoreOverlay->show();
         sbContainer->show();
+
+        if(sbContainerFFA->isVisible())
+        {
+            textScoreOverlayFFA->hide();
+            sbContainerFFA->hide();
+        }
     }
     
 
@@ -66,11 +78,23 @@ void ScoreBoard::showForce()
     {
         textScoreOverlayFFA->show();
         sbContainerFFA->show();
+
+        if(sbContainer->isVisible())
+        {
+            textScoreOverlay->hide();
+            sbContainer->hide();
+        }
     }
     else
     {
         textScoreOverlay->show();
         sbContainer->show();
+
+        if(sbContainerFFA->isVisible())
+        {
+            textScoreOverlayFFA->hide();
+            sbContainerFFA->hide();
+        }
     }
     
 
