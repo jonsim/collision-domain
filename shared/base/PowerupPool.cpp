@@ -25,6 +25,10 @@ void PowerupPool::spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int inde
 
     if (mPowerups[index] != NULL)
     {
+        #ifdef COLLISION_DOMAIN_CLIENT
+            GameCore::mClientGraphics->generateExplosion(mPowerups[index]->getPosition(), false);
+        #endif
+
         delete mPowerups[index];
         mPowerups[index] = NULL;
         OutputDebugString("OOPS, Forgetting about powerup in PowerupPool::spawnPowerup\n");
@@ -49,6 +53,10 @@ Powerup *PowerupPool::getPowerup( int index )
 void PowerupPool::deletePowerup( int index )
 {
     if( index < 0 || index >= MAX_POWERUPS ) return;
+    
+    #ifdef COLLISION_DOMAIN_CLIENT
+        GameCore::mClientGraphics->generateExplosion(mPowerups[index]->getPosition(), false);
+    #endif
 
     Powerup* p = mPowerups[index];
     mPowerups[index] = NULL;
