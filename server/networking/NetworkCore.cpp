@@ -585,6 +585,8 @@ void NetworkCore::UpdateNickname( RakNet::BitStream *bitStream, RakNet::Packet *
     GameCore::mGui->outputToConsole("%s changed nickname to '%s'.\n",tmpPlayer->getNickname(),szNickname);
 
     tmpPlayer->setNickname(szNickname);
+    GameCore::mNetworkCore->sendNicknameChange( tmpPlayer );
+    
 }
 
 /// @brief Registers the RPC calls for the client
@@ -688,4 +690,14 @@ void NetworkCore::sendTimeSinceRoundStart(time_t startTime)
     bs.Write(timeOffset);
 
     m_RPC->Signal( "TimeSync", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
+}
+
+void NetworkCore::sendNicknameChange( Player *pPlayer)
+{
+    RakNet::BitStream bs;
+    bs.Write(pPlayer->getPlayerGUID());
+    RakNet::StringCompressor().EncodeString( pPlayer->getNickname() , 128, &bs);
+
+    m_RPC->Signal( "NicknameChange", &bs, HIGH_PRIORITY, RELIABLE_ORDERED, 0, m_pRak->GetMyGUID(), true, false);
+
 }
