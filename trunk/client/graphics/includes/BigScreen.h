@@ -41,6 +41,7 @@ public:
     void                        resetRoundTimer();
     void                        updateRoundTimer();
     void                        setStartTime(time_t st) { this->startTime = st; }
+    void                        refreshMap();
 private:
 	std::vector<ViewCamera*>	viewCameraVector;
 	Ogre::OverlayContainer*		olcMap;
