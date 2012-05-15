@@ -6,7 +6,11 @@
 PowerupPool::PowerupPool()
     : secondsTilNextSpawn(0)
 {
-    for (int i = 0; i < MAX_POWERUPS; i++) mPowerups[i] = NULL;
+    for (int i = 0; i < MAX_POWERUPS; i++)
+    {
+        mPowerups[i] = NULL;
+        mPowerupsLifetime[i] = 0.0f;
+    }
 }
 
 // This is called on the client to create a powerup
@@ -27,6 +31,7 @@ void PowerupPool::spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int inde
     }
 
     mPowerups[index] = new Powerup(type, spawnAt, index);
+    mPowerupsLifetime[index] = 0.0f;
 
     #ifdef COLLISION_DOMAIN_SERVER
         GameCore::mNetworkCore->sendPowerupCreate(index, type, spawnAt);
@@ -71,10 +76,15 @@ void PowerupPool::frameEvent( const float timeSinceLastFrame )
         {
             // This has to be done here, because the instance can't be deleted in the collision
             // callback (you can't call delete() then return to the deleted object's method!)
-            if ( mPowerups[i]->isPendingDelete() )
+            if ( mPowerups[i]->isPendingDelete() || mPowerupsLifetime[i] > 30 )
+            {
                 deletePowerup( i );
+            }
             else
+            {
                 mPowerups[i]->frameEvent(timeSinceLastFrame);
+                mPowerupsLifetime[i] += timeSinceLastFrame;
+            }
         }
         else
         {

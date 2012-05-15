@@ -76,6 +76,8 @@ Powerup::Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex)
 
 Powerup::~Powerup()
 {
+    mRigidBody->setUserPointer(NULL);
+
     #ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->deleteSoundInstance(mSound);
 

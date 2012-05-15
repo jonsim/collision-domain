@@ -30,6 +30,7 @@ private:
     Ogre::Vector3 randomPointInArena(int arenaXRadius, int arenaZRadius, const int safeZoneFromEdge, float y);
 
     Powerup *mPowerups[MAX_POWERUPS];
+    float    mPowerupsLifetime[MAX_POWERUPS];
     float secondsTilNextSpawn;
 };
 
