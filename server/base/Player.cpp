@@ -331,3 +331,19 @@ void Player::addPowerup( PowerupType type, RakNet::TimeMS endtime )
 {
     powerupTimers[type] = endtime;
 }
+
+void Player::reduceDamage(float byAmount)
+{
+    if(byAmount > 0.0f)
+    {
+        float val = byAmount * 0.1667f;
+        damageLoc.damageTL = damageLoc.damageTL > val ? damageLoc.damageTL - val : 0;
+        damageLoc.damageBL = damageLoc.damageBL > val ? damageLoc.damageBL - val : 0;
+        damageLoc.damageML = damageLoc.damageML > val ? damageLoc.damageML - val : 0;
+        damageLoc.damageTR = damageLoc.damageTR > val ? damageLoc.damageTR - val : 0;
+        damageLoc.damageBR = damageLoc.damageBR > val ? damageLoc.damageBR - val : 0;
+        damageLoc.damageMR = damageLoc.damageMR > val ? damageLoc.damageMR - val : 0;
+    }
+
+    hp = recalculateDamage();
+}

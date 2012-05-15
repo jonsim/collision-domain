@@ -522,17 +522,17 @@ void Car::setMass( float newmass )
     if( newmass > 1 )
     {
         rest = 0.0f;
-        mVehicle->getRigidBody()->setFriction( 1000 );
+        //mVehicle->getRigidBody()->setFriction( 1000 );
     }
     if( newmass == 1 )
     {
         rest = mChassisRestitution;
-        mVehicle->getRigidBody()->setFriction( mChassisFriction );
+        //mVehicle->getRigidBody()->setFriction( mChassisFriction );
     }
     if( newmass < 1 )
     {
         rest = 1.0f;
-        mVehicle->getRigidBody()->setFriction( 0.1f );
+        //mVehicle->getRigidBody()->setFriction( 0.1 );
     }
 
     mVehicle->getRigidBody()->setRestitution( rest );

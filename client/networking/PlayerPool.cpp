@@ -295,7 +295,6 @@ void PlayerPool::roundEnd()
     }
 
     GameCore::mClientGraphics->mGameCam->setTarget( NULL );
-    GameCore::mClientGraphics->mGameCam->setTransform( btVector3( -100, 0, 0 ) );
 }
 
 void PlayerPool::setSpectating( RakNet::RakNetGUID playerid )

@@ -124,14 +124,16 @@ void Powerup::playerCollision(Player* player)
                 // 50% chance of full health, 50% chance of curhealth + 50%
                 extraData = ( rand() % 100 < 50 ? 0.5f : 1.f );
                 if( extraData == 1.f )
-                    player->setHP( INITIAL_HEALTH );
+                    //player->setHP( INITIAL_HEALTH );
+                    player->reduceDamage( 1000 );
                 else
                 {
-                    int plusHealth = player->getHP() / (float) 2;
-                    if( player->getHP() + plusHealth > INITIAL_HEALTH )
-                        player->setHP( INITIAL_HEALTH );
-                    else
-                        player->setHP( player->getHP() + plusHealth );
+                    //int plusHealth = player->getHP() / (float) 2;
+                    //if( player->getHP() + plusHealth > INITIAL_HEALTH )
+                    //    player->setHP( INITIAL_HEALTH );
+                    //else
+                    //    player->setHP( player->getHP() + plusHealth );
+                    player->reduceDamage( 100 );
                 }
 
                 break;
