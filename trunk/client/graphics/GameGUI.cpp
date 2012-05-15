@@ -12,6 +12,10 @@
 #include "boost/algorithm/string.hpp"
 #endif
 
+#define ACTUAL_SCREEN_WIDTH  1680.f
+#define ACTUAL_SCREEN_HEIGHT 1050.f
+#define SPEEDO_HEIGHT        160 // use 249 not 250 lol
+
 /*-------------------- SPAWN SCREEN --------------------*/
 void GameGUI::setupSpawnScreen (CEGUI::Window* guiWindow)
 {
@@ -569,10 +573,24 @@ void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
     guiWindow->addChildWindow( fps );
 }
 
+int GameGUI::getUnstretchedWidth(int outputPxWidth)
+{
+    float viewportWidth = Ogre::OverlayManager::getSingleton().getViewportWidth();   // the smaller one, i.e. 800
+    float viewportHeight = Ogre::OverlayManager::getSingleton().getViewportHeight(); // the smaller one, i.e. 600
+
+    float widthStretch = ACTUAL_SCREEN_WIDTH / viewportWidth;
+    float heightStretch =  ACTUAL_SCREEN_HEIGHT / viewportHeight;
+
+    return (int) ( ( outputPxWidth / widthStretch ) * heightStretch );
+}
+
 /*-------------------- SPEEDOMETER --------------------*/
 /// @brief Draws the speedo on-screen
 void GameGUI::setupSpeedo (void)
 {
+    int outputPxHeight = SPEEDO_HEIGHT;
+    int outputPxWidth  = getUnstretchedWidth(outputPxHeight);
+
     // Create our speedometer overlays
     olSpeedo = Ogre::OverlayManager::getSingleton().create( "OVERLAY_SPD" );
     olSpeedo->setZOrder( 500 );
@@ -582,15 +600,15 @@ void GameGUI::setupSpeedo (void)
     olcSpeedo->setMetricsMode( Ogre::GMM_PIXELS );
     olcSpeedo->setHorizontalAlignment( Ogre::GHA_LEFT );
     olcSpeedo->setVerticalAlignment( Ogre::GVA_BOTTOM );
-    olcSpeedo->setDimensions( 250, 250 );
+    olcSpeedo->setDimensions( outputPxWidth, outputPxHeight ); // 250, 250
     olcSpeedo->setMaterialName( "speedo_main" );
-    olcSpeedo->setPosition( 20, -270 );
+    olcSpeedo->setPosition( 20, - outputPxHeight - 20 ); // 20, -270
 
     olSpeedo->add2D( olcSpeedo );
 
     oleNeedle = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "SPEEDONEEDLE" );
     oleNeedle->setMetricsMode( Ogre::GMM_PIXELS );
-    oleNeedle->setDimensions( 250, 250 );
+    oleNeedle->setDimensions( outputPxWidth, outputPxHeight );
     oleNeedle->setMaterialName( "speedo_needle" );
     
     olcSpeedo->addChild( oleNeedle );
@@ -608,9 +626,9 @@ void GameGUI::setupSpeedo (void)
     olcHub->setMetricsMode( Ogre::GMM_PIXELS );
     olcHub->setHorizontalAlignment( Ogre::GHA_LEFT );
     olcHub->setVerticalAlignment( Ogre::GVA_BOTTOM );
-    olcHub->setDimensions( 250, 250 );
+    olcHub->setDimensions( outputPxWidth, outputPxHeight );
     olcHub->setMaterialName( "speedo_hub" );
-    olcHub->setPosition( 20, -270 );
+    olcHub->setPosition( 20, - outputPxHeight - 20 );
     
     olSpeedo->add2D( olcHub );
 }
@@ -659,14 +677,19 @@ void GameGUI::updateSpeedo (float fSpeed, int iGear)
 /// @brief Draws the gear display
 void GameGUI::setupGearDisplay (void)
 {
+    float multiplier = (float) SPEEDO_HEIGHT / (float) 250;
+
+    int outputPxHeight = 57 * multiplier;
+    int outputPxWidth  = getUnstretchedWidth(32 * multiplier);
+
     oleGear = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GEAR" );
 
     oleGear->setMetricsMode( Ogre::GMM_PIXELS );
     oleGear->setHorizontalAlignment( Ogre::GHA_LEFT );
     oleGear->setVerticalAlignment( Ogre::GVA_BOTTOM );
-    oleGear->setDimensions( 32, 57 );
+    oleGear->setDimensions( outputPxWidth, outputPxHeight );
     oleGear->setMaterialName( "gearoff" );
-    oleGear->setPosition( 109, -73 );
+    oleGear->setPosition( 20 - 9 + (int)( 89.f * ( (float)getUnstretchedWidth(SPEEDO_HEIGHT) / 250.f ) ) /*(int) ( 0.5 * (float) getUnstretchedWidth(SPEEDO_HEIGHT) ) + outputPxWidth / 2*/, - outputPxHeight - 16 );
 
     olcSpeedo->addChild( oleGear );
 
@@ -684,139 +707,172 @@ void GameGUI::updateCounters (void)
 
 void GameGUI::setupDamageDisplay (CarType carType, TeamID tid)
 {
-    int height = 200, width;
+    float scale = (float)SPEEDO_HEIGHT / 250.f;
+
+    int height = (int)( 200.f * scale ), width;
     playerCarType = carType;
 
     switch (carType)
     {
         case CAR_BANGER:
-            width = 74;
+            width = (int)( 74 * scale );
             break;
         case CAR_SMALL:
-            width = 89;
+            width = (int)( 89 * scale );
             break;
         case CAR_TRUCK:
-            width = 123;
+            width = (int)( 123 * scale );
             break;
         default:
             throw Ogre::Exception::ERR_INVALIDPARAMS;
             break;
     }
+    
+    // update body image ( it already exists )
+    if (oleDamage)
+    {
+        oleDamage->setDimensions( width, height );
+        oleDamage->setPosition( -width - 20, -height - 20 );
+        
+        damageHUD_TL->setDimensions(width, height);
+        damageHUD_TR->setDimensions(width, height);
+        damageHUD_BL->setDimensions(width, height);
+        damageHUD_BR->setDimensions(width, height);
+        damageHUD_ML->setDimensions(width, height);
+        damageHUD_MR->setDimensions(width, height);
 
+        std::string HUDOPTIONS[3][3] = {
+            {"damage_banger_white"  , "damage_banger_blue"  , "damage_banger_red"   },
+            {"damage_smallcar_white", "damage_smallcar_blue", "damage_smallcar_red" },
+            {"damage_truck_white"   , "damage_truck_blue"   , "damage_truck_red"    }
+        };
+
+        oleDamage->setMaterialName(HUDOPTIONS[carType][tid]);
+    
+        updateDamage(carType, 0, 0);
+        updateDamage(carType, 1, 0);
+        updateDamage(carType, 2, 0);
+        updateDamage(carType, 3, 0);
+        updateDamage(carType, 5, 0);
+        updateDamage(carType, 4, 0);
+    }
     // setup body image
-    oleDamage = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE" ) );
-    oleDamage->setMetricsMode( Ogre::GMM_PIXELS );
+    else
+    {
+        oleDamage = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE" ) );
+        oleDamage->setMetricsMode( Ogre::GMM_PIXELS );
 
-    // Bottom Right Aligned
-    oleDamage->setHorizontalAlignment( Ogre::GHA_RIGHT );
-    oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
-    oleDamage->setDimensions( width, height );
-    oleDamage->setPosition( -width - 20, -height - 20 );
+        // Bottom Right Aligned
+        oleDamage->setHorizontalAlignment( Ogre::GHA_RIGHT );
+        oleDamage->setVerticalAlignment( Ogre::GVA_BOTTOM );
+        oleDamage->setDimensions( width, height );
+        oleDamage->setPosition( -width - 20, -height - 20 );
         
 
-    Ogre::Overlay *damage = Ogre::OverlayManager::getSingleton().create( "OVERLAY_DAMAGE" );
-    damage->setZOrder( 500 );
-    damage->show();
-    damage->setScale(1.0,1.0);
-    damage->add2D( oleDamage );
+        Ogre::Overlay *damage = Ogre::OverlayManager::getSingleton().create( "OVERLAY_DAMAGE" );
+        damage->setZOrder( 500 );
+        damage->show();
+        damage->setScale(1.0,1.0);
+        damage->add2D( oleDamage );
 
-    // setup individual parts
-    oleDamageEngine = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ENGINE" );
-    oleDamageFL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FL" );
-    oleDamageFR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FR" );
-    oleDamageRL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RL" );
-    oleDamageRR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RR" );
-	damageHUD_TL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TL" );
-	damageHUD_TR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TR" );
-	damageHUD_BL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BL" );
-	damageHUD_BR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BR" );
-	damageHUD_ML	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ML" );
-	damageHUD_MR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_MR" );
-		  
-	damageHUD_TL->setMetricsMode( Ogre::GMM_PIXELS );
-	damageHUD_TR->setMetricsMode( Ogre::GMM_PIXELS );
-    damageHUD_BL->setMetricsMode( Ogre::GMM_PIXELS );
-	damageHUD_BR->setMetricsMode( Ogre::GMM_PIXELS );
-	damageHUD_ML->setMetricsMode( Ogre::GMM_PIXELS );
-	damageHUD_MR->setMetricsMode( Ogre::GMM_PIXELS );
+        // setup individual parts
+        oleDamageEngine = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ENGINE" );
+        oleDamageFL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FL" );
+        oleDamageFR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_FR" );
+        oleDamageRL     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RL" );
+        oleDamageRR     = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_RR" );
+	    damageHUD_TL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TL" );
+	    damageHUD_TR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_TR" );
+	    damageHUD_BL	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BL" );
+	    damageHUD_BR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_BR" );
+	    damageHUD_ML	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_ML" );
+	    damageHUD_MR	= Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "DAMAGE_MR" );
+		
+	    damageHUD_TL->setMetricsMode( Ogre::GMM_PIXELS );
+	    damageHUD_TR->setMetricsMode( Ogre::GMM_PIXELS );
+        damageHUD_BL->setMetricsMode( Ogre::GMM_PIXELS );
+	    damageHUD_BR->setMetricsMode( Ogre::GMM_PIXELS );
+	    damageHUD_ML->setMetricsMode( Ogre::GMM_PIXELS );
+	    damageHUD_MR->setMetricsMode( Ogre::GMM_PIXELS );
 
-    damageHUD_TL->setDimensions(width, height);
-    damageHUD_TR->setDimensions(width, height);
-    damageHUD_BL->setDimensions(width, height);
-    damageHUD_BR->setDimensions(width, height);
-    damageHUD_ML->setDimensions(width, height);
-    damageHUD_MR->setDimensions(width, height);
+        damageHUD_TL->setDimensions(width, height);
+        damageHUD_TR->setDimensions(width, height);
+        damageHUD_BL->setDimensions(width, height);
+        damageHUD_BR->setDimensions(width, height);
+        damageHUD_ML->setDimensions(width, height);
+        damageHUD_MR->setDimensions(width, height);
 
-    std::string HUDOPTIONS[3][3] = {
-        {"damage_banger_white"  , "damage_banger_blue"  , "damage_banger_red"   },
-        {"damage_smallcar_white", "damage_smallcar_blue", "damage_smallcar_red" },
-        {"damage_truck_white"   , "damage_truck_blue"   , "damage_truck_red"    }
-    };
+        std::string HUDOPTIONS[3][3] = {
+            {"damage_banger_white"  , "damage_banger_blue"  , "damage_banger_red"   },
+            {"damage_smallcar_white", "damage_smallcar_blue", "damage_smallcar_red" },
+            {"damage_truck_white"   , "damage_truck_blue"   , "damage_truck_red"    }
+        };
 
-    oleDamage->setMaterialName(HUDOPTIONS[carType][tid]);
+        oleDamage->setMaterialName(HUDOPTIONS[carType][tid]);
 
-    //OutputDebugString((HUDOPTIONS[carType][tid] + "\n").c_str());
-    oleDamage->addChild( damageHUD_TL );
-    oleDamage->addChild( damageHUD_TR );
-    oleDamage->addChild( damageHUD_BL );
-    oleDamage->addChild( damageHUD_BR );
-    oleDamage->addChild( damageHUD_ML );
-    oleDamage->addChild( damageHUD_MR );
+        //OutputDebugString((HUDOPTIONS[carType][tid] + "\n").c_str());
+        oleDamage->addChild( damageHUD_TL );
+        oleDamage->addChild( damageHUD_TR );
+        oleDamage->addChild( damageHUD_BL );
+        oleDamage->addChild( damageHUD_BR );
+        oleDamage->addChild( damageHUD_ML );
+        oleDamage->addChild( damageHUD_MR );
     
-    updateDamage(carType, 0, 0);
-    updateDamage(carType, 1, 0);
-    updateDamage(carType, 2, 0);
-    updateDamage(carType, 3, 0);
-    updateDamage(carType, 5, 0);
-    updateDamage(carType, 4, 0);
+        updateDamage(carType, 0, 0);
+        updateDamage(carType, 1, 0);
+        updateDamage(carType, 2, 0);
+        updateDamage(carType, 3, 0);
+        updateDamage(carType, 5, 0);
+        updateDamage(carType, 4, 0);
 
-    // Create overlay for broken glass
-    oleGlass = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GLASS" ) );
+        // Create overlay for broken glass
+        oleGlass = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "GLASS" ) );
 
-    glass1 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass1" );
-    glass2 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass2" );
-    glass3 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass3" );
+        glass1 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass1" );
+        glass2 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass2" );
+        glass3 = Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "glass3" );
 
-    glass1->setMetricsMode( Ogre::GMM_PIXELS );
-    glass2->setMetricsMode( Ogre::GMM_PIXELS );
-    glass3->setMetricsMode( Ogre::GMM_PIXELS );
+        glass1->setMetricsMode( Ogre::GMM_PIXELS );
+        glass2->setMetricsMode( Ogre::GMM_PIXELS );
+        glass3->setMetricsMode( Ogre::GMM_PIXELS );
 
-    glass1->setDimensions(1280, 768);
-    glass2->setDimensions(1280, 768);
-    glass3->setDimensions(1280, 768);
+        glass1->setDimensions(1280, 768);
+        glass2->setDimensions(1280, 768);
+        glass3->setDimensions(1280, 768);
 
-    std::stringstream glassMat;
-    glassMat << "bg_s_" << (1+(rand()%5));
-    glass1->setMaterialName(glassMat.str().c_str());
-    glassMat.str("");
-    glassMat << "bg_m_" << (1+(rand()%5));
-    glass2->setMaterialName(glassMat.str().c_str());
-    glassMat.str("");
-    glassMat << "bg_b_" << (1+(rand()%5));
-    glass3->setMaterialName(glassMat.str().c_str());
+        std::stringstream glassMat;
+        glassMat << "bg_s_" << (1+(rand()%5));
+        glass1->setMaterialName(glassMat.str().c_str());
+        glassMat.str("");
+        glassMat << "bg_m_" << (1+(rand()%5));
+        glass2->setMaterialName(glassMat.str().c_str());
+        glassMat.str("");
+        glassMat << "bg_b_" << (1+(rand()%5));
+        glass3->setMaterialName(glassMat.str().c_str());
 
 
-    oleGlass->setMetricsMode( Ogre::GMM_PIXELS );
+        oleGlass->setMetricsMode( Ogre::GMM_PIXELS );
 
-    // Bottom Right Aligned
-    oleGlass->setHorizontalAlignment( Ogre::GHA_LEFT );
-    oleGlass->setVerticalAlignment( Ogre::GVA_TOP );
-    oleGlass->setDimensions(1280, 768);
-    oleGlass->setPosition(0, 0);
+        // Bottom Right Aligned
+        oleGlass->setHorizontalAlignment( Ogre::GHA_LEFT );
+        oleGlass->setVerticalAlignment( Ogre::GVA_TOP );
+        oleGlass->setDimensions(1280, 768);
+        oleGlass->setPosition(0, 0);
 
-    glassOverlay = Ogre::OverlayManager::getSingleton().create( "OVERLAY_GLASS" );
-    glassOverlay->setZOrder( 100 );
-    glassOverlay->show();
-    glassOverlay->setScale(1.0,1.0);
-    glassOverlay->add2D( oleGlass );
+        glassOverlay = Ogre::OverlayManager::getSingleton().create( "OVERLAY_GLASS" );
+        glassOverlay->setZOrder( 100 );
+        glassOverlay->show();
+        glassOverlay->setScale(1.0,1.0);
+        glassOverlay->add2D( oleGlass );
 
-    oleGlass->addChild(glass1);
-    oleGlass->addChild(glass2);
-    oleGlass->addChild(glass3);
+        oleGlass->addChild(glass1);
+        oleGlass->addChild(glass2);
+        oleGlass->addChild(glass3);
 
-    glass1->hide();
-    glass2->hide();
-    glass3->hide();
+        glass1->hide();
+        glass2->hide();
+        glass3->hide();
+    }
 
     //oleGlass->show();
     //oleGlass->setMaterialName("bg_s_1");
@@ -898,6 +954,9 @@ void GameGUI::showOverlaysForBigScreen()
 
 void GameGUI::setupRank()
 {
+    int outputPxHeight = SPEEDO_HEIGHT;
+    int outputPxWidth  = getUnstretchedWidth(outputPxHeight);
+
     olRank = Ogre::OverlayManager::getSingleton().create( "OVERLAY_RANKS" );
     olRank->setZOrder( 500 );
     olRank->show();
@@ -906,10 +965,10 @@ void GameGUI::setupRank()
     olRankContainer->setMetricsMode( Ogre::GMM_PIXELS );
     olRankContainer->setHorizontalAlignment( Ogre::GHA_LEFT );
     olRankContainer->setVerticalAlignment( Ogre::GVA_BOTTOM );
-    olRankContainer->setDimensions( 250, 250 );
+    olRankContainer->setDimensions( outputPxWidth, outputPxHeight );
     currentRankMaterialIndex = 10;
     olRankContainer->setMaterialName( "rank_1st_eql" );
-    olRankContainer->setPosition( 269, -202 ); // 270 gives a weird vertical glitch 
+    olRankContainer->setPosition( outputPxWidth + 19, - outputPxHeight - 20 + (int) ( 0.25 * (float) outputPxHeight ) ); // 270 gives a weird vertical glitch 
 
     olRank->add2D( olRankContainer );
 }
