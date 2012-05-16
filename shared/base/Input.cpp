@@ -151,11 +151,14 @@ int Input::getMouseZRel()
 bool Input::keyPressed (const OIS::KeyEvent &evt)
 {
 	// Get the GUI system and inject the key press
-	CEGUI::System& sys = CEGUI::System::getSingleton();
-	sys.injectKeyDown(evt.key);
+    if( SceneSetup::guiSetup )
+    {
+	    CEGUI::System& sys = CEGUI::System::getSingleton();
+	    sys.injectKeyDown(evt.key);
 
-	// Inject text seperately (for multi-lang keyboards)
-	sys.injectChar(evt.text);
+	    // Inject text seperately (for multi-lang keyboards)
+	    sys.injectChar(evt.text);
+    }
     
 #ifdef COLLISION_DOMAIN_CLIENT
     if( GameCore::mNetworkCore->bConnected )
@@ -167,23 +170,22 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
             else if( evt.key == OIS::KC_RIGHT )
                 GameCore::mPlayerPool->spectateNext(true);
         }
-    }
 
+        if(evt.key == OIS::KC_1) {
+		    GameCore::mPlayerPool->getLocalPlayer()->cameraLookLeft();
+	    } else if(evt.key == OIS::KC_2) {
+		    GameCore::mPlayerPool->getLocalPlayer()->cameraLookBack();
+	    } else if(evt.key == OIS::KC_3) {
+		    GameCore::mPlayerPool->getLocalPlayer()->cameraLookRight();
+	    }
 
-	if(evt.key == OIS::KC_1) {
-		GameCore::mPlayerPool->getLocalPlayer()->cameraLookLeft();
-	} else if(evt.key == OIS::KC_2) {
-		GameCore::mPlayerPool->getLocalPlayer()->cameraLookBack();
-	} else if(evt.key == OIS::KC_3) {
-		GameCore::mPlayerPool->getLocalPlayer()->cameraLookRight();
-	}
+	    if(evt.key == OIS::KC_K) {
+		    GameCore::mPlayerPool->getLocalPlayer()->cycleCameraView();
+	    }
 
-	if(evt.key == OIS::KC_K) {
-		GameCore::mPlayerPool->getLocalPlayer()->cycleCameraView();
-	}
-
-    if(evt.key == OIS::KC_J) {
-        GameCore::mPlayerPool->getLocalPlayer()->angleTest();
+        if(evt.key == OIS::KC_J) {
+            GameCore::mPlayerPool->getLocalPlayer()->angleTest();
+        }
     }
 
     /*if(evt.key == OIS::KC_SEMICOLON) {
@@ -208,13 +210,17 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::keyReleased (const OIS::KeyEvent &evt)
 {
-	CEGUI::System::getSingleton().injectKeyUp(evt.key);
+    if( SceneSetup::guiSetup )
+	    CEGUI::System::getSingleton().injectKeyUp(evt.key);
 
     #ifdef COLLISION_DOMAIN_CLIENT
 
-	if(evt.key == OIS::KC_1 || evt.key == OIS::KC_2 || evt.key == OIS::KC_3) {
-		GameCore::mPlayerPool->getLocalPlayer()->revertCamera();
-	}
+    if( GameCore::mNetworkCore->bConnected )
+    {
+	    if(evt.key == OIS::KC_1 || evt.key == OIS::KC_2 || evt.key == OIS::KC_3) {
+		    GameCore::mPlayerPool->getLocalPlayer()->revertCamera();
+	    }
+    }
 
     /*if(evt.key == OIS::KC_SEMICOLON) {
     }*/
@@ -229,39 +235,42 @@ bool Input::keyReleased (const OIS::KeyEvent &evt)
 /// @return Whether the event has been serviced.
 bool Input::mouseMoved (const OIS::MouseEvent& evt)
 {
-	CEGUI::System& guiSys = CEGUI::System::getSingleton();
+    if( SceneSetup::guiSetup )
+    {
+	    CEGUI::System& guiSys = CEGUI::System::getSingleton();
 #ifdef COLLISION_DOMAIN_CLIENT
-	guiSys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
-	// Scroll wheel.
-	if (evt.state.Z.rel)
-		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+	    guiSys.injectMouseMove(evt.state.X.rel, evt.state.Y.rel);
+	    // Scroll wheel.
+	    if (evt.state.Z.rel)
+		    guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
 #else
-    // Inject mouse movements into the GUI
-    guiSys.injectMousePosition(evt.state.X.abs, evt.state.Y.abs);
-	if (evt.state.Z.rel)
-		guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
+        // Inject mouse movements into the GUI
+        guiSys.injectMousePosition(evt.state.X.abs, evt.state.Y.abs);
+	    if (evt.state.Z.rel)
+		    guiSys.injectMouseWheelChange(evt.state.Z.rel / 120.0f);
 
-    // Check if the mouse is within the window
-    if (evt.state.X.abs <= 0 || evt.state.X.abs >= evt.state.width ||
-        evt.state.Y.abs <= 0 || evt.state.Y.abs >= evt.state.height)
-    {
-        CEGUI::MouseCursor::getSingleton().hide();
+        // Check if the mouse is within the window
+        if (evt.state.X.abs <= 0 || evt.state.X.abs >= evt.state.width ||
+            evt.state.Y.abs <= 0 || evt.state.Y.abs >= evt.state.height)
+        {
+            CEGUI::MouseCursor::getSingleton().hide();
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        ShowCursor(true);
+            ShowCursor(true);
 #else
-        //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
+            //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
-    }
+        }
     else
-    {
-	    CEGUI::MouseCursor::getSingleton().show();
+        {
+	        CEGUI::MouseCursor::getSingleton().show();
 #if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        ShowCursor(false);
+            ShowCursor(false);
 #else
         //#error "Currently no non-windows method has been implemented to hide the hardware cursor."
 #endif
-    }
+        }
 #endif
+    }
     return true;
 }
 
@@ -284,7 +293,8 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
     }
 #endif
 
-	CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
+    if( SceneSetup::guiSetup )
+	    CEGUI::System::getSingleton().injectMouseButtonDown(convertButton(id));
     return true;
 }
 
@@ -295,7 +305,8 @@ bool Input::mousePressed (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 /// @return Whether the event has been serviced.
 bool Input::mouseReleased (const OIS::MouseEvent& evt, OIS::MouseButtonID id)
 {
-	CEGUI::System::getSingleton().injectMouseButtonUp(convertButton(id));
+    if( SceneSetup::guiSetup )
+	    CEGUI::System::getSingleton().injectMouseButtonUp(convertButton(id));
     return true;
 }
 

@@ -138,6 +138,7 @@ public:
 
     btRigidBody *mArenaBody;
 
+    static bool guiSetup;
 
 protected:
     void setupCompositorChain (Ogre::Viewport* vp);
