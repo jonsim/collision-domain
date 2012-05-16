@@ -167,6 +167,8 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
                 GameCore::mGui->updateLocalPlayerRank();
                 GameCore::mGui->toggleRankDisplay(true);
             }
+
+            //GameCore::mClientGraphics->mGameCam->setTransform( btVector3(0, 300, 0) );
         }
         //else
         {
@@ -236,8 +238,8 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
         mCar->mBodyNode->attachObject( mBacks );
         mCar->mBodyNode->attachObject( mNametag );
     }
-    //if( isLocalPlayer )
-    //    GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 500, 0 ) );
+    if( isLocalPlayer )
+        GameCore::mClientGraphics->mGameCam->setTransform( btVector3( 0, 200, 0 ) );
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;

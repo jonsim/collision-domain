@@ -571,6 +571,7 @@ void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
     fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
     CEGUI::System::getSingleton().setGUISheet( guiWindow );
     guiWindow->addChildWindow( fps );
+    fps->setVisible( false );
 }
 
 int GameGUI::getUnstretchedWidth(int outputPxWidth)

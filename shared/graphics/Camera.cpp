@@ -77,7 +77,12 @@ void GameCamera::update( btScalar timeStep )
 
     // Test for collisions if the camera is collidable
     float camDist = mWorldPos.distance( BtOgre::Convert::toBullet( desiredPos ) );
-    if( mCollidable && camDist < 20.f )
+
+    // DIRTY HAX
+    if( mWorldPos.getY() < 0 && camDist > 20.f )
+        mWorldPos.setY( mWorldPos.getY() * -1 );
+
+    if( mCollidable && camDist < 10.f )
     {
 
         // Set up the position the camera wants to move to
