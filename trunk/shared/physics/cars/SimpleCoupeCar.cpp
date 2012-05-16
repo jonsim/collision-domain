@@ -423,7 +423,7 @@ void SimpleCoupeCar::initGraphics(TeamID tid, ArenaID aid)
 	mBodyNode->attachObject(mSmokeSystem);
 
     // The smoke emitter should be placed over the engine.
-    mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0, 0, 0));
+    mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
 #endif
 #ifdef PARTICLE_EFFECT_FIRE
     mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
@@ -432,7 +432,7 @@ void SimpleCoupeCar::initGraphics(TeamID tid, ArenaID aid)
     // As should the fire emitter (which is, slightly more complex as it is a box).
     mFireSystem->getEmitter(0)->setParameter("width",  "2");
     mFireSystem->getEmitter(0)->setParameter("height", "2");    // height and depth are effectively switched
-    mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
+    mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.05f, 1.7f));
 #endif
     
     // Update the skin based on the team
@@ -539,10 +539,12 @@ void SimpleCoupeCar::loadDestroyedModel (void)
     mChassisNode->detachAllObjects();
     createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
-
 #ifdef COLLISION_DOMAIN_CLIENT
     if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
         GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(), 3);
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
+    mFireSystem->getEmitter(0)->setEmissionRate(300);
 #endif
 }
 

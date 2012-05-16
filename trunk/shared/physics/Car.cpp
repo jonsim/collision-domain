@@ -459,15 +459,19 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
     //if (healthPercentage < oldHealthPercentage)
     //{
         //if (oldHealthPercentage > 0.7f && healthPercentage < 0.7f)
-        if (healthPercentage <= 1.0f)
+        if (healthPercentage > oldHealthPercentage)
         {
-            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f, 0.4f));
-            mSmokeSystem->getEmitter(0)->setEmissionRate(10);
+            mSmokeSystem->getEmitter(0)->setEmissionRate(0);
         }
-        else if (oldHealthPercentage > 0.4f && healthPercentage < 0.4f)
+        else if (oldHealthPercentage > 0.4f && healthPercentage <= 0.4f)
         {
             mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f, 0.75f));
             mSmokeSystem->getEmitter(0)->setEmissionRate(15);
+        }
+        else if (oldHealthPercentage > 0.7f && healthPercentage <= 0.7f)
+        {
+            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.9f, 0.9f, 0.9f, 0.4f));
+            mSmokeSystem->getEmitter(0)->setEmissionRate(10);
         }
     //}
 #endif

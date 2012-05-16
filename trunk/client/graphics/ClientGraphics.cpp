@@ -111,8 +111,10 @@ bool ClientGraphics::initApplication (void)
 
     while (GameCore::mNetworkCore->m_szHost == NULL)
     {
-        GameCore::mNetworkCore->frameEvent(NULL);
         // Just chillin. Gonna lock up here if a server dont exist lol.
+        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+            return false;
+        GameCore::mNetworkCore->frameEvent(NULL);
     }
 
     loadGame();
@@ -656,7 +658,10 @@ void ClientGraphics::updateVIPLocation (TeamID teamID, Ogre::Vector3 location)
     else if (teamID == RED_TEAM)
         mVIPIcon[1]->setPosition(location);
     else
-        OutputDebugString("WARNING: updateVIPLocation called with NO_TEAM. Continuing anyway...\n");
+    {
+        mVIPIcon[0]->setPosition(location);
+        mVIPIcon[1]->setPosition(location);
+    }
 }
 
 
