@@ -226,6 +226,8 @@ void SceneSetup::setupParticleSystem (void)
     // place (in the team class for example) to be made available.
     mVIPIcon[0]  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("VIPNode1");
     mVIPIcon[1]  = GameCore::mSceneMgr->getRootSceneNode()->createChildSceneNode("VIPNode2");
+    mVIPIcon[0]->setPosition(0, -20, 0);
+    mVIPIcon[1]->setPosition(0, -20, 0);
 #ifdef PARTICLE_EFFECT_VIPSTREAK
     Ogre::ParticleSystem* crownEffect1 = GameCore::mSceneMgr->createParticleSystem("crownSystem1", "CollisionDomain/Streak");
     Ogre::ParticleSystem* crownEffect2 = GameCore::mSceneMgr->createParticleSystem("crownSystem2", "CollisionDomain/Streak");

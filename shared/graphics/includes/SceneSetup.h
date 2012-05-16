@@ -23,8 +23,8 @@
 // Local particle effects:
 #define PARTICLE_EFFECT_DUST        // Dust from skidding etc.
 #define PARTICLE_EFFECT_EXHAUST     // Exhaust smoke from cars bums at engine idle/high work.
-//#define PARTICLE_EFFECT_SMOKE       // Smoke emitted from damaged cars.
-//#define PARTICLE_EFFECT_FIRE        // Flames emitted from dead cars.
+#define PARTICLE_EFFECT_SMOKE       // Smoke emitted from damaged cars.
+#define PARTICLE_EFFECT_FIRE        // Flames emitted from dead cars.
 
 // Enabled high quality (colliding) shrapnel effect. PARTICLE_EFFECT_SHRAPNEL must be defined for this to have any effect.
 // A low quality, non-colliding version is used if this is not defined but shrapnel is enabled.

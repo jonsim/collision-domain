@@ -400,16 +400,16 @@ void SmallCar::initGraphics(TeamID tid, ArenaID aid)
 	mBodyNode->attachObject(mSmokeSystem);
 
     // The smoke emitter should be placed over the engine.
-    mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0, 0, 0));
+    mSmokeSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.0f, 1.3f));
 #endif
 #ifdef PARTICLE_EFFECT_FIRE
     mFireSystem    = GameCore::mSceneMgr->createParticleSystem("Fire"    + boost::lexical_cast<std::string>(mUniqueCarID), "CollisionDomain/Fire");
 	mBodyNode->attachObject(mFireSystem);
 
     // As should the fire emitter (which is, slightly more complex as it is a box).
-    mFireSystem->getEmitter(0)->setParameter("width",  "2");
-    mFireSystem->getEmitter(0)->setParameter("height", "2");    // height and depth are effectively switched
-    mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.1f, 1.7f));
+    mFireSystem->getEmitter(0)->setParameter("width",  "1.5f");
+    mFireSystem->getEmitter(0)->setParameter("height", "1.35f");    // height and depth are effectively switched
+    mFireSystem->getEmitter(0)->setPosition(Ogre::Vector3(0.0f, 1.40f, -0.45f));
 #endif
 
     // Update the skin based on the team
@@ -510,10 +510,13 @@ void SmallCar::loadDestroyedModel (void)
     mChassisNode->detachAllObjects();
     createGeometry("CarEntity_Burnt", "small_car_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
-    #ifdef COLLISION_DOMAIN_CLIENT
-        if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
-            GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),3);
-    #endif
+#ifdef COLLISION_DOMAIN_CLIENT
+    if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR)            
+        GameCore::mClientGraphics->mBigScreen->changeArrow(this->getUniqueID(),3);
+#endif
+#ifdef PARTICLE_EFFECT_FIRE
+    mFireSystem->getEmitter(0)->setEmissionRate(300);
+#endif
 }
 
 
@@ -617,10 +620,10 @@ void SmallCar::removeFBumper() {
     removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_SMALLCAR_FBUMPER, btVector3( 0.0f, 0.392f,  1.352f ) );
 }
 void SmallCar::removeLHeadlight() {
-    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( 0.59f, 0.788, 1.352f ) );
+    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( 0.59f, 0.788f, 1.352f ) );
 }
 void SmallCar::removeRHeadlight() {
-    removePiece(  mRHeadlightNode, mRHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( -0.59f, 0.788, 1.352f ) );
+    removePiece(  mRHeadlightNode, mRHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( -0.59f, 0.788f, 1.352f ) );
 }
 void SmallCar::removeCarPart(unsigned int part) {
     switch(part) {
@@ -658,6 +661,6 @@ void SmallCar::makeBitsFallOff() {
     removePiece( mFBumperNode, mFBumperBody, PHYS_SHAPE_SMALLCAR_FBUMPER, btVector3( 0.0f, 0.392f,  1.352f ) );
     removePiece( mRBumperNode, mRBumperBody, PHYS_SHAPE_SMALLCAR_RBUMPER, btVector3( 0.0f, 0.410f, -1.880f ) );
 
-    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( 0.59f, 0.788, 1.352f ) );
-    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( -0.59f, 0.788, 1.352f ) );
+    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( 0.59f, 0.788f, 1.352f ) );
+    removePiece(  mLHeadlightNode, mLHeadlightBody, PHYS_SHAPE_SMALLCAR_HEADLIGHT, btVector3( -0.59f, 0.788f, 1.352f ) );
 }
