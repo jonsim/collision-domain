@@ -29,7 +29,8 @@ Player::Player (bool isAI)
     mCarSnapshot(NULL),
     mSnapshots(NULL),
     mCar(NULL),
-    mIsAI(isAI)
+    mIsAI(isAI),
+    roundScore(0)
 {
     // PlayerState state configures constants and zeros values upon creation.
         //processingCollision = false;
@@ -157,10 +158,15 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 
     if (mFirstLaunch)
     {
-        if(isLocalPlayer)
+        if (isLocalPlayer)
         {
             //mCar->louderLocalSounds();
             //GameCore::mGui->setupDamageDisplay(carType, tid);
+            if (GameCore::mGui)
+            {
+                GameCore::mGui->updateLocalPlayerRank();
+                GameCore::mGui->toggleRankDisplay(true);
+            }
         }
         //else
         {
@@ -855,7 +861,7 @@ void Player::killPlayer(Player* causedBy)
         //GameCore::mGameplay->mInfoItems.push_back( spectate );
     }
 
-    GameCore::mGui->updateLocalPlayerRank();
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 }
 
 void Player::setTeam(TeamID newTeam) 

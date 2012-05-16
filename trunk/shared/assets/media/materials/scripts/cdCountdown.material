@@ -15,6 +15,16 @@ material countdown_3 : cd/GUIComponent
 	set $texture countdown-3.png
 }
 
+material countdown_4 : cd/GUIComponent
+{
+	set $texture countdown-4.png
+}
+
+material countdown_5 : cd/GUIComponent
+{
+	set $texture countdown-5.png
+}
+
 material countdown_go : cd/GUIComponent
 {
 	set $texture countdown-go.png

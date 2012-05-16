@@ -16,7 +16,8 @@ class GameGUI
 {
 public:
     GameGUI (void)
-      : oleDamage(NULL)
+      : oleDamage(NULL),
+        olRank(NULL)
     {
     }
 
@@ -59,6 +60,7 @@ public:
     bool Console_Off (const CEGUI::EventArgs& args);
     void hideOverlaysForBigScreen();
     void showOverlaysForBigScreen();
+    void toggleRankDisplay(bool setOn);
 
     void setupOverlays (CEGUI::Window* guiWindow);
     void setupFPSCounter (CEGUI::Window* guiWindow);

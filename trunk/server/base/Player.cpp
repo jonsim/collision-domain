@@ -26,7 +26,8 @@ Player::Player (void)
     mTeam(0),
     mCarSnapshot(NULL),
     newInput(NULL),
-    mCar(NULL)
+    mCar(NULL),
+    roundScore(0)
 {
     // PlayerState state configures constants and zeros values upon creation.
     for( int i = 0; i < POWERUP_COUNT; i ++ )

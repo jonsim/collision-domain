@@ -17,7 +17,7 @@ void ClientHooks::localPlayerNowInArena(Player *localPlayer)
 
     if (!hadFirstRunAlready) GameCore::mAudioCore->menuToRockTrack(false);
     localPlayer->getCar()->startEngineSound();
-    GameCore::mGui->updateLocalPlayerRank();
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 
     hadFirstRunAlready = true;
 }
@@ -25,4 +25,5 @@ void ClientHooks::localPlayerNowInArena(Player *localPlayer)
 void ClientHooks::nonLocalPlayerNowInArena(Player *player)
 {
     player->getCar()->startEngineSound();
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 }

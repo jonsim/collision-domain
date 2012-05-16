@@ -959,7 +959,8 @@ void GameGUI::setupRank()
 
     olRank = Ogre::OverlayManager::getSingleton().create( "OVERLAY_RANKS" );
     olRank->setZOrder( 500 );
-    olRank->show();
+    olRank->hide();
+
 
     olRankContainer = static_cast<Ogre::OverlayContainer*> ( Ogre::OverlayManager::getSingleton().createOverlayElement( "Panel", "RANK" ) );
     olRankContainer->setMetricsMode( Ogre::GMM_PIXELS );
@@ -982,6 +983,20 @@ void GameGUI::updateLocalPlayerRank()
         bool sharedRank;
         int rankIndex = GameCore::mPlayerPool->getPlayerRankIndex(localPlayer, &sharedRank);
         updateRank(rankIndex, sharedRank);
+    }
+}
+
+void GameGUI::toggleRankDisplay(bool setOn)
+{
+    if (!olRank) return;
+
+    if (setOn)
+    {
+        olRank->show();
+    }
+    else
+    {
+        olRank->hide();
     }
 }
 
