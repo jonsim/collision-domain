@@ -1,0 +1,50 @@
+particle_system CollisionDomain/Splinter
+{
+	material        	CollisionDomain/Splinter
+	particle_width  	0.1
+	particle_height 	0.2
+	cull_each       	false
+	quota           	500
+	billboard_type  	oriented_self
+	billboard_origin    bottom_center
+    
+    
+    emitter Point
+    {
+		position 0 0 0
+		direction 0 1 0
+		angle 85
+		emission_rate 200
+        duration 0.1
+		velocity_min 10.0
+		velocity_max 15.0
+		time_to_live 1.0
+    }
+
+	affector LinearForce
+	{
+		force_vector 0 -20 0
+		force_application add
+	}
+    
+    affector Rotator
+    {
+        rotation_speed_range_start 0
+        rotation_speed_range_end 3600
+        rotation_range_start 0
+        rotation_range_end 360
+    }
+	
+	affector ColourFader2
+	{
+		red1 0
+		green1 0
+		blue1 0
+        alpha1 0
+        red2 0
+        grenn2 0
+        blue2 0
+		alpha2 -3
+        state_change 0.3
+	}
+}

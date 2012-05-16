@@ -35,6 +35,7 @@ material CollisionDomain/Explosion/Nucleus
         }
     }
 }
+
 material CollisionDomain/Explosion/Debris
 {
     technique
@@ -163,6 +164,25 @@ material CollisionDomain/Shrapnel
 			texture_unit
 			{
 				texture particle_shrapnel.png
+				tex_address_mode clamp
+			}
+		}
+	}
+}
+
+material CollisionDomain/Splinter
+{
+	technique
+	{
+		pass
+		{
+			lighting off
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				texture particle_splinter.png
 				tex_address_mode clamp
 			}
 		}

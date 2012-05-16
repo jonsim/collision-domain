@@ -20,6 +20,7 @@
 //#define PARTICLE_EFFECT_SHRAPNEL    // Shrapnel from crunching collisions.
 //#define PARTICLE_EFFECT_SHRAPNEL_SPARKS   // Point-based sparks emitted alongside shrapnel. Does nothing if shrapnel is not defined.
 //#define PARTICLE_EFFECT_SPARKS      // Sparks emitted from scraping collisions.
+#define PARTICLE_EFFECT_SPLINTERS   // Splinters thrown off when powerup crates are collected.
 // Local particle effects:
 #define PARTICLE_EFFECT_DUST        // Dust from skidding etc.
 #define PARTICLE_EFFECT_EXHAUST     // Exhaust smoke from cars bums at engine idle/high work.
@@ -174,6 +175,10 @@ protected:
 #ifdef PARTICLE_EFFECT_SPARKS
     Ogre::ParticleSystem* mSparkSystem;
     Ogre::NameValuePairList mSparkParams;
+#endif
+#ifdef PARTICLE_EFFECT_SPLINTERS
+    Ogre::ParticleSystem* mSplinterSystem;
+    Ogre::NameValuePairList mSplinterParams;
 #endif
 #ifdef PARTICLE_EFFECT_EXPLOSION
     Ogre::ParticleSystem* mExplosionNucleusSystem;
