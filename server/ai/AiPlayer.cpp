@@ -135,27 +135,30 @@ void AiPlayer::Update(double timeSinceLastFrame)
             // Go Backwards
             mPlayer->getCar()->accelInputTick(false,true,false,timeSinceLastFrame);
             timeInStuckMode++;
-            if(timeInStuckMode > TIME_BEFORE_UNSTUCK)
+
+            StringStream tmpSS2;
+            tmpSS2 << "Clamp: " << timeInStuckMode << " " << (TIME_BEFORE_UNSTUCK/timeSinceLastFrame) << "\n";
+            //OutputDebugString(tmpSS2.str().c_str());
+            if(timeInStuckMode > (TIME_BEFORE_UNSTUCK/timeSinceLastFrame))
             {
                 this->timeInStuckMode = false;
                 timeInStuckMode = 0;
                 mPlayer->getCar()->accelInputTick(true,false,false,timeSinceLastFrame);
                 
-                /*
+                
                 StringStream tmpSS;
                 tmpSS << "Taking " << mName << " out of stuck mode\n";
                 OutputDebugString(tmpSS.str().c_str());
-                */
+                
 
                 stuckMode = 2;
             }
-            stuckMode = 2;
             return;
         }
         else if(stuckMode == 2)
         {
             timeInChangeOver++;
-            if(timeInChangeOver > 10000)
+            if(timeInChangeOver > (TIME_BEFORE_UNSTUCK/timeSinceLastFrame))
             {
                 stuckMode = 0;
                 timeInChangeOver = 0;

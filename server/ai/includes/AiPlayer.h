@@ -15,7 +15,7 @@ enum CarType;
 
 #define NOTABLE_CHANGE_RATIO 10.0f
 #define TIME_BEFORE_STUCK 10
-#define TIME_BEFORE_UNSTUCK 100
+#define TIME_BEFORE_UNSTUCK 10
 
 enum level
 {
