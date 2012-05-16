@@ -463,9 +463,9 @@ void Car::updateParticleSystems(Ogre::Real secondsSinceLastFrame, int health)
         {
             mSmokeSystem->getEmitter(0)->setEmissionRate(0);
         }
-        else if (oldHealthPercentage > 0.4f && healthPercentage <= 0.4f)
+        else if (oldHealthPercentage > 0.4f && healthPercentage <= 0.25f)
         {
-            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f, 0.75f));
+            mSmokeSystem->getEmitter(0)->setColour(Ogre::ColourValue(0.5f, 0.5f, 0.5f, 0.7f));
             mSmokeSystem->getEmitter(0)->setEmissionRate(15);
         }
         else if (oldHealthPercentage > 0.7f && healthPercentage <= 0.7f)
