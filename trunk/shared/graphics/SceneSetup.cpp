@@ -159,6 +159,17 @@ void SceneSetup::setupParticleSystem (void)
     #endif
 #endif
 
+#ifdef PARTICLE_EFFECT_SPLINTERS
+    // Splinter parameters
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "0 1 0") );
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("angle",          "85") );
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("emission_rate",  "300") );
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_min",   "10") );
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("velocity_max",   "15") );
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("time_to_live",   "1.0") );
+    mSplinterParams.insert( std::pair<Ogre::String, Ogre::String>("duration",       "0.1") );
+#endif
+
 #ifdef PARTICLE_EFFECT_EXPLOSION
     // Explosion nucleus parameters
     mExplosionNucleusParams.insert( std::pair<Ogre::String, Ogre::String>("direction",      "0.0 0.0 0.0") );
@@ -221,6 +232,10 @@ void SceneSetup::setupParticleSystem (void)
         GameCore::mSceneMgr->getRootSceneNode()->attachObject(mShrapnelSparkSystem);
         //mShrapnelSparkSystem->removeAllEmitters();
     #endif
+#endif
+#ifdef PARTICLE_EFFECT_SPLINTERS
+    mSplinterSystem = GameCore::mSceneMgr->createParticleSystem("SplinterSystem", "CollisionDomain/Splinter");
+    GameCore::mSceneMgr->getRootSceneNode()->attachObject(mSplinterSystem);
 #endif
     
     // Add the VIP Nodes and systems

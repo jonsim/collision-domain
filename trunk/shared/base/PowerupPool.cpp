@@ -25,9 +25,11 @@ void PowerupPool::spawnPowerup(PowerupType type, Ogre::Vector3 spawnAt, int inde
 
     if (mPowerups[index] != NULL)
     {
-        #ifdef COLLISION_DOMAIN_CLIENT
-            GameCore::mClientGraphics->generateExplosion(mPowerups[index]->getPosition(), false);
-        #endif
+#ifdef COLLISION_DOMAIN_CLIENT
+    #ifdef PARTICLE_EFFECT_SPLINTERS
+        GameCore::mClientGraphics->generateSplinters(mPowerups[index]->getPosition());
+    #endif
+#endif
 
         delete mPowerups[index];
         mPowerups[index] = NULL;
@@ -54,9 +56,11 @@ void PowerupPool::deletePowerup( int index )
 {
     if( index < 0 || index >= MAX_POWERUPS ) return;
     
-    #ifdef COLLISION_DOMAIN_CLIENT
-        GameCore::mClientGraphics->generateExplosion(mPowerups[index]->getPosition(), false);
+#ifdef COLLISION_DOMAIN_CLIENT
+    #ifdef PARTICLE_EFFECT_SPLINTERS
+        GameCore::mClientGraphics->generateSplinters(mPowerups[index]->getPosition());
     #endif
+#endif
 
     Powerup* p = mPowerups[index];
     mPowerups[index] = NULL;

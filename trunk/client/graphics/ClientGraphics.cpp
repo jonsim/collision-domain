@@ -529,6 +529,11 @@ void ClientGraphics::updateParticleSystems (void)
         if (!mSparkSystem->getEmitter(i)->getEnabled())
             mSparkSystem->removeEmitter(i--);
 #endif
+#ifdef PARTICLE_EFFECT_SPLINTERS
+    for (i = 0; i < mSplinterSystem->getNumEmitters(); i++)
+        if (!mSplinterSystem->getEmitter(i)->getEnabled())
+            mSplinterSystem->removeEmitter(i--);
+#endif
 #ifdef PARTICLE_EFFECT_EXPLOSION
     for (i = 0; i < mExplosionNucleusSystem->getNumEmitters(); i++)
         if (!mExplosionNucleusSystem->getEmitter(i)->getEnabled())
@@ -574,6 +579,18 @@ void ClientGraphics::updateParticleSystems (void)
     #endif
 #endif
 }
+
+
+#ifdef PARTICLE_EFFECT_SPLINTERS
+void ClientGraphics::generateSplinters (Ogre::Vector3 location)
+{
+    unsigned short splinterIndex = mSplinterSystem->getNumEmitters();
+
+    mSplinterSystem->addEmitter("Point");
+    mSplinterSystem->getEmitter(splinterIndex)->setParameterList(mSplinterParams);
+    mSplinterSystem->getEmitter(splinterIndex)->setPosition(location);
+}
+#endif
 
 
 /// @brief  Generates shrapnel particles which are automatically cleared up after they are depleted.
@@ -671,29 +688,23 @@ void ClientGraphics::updateVIPLocation (TeamID teamID, Ogre::Vector3 location)
 
 #ifdef PARTICLE_EFFECT_EXPLOSION
 /// @brief  Generates an explosion.
-void ClientGraphics::generateExplosion (Ogre::Vector3 location, bool addNucleus)
+void ClientGraphics::generateExplosion (Ogre::Vector3 location)
 {
     unsigned short nucleusIndex = mExplosionNucleusSystem->getNumEmitters();
     unsigned short smokeIndex   = mExplosionSmokeSystem->getNumEmitters();
     unsigned short debrisIndex  = mExplosionDebrisSystem->getNumEmitters();
 
-    if (addNucleus)
-    {
-        mExplosionNucleusSystem->addEmitter("Point");
-        mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
-        mExplosionNucleusSystem->getEmitter(nucleusIndex)->setPosition(location);
-    }
+    mExplosionNucleusSystem->addEmitter("Point");
+    mExplosionNucleusSystem->getEmitter(nucleusIndex)->setParameterList(mExplosionNucleusParams);
+    mExplosionNucleusSystem->getEmitter(nucleusIndex)->setPosition(location);
 
     mExplosionSmokeSystem->addEmitter("Point");
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setParameterList(mExplosionSmokeParams);
     mExplosionSmokeSystem->getEmitter(smokeIndex)->setPosition(location);
 
-    if (addNucleus)
-    {
-        mExplosionDebrisSystem->addEmitter("Point");
-        mExplosionDebrisSystem->getEmitter(debrisIndex)->setParameterList(mExplosionDebrisParams);
-        mExplosionDebrisSystem->getEmitter(debrisIndex)->setPosition(location);
-    }
+    mExplosionDebrisSystem->addEmitter("Point");
+    mExplosionDebrisSystem->getEmitter(debrisIndex)->setParameterList(mExplosionDebrisParams);
+    mExplosionDebrisSystem->getEmitter(debrisIndex)->setPosition(location);
 
     // Generate a sound (this isn't a particularly good way of doing it but it will work until a better method is available).
     static OgreOggSound::OgreOggISound* explosionSound = GameCore::mAudioCore->getSoundInstance(EXPLOSION, 0, NULL);

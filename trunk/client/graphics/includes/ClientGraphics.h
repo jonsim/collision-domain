@@ -46,10 +46,13 @@ public:
 
     // Particle effect handlers.
 #ifdef PARTICLE_EFFECT_EXPLOSION
-    void generateExplosion (Ogre::Vector3 location, bool addNucleus);
+    void generateExplosion (Ogre::Vector3 location);
 #endif
 #ifdef PARTICLE_EFFECT_SPARKS
     void generateSparks (Ogre::Vector3 location, Ogre::Vector3 direction);
+#endif
+#ifdef PARTICLE_EFFECT_SPLINTERS
+    void generateSplinters (Ogre::Vector3 location);
 #endif
 #ifdef PARTICLE_EFFECT_SHRAPNEL
     void generateShrapnel (Ogre::Vector3 location, TeamID shrapnelTeam, float meanShrapnelQuantity=20, float maxShrapnelVelocity=10, float planeOffset=-0.8f, Ogre::Vector3 planeNormal=Ogre::Vector3::UNIT_Y);
