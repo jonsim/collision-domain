@@ -111,10 +111,14 @@ bool ClientGraphics::initApplication (void)
 
     while (GameCore::mNetworkCore->m_szHost == NULL)
     {
-        // Just chillin. Gonna lock up here if a server dont exist lol.
+        mUserInput.capture();
+
         if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
             return false;
         GameCore::mNetworkCore->frameEvent(NULL);
+
+        boost::this_thread::sleep( boost::posix_time::milliseconds( 10 ) );
+        // Just chillin. Gonna lock up here if a server dont exist lol.
     }
 
     loadGame();
@@ -424,7 +428,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
 
         //-PHYSICS-STEP--------------------------------------------------------------------
         // Minimum of 30 FPS (maxSubsteps=2) before physics becomes wrong
-        GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 2, physicsTimeStep);
+        GameCore::mPhysicsCore->stepSimulation(evt.timeSinceLastFrame, 3, physicsTimeStep);
         //-PHYSICS-STEP--------------------------------------------------------------------
 
         //Draw info items

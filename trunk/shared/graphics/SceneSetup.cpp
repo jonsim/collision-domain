@@ -8,6 +8,8 @@
 #include "GameCore.h"
 #include "MeshDeformer.h"
 
+bool SceneSetup::guiSetup = false;
+
 SceneSetup::SceneSetup (void) : mWindow(0),
                                 #ifdef COMPOSITOR_HDR
                                     mGfxSettingHDR(1.0f),
@@ -611,7 +613,6 @@ void SceneSetup::setupMeshDeformer (void)
 
 void SceneSetup::setupGUI (void)
 {
-    static bool guiSetup = false;
     if (!guiSetup)
     {
         // Attach and start the CEGUI renderer.
