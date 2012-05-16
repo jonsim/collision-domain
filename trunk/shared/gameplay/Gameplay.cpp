@@ -701,7 +701,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                     {
                         this->getTeam(BLUE_TEAM)->removeVIP();
                         this->getTeam(RED_TEAM)->removeVIP();
-                        GameCore::mClientGraphics->updateVIPLocation(NO_TEAM, Ogre::Vector3(0, -20, 0));
+                        GameCore::mClientGraphics->updateVIPLocation(NO_TEAM, Ogre::Vector3(0, -50, 0));
                     }
 
 					if(GameCore::mClientGraphics->getGraphicsState() == PROJECTOR) {
