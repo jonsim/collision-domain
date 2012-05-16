@@ -239,16 +239,16 @@ void SimpleCoupeCar::createCollisionShapes()
 {
     btTransform chassisShift( btQuaternion::getIdentity(), btVector3( 0, 0.5f, 0.5f) );
     btCompoundShape *compoundChassisShape = new btCompoundShape();
-    //btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
-    //convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
-    //compoundChassisShape->addChildShape( chassisShift, convexHull );
+    btConvexHullShape *convexHull = new btConvexHullShape( BangerVtx, BANGER_VTX_COUNT, 3*sizeof(btScalar) );
+    convexHull->setLocalScaling( btVector3( MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT, MESH_SCALING_CONSTANT ) );
+    compoundChassisShape->addChildShape( chassisShift, convexHull );
 
-    for( int i = 0; i < BANGER_SPHERE_COUNT; i ++ )
+    /*for( int i = 0; i < BANGER_SPHERE_COUNT; i ++ )
     {
         btSphereShape *sphere = new btSphereShape( BangerSphere[i * 4 + 3] );
         btTransform sphereShift( btQuaternion::getIdentity(), btVector3( BangerSphere[i * 4], BangerSphere[i * 4 + 1], BangerSphere[i * 4 + 2] ) );
         compoundChassisShape->addChildShape( sphereShift, sphere );
-    }
+    }*/
 
     //compoundChassisShape->addChildShape( btTransform( btQuaternion::getIdentity(), btVector3( 0, 0.6, 0 ) ), new btBoxShape( btVector3( 0.800, 0.25, 2.400 ) ) );
     btBoxShape *doorShape = new btBoxShape( btVector3( 0.25f, 0.58f, 0.55f ) );
