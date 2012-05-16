@@ -349,7 +349,7 @@ void NetworkCore::PlayerJoin( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 	GameCore::mPlayerPool->addPlayer( playerid, szNickname );
     GameCore::mPlayerPool->getPlayer( playerid )->setTeam( team );
     
-    GameCore::mGui->updateLocalPlayerRank();
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 }
 
 void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -361,7 +361,7 @@ void NetworkCore::PlayerQuit( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
 
 	GameCore::mPlayerPool->delPlayer( playerid );
     
-    GameCore::mGui->updateLocalPlayerRank();
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 }
 
 void NetworkCore::PlayerChat( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -463,6 +463,8 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
         // Switch to freeroam camera or something
         break;
     }
+    
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 }
 
 void NetworkCore::PowerupCreate( RakNet::BitStream *bitStream, RakNet::Packet *pkt )
@@ -583,7 +585,8 @@ void NetworkCore::SyncScores( RakNet::BitStream *bitStream, RakNet::Packet *pkt 
             OutputDebugString(tmpSS.str().c_str());
         }
     }
-   
+    
+    if (GameCore::mGui) GameCore::mGui->updateLocalPlayerRank();
 }
 
 void NetworkCore::GameSync( RakNet::BitStream *bitStream, RakNet::Packet *pkt )

@@ -599,7 +599,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_CLIENT
                     tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f, 0.1f);
-					tmpOLE->setMaterialName( "gear4" );
+					tmpOLE->setMaterialName( "countdown_4" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("Four!\n");
@@ -612,7 +612,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 				#ifdef COLLISION_DOMAIN_CLIENT
                     tmpOLE->hide();
 					tmpOLE->setDimensions(0.1f, 0.1f);
-					tmpOLE->setMaterialName( "gear5" );
+					tmpOLE->setMaterialName( "countdown_5" );
 					tmpOLE->setPosition(0.45f, 0.1f);
 					tmpOLE->show();
                     OutputDebugString("Five!\n");
@@ -631,6 +631,11 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
 					tmpOLE->show();
                     // put the rock music back
                     GameCore::mAudioCore->menuToRockTrack(false);
+                    if (GameCore::mGui)
+                    {
+                        GameCore::mGui->updateLocalPlayerRank();
+                        GameCore::mGui->toggleRankDisplay(true);
+                    }
                 #endif
 
                 mGameActive = true;
@@ -641,6 +646,7 @@ void Gameplay::handleInfoItem(InfoItem* item, bool show)
                 // put the menu music back
                 #ifdef COLLISION_DOMAIN_CLIENT
                     GameCore::mAudioCore->menuToRockTrack(true);
+                    if (GameCore::mGui) GameCore::mGui->toggleRankDisplay(false);
                 #endif
 
                 mGameActive = false;
