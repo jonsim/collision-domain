@@ -107,14 +107,21 @@ bool ClientGraphics::initApplication (void)
 
     createFrameListener();
 
-    GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
+    //GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
 
     while (GameCore::mNetworkCore->m_szHost == NULL)
     {
-        // Just chillin. Gonna lock up here if a server dont exist lol.
+        // Check for exit conditions
+        mUserInput.capture();
         if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
             return false;
+
+        // Handle networking
+        GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
         GameCore::mNetworkCore->frameEvent(NULL);
+
+        // Have a lil nap.
+        boost::this_thread::sleep( boost::posix_time::milliseconds( 10 ) );
     }
 
     loadGame();
@@ -382,10 +389,10 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Capture input
         mUserInput.capture();
 
-        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE) && mUserInput.mKeyboard->isKeyDown(OIS::KC_SLASH))
+        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
             return false;
 
-        if (!(mUserInput.mKeyboard->isKeyDown(OIS::KC_LMENU)) && mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))		
+        if ((!mUserInput.mKeyboard->isKeyDown(OIS::KC_LMENU)) && mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))		
             GameCore::mGameplay->mSB->show();		
         else		
             GameCore::mGameplay->mSB->hide();

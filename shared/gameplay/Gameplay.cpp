@@ -50,7 +50,7 @@ bool Gameplay::hasWon(TeamID teamID)
 void Gameplay::generateGameOrder (void)
 {
 #ifdef COLLISION_DOMAIN_SERVER
-    char chosenOrderString[64];
+    char chosenOrderString[128];
 
     // Generate games
     sprintf(chosenOrderString, "Gamemode order: ");

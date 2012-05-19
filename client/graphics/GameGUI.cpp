@@ -567,8 +567,9 @@ void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
     // Setup the FPS Counter
     CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
     createWindow( "Vanilla/StaticText", "root_wnd/fps" );
-    fps->setText( "fps: " );
-    fps->setSize( CEGUI::UVector2(CEGUI::UDim(0.15f, 0), CEGUI::UDim(0.05f, 0)));
+    fps->setText( "FPS: " );
+    fps->setPosition(CEGUI::UVector2(CEGUI::UDim(0.88f, 0), CEGUI::UDim(0, 0)));
+    fps->setSize(CEGUI::UVector2(CEGUI::UDim(0.12f, 0), CEGUI::UDim(0.05f, 0)));
     CEGUI::System::getSingleton().setGUISheet( guiWindow );
     guiWindow->addChildWindow( fps );
     fps->setVisible( true );
