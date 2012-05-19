@@ -87,13 +87,21 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 	mSpawned = true;
 
     initialHP = INITIAL_HEALTH;
-
-    damageShareTL = 0.1f;
-    damageShareBL = 0.2f;
-    damageShareML = 0.2f;
-    damageShareTR = 0.1f;
-    damageShareBR = 0.2f;
-    damageShareMR = 0.2f;
+    
+    damageShareTL = 0.05f;
+    damageShareTR = 0.05f;
+    damageShareML = 0.40f;
+    damageShareMR = 0.40f;
+    if (carType == CAR_TRUCK)
+    {
+        damageShareBL = 0.50f;
+        damageShareBR = 0.50f;
+    }
+    else
+    {
+        damageShareBL = 0.30f;
+        damageShareBR = 0.30f;
+    }
 
     damageLoc.damageTL = 0.f;
     damageLoc.damageBL = 0.f;
