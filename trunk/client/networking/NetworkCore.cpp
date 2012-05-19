@@ -420,7 +420,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     unsigned char packetid;
 	RakNet::RakNetGUID playerid;
     CarType iCarType;
-    bool isVIP;
+    //bool isVIP;
     bitStream->Read( packetid );
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
@@ -455,7 +455,7 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
             }
 	    }
         
-	    pPlayer->setVIP(isVIP);
+//	    pPlayer->setVIP(isVIP);
 
         break;
 

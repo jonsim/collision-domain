@@ -17,15 +17,15 @@
 // Global particle effects:
 #define PARTICLE_EFFECT_VIPSTREAK   // Sparkly streaks emitted from VIP crowns.
 #define PARTICLE_EFFECT_EXPLOSION   // Explosion on death.
-//#define PARTICLE_EFFECT_SHRAPNEL    // Shrapnel from crunching collisions.
+#define PARTICLE_EFFECT_SHRAPNEL    // Shrapnel from crunching collisions.
 //#define PARTICLE_EFFECT_SHRAPNEL_SPARKS   // Point-based sparks emitted alongside shrapnel. Does nothing if shrapnel is not defined.
 //#define PARTICLE_EFFECT_SPARKS      // Sparks emitted from scraping collisions.
 #define PARTICLE_EFFECT_SPLINTERS   // Splinters thrown off when powerup crates are collected.
 // Local particle effects:
 #define PARTICLE_EFFECT_DUST        // Dust from skidding etc.
 #define PARTICLE_EFFECT_EXHAUST     // Exhaust smoke from cars bums at engine idle/high work.
-//#define PARTICLE_EFFECT_SMOKE       // Smoke emitted from damaged cars.
-//#define PARTICLE_EFFECT_FIRE        // Flames emitted from dead cars.
+#define PARTICLE_EFFECT_SMOKE       // Smoke emitted from damaged cars.
+#define PARTICLE_EFFECT_FIRE        // Flames emitted from dead cars.
 
 // Enabled high quality (colliding) shrapnel effect. PARTICLE_EFFECT_SHRAPNEL must be defined for this to have any effect.
 // A low quality, non-colliding version is used if this is not defined but shrapnel is enabled.
@@ -34,7 +34,7 @@
 
 // COMPOSITORS ------------------------------------------------------------
 // Note all of these have to be defined for benchmarking to work.
-//#define COMPOSITOR_MOTION_BLUR    // Blur applied to fast moving objects on your screen.
+#define COMPOSITOR_MOTION_BLUR    // Blur applied to fast moving objects on your screen.
 #define COMPOSITOR_RADIAL_BLUR    // Blur applied to your screen at high speeds.
 //#define COMPOSITOR_HDR            // Advanced lighting effects. Defining this loads but DOES NOT enable HDR. HDR is broken but this define is used as a workaround for the benchmarking, which won't run without it.
 #define COMPOSITOR_BLOOM          // Blooms the lighting effects to give a chunky punch to the light set.

@@ -84,7 +84,7 @@ void PowerupPool::replaceCurrentPowerups()
 /// @brief  Process state changes for powerups and delete collected ones
 void PowerupPool::frameEvent( const float timeSinceLastFrame )
 {
-	return;
+	//return;
     for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
         if ( mPowerups[i] )

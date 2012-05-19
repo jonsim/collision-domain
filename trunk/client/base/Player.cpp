@@ -785,14 +785,14 @@ void Player::serverSaysHealthChangedTo(float newHP)
 /// @brief  This is called when a client receives changes to their own local damage points
 void Player::processDamage( PLAYER_DAMAGE_LOC damageIn )
 {
-    float piss = ((damageIn.damageBL * damageShareBL) + 
+    /*float piss = ((damageIn.damageBL * damageShareBL) + 
            (damageIn.damageBR * damageShareBR) + 
            (damageIn.damageML * damageShareML) + 
            (damageIn.damageMR * damageShareMR) + 
            (damageIn.damageTL * damageShareTL) + 
            (damageIn.damageTR * damageShareTR));
 
-    /*std::stringstream ss;
+    std::stringstream ss;
     ss << piss << "\n";
     GameCore::mGui->chatboxAddMessage("damage", (char*)ss.str().c_str());*/
 
