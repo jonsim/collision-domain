@@ -243,14 +243,23 @@ void Player::createPlayer (CarType carType, TeamID tid, ArenaID aid)
 
     hp                    = INITIAL_HEALTH;
     initialHP             = INITIAL_HEALTH;
-    damageShareTL = 0.05f;
-    damageShareBL = 0.2f;
-    damageShareML = 0.25f;
-    damageShareTR = 0.05f;
-    damageShareBR = 0.25f;
-    damageShareMR = 0.2f;
 
-        roundScore = 0;
+    damageShareTL = 0.05f;
+    damageShareTR = 0.05f;
+    damageShareML = 0.40f;
+    damageShareMR = 0.40f;
+    if (carType == CAR_TRUCK)
+    {
+        damageShareBL = 0.50f;
+        damageShareBR = 0.50f;
+    }
+    else
+    {
+        damageShareBL = 0.30f;
+        damageShareBR = 0.30f;
+    }
+
+    roundScore = 0;
     mCar->attachCollisionTickCallback(this);
     
     mCar->moveTo(btVector3(0,0.5,0));

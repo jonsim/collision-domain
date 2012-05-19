@@ -566,8 +566,10 @@ void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
 {
     // Setup the FPS Counter
     CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().
-    createWindow( "Vanilla/StaticText", "root_wnd/fps" );
-    fps->setText( "FPS: " );
+    createWindow("Vanilla/StaticText", "root_wnd/fps");
+    fps->setProperty("BackgroundEnabled", "False");
+    fps->setProperty("FrameEnabled",      "False");
+    fps->setText("FPS: ");
     fps->setPosition(CEGUI::UVector2(CEGUI::UDim(0.88f, 0), CEGUI::UDim(0, 0)));
     fps->setSize(CEGUI::UVector2(CEGUI::UDim(0.12f, 0), CEGUI::UDim(0.05f, 0)));
     CEGUI::System::getSingleton().setGUISheet( guiWindow );
@@ -702,9 +704,17 @@ void GameGUI::updateCounters (void)
 {
     static char szFPS[64];
 
-    CEGUI::Window *fps = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
-    sprintf( szFPS,   "FPS: %.2f", GameCore::mClientGraphics->mWindow->getAverageFPS());
-    fps->setText( szFPS );
+    CEGUI::Window* fpsWindow = CEGUI::WindowManager::getSingleton().getWindow( "root_wnd/fps" );
+    float          fps       = GameCore::mClientGraphics->mWindow->getAverageFPS();
+    if (fps < 20)
+        sprintf(szFPS,   "FPS: [colour='FFFF0000']%.2f", fps);  // red
+    else if (fps < 40)
+        sprintf(szFPS,   "FPS: [colour='FFFF8000']%.2f", fps);  // orange
+    else if (fps < 60)
+        sprintf(szFPS,   "FPS: [colour='FFFFFF00']%.2f", fps);  // yellow
+    else
+        sprintf(szFPS,   "FPS: [colour='FF00FF00']%.2f", fps);  // green
+    fpsWindow->setText(szFPS);
 }
 
 void GameGUI::setupDamageDisplay (CarType carType, TeamID tid)

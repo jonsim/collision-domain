@@ -5,7 +5,7 @@
 #ifndef SHAREDINCLUDES_H
 #define SHAREDINCLUDES_H
 
-#define INITIAL_HEALTH 800
+#define INITIAL_HEALTH 500
 
 enum PHYS_SHAPE : int
 {
