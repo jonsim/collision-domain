@@ -134,6 +134,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
         {
             // Go Backwards
             mPlayer->getCar()->accelInputTick(false,true,false,timeSinceLastFrame);
+            mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
             timeInStuckMode++;
 
             StringStream tmpSS2;
@@ -144,7 +145,6 @@ void AiPlayer::Update(double timeSinceLastFrame)
                 this->timeInStuckMode = false;
                 timeInStuckMode = 0;
                 mPlayer->getCar()->accelInputTick(true,false,false,timeSinceLastFrame);
-                
                 
                 StringStream tmpSS;
                 tmpSS << "Taking " << mName << " out of stuck mode\n";

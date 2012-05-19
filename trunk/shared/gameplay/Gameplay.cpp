@@ -50,7 +50,7 @@ bool Gameplay::hasWon(TeamID teamID)
 void Gameplay::generateGameOrder (void)
 {
 #ifdef COLLISION_DOMAIN_SERVER
-    char chosenOrderString[128];
+    char chosenOrderString[64];
 
     // Generate games
     sprintf(chosenOrderString, "Gamemode order: ");
@@ -123,7 +123,7 @@ void Gameplay::cycleGame( bool unload )
     if(roundNumber > 2)
     {
         roundNumber = 0;
-        this->generateGameOrder();
+        //this->generateGameOrder();
     }
 
     StringStream tmpSS;

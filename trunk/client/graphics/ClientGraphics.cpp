@@ -111,14 +111,10 @@ bool ClientGraphics::initApplication (void)
 
     while (GameCore::mNetworkCore->m_szHost == NULL)
     {
-        mUserInput.capture();
-
+        // Just chillin. Gonna lock up here if a server dont exist lol.
         if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
             return false;
         GameCore::mNetworkCore->frameEvent(NULL);
-
-        boost::this_thread::sleep( boost::posix_time::milliseconds( 10 ) );
-        // Just chillin. Gonna lock up here if a server dont exist lol.
     }
 
     loadGame();
@@ -386,7 +382,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Capture input
         mUserInput.capture();
 
-        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE) && mUserInput.mKeyboard->isKeyDown(OIS::KC_SLASH))
             return false;
 
         if (!(mUserInput.mKeyboard->isKeyDown(OIS::KC_LMENU)) && mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))		
@@ -1064,7 +1060,7 @@ extern "C" {
 //linux default stack size is smaller the visual studio c++
 #ifdef linux
     	//set stack size to 32 mb
-    	const rlim_t stackSize = 32 * 1024 *1024;
+    	const rlim_t stackSize = 64 * 1024 *1024;
     	struct rlimit rl;
     	int result = getrlimit(RLIMIT_STACK, &rl);
 

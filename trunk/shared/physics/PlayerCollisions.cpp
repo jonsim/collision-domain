@@ -64,7 +64,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 		    if (pt.getDistance() < 0.f) {
 			    averageCollisionPointOnA += pt.getPositionWorldOnA();
 			    averageCollisionPointOnB += pt.getPositionWorldOnB();
-			    averageOverlapDistance += pt.getDistance()*0.6f;
+			    averageOverlapDistance += pt.getDistance()*0.95f;
 			    //averageNormOnB +=  pt.m_normalWorldOnB;
 		    }
 	    }
@@ -170,7 +170,7 @@ void PlayerCollisions::addCollision(Player* p1, Player* p2, btPersistentManifold
 		    if (pt.getDistance() < 0.f) {
 			    averageCollisionPointOnA += pt.getPositionWorldOnA();
 			    averageCollisionPointOnB += pt.getPositionWorldOnB();
-			    averageOverlapDistance += pt.getDistance()*0.6f;
+			    averageOverlapDistance += pt.getDistance()*0.95f;
 			    //averageNormOnB +=  pt.m_normalWorldOnB;
 		    }
 	    }

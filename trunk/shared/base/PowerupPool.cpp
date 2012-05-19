@@ -61,12 +61,14 @@ void PowerupPool::deletePowerup( int index )
         GameCore::mClientGraphics->generateSplinters(mPowerups[index]->getPosition());
     #endif
 #endif
+    //Powerup* p = mPowerups[index];
+    //mPowerups[index] = NULL;
 
-    Powerup* p = mPowerups[index];
+    // You have to cast to the superclass to make cpp call that destructor, or make it virtual in base class!]
+    if( mPowerups[index] )
+        	delete mPowerups[index];
+
     mPowerups[index] = NULL;
-
-    // You have to cast to the superclass to make cpp call that destructor, or make it virtual in base class!
-    delete p;
 }
 
 void PowerupPool::replaceCurrentPowerups()
@@ -82,6 +84,7 @@ void PowerupPool::replaceCurrentPowerups()
 /// @brief  Process state changes for powerups and delete collected ones
 void PowerupPool::frameEvent( const float timeSinceLastFrame )
 {
+	return;
     for( int i = 0; i < MAX_POWERUPS; i ++ )
     {
         if ( mPowerups[i] )
