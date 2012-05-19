@@ -46,9 +46,8 @@ Powerup::Powerup(PowerupType powerupType, Ogre::Vector3 spawnAt, int poolIndex)
     btScalar bodyFriction = 1.0f;
     btScalar bodyMass = 40.0f;
     
-    btVector3 halfExtents(0.5,0.5,0.5);
-    btBoxShape* shape = new btBoxShape(halfExtents);
 
+    btCollisionShape *shape = GameCore::mPhysicsCore->getCollisionShape( PHYS_SHAPE_POWERUP );
     btVector3 inertia;
     shape->calculateLocalInertia(bodyMass, inertia);
     
@@ -81,8 +80,9 @@ Powerup::~Powerup()
     #ifdef COLLISION_DOMAIN_CLIENT
         GameCore::mAudioCore->deleteSoundInstance(mSound);
 
-        mNode->detachAllObjects();
-        mNode->getParentSceneNode()->removeChild(mNode);
+        //mNode->detachAllObjects();
+        //mNode->getParentSceneNode()->removeChild(mNode);
+        GameCore::mSceneMgr->destroySceneNode( mNode );
 
         if ( GameCore::mClientGraphics->mBigScreen != NULL )
         {
@@ -94,9 +94,9 @@ Powerup::~Powerup()
     #endif
     
     // delete the shape last
-    btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
+    //btCollisionShape* collisionShape = mRigidBody->getCollisionShape();
     GameCore::mPhysicsCore->removeBody( mRigidBody );
-    delete collisionShape;
+    //delete collisionShape;
 }
 
 // player can be NULL and if it is, silently remove the powerup
@@ -116,6 +116,8 @@ void Powerup::playerCollision(Player* player)
 
     if (player != NULL)
     {
+    	if( player->getCar() == NULL )
+    		return;
         switch (mPowerupType)
         {
             case POWERUP_HEALTH:
@@ -205,6 +207,9 @@ void Powerup::playerCollision(Player* player, float extraData)
 
     if (player != NULL)
     {
+    	if( player->getCar() == NULL )
+    		return;
+
         if ( GameCore::mPlayerPool->getLocalPlayer() == player )
             GameCore::mAudioCore->playSoundOrRestart(mSound);
            
@@ -254,6 +259,9 @@ void Powerup::playerCollision(Player* player, float extraData)
 
     if (player != NULL)
     {
+    	if( player->getCar() == NULL )
+    		return;
+
         switch (mPowerupType)
         {
             // Don't need to handle health here, as the server will send over the player's new health
@@ -262,7 +270,6 @@ void Powerup::playerCollision(Player* player, float extraData)
             
                 // If truck, 75% chance of getting light version
                 float newmass;
-                bool makeLight = (player->getCar() && dynamic_cast<TruckCar*>( player->getCar() ) && rand() % 100 < 75);
                 if( extraData < 1.f )
                 {
                     if( dynamic_cast<TruckCar*>( player->getCar() ) )

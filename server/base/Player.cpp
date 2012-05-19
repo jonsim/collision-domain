@@ -204,6 +204,8 @@ void Player::processControlsFrameEvent(
     // Remove any powerups that have expired
     for( int i = 0; i < POWERUP_COUNT; i ++ )
     {
+    	if( getCar() == NULL )
+    		continue;
         if( powerupTimers[i] != 0 && RakNet::GreaterThan( RakNet::GetTimeMS(), powerupTimers[i] ) )
         {
             switch( i )

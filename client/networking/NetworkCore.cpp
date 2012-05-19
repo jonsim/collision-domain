@@ -420,9 +420,11 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     unsigned char packetid;
 	RakNet::RakNetGUID playerid;
     CarType iCarType;
+    bool isVIP;
     bitStream->Read( packetid );
 	bitStream->Read( playerid );
     bitStream->Read( iCarType );
+    //bitStream->Read( isVIP );
     bitStream->Read( GameCore::mGameplay->mGameActive ); // Recieve the game active state
 
     //OutputDebugString("ClientSpawn\n");
@@ -453,6 +455,8 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
             }
 	    }
         
+	    pPlayer->setVIP(isVIP);
+
         break;
 
     case ID_SPAWN_NO_TEAM:

@@ -315,6 +315,7 @@ void NetworkCore::SetupGameForPlayer( RakNet::RakNetGUID playerid )
                 bsSpawn.Write( packetid );
 				bsSpawn.Write( GameCore::mPlayerPool->getPlayerGUID( j ) );
                 bsSpawn.Write( playerSend->getCarType() );
+                //bsSpawn.Write( playerSend->getVIP() );
 				m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, playerid, false, false );
             }
 		}

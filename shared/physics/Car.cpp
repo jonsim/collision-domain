@@ -37,7 +37,7 @@ Car::~Car()
 {
 #ifdef COLLISION_DOMAIN_CLIENT
     if (mGearSound) GameCore::mAudioCore->deleteSoundInstance(mGearSound);
-    GameCore::mAudioCore->deleteSoundInstance(mCrashSound);
+    	GameCore::mAudioCore->deleteSoundInstance(mCrashSound);
     
     if ( GameCore::mClientGraphics->mBigScreen != NULL )
     {

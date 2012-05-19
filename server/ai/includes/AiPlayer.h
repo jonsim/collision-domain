@@ -13,9 +13,9 @@ class SteeringBehaviour;
 class Player;
 enum CarType;
 
-#define NOTABLE_CHANGE_RATIO 10.0f
-#define TIME_BEFORE_STUCK 10
-#define TIME_BEFORE_UNSTUCK 10
+#define NOTABLE_CHANGE_RATIO 7.0f
+#define TIME_BEFORE_STUCK 3
+#define TIME_BEFORE_UNSTUCK 3
 
 enum level
 {

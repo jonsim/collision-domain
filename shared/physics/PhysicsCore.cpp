@@ -179,6 +179,10 @@ void PhysicsCore::createCollisionShapes()
     SimpleCoupeCar::createCollisionShapes();
     SmallCar::createCollisionShapes();
     TruckCar::createCollisionShapes();
+
+    btVector3 halfExtents(0.5,0.5,0.5);
+    btBoxShape* shape = new btBoxShape(halfExtents);
+    mShapes[PHYS_SHAPE_POWERUP] = shape;
 }
 
 void PhysicsCore::addRigidBody( btRigidBody *body, short colGroup, short colMask )
