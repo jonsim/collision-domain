@@ -186,6 +186,13 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
         if(evt.key == OIS::KC_J) {
             GameCore::mPlayerPool->getLocalPlayer()->angleTest();
         }
+
+        if(evt.key == OIS::KC_M) {
+            if( GameCore::mClientGraphics->mGameCam->getCamType() != CAM_FREE )
+                GameCore::mClientGraphics->mGameCam->setCamType( CAM_FREE );
+            else
+                GameCore::mClientGraphics->mGameCam->setCamType( CAM_CHASE );
+        }
     }
 
     /*if(evt.key == OIS::KC_SEMICOLON) {
