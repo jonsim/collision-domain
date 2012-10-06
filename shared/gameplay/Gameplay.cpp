@@ -467,7 +467,7 @@ void Gameplay::positionPlayers(bool midRound)
 			//OutputDebugString(debugString.str().c_str());
 			
 			if(tmpPlayer->getCar() != NULL)
-				tmpPlayer->getCar()->moveTo(btVector3(x,1,y));
+				tmpPlayer->getCar()->moveTo(btVector3(x, 0, y));
 		}
 	}	
 }

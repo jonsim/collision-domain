@@ -179,19 +179,23 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
 		    GameCore::mPlayerPool->getLocalPlayer()->cameraLookRight();
 	    }
 
-	    if(evt.key == OIS::KC_K) {
+	    if(evt.key == OIS::KC_V) {
 		    GameCore::mPlayerPool->getLocalPlayer()->cycleCameraView();
 	    }
 
-        if(evt.key == OIS::KC_J) {
+        /*if(evt.key == OIS::KC_J) {
             GameCore::mPlayerPool->getLocalPlayer()->angleTest();
-        }
+        }*/
 
         if(evt.key == OIS::KC_M) {
             if( GameCore::mClientGraphics->mGameCam->getCamType() != CAM_FREE )
                 GameCore::mClientGraphics->mGameCam->setCamType( CAM_FREE );
             else
                 GameCore::mClientGraphics->mGameCam->setCamType( CAM_CHASE );
+        }
+
+        if (evt.key == OIS::KC_N) {
+            GameCore::mGui->toggleFPSCounter();
         }
     }
 

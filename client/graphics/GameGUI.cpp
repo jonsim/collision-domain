@@ -487,6 +487,10 @@ void GameGUI::setupChatbox (CEGUI::Window* guiWindow)
     // Get handles to some of the objects
     CEGUI::Window *chatboxFrame = winMgr.getWindow( "/Chatbox" );
     CEGUI::Window *inputText = winMgr.getWindow( "/Chatbox/input" );
+    // Additionally get a handle to the raw pointer of the list box so we can disable the vertical scroll bar. V hacky - James would approve!
+    CEGUI::Listbox* pChatboxBuffer = static_cast<CEGUI::Listbox*>(winMgr.getWindow("/Chatbox/buffer"));
+    pChatboxBuffer->getVertScrollbar()->hide();
+    pChatboxBuffer->getVertScrollbar()->disable();
 
     inputText->subscribeEvent( CEGUI::Editbox::EventTextAccepted, 
             CEGUI::Event::Subscriber( &GameGUI::Chatbox_Send, this ) );
@@ -555,6 +559,7 @@ void GameGUI::chatboxAddMessage (const char *szNickname, char *szMessage)
         
     lstHistory->addItem( newItem );
     lstHistory->ensureItemIsVisible( lstHistory->getItemCount() );
+    lstHistory->getVertScrollbar()->hide();
 }
 
 
@@ -576,6 +581,15 @@ void GameGUI::setupFPSCounter (CEGUI::Window* guiWindow)
     guiWindow->addChildWindow( fps );
     fps->setVisible( true );
 }
+
+
+void GameGUI::toggleFPSCounter (void)
+{
+    CEGUI::WindowManager& winMgr = CEGUI::WindowManager::getSingleton();
+    CEGUI::Window* fps = winMgr.getWindow("root_wnd/fps");
+    fps->setVisible(!fps->isVisible());
+}
+
 
 int GameGUI::getUnstretchedWidth(int outputPxWidth)
 {

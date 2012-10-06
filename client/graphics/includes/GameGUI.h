@@ -64,6 +64,7 @@ public:
 
     void setupOverlays (CEGUI::Window* guiWindow);
     void setupFPSCounter (CEGUI::Window* guiWindow);
+    void toggleFPSCounter (void);
 
     void updateLocalPlayerRank();
     void updateSpeedo (void);
