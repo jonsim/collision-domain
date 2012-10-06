@@ -13,7 +13,7 @@
 #endif
 
 #define PHYSICS_FPS 60
-
+//char g_GraphicalLevel = 0; // 0 = low, 1 = medium, 2 = high
 
 /*-------------------- METHOD DEFINITIONS --------------------*/
 
@@ -166,7 +166,21 @@ bool ClientGraphics::configureRenderer (void)
 {
     // Show the configuration dialog and returns true if the user clicks OK.
     if (mRoot->showConfigDialog())
+    {
+/*#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        char* msgBoxTitle  = "Select graphical level";
+        char* msgBoxBody   = "After performing a rigorous scan of your hardware I detect that your computer should be able to run high quality graphics alright.\nDo you want to enable fancy graphics?";
+        int   msgBoxResult = MessageBox(NULL, msgBoxBody, msgBoxTitle, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
+        if (msgBoxResult == IDCANCEL)
+            return false;
+        if (msgBoxResult == IDYES)
+            g_GraphicalLevel = 1;
+        else
+            g_GraphicalLevel = 0;
+#endif*/
+
         return true;
+    }
     return false;
 }
 
@@ -1064,6 +1078,34 @@ extern "C" {
 #endif
     {
 
+// collect command line arguments into a platform-independant mush.
+/*#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
+        char** argv = NULL;
+        int argc = 0;
+
+        int i = 0;
+        while (strCmdLine[i] != 0)
+            if (strCmdLine[i++] == ' ')
+                argc++;
+        if (i > 0)
+            argc++;
+
+        if (argc > 0)
+        {
+            argv = (char**) calloc(sizeof (char*), argc);
+
+            char* split_ptr;
+            split_ptr = strtok(strCmdLine, " ");
+            i = 0;
+            while (split_ptr != NULL)
+            {
+                argv[i++] = split_ptr;
+                split_ptr = strtok(NULL, " ");
+            }
+        }
+#endif*/
+
+
 //linux default stack size is smaller the visual studio c++
 #ifdef linux
     	//set stack size to 32 mb
@@ -1084,8 +1126,20 @@ extern "C" {
     			}
     		}
     	}
-
 #endif
+
+        // set graphical options if under linux (windows gets a fancy-not-at-all-hacky message box)
+/*#ifdef linux
+        if (argc > 1)
+        {
+            if (strcmp(argv[1], "--graphics=0"))
+                g_GraphicalLevel = 0;
+            else if (strcmp(argv[1], "--graphics=1"))
+                g_GraphicalLevel = 1;
+            else if (strcmp(argv[1], "--graphics=2"))
+                g_GraphicalLevel = 2;
+        }
+#endif*/
 
         // Create application object
         ClientGraphics application;

@@ -50,7 +50,8 @@ void AiPlayer::Spawn()
         bsAiTeam.Write( NO_TEAM );
         GameCore::mNetworkCore->PlayerTeamSelect(&bsAiTeam, mPacket);
     }
-	mCarType = CAR_BANGER;
+	//mCarType = CAR_BANGER;
+    mCarType = (CarType) (rand() % 3);
 	RakNet::BitStream bsCarType;
 	bsCarType.Write(mCarType);
 	GameCore::mNetworkCore->PlayerSpawn(&bsCarType, mPacket);
@@ -73,11 +74,6 @@ void AiPlayer::isStuck(float timeSinceLastFrame)
     if(timeSinceNotableChange >= TIME_BEFORE_STUCK/timeSinceLastFrame)
     {
         //In here we've decide we're stuck
-        StringStream tmpSS;
-        tmpSS << mName << " player stuck\n";
-        OutputDebugString(tmpSS.str().c_str());
-        //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
-        //GameCore::mGui->outputToConsole("Ai Player stuck!\n");
         this->stuckMode = 1;
         this->timeInStuckMode = 0; // Lets get going
         timeSinceNotableChange = 0;
@@ -88,11 +84,6 @@ void AiPlayer::isStuck(float timeSinceLastFrame)
 void AiPlayer::updateStuckDetection()
 {
     float currentSpeed = mPlayer->getCar()->getCarMph();
-    
-    StringStream tmpSS;
-    tmpSS << mName << " " << currentSpeed << "mph\n";
-    //GameCore::mGui->outputToConsole(tmpSS.str().c_str());
-    //OutputDebugString(tmpSS.str().c_str());
     unsigned int timeSinceStart = (time(NULL) - GameCore::mGameplay->startTime);
 
     if( currentSpeed < 3.0f && timeSinceStart > 5)
@@ -145,11 +136,6 @@ void AiPlayer::Update(double timeSinceLastFrame)
                 this->timeInStuckMode = false;
                 timeInStuckMode = 0;
                 mPlayer->getCar()->accelInputTick(true,false,false,timeSinceLastFrame);
-                
-                StringStream tmpSS;
-                tmpSS << "Taking " << mName << " out of stuck mode\n";
-                OutputDebugString(tmpSS.str().c_str());
-                
 
                 stuckMode = 2;
             }
@@ -280,7 +266,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
 		double angle = sin((pos.x-targetPos.x) / (pos.z - targetPos.z));
 
-		if(pos.z > targetPos.z && pos.x > targetPos.x)
+		if (pos.z > targetPos.z && pos.x > targetPos.x)
 		{
 			if(theta < 0)
 			{
@@ -299,8 +285,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 
 			return;
 		}
-
-		if(pos.z < targetPos.z && pos.x > targetPos.x)
+        else if (pos.z < targetPos.z && pos.x > targetPos.x)
 		{
 			if(theta < 0)
 			{
@@ -316,13 +301,12 @@ void AiPlayer::Update(double timeSinceLastFrame)
 					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 			}
 			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
+				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
 
 			return;
 
 		}
-
-		if(targetPos.x > pos.x && targetPos.z > pos.z)
+        else if (targetPos.x > pos.x && targetPos.z > pos.z)
 		{
 			if(theta >= 0)
 			{
@@ -334,7 +318,7 @@ void AiPlayer::Update(double timeSinceLastFrame)
 					mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
 			}
 			else
-				mPlayer->getCar()->steerInputTick(false, true, timeSinceLastFrame);
+				mPlayer->getCar()->steerInputTick(true, false, timeSinceLastFrame);
 
 			return;
 
