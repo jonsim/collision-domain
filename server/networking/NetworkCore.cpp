@@ -613,6 +613,8 @@ void NetworkCore::RegisterRPCSlots()
 /// @param Same as printf - format, variable list
 void log( char *data, ... )
 {
+    return;
+
 	char buffer[2048];
 	int error = 0;
 
