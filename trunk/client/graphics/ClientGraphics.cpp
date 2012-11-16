@@ -74,7 +74,7 @@ bool ClientGraphics::initApplication (void)
 #else
     mPluginsCfg = "plugins.cfg";
 #endif
-    mRoot = new Ogre::Root(mPluginsCfg);
+    mRoot = new Ogre::Root(mPluginsCfg, "ogre.cfg", "");
     setupResources();
     
     // Configure the renderer and exit if no configuration was provided.
