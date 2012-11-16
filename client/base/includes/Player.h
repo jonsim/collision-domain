@@ -157,7 +157,7 @@ public:
     {
         if( mCar )
         {
-            mCar->mBodyNode->detachAllObjects();
+            //mCar->mBodyNode->detachAllObjects();
             delete mCar;
             mCar = NULL;
         }
