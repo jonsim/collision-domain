@@ -164,24 +164,39 @@ void ClientGraphics::setupResources (void)
 /// @return Whether or not the configuration was a success.
 bool ClientGraphics::configureRenderer (void)
 {
+#if (defined(LINUX_GFX_OVERRIDE)) && (OGRE_PLATFORM == OGRE_PLATFORM_LINUX)
+    // Manually initialise
+    OutputDebugString("Linux system detected, using auto-settings
+    RenderSystem* rs = NULL;
+    RenderSystemList systems = Root::getSingleton().getAvailableRenderers();
+
+    // Check if any render systems exist
+    if (systems.empty())
+        return false;
+    // Check if OpenGL is one of those rendering systems (should be)
+    for (RenderSystemList::iterator itr = systems.begin(); itr != systems.end(); itr++)
+        if (!strcmp((*itr)->getName().c_str(), "OpenGL Rendering Subsystem"))
+            rs = *itr;
+    // If it wasn't, default to the first renderer
+    if (rs == NULL)
+    {
+        rs = *systems.begin();
+        OutputDebugString("OpenGL not found, defaulting to %s.\n", rs->getName().c_str());
+    }
+
+    Root::getSingleton().setRenderSystem(rs);
+    rs->setConfigOption("Display Frequency", "60 MHz");
+    rs->setConfigOption("FSAA", "0");
+    rs->setConfigOption("Full Screen", "Yes");
+    rs->setConfigOption("Video Mode", "800 x 600");
+
+    return true;
+#else
     // Show the configuration dialog and returns true if the user clicks OK.
     if (mRoot->showConfigDialog())
-    {
-/*#if OGRE_PLATFORM == OGRE_PLATFORM_WIN32
-        char* msgBoxTitle  = "Select graphical level";
-        char* msgBoxBody   = "After performing a rigorous scan of your hardware I detect that your computer should be able to run high quality graphics alright.\nDo you want to enable fancy graphics?";
-        int   msgBoxResult = MessageBox(NULL, msgBoxBody, msgBoxTitle, MB_YESNOCANCEL | MB_ICONQUESTION | MB_DEFBUTTON1);
-        if (msgBoxResult == IDCANCEL)
-            return false;
-        if (msgBoxResult == IDYES)
-            g_GraphicalLevel = 1;
-        else
-            g_GraphicalLevel = 0;
-#endif*/
-
         return true;
-    }
     return false;
+#endif
 }
 
 
