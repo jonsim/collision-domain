@@ -14,6 +14,7 @@
 #include "Input.h"
 
 //#define COLLISION_DOMAIN_CLIENT
+#define LINUX_GFX_OVERRIDE
 
 
 /*-------------------- CLASS DEFINITIONS --------------------*/
