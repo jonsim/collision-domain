@@ -88,17 +88,18 @@ void GameGUI::showSpawnScreenPage1 (GameMode gameMode)
     // Setup the name box.
     CEGUI::Window* edtName = winMgr.getWindow("/SpawnScreen/Team/edtName");
     edtName->setProperty("Text", GameCore::mPlayerPool->getLocalPlayer()->getNickname());
-    /*
+    
     if (gameMode == FFA_MODE)
     {
         // Update the window title
         page1->setProperty("Text", "Free for All: Select a Team");
 
         // Update the buttons
-        btnTeamAuto->setProperty("Text",     "Enter Game");
+        // TODO this is commented out because you can only choose your team once, so getting FFA mode first means you can only autoassign
+        /*btnTeamAuto->setProperty("Text",     "Enter Game");
         btnTeamAuto->setProperty("Disabled", "false");
         btnTeamBlue->setProperty("Disabled", "true");
-        btnTeamRed->setProperty( "Disabled", "true");
+        btnTeamRed->setProperty( "Disabled", "true");*/
     }
     else
     {
@@ -109,11 +110,12 @@ void GameGUI::showSpawnScreenPage1 (GameMode gameMode)
             page1->setProperty("Text", "VIP Mode: Select a Team");
 
         // Update the buttons
-        btnTeamAuto->setProperty("Text",     "Auto Assign");
+        // TODO this is commented out because you can only choose your team once, so getting FFA mode first means you can only autoassign
+        /*btnTeamAuto->setProperty("Text",     "Auto Assign");
         btnTeamAuto->setProperty("Disabled", "false");
         btnTeamBlue->setProperty("Disabled", "false");
-        btnTeamRed->setProperty( "Disabled", "false");
-    }*/
+        btnTeamRed->setProperty( "Disabled", "false");*/
+    }
 }
 
 void GameGUI::showSpawnScreenPage2 (GameMode gameMode, TeamID teamDisplay, CarType defaultCar)
@@ -163,6 +165,8 @@ void GameGUI::showSpawnScreenPage2 (GameMode gameMode, TeamID teamDisplay, CarTy
 
 void GameGUI::showSpawnScreenErrorText (const char* errorText)
 {
+    OutputDebugString("Attempting to show error text...\n");
+
     CEGUI::WindowManager &winMgr = CEGUI::WindowManager::getSingleton();
 
     CEGUI::Window* txtError = winMgr.getWindow("/SpawnScreen/txtError");
