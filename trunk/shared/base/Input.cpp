@@ -197,6 +197,12 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
         if (evt.key == OIS::KC_N) {
             GameCore::mGui->toggleFPSCounter();
         }
+
+        /*if (evt.key == OIS::KC_B) {
+            GameCore::mPlayerPool->getLocalPlayer()->getCar()->mBodyNode->flipVisibility();
+            ((SimpleCoupeCar*) GameCore::mPlayerPool->getLocalPlayer()->getCar())->setWheelVisibility(true);
+            GameCore::mGui->flipAllVisibility();
+        }*/
     }
 
     /*if(evt.key == OIS::KC_SEMICOLON) {

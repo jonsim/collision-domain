@@ -29,6 +29,7 @@ public:
     void startEngineSound();
 
     virtual void makeBitsFallOff();
+    virtual void setWheelVisibility(bool toggle, bool visible = false);
     virtual void removeLDoor();
     virtual void removeRDoor();
     virtual void removeRBumper();

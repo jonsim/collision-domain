@@ -30,7 +30,7 @@ public:
     void startEngineSound();
 
     virtual void makeBitsFallOff();
-
+    virtual void setWheelVisibility(bool toggle, bool visible = false);
     virtual void removeFLDoor();
     virtual void removeFRDoor();
     virtual void removeRLDoor();

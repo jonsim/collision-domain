@@ -537,6 +537,7 @@ void SimpleCoupeCar::updateArena (ArenaID aid)
 void SimpleCoupeCar::loadDestroyedModel (void)
 {
     mChassisNode->detachAllObjects();
+    setWheelVisibility(false, false);
     createGeometry("CarEntity_Burnt", "banger_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
 #ifdef COLLISION_DOMAIN_CLIENT
@@ -632,6 +633,24 @@ void SimpleCoupeCar::initWheels()
 		wheel.m_frictionSlip                = mWheelFriction;
 		wheel.m_rollInfluence               = mRollInfluence;
 	}
+}
+
+void SimpleCoupeCar::setWheelVisibility(bool toggle, bool visible)
+{
+    if (toggle)
+    {
+        mFLWheelNode->flipVisibility();
+        mFRWheelNode->flipVisibility();
+        mRLWheelNode->flipVisibility();
+        mRRWheelNode->flipVisibility();
+    }
+    else
+    {
+        mFLWheelNode->setVisible(visible);
+        mFRWheelNode->setVisible(visible);
+        mRLWheelNode->setVisible(visible);
+        mRRWheelNode->setVisible(visible);
+    }
 }
 
 void SimpleCoupeCar::removeFLDoor() {

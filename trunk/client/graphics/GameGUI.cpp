@@ -338,6 +338,29 @@ bool GameGUI::SpawnScreen_p2btnCancel (const CEGUI::EventArgs& args)
 
 
 
+void GameGUI::flipAllVisibility (void)
+{
+    // Hide the speedo
+    if (olSpeedo->isVisible())
+        olSpeedo->hide();
+    else
+        olSpeedo->show();
+
+    // Hide the ranks stuff
+    if (olRank->isVisible())
+        olRank->hide();
+    else
+        olRank->show();
+
+    // Hide the damage gui stuff
+    if (oleDamage->isVisible())
+        oleDamage->hide();
+    else
+        oleDamage->show();
+}
+
+
+
 
 /*-------------------- DEV CONSOLE --------------------*/
 void GameGUI::setupConsole (CEGUI::Window* guiWindow)
