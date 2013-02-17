@@ -206,11 +206,7 @@ bool PhysicsCore::removeBody( btRigidBody *body )
         mBulletWorld->removeCollisionObject( body );
         mBodies.erase( it );
 
-        if( body )
-        {
-            //delete body;
-            body = NULL;
-        }
+        body = NULL;
 
         return true;
     }
