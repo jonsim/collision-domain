@@ -109,6 +109,7 @@ bool ClientGraphics::initApplication (void)
 
     //GameCore::mNetworkCore->AutoConnect( SERVER_PORT );
 
+    // wait for connection to server.
     while (GameCore::mNetworkCore->m_szHost == NULL)
     {
         // Check for exit conditions
@@ -418,7 +419,7 @@ bool ClientGraphics::frameRenderingQueued (const Ogre::FrameEvent& evt)
         // Capture input
         mUserInput.capture();
 
-        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE))
+        if (mUserInput.mKeyboard->isKeyDown(OIS::KC_ESCAPE) && mUserInput.mKeyboard->isKeyDown(OIS::KC_F11))
             return false;
 
         if ((!mUserInput.mKeyboard->isKeyDown(OIS::KC_LMENU)) && mUserInput.mKeyboard->isKeyDown(OIS::KC_TAB))		

@@ -112,11 +112,12 @@
             <Property Name="Visible" Value="False" />
             <Property Name="HorzExtent" Value="270" />
             <Property Name="VertExtent" Value="15.5148" />
+            <Property Name="AlwaysOnTop" Value="True" />
             <Property Name="TextColours" Value="tl:FFFFFFFF tr:FFFFFFFF bl:FFFFFFFF br:FFFFFFFF" />
             <Property Name="FrameEnabled" Value="False" />
             <Property Name="InheritsAlpha" Value="False" />
             <Property Name="HorzFormatting" Value="HorzCentred" />
-            <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.7,0},{0.7,0},{0.75,0}}" />
+            <Property Name="UnifiedAreaRect" Value="{{0.3,0},{0.8,0},{0.7,0},{0.85,0}}" />
             <Property Name="BackgroundEnabled" Value="False" />
         </Window>
     </Window>

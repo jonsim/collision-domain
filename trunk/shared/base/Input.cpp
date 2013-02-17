@@ -113,10 +113,10 @@ void Input::processInterfaceControls()
     // Check for console and chatbox - NB: they cannot be displayed simultaneously.
     if (NetworkCore::bConnected && !GameCore::mGui->spawnScreenVisible() && !GameCore::mGui->consoleVisible() && !GameCore::mGui->chatboxVisible())
     {
-	    if (mKeyboard->isKeyDown(OIS::KC_T))
+        if (mKeyboard->isKeyDown(OIS::KC_T) && GameCore::mGameplay->mGameActive)
             GameCore::mGui->toggleChatbox();
-	    else if (mKeyboard->isKeyDown(OIS::KC_C))
-            GameCore::mGui->toggleConsole();
+	    //else if (mKeyboard->isKeyDown(OIS::KC_C))
+        //    GameCore::mGui->toggleConsole();
     }
 #endif
 }
@@ -203,6 +203,23 @@ bool Input::keyPressed (const OIS::KeyEvent &evt)
             ((SimpleCoupeCar*) GameCore::mPlayerPool->getLocalPlayer()->getCar())->setWheelVisibility(true);
             GameCore::mGui->flipAllVisibility();
         }*/
+
+        // check we actually have a car spawned and, if not, open up a dialogue allowing the spawning of one.
+        // TODO THIS MIGHT ACTUALLY BREAK EVERYTHING :/
+        if (evt.key == OIS::KC_ESCAPE)
+        {
+            Player* pPlayer = GameCore::mPlayerPool->getLocalPlayer();
+            if (pPlayer == NULL)
+            {
+                OutputDebugString("UH OH THE PLAYER IS NULL?!???\n");
+            }
+            if (pPlayer != NULL && pPlayer->getCar() == NULL)
+            {
+                OutputDebugString("OO ER, WE DONT HAVE A CAR, ATTEMPTING TO LOAD THE SPAWN SCREEN... BUCKLE UP SUCKA\n");
+                //GameCore::mGui->setupSpawnScreen(GameCore::mClientGraphics->mGUIWindow);
+                GameCore::mGui->showSpawnScreenPage1(GameCore::mGameplay->getGameMode());
+            }
+        }
     }
 
     /*if(evt.key == OIS::KC_SEMICOLON) {
