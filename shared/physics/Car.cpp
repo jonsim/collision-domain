@@ -47,7 +47,7 @@ Car::~Car()
 
     while( mRemovedNodes.empty() == false )
     {
-        GameCore::mSceneMgr->destroySceneNode( mRemovedNodes.front() );
+        //GameCore::mSceneMgr->destroySceneNode( mRemovedNodes.front() );
         mRemovedNodes.pop();
     }
 }
@@ -627,11 +627,11 @@ void Car::removePiece( Ogre::SceneNode *node, btRigidBody *body, PHYS_SHAPE shap
 
     body = new btRigidBody( 30.f, lstate, GameCore::mPhysicsCore->getCollisionShape( shape ), linertia );
 
-    body->setActivationState( ISLAND_SLEEPING );
+    //body->setActivationState( ISLAND_SLEEPING );
     GameCore::mPhysicsCore->addRigidBody( body, COL_CAR, COL_ARENA | COL_CAR );
     body->setDamping( 0.2f, 0.5f );
     //body->setDamping( 100.2f, 100.5f );
-    body->setActivationState( ISLAND_SLEEPING );
+    body->setActivationState( DISABLE_DEACTIVATION );
 
     mRemovedNodes.push( node );
     //body->setWorldTransform( mVehicle->getChassisWorldTransform() );
