@@ -489,6 +489,7 @@ void TruckCar::updateArena (ArenaID aid)
 void TruckCar::loadDestroyedModel (void)
 {
     mChassisNode->detachAllObjects();
+    setWheelVisibility(false, false);
     createGeometry("CarEntity_Burnt", "truck_burnt.mesh", mChassisNode, false);
     makeBitsFallOff();
 #ifdef COLLISION_DOMAIN_CLIENT
@@ -653,6 +654,24 @@ void TruckCar::initWheels()
 		wheel.m_frictionSlip                = mWheelFriction;
 		wheel.m_rollInfluence               = mRollInfluence;
 	}
+}
+
+void TruckCar::setWheelVisibility(bool toggle, bool visible)
+{
+    if (toggle)
+    {
+        mFLWheelNode->flipVisibility();
+        mFRWheelNode->flipVisibility();
+        mRLWheelNode->flipVisibility();
+        mRRWheelNode->flipVisibility();
+    }
+    else
+    {
+        mFLWheelNode->setVisible(visible);
+        mFRWheelNode->setVisible(visible);
+        mRLWheelNode->setVisible(visible);
+        mRRWheelNode->setVisible(visible);
+    }
 }
 
 void TruckCar::removeLDoor() {
