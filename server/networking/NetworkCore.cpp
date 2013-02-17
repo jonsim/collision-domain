@@ -541,6 +541,8 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
     {
         packetid = ID_SPAWN_NO_TEAM;
 		bsSpawn.Write( packetid );
+        bsSpawn.Write( pkt->guid );
+        bsSpawn.Write( 0 ); // Arbitrary car type, gets ignored
         m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
         pPlayer->setPlayerState( PLAYER_STATE_TEAM_SEL );
         return;
@@ -548,11 +550,11 @@ void NetworkCore::PlayerSpawn( RakNet::BitStream *bitStream, RakNet::Packet *pkt
 
     if( GameCore::mGameplay->mGameActive == false )
     {
-        packetid = ID_SPAWN_GAME_INACTIVE;
-		bsSpawn.Write( packetid );
-        m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
+        //packetid = ID_SPAWN_GAME_INACTIVE;
+		//bsSpawn.Write( packetid );
+        //m_RPC->Signal( "PlayerSpawn", &bsSpawn, HIGH_PRIORITY, RELIABLE_ORDERED, 0, pkt->guid, false, false );
         pPlayer->setCarType( iCarType );
-        pPlayer->setPlayerState( PLAYER_STATE_WAIT_SPAWN );
+        pPlayer->setPlayerState( PLAYER_STATE_INGAME );
 
         // Check how many players we now have spawned
         int size = GameCore::mPlayerPool->getNumberOfPlayers();
